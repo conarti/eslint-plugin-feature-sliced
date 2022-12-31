@@ -42,12 +42,22 @@ ruleTester.run('public-api-imports', rule, {
 
   invalid: [
     {
+      code: 'import { addCommentFormActions, addCommentFormReducer } from \'entities/Article/model/file.ts\'',
+      errors: [
+        {
+          messageId: errorCodes['public-api-imports'],
+        },
+      ],
+      output: 'import { addCommentFormActions, addCommentFormReducer } from \'entities/Article\'',
+    },
+    {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article/model/file.ts\'',
       errors: [
         {
           messageId: errorCodes['public-api-imports'],
         },
       ],
+      output: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
       options: aliasOptions,
     },
     {
@@ -58,6 +68,7 @@ ruleTester.run('public-api-imports', rule, {
           messageId: errorCodes['public-api-imports'],
         },
       ],
+      output: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
       options: aliasOptions,
     },
   ],
