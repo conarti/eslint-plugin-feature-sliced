@@ -10,7 +10,7 @@
 
 const rule = require('../../../lib/rules/public-api-imports'),
   RuleTester = require('eslint').RuleTester;
-const { errorMessages } = require('../../../lib/constants');
+const { errorCodes } = require('../../../lib/constants');
 
 
 //------------------------------------------------------------------------------
@@ -43,13 +43,21 @@ ruleTester.run('public-api-imports', rule, {
   invalid: [
     {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article/model/file.ts\'',
-      errors: [{ message: errorMessages['public-api-imports'] }],
+      errors: [
+        {
+          messageId: errorCodes['public-api-imports'],
+        },
+      ],
       options: aliasOptions,
     },
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\entities\\StoreDecorator.tsx',
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article/testing/file.tsx\'',
-      errors: [{ message: errorMessages['public-api-imports'] }],
+      errors: [
+        {
+          messageId: errorCodes['public-api-imports'],
+        },
+      ],
       options: aliasOptions,
     },
   ],

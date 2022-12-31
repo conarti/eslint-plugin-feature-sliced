@@ -10,7 +10,7 @@
 
 const rule = require('../../../lib/rules/layer-imports'),
   RuleTester = require('eslint').RuleTester;
-const { errorMessages } = require('../../../lib/constants');
+const { errorCodes } = require('../../../lib/constants');
 
 
 //------------------------------------------------------------------------------
@@ -22,9 +22,11 @@ const aliasOptions = [
     alias: '@',
   },
 ];
+
 const ruleTester = new RuleTester({
   parserOptions: { ecmaVersion: 6, sourceType: 'module' },
 });
+
 ruleTester.run('layer-imports', rule, {
   valid: [
     {
@@ -69,19 +71,31 @@ ruleTester.run('layer-imports', rule, {
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\entities\\providers',
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/features/Articl\'',
-      errors: [{ message: errorMessages['layer-imports'] }],
+      errors: [
+        {
+          messageId: errorCodes['layer-imports'],
+        },
+      ],
       options: aliasOptions,
     },
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\features\\providers',
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/widgets/Articl\'',
-      errors: [{ message: errorMessages['layer-imports'] }],
+      errors: [
+        {
+          messageId: errorCodes['layer-imports'],
+        },
+      ],
       options: aliasOptions,
     },
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\entities\\providers',
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/widgets/Articl\'',
-      errors: [{ message: errorMessages['layer-imports'] }],
+      errors: [
+        {
+          messageId: errorCodes['layer-imports'],
+        },
+      ],
       options: aliasOptions,
     },
   ],

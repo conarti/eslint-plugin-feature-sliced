@@ -10,12 +10,18 @@
 
 const rule = require('../../../lib/rules/path-checker'),
   RuleTester = require('eslint').RuleTester;
-const { errorMessages } = require('../../../lib/constants');
+const { errorCodes } = require('../../../lib/constants');
 
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
+
+const aliasOptions = [
+  {
+    alias: '@',
+  },
+];
 
 const ruleTester = new RuleTester({
   parserOptions: {
@@ -23,6 +29,7 @@ const ruleTester = new RuleTester({
     sourceType: 'module',
   },
 });
+
 ruleTester.run('path-checker', rule, {
   valid: [
     {
@@ -36,17 +43,21 @@ ruleTester.run('path-checker', rule, {
     {
       filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { TheHeader } from \'widgets/TheHeader\';',
-      errors: [{ message: errorMessages['path-checker'] }],
+      errors: [
+        {
+          messageId: errorCodes['path-checker'],
+        },
+      ],
     },
     {
       filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { TheHeader } from \'@/widgets/TheHeader\';',
-      options: [
+      options: aliasOptions,
+      errors: [
         {
-          alias: '@',
+          messageId: errorCodes['path-checker'],
         },
       ],
-      errors: [{ message: errorMessages['path-checker'] }],
     },
   ],
 });
