@@ -38,6 +38,10 @@ ruleTester.run('public-api-imports', rule, {
       errors: [],
       options: aliasOptions,
     },
+    {
+      code: 'import { setStylesForTheme } from \'app/providers/ThemeProvider\'',
+      errors: [],
+    },
   ],
 
   invalid: [
