@@ -42,7 +42,15 @@ Then configure the rules you want to use under the rules section.
 ## Rules
 
 <!-- begin auto-generated rules list -->
-TODO: Run eslint-doc-generator to generate the rules list.
+
+🔧 Automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/user-guide/command-line-interface#--fix).
+
+| Name                                                   | Description                              | 🔧 |
+| :----------------------------------------------------- | :--------------------------------------- | :- |
+| [layer-imports](docs/rules/layer-imports.md)           | Checks layer imports                     |    |
+| [path-checker](docs/rules/path-checker.md)             | Checks for absolute and relative paths   |    |
+| [public-api-imports](docs/rules/public-api-imports.md) | Check for module imports from public api | 🔧 |
+
 <!-- end auto-generated rules list -->
 
 

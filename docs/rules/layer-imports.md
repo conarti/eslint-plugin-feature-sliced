@@ -1,4 +1,6 @@
-# Checks layer imports (`layer-imports`)
+# Checks layer imports (`conarti-fsd/layer-imports`)
+
+<!-- end auto-generated rule header -->
 
 Please describe the origin of the rule here.
 

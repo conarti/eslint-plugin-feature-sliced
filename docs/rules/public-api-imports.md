@@ -1,4 +1,8 @@
-# Check for module imports from public api (`public-api-imports`)
+# Check for module imports from public api (`conarti-fsd/public-api-imports`)
+
+🔧 This rule is automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/latest/user-guide/command-line-interface#--fix).
+
+<!-- end auto-generated rule header -->
 
 Please describe the origin of the rule here.
 
