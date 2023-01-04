@@ -15,7 +15,11 @@
     "lint:eslint-docs": "npm-run-all \"update:eslint-docs -- --check\"",
     "lint:js": "eslint .",
     "test": "mocha tests --recursive",
-    "update:eslint-docs": "eslint-doc-generator"
+    "update:eslint-docs": "eslint-doc-generator",
+    "publish:prepatch": "npm version prepatch && npm publish",
+    "publish:patch": "npm version patch && npm publish",
+    "publish:minor": "npm version minor && npm publish",
+    "publish:major": "npm version major && npm publish"
   },
   "dependencies": {
     "requireindex": "^1.2.0"
