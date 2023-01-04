@@ -10,32 +10,32 @@ You'll first need to install [ESLint](https://eslint.org/):
 npm i eslint --save-dev
 ```
 
-Next, install `eslint-plugin-fsd-react`:
+Next, install `eslint-plugin-conarti-fsd`:
 
 ```sh
-npm install eslint-plugin-fsd-react --save-dev
+npm install eslint-plugin-conarti-fsd --save-dev
 ```
 
 ## Usage
 
-Add `fsd-react` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
+Add `conarti-fsd` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-`
+prefix:
 
 ```json
 {
-    "plugins": [
-        "fsd-react"
-    ]
+  "plugins": [
+    "conarti-fsd"
+  ]
 }
 ```
-
 
 Then configure the rules you want to use under the rules section.
 
 ```json
 {
-    "rules": {
-        "fsd-react/rule-name": 2
-    }
+  "rules": {
+    "conarti-fsd/rule-name": 2
+  }
 }
 ```
 
