@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-conarti-fsd",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Feature-sliced design methodology plugin for react",
   "keywords": [
     "eslint",
