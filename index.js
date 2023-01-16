@@ -3,8 +3,8 @@
  * @author conarti
  */
 
-const path = require('path');
 const requireIndex = require('requireindex');
+const all = require('./configs/all');
 
 module.exports = {
   parserOptions: {
@@ -12,7 +12,7 @@ module.exports = {
     'sourceType': 'module',
   },
   rules: requireIndex(__dirname + '/rules'), // import all rules in lib/rules
-  extends: [
-    path.resolve(__dirname, './rules/import-order'),
-  ],
+  configs: {
+    all,
+  },
 };
