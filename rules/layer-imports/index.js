@@ -4,8 +4,8 @@
  */
 'use strict';
 
-const { getAliasFromOptions, normalizePath, isPathRelative, getPathParts } = require('../../helpers');
-const { layers, errorCodes } = require('../../constants');
+const { getAliasFromOptions, normalizePath, isPathRelative, getPathParts } = require('../../lib/helpers');
+const { layers, errorCodes } = require('../../lib/constants');
 
 //------------------------------------------------------------------------------
 // Rule Definition

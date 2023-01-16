@@ -9,8 +9,8 @@ const {
   getAliasFromOptions,
   getPathParts,
   normalizePath,
-} = require('../../helpers');
-const { errorCodes, layers } = require('../../constants');
+} = require('../../lib/helpers');
+const { errorCodes, layers } = require('../../lib/constants');
 
 //------------------------------------------------------------------------------
 // Rule Definition

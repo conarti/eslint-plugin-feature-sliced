@@ -9,8 +9,8 @@
     "eslint-plugin"
   ],
   "author": "conarti",
-  "main": "./lib/index.js",
-  "exports": "./lib/index.js",
+  "main": "./index.js",
+  "exports": "./index.js",
   "scripts": {
     "lint": "npm-run-all \"lint:*\"",
     "lint:eslint-docs": "npm-run-all \"update:eslint-docs -- --check\"",

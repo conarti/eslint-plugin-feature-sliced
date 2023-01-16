@@ -1,6 +1,6 @@
 const { RuleTester } = require('eslint');
 const rule = require('./index');
-const { errorCodes } = require('../../constants');
+const { errorCodes } = require('../../lib/constants');
 
 const aliasOptions = [
   {
