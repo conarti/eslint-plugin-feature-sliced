@@ -31,37 +31,28 @@ prefix:
 }
 ```
 
-Then configure the rules you want to use under the rules section.
+Then enable rules:
+
+```json
+{
+  "extends": [
+    "plugin:conarti-fsd/all"
+  ]
+}
+```
+
+## Customization
+
+You can use _warnings_ instead of _errors_ for specific rules. Or turn off certain rules
 
 ```json
 {
   "rules": {
-    "conarti-fsd/layer-imports": "error",
-    "conarti-fsd/path-checker": "error",
-    "conarti-fsd/public-api-imports": "error"
+    "conarti-fsd/layer-imports": "warn",
+    "conarti-fsd/path-checker": "warn",
+    "conarti-fsd/public-api-imports": "warn",
+    "import/order": "off"
   }
-}
-```
-
-To enable all other rules:
-
-```json
-{
-  "extends": [
-    "conarti-fsd"
-  ]
-}
-```
-
-OR
-
-You can partially use the other rules:
-
-```json
-{
-  "extends": [
-    "conarti-fsd/rules/import-order"
-  ]
 }
 ```
 
