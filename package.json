@@ -6,7 +6,11 @@
   "keywords": [
     "eslint",
     "eslintplugin",
-    "eslint-plugin"
+    "eslint-plugin",
+    "feature-sliced",
+    "feature-slices",
+    "feature-driven",
+    "feature-based"
   ],
   "author": "conarti",
   "main": "./index.js",
