@@ -1,4 +1,4 @@
-# conarti-fsd/import-order
+# import/order
 
 <!-- end auto-generated rule header -->
 
