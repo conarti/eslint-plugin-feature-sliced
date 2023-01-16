@@ -19,6 +19,7 @@ module.exports = {
           order: 'asc',
           caseInsensitive: true,
         },
+        'newlines-between': 'never',
         pathGroups: FS_LAYERS.map(
           (layer) => ({
             pattern: `**/?(*)${layer}{,/**}`,

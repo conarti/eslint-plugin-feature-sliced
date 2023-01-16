@@ -10,7 +10,7 @@ const eslint = new ESLint({
 
 describe('import-order:', () => {
 
-  it("should lint with errors.", async () => {
+  it('should lint with errors.', async () => {
     const report = await eslint.lintText(`
         import { Cart } from "@/entities/cart";    // 5 
         import { Input } from "~/shared/ui";       // 3.1
@@ -29,7 +29,7 @@ describe('import-order:', () => {
     assert.strictEqual(report[0].errorCount, 8);
   });
 
-  it("should lint without errors.", async () => {
+  it('should lint without errors.', async () => {
     const report = await eslint.lintText(`
         // warn: specific order in mixed alias ~/layer => ~layer => layer 
         import axios from "axios";                           // 1) external libs
@@ -52,7 +52,7 @@ describe('import-order:', () => {
   });
 
 
-  it("should lint without errors.", async () => {
+  it('should lint without errors.', async () => {
     const report = await eslint.lintText(`
         // warn: specific order in mixed alias ~/layer => ~layer => layer
         // not used in real, but test aliases support 
@@ -76,7 +76,33 @@ describe('import-order:', () => {
     assert.strictEqual(report[0].errorCount, 0);
   });
 
-  it("aliased layers should lint with errors.", async () => {
+  it('should lint with errors when has spaces between groups.', async () => {
+    const report = await eslint.lintText(`
+        // warn: specific order in mixed alias ~/layer => ~layer => layer
+        // not used in real, but test aliases support 
+        import axios from "axios";                           // 1) external libs
+        
+        import { Zero } from "@widgets/zero";                // 2.1) Layers: widget - Alias
+        import { Widgets } from "widgets";                   // 2.1) Layers: widgets
+        import { Header } from "widgets/header";             // 2.1) Layers: widgets
+        import { LoginForm } from "features/login-form";     // 2.2) Layers: features
+        import { Cart } from "@/entities/cart";              // 2.3) Layers: entities - Alias
+        import { One } from "@entities/one";                 // 2.3) Layers: entities - Alias
+        import { Two } from "@entities/two";                 // 2.3) Layers: entities - Alias
+        import { authModel } from "entities/auth";           // 2.3) Layers: entities
+        import { Shared } from "shared";                     // 2.4) Layers: shared
+        import { debounce } from "shared/lib/fp";            // 2.4) Layers: shared
+        import { Button } from "shared/ui";                  // 2.4) Layers: shared
+        import { Input } from "~/shared/ui";                 // 2.4) Layers: shared - Alias
+        import { data } from "../fixtures";                  // 3) parent
+        
+        import { getSmth } from "./lib";                     // 4) sibling
+        `);
+
+    assert.strictEqual(report[0].errorCount, 2);
+  });
+
+  it('aliased layers should lint with errors.', async () => {
     const report = await eslint.lintText(`
         import { Third } from '@shared/third';
         import { Second } from '@entities/second';
@@ -86,7 +112,7 @@ describe('import-order:', () => {
     assert.strictEqual(report[0].errorCount, 2);
   });
 
-  it("aliased layers should lint without errors.", async () => {
+  it('aliased layers should lint without errors.', async () => {
     const report = await eslint.lintText(`
         import { Widgets } from "@widgets";
         import { First } from '@features/first';
@@ -97,7 +123,7 @@ describe('import-order:', () => {
     assert.strictEqual(report[0].errorCount, 0);
   });
 
-  it("~aliased should lint without errors.", async () => {
+  it('~aliased should lint without errors.', async () => {
     const report = await eslint.lintText(`
         import axios from "axios";
         import { Widgets } from "~widgets";
@@ -119,7 +145,7 @@ describe('import-order:', () => {
   });
 
 
-  it("~/aliased should lint without errors.", async () => {
+  it('~/aliased should lint without errors.', async () => {
     const report = await eslint.lintText(`
         import axios from "axios";
         import { Widgets } from "~/widgets";
@@ -140,9 +166,9 @@ describe('import-order:', () => {
     assert.strictEqual(report[0].errorCount, 0);
   });
 
-  describe("Alphabetic sort feature:", () => {
+  describe('Alphabetic sort feature:', () => {
 
-    it("should be alphabetic", async () => {
+    it('should be alphabetic', async () => {
       const report = await eslint.lintText(`
             import { Apple } from 'features/apple';
             import { Bee } from 'features/bee';
@@ -153,7 +179,7 @@ describe('import-order:', () => {
       assert.strictEqual(report[0].errorCount, 0);
     });
 
-    it("should be alphabetic error", async () => {
+    it('should be alphabetic error', async () => {
       const report = await eslint.lintText(`
             import { Dream } from 'features/dream';
             import { Cord } from 'features/cord';
@@ -164,5 +190,5 @@ describe('import-order:', () => {
       assert.strictEqual(report[0].errorCount, 3);
     });
 
-  })
+  });
 });
