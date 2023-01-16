@@ -1,6 +1,6 @@
-# eslint-plugin-fsd-react
+# eslint-plugin-conarti-fsd
 
-Feature-sliced design methodology plugin for react
+Feature-sliced design methodology plugin for any frameworks.
 
 ## Installation
 
@@ -43,7 +43,7 @@ Then enable rules:
 
 ## Customization
 
-You can use _warnings_ instead of _errors_ for specific rules. Or turn off certain rules
+You can use _warnings_ instead of _errors_ for specific rules. Or turn off certain rules:
 
 ```json
 {
