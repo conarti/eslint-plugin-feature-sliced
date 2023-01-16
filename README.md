@@ -58,17 +58,11 @@ You can use _warnings_ instead of _errors_ for specific rules. Or turn off certa
 
 ## Rules
 
-<!-- begin auto-generated rules list -->
-
 🔧 Automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/user-guide/command-line-interface#--fix).
 
 | Name | Description | 🔧 |
 | :----------------------------------------------------- | :--------------------------------------- | :- |
-| [import-order](docs/rules/import-order.md)             | | 🔧 |
-| [layer-imports](docs/rules/layer-imports.md)           | Checks layer imports | |
-| [path-checker](docs/rules/path-checker.md)             | Checks for absolute and relative paths | |
-| [public-api-imports](docs/rules/public-api-imports.md) | Check for module imports from public api | 🔧 |
-
-<!-- end auto-generated rules list -->
-
-
+| [import/order](rules/import-order/README.md)             | | 🔧 |
+| [conarti-fsd/layer-imports](rules/layer-imports/README.md)           | Checks layer imports | |
+| [conarti-fsd/path-checker](rules/path-checker/README.md)             | Checks for absolute and relative paths | |
+| [conarti-fsd/public-api-imports](rules/public-api-imports/README.md) | Check for module imports from public api | 🔧 |
