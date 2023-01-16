@@ -17,11 +17,8 @@
   "exports": "./index.js",
   "scripts": {
     "lint": "npm-run-all \"lint:*\"",
-    "lint:eslint-docs": "npm-run-all \"update:eslint-docs -- --check\"",
     "lint:js": "eslint .",
     "test": "mocha \"*(test|rules)/**/*.test.js\" --recursive",
-    "update:eslint-docs": "eslint-doc-generator",
-    "publish:prepatch": "npm version prepatch && npm publish",
     "publish:patch": "npm version patch && npm publish",
     "publish:minor": "npm version minor && npm publish",
     "publish:major": "npm version major && npm publish"
@@ -31,7 +28,6 @@
   },
   "devDependencies": {
     "eslint": "^8.19.0",
-    "eslint-doc-generator": "^1.0.0",
     "eslint-plugin-eslint-plugin": "^5.0.0",
     "eslint-plugin-import": "^2.27.4",
     "eslint-plugin-node": "^11.1.0",
