@@ -10,10 +10,12 @@ You'll first need to install [ESLint](https://eslint.org/):
 npm i eslint --save-dev
 ```
 
-Next, install `eslint-plugin-conarti-fsd`:
+Next, install `eslint-plugin-conarti-fsd` and dependencies:
 
 ```sh
-npm install eslint-plugin-conarti-fsd --save-dev
+npm install -D eslint-plugin-conarti-fsd eslint-plugin-import
+# or by yarn
+yarn add -D eslint-plugin-conarti-fsd eslint-plugin-import
 ```
 
 ## Usage
@@ -41,6 +43,28 @@ Then configure the rules you want to use under the rules section.
 }
 ```
 
+To enable all other rules:
+
+```json
+{
+  "extends": [
+    "conarti-fsd"
+  ]
+}
+```
+
+OR
+
+You can partially use the other rules:
+
+```json
+{
+  "extends": [
+    "conarti-fsd/rules/import-order"
+  ]
+}
+```
+
 ## Rules
 
 <!-- begin auto-generated rules list -->
@@ -49,6 +73,7 @@ Then configure the rules you want to use under the rules section.
 
 | Name | Description | 🔧 |
 | :----------------------------------------------------- | :--------------------------------------- | :- |
+| [import-order](docs/rules/import-order.md)             | | 🔧 |
 | [layer-imports](docs/rules/layer-imports.md)           | Checks layer imports | |
 | [path-checker](docs/rules/path-checker.md)             | Checks for absolute and relative paths | |
 | [public-api-imports](docs/rules/public-api-imports.md) | Check for module imports from public api | 🔧 |
