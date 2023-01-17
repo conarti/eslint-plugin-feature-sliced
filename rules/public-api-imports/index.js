@@ -4,7 +4,12 @@
  */
 'use strict';
 
-const { getAliasFromOptions, isPathRelative, normalizePath, getPathParts } = require('../../lib/helpers');
+const {
+  getAliasFromOptions,
+  isPathRelative,
+  normalizePath,
+  getPathParts,
+} = require('../../lib/helpers');
 const { layers, errorCodes, pathSeparator } = require('../../lib/constants');
 
 //------------------------------------------------------------------------------
@@ -49,6 +54,8 @@ module.exports = {
       return fixer.replaceText(node.source, alias ? `'${alias}/${resultPath}'` : `'${resultPath}'`);
     };
 
+    const isImportFromSameSlice = (importSlice, currentFileSlice) => importSlice === currentFileSlice;
+
     //----------------------------------------------------------------------
     // Public
     //----------------------------------------------------------------------
@@ -56,14 +63,16 @@ module.exports = {
     return {
       ImportDeclaration(node) {
         const importPath = normalizePath(node.source.value, alias);
+        const currentFilePath = normalizePath(context.getFilename(), alias);
 
-        if (isPathRelative(importPath)) {
+        const [importLayer, importSlice] = getPathParts(importPath);
+        const [, currentFileSlice] = getPathParts(currentFilePath);
+
+        if (isPathRelative(importPath) || isImportFromSameSlice(importSlice, currentFileSlice)) {
           return;
         }
 
-        const [layer, slice] = getPathParts(importPath);
-
-        if (!layers[layer] || layer === 'app') {
+        if (!layers[importLayer] || importLayer === 'app') {
           return;
         }
 
@@ -71,7 +80,7 @@ module.exports = {
           context.report({
             node,
             messageId: errorCodes['public-api-imports'],
-            fix: (fixer) => convertToPublicApi({ fixer, node, layer, slice, alias }),
+            fix: (fixer) => convertToPublicApi({ fixer, node, layer: importLayer, slice: importSlice, alias }),
           });
         }
       },
