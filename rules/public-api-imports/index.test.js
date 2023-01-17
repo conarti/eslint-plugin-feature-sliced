@@ -27,6 +27,11 @@ ruleTester.run('public-api-imports', rule, {
       code: 'import { setStylesForTheme } from \'app/providers/ThemeProvider\'',
       errors: [],
     },
+    {
+      code: 'import { formConfig } from \'src/features/form/config\'',
+      filename: 'src/features/form/ui/index.js',
+      errors: [],
+    },
   ],
 
   invalid: [
