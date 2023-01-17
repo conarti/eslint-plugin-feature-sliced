@@ -4,13 +4,7 @@
  */
 'use strict';
 
-const {
-  getAliasFromOptions,
-  normalizePath,
-  isPathRelative,
-  getPathParts,
-  canImportLayer,
-} = require('../../lib/helpers');
+const { getAliasFromOptions, normalizePath, isPathRelative, getPathParts } = require('../../lib/helpers');
 const { layers, errorCodes } = require('../../lib/constants');
 
 //------------------------------------------------------------------------------
@@ -45,6 +39,21 @@ module.exports = {
   create(context) {
     const alias = getAliasFromOptions(context);
 
+    //----------------------------------------------------------------------
+    // Helpers
+    //----------------------------------------------------------------------
+
+    const canNotImportLayer = (importLayer, currentFileLayer, layerOrder) => {
+      const importLayerOrder = layerOrder[importLayer];
+      const currentFileLayerOrder = layerOrder[currentFileLayer];
+
+      return currentFileLayerOrder < importLayerOrder;
+    };
+
+    //----------------------------------------------------------------------
+    // Public
+    //----------------------------------------------------------------------
+
     return {
       ImportDeclaration(node) {
         const importPath = normalizePath(node.source.value, alias);
@@ -61,7 +70,7 @@ module.exports = {
           return;
         }
 
-        if (!canImportLayer(importLayer, currentFileLayer, layers)) {
+        if (canNotImportLayer(importLayer, currentFileLayer, layers)) {
           context.report({
             node,
             messageId: errorCodes['layer-imports'],
