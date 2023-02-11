@@ -12,10 +12,6 @@ const {
 } = require('../../lib/helpers');
 const { errorCodes, layers } = require('../../lib/constants');
 
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
-
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
   meta: {
@@ -44,10 +40,6 @@ module.exports = {
   create(context) {
     const alias = getAliasFromOptions(context);
 
-    //----------------------------------------------------------------------
-    // Helpers
-    //----------------------------------------------------------------------
-
     const shouldBeRelative = (importPath, currentFilePath) => {
       if (isPathRelative(importPath)) {
         return false;
@@ -67,10 +59,6 @@ module.exports = {
 
       return currentFileSlice === importSlice && currentFileLayer === importLayer;
     };
-
-    //----------------------------------------------------------------------
-    // Public
-    //----------------------------------------------------------------------
 
     return {
       ImportDeclaration(node) {
