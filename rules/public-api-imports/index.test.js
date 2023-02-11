@@ -6,12 +6,6 @@ const ruleTester = new RuleTester({
   parserOptions: { ecmaVersion: 6, sourceType: 'module' },
 });
 
-const aliasOptions = [
-  {
-    alias: '@',
-  },
-];
-
 ruleTester.run('public-api-imports', rule, {
   valid: [
     {
@@ -21,7 +15,6 @@ ruleTester.run('public-api-imports', rule, {
     {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
       errors: [],
-      options: aliasOptions,
     },
     {
       code: 'import { setStylesForTheme } from \'app/providers/ThemeProvider\'',
@@ -52,7 +45,6 @@ ruleTester.run('public-api-imports', rule, {
         },
       ],
       output: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
-      options: aliasOptions,
     },
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\entities\\StoreDecorator.tsx',
@@ -63,7 +55,6 @@ ruleTester.run('public-api-imports', rule, {
         },
       ],
       output: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
-      options: aliasOptions,
     },
   ],
 });
