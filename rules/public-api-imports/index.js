@@ -5,10 +5,10 @@
 'use strict';
 
 const {
-  getAliasFromOptions,
   isPathRelative,
   normalizePath,
   getPathParts,
+  getAlias,
 } = require('../../lib/helpers');
 const { layers, errorCodes, pathSeparator } = require('../../lib/constants');
 
@@ -25,21 +25,10 @@ module.exports = {
     messages: {
       [errorCodes['public-api-imports']]: 'Absolute imports are only allowed from public api (index.ts)',
     },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          alias: {
-            type: 'string',
-          },
-        },
-      },
-    ],
+    schema: [],
   },
 
   create(context) {
-    const alias = getAliasFromOptions(context);
-
     const isImportFromPublicApi = (importPath) => {
       const pathPartsLength = importPath.split(pathSeparator).length;
       return pathPartsLength <= 2;
@@ -59,8 +48,9 @@ module.exports = {
 
     return {
       ImportDeclaration(node) {
-        const importPath = normalizePath(node.source.value, alias);
-        const currentFilePath = normalizePath(context.getFilename(), alias);
+        const importPath = normalizePath(node.source.value);
+        const currentFilePath = normalizePath(context.getFilename());
+        const alias = getAlias(node.source.value);
 
         const [importLayer, importSlice] = getPathParts(importPath);
         const [, currentFileSlice] = getPathParts(currentFilePath);
