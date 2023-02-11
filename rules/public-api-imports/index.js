@@ -40,9 +40,9 @@ module.exports = {
   create(context) {
     const alias = getAliasFromOptions(context);
 
-    const isImportNotFromPublicApi = (importPath) => {
+    const isImportFromPublicApi = (importPath) => {
       const pathPartsLength = importPath.split(pathSeparator).length;
-      return pathPartsLength > 2;
+      return pathPartsLength <= 2;
     };
 
     const convertToPublicApi = ({ fixer, node, layer, slice, alias }) => {
@@ -68,13 +68,15 @@ module.exports = {
           return;
         }
 
-        if (isImportNotFromPublicApi(importPath)) {
-          context.report({
-            node,
-            messageId: errorCodes['public-api-imports'],
-            fix: (fixer) => convertToPublicApi({ fixer, node, layer: importLayer, slice: importSlice, alias }),
-          });
+        if (isImportFromPublicApi(importPath)) {
+          return;
         }
+
+        context.report({
+          node,
+          messageId: errorCodes['public-api-imports'],
+          fix: (fixer) => convertToPublicApi({ fixer, node, layer: importLayer, slice: importSlice, alias }),
+        });
       },
     };
   },
