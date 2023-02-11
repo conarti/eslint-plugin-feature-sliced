@@ -45,9 +45,9 @@ module.exports = {
       return pathPartsLength <= 2;
     };
 
-    const convertToPublicApi = ({ fixer, node, layer, slice, alias }) => {
+    const convertToPublicApi = ({ layer, slice, alias }) => {
       const resultPath = `${layer}/${slice}`;
-      return fixer.replaceText(node.source, alias ? `'${alias}/${resultPath}'` : `'${resultPath}'`);
+      return alias ? `'${alias}/${resultPath}'` : `'${resultPath}'`;
     };
 
     const isImportFromSameSlice = (importSlice, currentFileSlice) => importSlice === currentFileSlice;
@@ -75,7 +75,10 @@ module.exports = {
         context.report({
           node,
           messageId: errorCodes['public-api-imports'],
-          fix: (fixer) => convertToPublicApi({ fixer, node, layer: importLayer, slice: importSlice, alias }),
+          fix: (fixer) => {
+            const fixedImportPath = convertToPublicApi({ layer: importLayer, slice: importSlice, alias });
+            return fixer.replaceText(node.source, fixedImportPath);
+          },
         });
       },
     };
