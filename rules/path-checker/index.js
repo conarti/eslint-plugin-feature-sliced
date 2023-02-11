@@ -7,7 +7,7 @@
 const {
   isPathRelative,
   getAliasFromOptions,
-  getPathParts,
+  getLayerSliceFromPath,
   normalizePath,
 } = require('../../lib/helpers');
 const { errorCodes, layers } = require('../../lib/constants');
@@ -45,13 +45,13 @@ module.exports = {
         return false;
       }
 
-      const [importLayer, importSlice] = getPathParts(importPath);
+      const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
 
       if (!importLayer || !importSlice || !layers[importLayer]) {
         return false;
       }
 
-      const [currentFileLayer, currentFileSlice] = getPathParts(currentFilePath);
+      const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
 
       if (!currentFileLayer || !currentFileSlice || !layers[currentFileLayer]) {
         return false;

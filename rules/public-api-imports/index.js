@@ -7,7 +7,7 @@
 const {
   isPathRelative,
   normalizePath,
-  getPathParts,
+  getLayerSliceFromPath,
   getAlias,
 } = require('../../lib/helpers');
 const { layers, errorCodes, pathSeparator } = require('../../lib/constants');
@@ -52,8 +52,8 @@ module.exports = {
         const currentFilePath = normalizePath(context.getFilename());
         const alias = getAlias(node.source.value);
 
-        const [importLayer, importSlice] = getPathParts(importPath);
-        const [, currentFileSlice] = getPathParts(currentFilePath);
+        const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
+        const [, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
 
         if (isPathRelative(importPath) || isImportFromSameSlice(importSlice, currentFileSlice)) {
           return;

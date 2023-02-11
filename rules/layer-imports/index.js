@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const { getAliasFromOptions, normalizePath, isPathRelative, getPathParts } = require('../../lib/helpers');
+const { getAliasFromOptions, normalizePath, isPathRelative, getLayerSliceFromPath } = require('../../lib/helpers');
 const { layers, errorCodes } = require('../../lib/constants');
 
 //------------------------------------------------------------------------------
@@ -63,8 +63,8 @@ module.exports = {
         }
 
         const currentFilePath = normalizePath(context.getFilename(), alias);
-        const [importLayer] = getPathParts(importPath);
-        const [currentFileLayer] = getPathParts(currentFilePath);
+        const [importLayer] = getLayerSliceFromPath(importPath);
+        const [currentFileLayer] = getLayerSliceFromPath(currentFilePath);
 
         if (!layers[importLayer] || !layers[currentFileLayer]) {
           return;
