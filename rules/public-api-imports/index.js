@@ -12,10 +12,6 @@ const {
 } = require('../../lib/helpers');
 const { layers, errorCodes, pathSeparator } = require('../../lib/constants');
 
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
-
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
   meta: {
@@ -55,10 +51,6 @@ module.exports = {
     };
 
     const isImportFromSameSlice = (importSlice, currentFileSlice) => importSlice === currentFileSlice;
-
-    //----------------------------------------------------------------------
-    // Public
-    //----------------------------------------------------------------------
 
     return {
       ImportDeclaration(node) {
