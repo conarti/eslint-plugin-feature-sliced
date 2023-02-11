@@ -47,7 +47,12 @@ module.exports = {
 
     const convertToPublicApi = ({ layer, slice, alias }) => {
       const resultPath = `${layer}/${slice}`;
-      return alias ? `'${alias}/${resultPath}'` : `'${resultPath}'`;
+
+      if (alias) {
+        return `'${alias}/${resultPath}'`;
+      }
+
+      return `'${resultPath}'`;
     };
 
     const isImportFromSameSlice = (importSlice, currentFileSlice) => importSlice === currentFileSlice;
