@@ -17,6 +17,14 @@ ruleTester.run('public-api-imports', rule, {
       errors: [],
     },
     {
+      code: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article\'',
+      errors: [],
+    },
+    {
+      code: 'import { addCommentFormActions, addCommentFormReducer } from \'some/root/path/entities/Article\'',
+      errors: [],
+    },
+    {
       code: 'import { setStylesForTheme } from \'app/providers/ThemeProvider\'',
       errors: [],
     },
@@ -55,6 +63,34 @@ ruleTester.run('public-api-imports', rule, {
         },
       ],
       output: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
+    },
+    {
+      filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\entities\\StoreDecorator.tsx',
+      code: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article/testing/file.tsx\'',
+      errors: [
+        {
+          messageId: errorCodes['public-api-imports'],
+        },
+      ],
+      output: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article\'',
+    },
+    {
+      code: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article/model/file.ts\'',
+      errors: [
+        {
+          messageId: errorCodes['public-api-imports'],
+        },
+      ],
+      output: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article\'',
+    },
+    {
+      code: 'import { addCommentFormActions, addCommentFormReducer } from \'some/root/path/entities/Article/model/file.ts\'',
+      errors: [
+        {
+          messageId: errorCodes['public-api-imports'],
+        },
+      ],
+      output: 'import { addCommentFormActions, addCommentFormReducer } from \'some/root/path/entities/Article\'',
     },
   ],
 });
