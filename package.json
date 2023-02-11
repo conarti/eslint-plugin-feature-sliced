@@ -18,7 +18,7 @@
   "scripts": {
     "lint": "npm-run-all \"lint:*\"",
     "lint:js": "eslint .",
-    "test": "mocha \"*(test|rules)/**/*.test.js\" --recursive",
+    "test": "mocha \"*(rules|lib)/**/*.test.js\" --recursive",
     "publish:patch": "npm version patch && npm publish",
     "publish:minor": "npm version minor && npm publish",
     "publish:major": "npm version major && npm publish"
