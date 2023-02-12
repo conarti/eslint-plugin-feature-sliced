@@ -9,7 +9,8 @@ const {
   getLayerSliceFromPath,
   normalizePath,
 } = require('../../lib/helpers');
-const { errorCodes, layersMap } = require('../../lib/constants');
+const { layersMap } = require('../../lib/constants');
+const { errorCodes } = require('./constants');
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
@@ -22,7 +23,7 @@ module.exports = {
     },
     fixable: null,
     messages: {
-      [errorCodes['layer-imports']]: 'A layer can only import underlying layers into itself (shared, entities, features, widgets, pages, app)',
+      [errorCodes.canNotImport]: 'A layer can only import underlying layers into itself (shared, entities, features, widgets, pages, app)',
     },
     schema: [],
   },
@@ -61,7 +62,7 @@ module.exports = {
 
         context.report({
           node,
-          messageId: errorCodes['layer-imports'],
+          messageId: errorCodes.canNotImport,
         });
       },
     };
