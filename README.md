@@ -1,6 +1,59 @@
 # eslint-plugin-conarti-fsd
 
-Feature-sliced design methodology plugin for any frameworks.
+Feature-sliced design methodology plugin.
+
+## Features
+
+- Works with any framework
+
+- Support for **any aliases** out of the box
+
+```javascript
+import { AppButton } from "~/shared/ui/app-button";
+import { AppButton } from "@/shared/ui/app-button";
+import { AppButton } from "@shared/ui/app-button";
+import { AppButton } from "$shared/ui/app-button";
+import { AppButton } from "$@#$%%shared/ui/app-button";
+```
+
+- Checks for absolute and relative paths
+
+```javascript
+// file: src/widgets/TheHeader/ui/TheHeader.stories.tsx
+
+import { TheHeader } from './TheHeader'; // valid
+import { TheHeader } from 'src/widgets/TheHeader'; // error: should relative
+import { TheHeader } from 'widgets/TheHeader'; // error: should relative
+import { useBar } from '../../../shared/hooks'; // error: should absolute
+```
+
+- Checks for imports from public api and fix them
+
+```javascript
+// file: src/features/search-articles/...
+
+import { addCommentFormActions, addCommentFormReducer } from 'entities/Article/model/file.ts'; // error
+// fix: import { addCommentFormActions, addCommentFormReducer } from 'entities/Article';
+```
+
+- Sort imports
+
+```javascript
+import axios from "axios";                           // 1) external libs
+import { Header } from "widgets/header";             // 2.1) Layers: widgets
+import { Zero } from "widgets/zero";                 // 2.1) Layers: widget 
+import { LoginForm } from "features/login-form";     // 2.2) Layers: features
+import { globalEntities } from "entities";           // 2.4) Layers: entities
+import { authModel } from "entities/auth";           // 2.4) Layers: entities
+import { Cart } from "entities/cart";                // 2.4) Layers: entities 
+import { One } from "entities/one";                  // 2.4) Layers: entities 
+import { Two } from "entities/two";                  // 2.4) Layers: entities
+import { debounce } from "shared/lib/fp";            // 2.5) Layers: shared
+import { Button } from "shared/ui";                  // 2.5) Layers: shared
+import { Input } from "shared/ui";                   // 2.5) Layers: shared
+import { data } from "../fixtures";                  // 3) parent
+import { getSmth } from "./lib";                     // 4) sibling
+```
 
 ## Installation
 
