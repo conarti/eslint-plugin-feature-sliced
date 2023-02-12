@@ -11,20 +11,16 @@ const {
 } = require('../../lib/helpers');
 const { layers, errorCodes } = require('../../lib/constants');
 
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
-
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
   meta: {
-    type: null, // `problem`, `suggestion`, or `layout`
+    type: null,
     docs: {
       description: 'Checks layer imports',
       recommended: false,
-      url: null, // URL to the documentation page for this rule
+      url: null,
     },
-    fixable: null, // Or `code` or `whitespace`
+    fixable: null,
     messages: {
       [errorCodes['layer-imports']]: 'A layer can only import underlying layers into itself (shared, entities, features, widgets, pages, app)',
     },
@@ -32,20 +28,12 @@ module.exports = {
   },
 
   create(context) {
-    //----------------------------------------------------------------------
-    // Helpers
-    //----------------------------------------------------------------------
-
     const canNotImportLayer = (importLayer, currentFileLayer, layerOrder) => {
       const importLayerOrder = layerOrder[importLayer];
       const currentFileLayerOrder = layerOrder[currentFileLayer];
 
       return currentFileLayerOrder < importLayerOrder;
     };
-
-    //----------------------------------------------------------------------
-    // Public
-    //----------------------------------------------------------------------
 
     return {
       ImportDeclaration(node) {
