@@ -103,5 +103,23 @@ ruleTester.run('path-checker', rule, {
         },
       ],
     },
+    {
+      filename: 'src/shared/ui/AppSelect/AppSelect.tsx',
+      code: 'import CheckIcon from \'shared/assets/icons/check.svg\';',
+      errors: [
+        {
+          messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
+        },
+      ],
+    },
+    {
+      filename: 'src/app/foo/bar/ui.tsx',
+      code: 'import { Baz } from \'src/app/baz\';',
+      errors: [
+        {
+          messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
+        },
+      ],
+    },
   ],
 });
