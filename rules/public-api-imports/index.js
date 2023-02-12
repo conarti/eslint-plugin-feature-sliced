@@ -6,11 +6,10 @@
 
 const {
   isPathRelative,
-  normalizePath,
   getLayerSliceFromPath,
-  getAlias,
+  normalizePathSeparators,
 } = require('../../lib/helpers');
-const { layers, errorCodes, pathSeparator } = require('../../lib/constants');
+const { layers, errorCodes, layersRegExp } = require('../../lib/constants');
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
@@ -29,28 +28,25 @@ module.exports = {
   },
 
   create(context) {
+    const segmentsElementsRegExp = new RegExp(`(?<=${layersRegExp.toString().replaceAll('/', '')}\\/\\w*\\/).*`);
+
     const isImportFromPublicApi = (importPath) => {
-      const pathPartsLength = importPath.split(pathSeparator).length;
-      return pathPartsLength <= 2;
+      const hasSegments = segmentsElementsRegExp.test(importPath);
+      return !hasSegments;
     };
 
-    const convertToPublicApi = ({ layer, slice, alias }) => {
-      const resultPath = `${layer}/${slice}`;
-
-      if (alias) {
-        return `'${alias}/${resultPath}'`;
-      }
-
-      return `'${resultPath}'`;
+    const convertToPublicApi = (targetPath) => {
+      const publicApiPath = targetPath.replace(segmentsElementsRegExp, '');
+      const publicApiPathWithoutSeparatorAtTheEnd = publicApiPath.replace(/\/$/, '');
+      return `'${publicApiPathWithoutSeparatorAtTheEnd}'`;
     };
 
     const isImportFromSameSlice = (importSlice, currentFileSlice) => importSlice === currentFileSlice;
 
     return {
       ImportDeclaration(node) {
-        const importPath = normalizePath(node.source.value);
-        const currentFilePath = normalizePath(context.getFilename());
-        const alias = getAlias(node.source.value);
+        const importPath = normalizePathSeparators(node.source.value);
+        const currentFilePath = normalizePathSeparators(context.getFilename());
 
         const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
         const [, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
@@ -71,7 +67,7 @@ module.exports = {
           node,
           messageId: errorCodes['public-api-imports'],
           fix: (fixer) => {
-            const fixedImportPath = convertToPublicApi({ layer: importLayer, slice: importSlice, alias });
+            const fixedImportPath = convertToPublicApi(importPath);
             return fixer.replaceText(node.source, fixedImportPath);
           },
         });
