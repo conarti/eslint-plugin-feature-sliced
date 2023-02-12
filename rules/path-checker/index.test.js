@@ -37,5 +37,14 @@ ruleTester.run('path-checker', rule, {
         },
       ],
     },
+    {
+      filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
+      code: 'import { useBar } from \'../../../shared/hooks\';',
+      errors: [
+        {
+          messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
+        },
+      ],
+    },
   ],
 });
