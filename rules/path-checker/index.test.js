@@ -2,12 +2,6 @@ const rule = require('./index');
 const { RuleTester } = require('eslint');
 const { errorCodes } = require('../../lib/constants');
 
-const aliasOptions = [
-  {
-    alias: '@',
-  },
-];
-
 const ruleTester = new RuleTester({
   parserOptions: {
     ecmaVersion: 6,
@@ -37,7 +31,6 @@ ruleTester.run('path-checker', rule, {
     {
       filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { TheHeader } from \'@/widgets/TheHeader\';',
-      options: aliasOptions,
       errors: [
         {
           messageId: errorCodes['path-checker'],
