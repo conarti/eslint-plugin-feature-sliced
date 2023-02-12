@@ -6,7 +6,6 @@
 
 const {
   isPathRelative,
-  getAliasFromOptions,
   getLayerSliceFromPath,
   normalizePath,
 } = require('../../lib/helpers');
@@ -25,21 +24,10 @@ module.exports = {
     messages: {
       [errorCodes['path-checker']]: 'There must be relative paths within the same slice',
     },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          alias: {
-            type: 'string',
-          },
-        },
-      },
-    ],
+    schema: [],
   },
 
   create(context) {
-    const alias = getAliasFromOptions(context);
-
     const shouldBeRelative = (importPath, currentFilePath) => {
       if (isPathRelative(importPath)) {
         return false;
@@ -62,8 +50,8 @@ module.exports = {
 
     return {
       ImportDeclaration(node) {
-        const importPath = normalizePath(node.source.value, alias);
-        const currentFilePath = normalizePath(context.getFilename(), alias);
+        const importPath = normalizePath(node.source.value);
+        const currentFilePath = normalizePath(context.getFilename());
 
         if (shouldBeRelative(importPath, currentFilePath)) {
           context.report({
