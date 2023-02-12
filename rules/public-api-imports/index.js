@@ -7,7 +7,7 @@
 const {
   isPathRelative,
   getLayerSliceFromPath,
-  normalizePathSeparators,
+  normalizePath,
 } = require('../../lib/helpers');
 const { layers, errorCodes, layersRegExp } = require('../../lib/constants');
 
@@ -45,8 +45,8 @@ module.exports = {
 
     return {
       ImportDeclaration(node) {
-        const importPath = normalizePathSeparators(node.source.value);
-        const currentFilePath = normalizePathSeparators(context.getFilename());
+        const importPath = normalizePath(node.source.value);
+        const currentFilePath = normalizePath(context.getFilename());
 
         const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
         const [, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
