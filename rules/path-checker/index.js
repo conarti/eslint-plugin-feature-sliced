@@ -22,7 +22,7 @@ module.exports = {
     },
     fixable: null,
     messages: {
-      [ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH]: 'There must be relative paths within the same slice',
+      [ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH]: 'There must be relative paths',
       [ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH]: 'There must be absolute paths',
     },
     schema: [],
