@@ -42,6 +42,10 @@ ruleTester.run('layer-imports', rule, {
       filename: 'src/shared/ui/foo',
       code: 'import { Baz } from \'shared/bar\';',
     },
+    {
+      filename: 'src/app/App.tsx',
+      code: 'import { AppRouter } from \'app/providers/router\';',
+    },
   ],
 
   invalid: [
