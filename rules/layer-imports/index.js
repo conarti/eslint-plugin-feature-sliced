@@ -9,7 +9,7 @@ const {
   getLayerSliceFromPath,
   normalizePath,
 } = require('../../lib/helpers');
-const { layers, errorCodes } = require('../../lib/constants');
+const { errorCodes, layersMap } = require('../../lib/constants');
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
@@ -28,13 +28,13 @@ module.exports = {
   },
 
   create(context) {
-    const canImportLayer = (importLayer, currentFileLayer, layerOrder) => {
+    const canImportLayer = (importLayer, currentFileLayer, layersMap) => {
       if (importLayer === 'shared' && currentFileLayer === 'shared') {
         return true;
       }
 
-      const importLayerOrder = layerOrder[importLayer];
-      const currentFileLayerOrder = layerOrder[currentFileLayer];
+      const importLayerOrder = layersMap.get(importLayer);
+      const currentFileLayerOrder = layersMap.get(currentFileLayer);
 
       return currentFileLayerOrder > importLayerOrder;
     };
@@ -51,11 +51,11 @@ module.exports = {
         const [importLayer] = getLayerSliceFromPath(importPath);
         const [currentFileLayer] = getLayerSliceFromPath(currentFilePath);
 
-        if (layers[importLayer] === undefined || layers[currentFileLayer] === undefined) {
+        if (!layersMap.has(importLayer) || !layersMap.has(currentFileLayer)) {
           return;
         }
 
-        if (canImportLayer(importLayer, currentFileLayer, layers)) {
+        if (canImportLayer(importLayer, currentFileLayer, layersMap)) {
           return;
         }
 
