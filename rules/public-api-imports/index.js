@@ -56,7 +56,7 @@ module.exports = {
           return;
         }
 
-        if (!layersMap.has(importLayer) || importLayer === 'app') {
+        if (!layersMap.has(importLayer) || importLayer === 'app' || importLayer === 'shared') {
           return;
         }
 
