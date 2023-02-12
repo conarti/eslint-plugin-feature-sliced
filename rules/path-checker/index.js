@@ -44,8 +44,12 @@ module.exports = {
         return false;
       }
 
-      if (!currentFileLayer || !currentFileSlice) {
+      if (!currentFileLayer && !currentFileSlice) {
         return false;
+      }
+
+      if (!currentFileSlice && importSlice) {
+        return true;
       }
 
       return currentFileSlice === importSlice && currentFileLayer === importLayer;
