@@ -28,11 +28,15 @@ module.exports = {
   },
 
   create(context) {
-    const canNotImportLayer = (importLayer, currentFileLayer, layerOrder) => {
+    const canImportLayer = (importLayer, currentFileLayer, layerOrder) => {
+      if (importLayer === 'shared' && currentFileLayer === 'shared') {
+        return true;
+      }
+
       const importLayerOrder = layerOrder[importLayer];
       const currentFileLayerOrder = layerOrder[currentFileLayer];
 
-      return currentFileLayerOrder < importLayerOrder;
+      return currentFileLayerOrder > importLayerOrder;
     };
 
     return {
@@ -47,16 +51,18 @@ module.exports = {
         const [importLayer] = getLayerSliceFromPath(importPath);
         const [currentFileLayer] = getLayerSliceFromPath(currentFilePath);
 
-        if (!layers[importLayer] || !layers[currentFileLayer]) {
+        if (layers[importLayer] === undefined || layers[currentFileLayer] === undefined) {
           return;
         }
 
-        if (canNotImportLayer(importLayer, currentFileLayer, layers)) {
-          context.report({
-            node,
-            messageId: errorCodes['layer-imports'],
-          });
+        if (canImportLayer(importLayer, currentFileLayer, layers)) {
+          return;
         }
+
+        context.report({
+          node,
+          messageId: errorCodes['layer-imports'],
+        });
       },
     };
   },
