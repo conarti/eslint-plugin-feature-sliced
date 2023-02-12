@@ -14,7 +14,14 @@ ruleTester.run('path-checker', rule, {
     {
       filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { TheHeader } from \'./TheHeader\';',
-      errors: [],
+    },
+    {
+      filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
+      code: 'import { useBar } from \'src/shared/hooks\';',
+    },
+    {
+      filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
+      code: 'import { useBar } from \'../../lib\';',
     },
   ],
 
