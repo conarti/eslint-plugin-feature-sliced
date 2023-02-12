@@ -9,7 +9,7 @@ const {
   getLayerSliceFromPath,
   normalizePath,
 } = require('../../lib/helpers');
-const { errorCodes, layers } = require('../../lib/constants');
+const { errorCodes, layersMap } = require('../../lib/constants');
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
@@ -35,13 +35,13 @@ module.exports = {
 
       const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
 
-      if (!importLayer || !importSlice || !layers[importLayer]) {
+      if (!importLayer || !importSlice || !layersMap.has(importLayer)) {
         return false;
       }
 
       const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
 
-      if (!currentFileLayer || !currentFileSlice || !layers[currentFileLayer]) {
+      if (!currentFileLayer || !currentFileSlice || !layersMap.has(currentFileLayer)) {
         return false;
       }
 
