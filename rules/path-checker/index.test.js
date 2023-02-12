@@ -19,6 +19,9 @@ ruleTester.run('path-checker', rule, {
   ],
 
   invalid: [
+    /**
+     * Import from a single slice
+     */
     {
       filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { TheHeader } from \'widgets/TheHeader\';',
@@ -28,6 +31,9 @@ ruleTester.run('path-checker', rule, {
         },
       ],
     },
+    /**
+     * Import from a single slice with an alias
+     */
     {
       filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { TheHeader } from \'@/widgets/TheHeader\';',
@@ -37,12 +43,27 @@ ruleTester.run('path-checker', rule, {
         },
       ],
     },
+    /**
+     * Import from another layer
+     */
     {
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { useBar } from \'../../../shared/hooks\';',
       errors: [
         {
           messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
+        },
+      ],
+    },
+    /**
+     * Import from a single slice
+     */
+    {
+      filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
+      code: 'import { useBar } from \'src/widgets/TheHeader/lib\';',
+      errors: [
+        {
+          messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
         },
       ],
     },
