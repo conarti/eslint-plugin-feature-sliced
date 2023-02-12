@@ -9,7 +9,8 @@ const {
   getLayerSliceFromPath,
   normalizePath,
 } = require('../../lib/helpers');
-const { errorCodes, layersRegExp, layersMap } = require('../../lib/constants');
+const { layersRegExp, layersMap } = require('../../lib/constants');
+const { errorCodes } = require('./constants');
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
@@ -22,7 +23,7 @@ module.exports = {
     },
     fixable: 'code',
     messages: {
-      [errorCodes['public-api-imports']]: 'Absolute imports are only allowed from public api (index.ts)',
+      [errorCodes.shouldBeFromPublicApi]: 'Absolute imports are only allowed from public api (index.ts)',
     },
     schema: [],
   },
@@ -65,7 +66,7 @@ module.exports = {
 
         context.report({
           node,
-          messageId: errorCodes['public-api-imports'],
+          messageId: errorCodes.shouldBeFromPublicApi,
           fix: (fixer) => {
             const fixedImportPath = convertToPublicApi(importPath);
             return fixer.replaceText(node.source, fixedImportPath);

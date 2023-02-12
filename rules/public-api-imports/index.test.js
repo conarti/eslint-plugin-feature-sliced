@@ -1,6 +1,6 @@
 const rule = require('./index');
 const { RuleTester } = require('eslint');
-const { errorCodes } = require('../../lib/constants');
+const { errorCodes } = require('./constants');
 
 const ruleTester = new RuleTester({
   parserOptions: { ecmaVersion: 6, sourceType: 'module' },
@@ -40,7 +40,7 @@ ruleTester.run('public-api-imports', rule, {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'entities/Article/model/file.ts\'',
       errors: [
         {
-          messageId: errorCodes['public-api-imports'],
+          messageId: errorCodes.shouldBeFromPublicApi,
         },
       ],
       output: 'import { addCommentFormActions, addCommentFormReducer } from \'entities/Article\'',
@@ -49,7 +49,7 @@ ruleTester.run('public-api-imports', rule, {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article/model/file.ts\'',
       errors: [
         {
-          messageId: errorCodes['public-api-imports'],
+          messageId: errorCodes.shouldBeFromPublicApi,
         },
       ],
       output: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
@@ -59,7 +59,7 @@ ruleTester.run('public-api-imports', rule, {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article/testing/file.tsx\'',
       errors: [
         {
-          messageId: errorCodes['public-api-imports'],
+          messageId: errorCodes.shouldBeFromPublicApi,
         },
       ],
       output: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
@@ -69,7 +69,7 @@ ruleTester.run('public-api-imports', rule, {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article/testing/file.tsx\'',
       errors: [
         {
-          messageId: errorCodes['public-api-imports'],
+          messageId: errorCodes.shouldBeFromPublicApi,
         },
       ],
       output: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article\'',
@@ -78,7 +78,7 @@ ruleTester.run('public-api-imports', rule, {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article/model/file.ts\'',
       errors: [
         {
-          messageId: errorCodes['public-api-imports'],
+          messageId: errorCodes.shouldBeFromPublicApi,
         },
       ],
       output: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article\'',
@@ -87,7 +87,7 @@ ruleTester.run('public-api-imports', rule, {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'some/root/path/entities/Article/model/file.ts\'',
       errors: [
         {
-          messageId: errorCodes['public-api-imports'],
+          messageId: errorCodes.shouldBeFromPublicApi,
         },
       ],
       output: 'import { addCommentFormActions, addCommentFormReducer } from \'some/root/path/entities/Article\'',
