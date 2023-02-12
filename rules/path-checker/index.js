@@ -29,18 +29,20 @@ module.exports = {
   },
 
   create(context) {
-    const shouldBeRelative = (importPath, currentFilePath) => {
-      if (isPathRelative(importPath)) {
+    const shouldBeRelative = ({
+      isImportRelative,
+      importLayer,
+      importSlice,
+      currentFileLayer,
+      currentFileSlice,
+    }) => {
+      if (isImportRelative) {
         return false;
       }
-
-      const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
 
       if (!importLayer || !importSlice) {
         return false;
       }
-
-      const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
 
       if (!currentFileLayer || !currentFileSlice) {
         return false;
@@ -49,18 +51,18 @@ module.exports = {
       return currentFileSlice === importSlice && currentFileLayer === importLayer;
     };
 
-    const shouldBeAbsolute = (importPath, currentFilePath) => {
-      if (!isPathRelative(importPath)) {
+    const shouldBeAbsolute = ({
+      isImportRelative,
+      importLayer,
+      currentFileLayer,
+    }) => {
+      if (!isImportRelative) {
         return false;
       }
-
-      const [importLayer] = getLayerSliceFromPath(importPath);
 
       if (!importLayer) {
         return false;
       }
-
-      const [currentFileLayer] = getLayerSliceFromPath(currentFilePath);
 
       if (!currentFileLayer) {
         return false;
@@ -74,14 +76,28 @@ module.exports = {
         const importPath = normalizePath(node.source.value);
         const currentFilePath = normalizePath(context.getFilename());
 
-        if (shouldBeRelative(importPath, currentFilePath)) {
+        const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
+        const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
+        const isImportRelative = isPathRelative(importPath);
+
+        if (shouldBeRelative({
+          isImportRelative,
+          importLayer,
+          importSlice,
+          currentFileLayer,
+          currentFileSlice,
+        })) {
           context.report({
             node,
             messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
           });
         }
 
-        if (shouldBeAbsolute(importPath, currentFilePath)) {
+        if (shouldBeAbsolute({
+          isImportRelative,
+          importLayer,
+          currentFileLayer,
+        })) {
           context.report({
             node,
             messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
