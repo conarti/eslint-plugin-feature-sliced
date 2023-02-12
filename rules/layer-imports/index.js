@@ -4,7 +4,11 @@
  */
 'use strict';
 
-const { getAliasFromOptions, normalizePath, isPathRelative, getLayerSliceFromPath } = require('../../lib/helpers');
+const {
+  isPathRelative,
+  getLayerSliceFromPath,
+  normalizePath,
+} = require('../../lib/helpers');
 const { layers, errorCodes } = require('../../lib/constants');
 
 //------------------------------------------------------------------------------
@@ -24,21 +28,10 @@ module.exports = {
     messages: {
       [errorCodes['layer-imports']]: 'A layer can only import underlying layers into itself (shared, entities, features, widgets, pages, app)',
     },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          alias: {
-            type: 'string',
-          },
-        },
-      },
-    ], // Add a schema if the rule has options
+    schema: [],
   },
 
   create(context) {
-    const alias = getAliasFromOptions(context);
-
     //----------------------------------------------------------------------
     // Helpers
     //----------------------------------------------------------------------
@@ -56,13 +49,13 @@ module.exports = {
 
     return {
       ImportDeclaration(node) {
-        const importPath = normalizePath(node.source.value, alias);
+        const importPath = normalizePath(node.source.value);
 
         if (isPathRelative(importPath)) {
           return;
         }
 
-        const currentFilePath = normalizePath(context.getFilename(), alias);
+        const currentFilePath = normalizePath(context.getFilename());
         const [importLayer] = getLayerSliceFromPath(importPath);
         const [currentFileLayer] = getLayerSliceFromPath(currentFilePath);
 
