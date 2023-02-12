@@ -1,6 +1,6 @@
 const rule = require('./index');
 const { RuleTester } = require('eslint');
-const { errorCodes } = require('../../lib/constants');
+const { errorCodes } = require('./constants');
 
 const ruleTester = new RuleTester({
   parserOptions: {
@@ -24,7 +24,7 @@ ruleTester.run('path-checker', rule, {
       code: 'import { TheHeader } from \'widgets/TheHeader\';',
       errors: [
         {
-          messageId: errorCodes['path-checker'],
+          messageId: errorCodes.mustBeRelativePath,
         },
       ],
     },
@@ -33,7 +33,7 @@ ruleTester.run('path-checker', rule, {
       code: 'import { TheHeader } from \'@/widgets/TheHeader\';',
       errors: [
         {
-          messageId: errorCodes['path-checker'],
+          messageId: errorCodes.mustBeRelativePath,
         },
       ],
     },
