@@ -27,6 +27,10 @@ ruleTester.run('path-checker', rule, {
       filename: 'src/app/App.tsx',
       code: 'import { AppRouter } from \'./providers/router\';',
     },
+    {
+      filename: 'src/app/App.tsx',
+      code: 'import { Foo } from \'widgets/foo\';',
+    },
   ],
 
   invalid: [
