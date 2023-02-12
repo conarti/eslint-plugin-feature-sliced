@@ -38,6 +38,10 @@ ruleTester.run('layer-imports', rule, {
       code: 'import { StoreProvider } from \'@/app/providers/StoreProvider\';',
       errors: [],
     },
+    {
+      filename: 'src/shared/ui/foo',
+      code: 'import { Baz } from \'shared/bar\';',
+    },
   ],
 
   invalid: [
@@ -62,6 +66,42 @@ ruleTester.run('layer-imports', rule, {
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\entities\\providers',
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/widgets/Articl\'',
+      errors: [
+        {
+          messageId: errorCodes['layer-imports'],
+        },
+      ],
+    },
+    {
+      filename: 'src/shared/ui/foo',
+      code: 'import { StoreProvider } from \'@/entities/bar\';',
+      errors: [
+        {
+          messageId: errorCodes['layer-imports'],
+        },
+      ],
+    },
+    {
+      filename: 'src/shared/ui/foo',
+      code: 'import { StoreProvider } from \'app/bar\';',
+      errors: [
+        {
+          messageId: errorCodes['layer-imports'],
+        },
+      ],
+    },
+    {
+      filename: 'src/shared/ui/foo',
+      code: 'import { StoreProvider } from \'src/app/bar\';',
+      errors: [
+        {
+          messageId: errorCodes['layer-imports'],
+        },
+      ],
+    },
+    {
+      filename: 'src/entities/bar',
+      code: 'import { Baz } from \'entities/baz\';',
       errors: [
         {
           messageId: errorCodes['layer-imports'],
