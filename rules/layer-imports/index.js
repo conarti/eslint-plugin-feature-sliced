@@ -29,7 +29,11 @@ module.exports = {
   },
 
   create(context) {
-    const canImportLayer = (importLayer, currentFileLayer, layersMap) => {
+    const canImportLayer = (importLayer, currentFileLayer, currentFileSlice, layersMap) => {
+      if (!currentFileSlice) {
+        return true;
+      }
+
       if (importLayer === 'shared' && currentFileLayer === 'shared') {
         return true;
       }
@@ -50,13 +54,13 @@ module.exports = {
 
         const currentFilePath = normalizePath(context.getFilename());
         const [importLayer] = getLayerSliceFromPath(importPath);
-        const [currentFileLayer] = getLayerSliceFromPath(currentFilePath);
+        const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
 
         if (!layersMap.has(importLayer) || !layersMap.has(currentFileLayer)) {
           return;
         }
 
-        if (canImportLayer(importLayer, currentFileLayer, layersMap)) {
+        if (canImportLayer(importLayer, currentFileLayer, currentFileSlice, layersMap)) {
           return;
         }
 
