@@ -33,6 +33,16 @@ ruleTester.run('public-api-imports', rule, {
       filename: 'src/features/form/ui/index.js',
       errors: [],
     },
+    {
+      code: 'import { ThemeSwitcher } from \'shared/ui/ThemeSwitcher\';',
+      filename: 'src/features/form/ui/index.js',
+      errors: [],
+    },
+    {
+      code: 'import { foo } from \'shared/lib/foo\';',
+      filename: 'src/features/form/ui/index.js',
+      errors: [],
+    },
   ],
 
   invalid: [
