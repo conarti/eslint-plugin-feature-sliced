@@ -23,6 +23,10 @@ ruleTester.run('path-checker', rule, {
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { useBar } from \'../../lib\';',
     },
+    {
+      filename: 'src/app/App.tsx',
+      code: 'import { AppRouter } from \'./providers/router\';',
+    },
   ],
 
   invalid: [
@@ -68,6 +72,18 @@ ruleTester.run('path-checker', rule, {
     {
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { useBar } from \'src/widgets/TheHeader/lib\';',
+      errors: [
+        {
+          messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
+        },
+      ],
+    },
+    /**
+     * Import from a single layer
+     */
+    {
+      filename: 'src/app/App.tsx',
+      code: 'import { AppRouter } from \'app/providers/router\';',
       errors: [
         {
           messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
