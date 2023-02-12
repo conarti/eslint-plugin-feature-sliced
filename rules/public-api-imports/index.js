@@ -9,7 +9,7 @@ const {
   getLayerSliceFromPath,
   normalizePath,
 } = require('../../lib/helpers');
-const { layers, errorCodes, layersRegExp } = require('../../lib/constants');
+const { errorCodes, layersRegExp, layersMap } = require('../../lib/constants');
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
@@ -55,7 +55,7 @@ module.exports = {
           return;
         }
 
-        if (!layers[importLayer] || importLayer === 'app') {
+        if (!layersMap.has(importLayer) || importLayer === 'app') {
           return;
         }
 
