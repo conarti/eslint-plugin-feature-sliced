@@ -9,7 +9,6 @@ const {
   getLayerSliceFromPath,
   normalizePath,
 } = require('../../lib/helpers');
-const { layersMap } = require('../../lib/constants');
 const { ERROR_MESSAGE_ID } = require('./constants');
 
 /** @type {import('eslint').Rule.RuleModule} */
@@ -24,6 +23,7 @@ module.exports = {
     fixable: null,
     messages: {
       [ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH]: 'There must be relative paths within the same slice',
+      [ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH]: 'There must be absolute paths',
     },
     schema: [],
   },
@@ -36,17 +36,37 @@ module.exports = {
 
       const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
 
-      if (!importLayer || !importSlice || !layersMap.has(importLayer)) {
+      if (!importLayer || !importSlice) {
         return false;
       }
 
       const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
 
-      if (!currentFileLayer || !currentFileSlice || !layersMap.has(currentFileLayer)) {
+      if (!currentFileLayer || !currentFileSlice) {
         return false;
       }
 
       return currentFileSlice === importSlice && currentFileLayer === importLayer;
+    };
+
+    const shouldBeAbsolute = (importPath, currentFilePath) => {
+      if (!isPathRelative(importPath)) {
+        return false;
+      }
+
+      const [importLayer] = getLayerSliceFromPath(importPath);
+
+      if (!importLayer) {
+        return false;
+      }
+
+      const [currentFileLayer] = getLayerSliceFromPath(currentFilePath);
+
+      if (!currentFileLayer) {
+        return false;
+      }
+
+      return currentFileLayer !== importLayer;
     };
 
     return {
@@ -58,6 +78,13 @@ module.exports = {
           context.report({
             node,
             messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
+          });
+        }
+
+        if (shouldBeAbsolute(importPath, currentFilePath)) {
+          context.report({
+            node,
+            messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
           });
         }
       },
