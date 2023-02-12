@@ -1,6 +1,6 @@
 const { RuleTester } = require('eslint');
 const rule = require('./index');
-const { errorCodes } = require('./constants');
+const { ERROR_MESSAGE_ID } = require('./constants');
 
 const ruleTester = new RuleTester({
   parserOptions: { ecmaVersion: 6, sourceType: 'module' },
@@ -50,7 +50,7 @@ ruleTester.run('layer-imports', rule, {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/features/Articl\'',
       errors: [
         {
-          messageId: errorCodes.canNotImport,
+          messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
         },
       ],
     },
@@ -59,7 +59,7 @@ ruleTester.run('layer-imports', rule, {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/widgets/Articl\'',
       errors: [
         {
-          messageId: errorCodes.canNotImport,
+          messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
         },
       ],
     },
@@ -68,7 +68,7 @@ ruleTester.run('layer-imports', rule, {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/widgets/Articl\'',
       errors: [
         {
-          messageId: errorCodes.canNotImport,
+          messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
         },
       ],
     },
@@ -77,7 +77,7 @@ ruleTester.run('layer-imports', rule, {
       code: 'import { StoreProvider } from \'@/entities/bar\';',
       errors: [
         {
-          messageId: errorCodes.canNotImport,
+          messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
         },
       ],
     },
@@ -86,7 +86,7 @@ ruleTester.run('layer-imports', rule, {
       code: 'import { StoreProvider } from \'app/bar\';',
       errors: [
         {
-          messageId: errorCodes.canNotImport,
+          messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
         },
       ],
     },
@@ -95,7 +95,7 @@ ruleTester.run('layer-imports', rule, {
       code: 'import { StoreProvider } from \'src/app/bar\';',
       errors: [
         {
-          messageId: errorCodes.canNotImport,
+          messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
         },
       ],
     },
@@ -104,7 +104,7 @@ ruleTester.run('layer-imports', rule, {
       code: 'import { Baz } from \'entities/baz\';',
       errors: [
         {
-          messageId: errorCodes.canNotImport,
+          messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
         },
       ],
     },
