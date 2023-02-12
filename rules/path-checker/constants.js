@@ -1,3 +1,3 @@
-module.exports.errorCodes = {
-  mustBeRelativePath: 'must-be-relative-path',
+module.exports.ERROR_MESSAGE_ID = {
+  MUST_BE_RELATIVE_PATH: 'must-be-relative-path',
 };

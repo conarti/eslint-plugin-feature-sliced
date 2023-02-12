@@ -10,7 +10,7 @@ const {
   normalizePath,
 } = require('../../lib/helpers');
 const { layersMap } = require('../../lib/constants');
-const { errorCodes } = require('./constants');
+const { ERROR_MESSAGE_ID } = require('./constants');
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
@@ -23,7 +23,7 @@ module.exports = {
     },
     fixable: null,
     messages: {
-      [errorCodes.mustBeRelativePath]: 'There must be relative paths within the same slice',
+      [ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH]: 'There must be relative paths within the same slice',
     },
     schema: [],
   },
@@ -57,7 +57,7 @@ module.exports = {
         if (shouldBeRelative(importPath, currentFilePath)) {
           context.report({
             node,
-            messageId: errorCodes.mustBeRelativePath,
+            messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
           });
         }
       },
