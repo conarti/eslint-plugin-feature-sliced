@@ -4,7 +4,7 @@
  */
 
 const requireIndex = require('requireindex');
-const all = require('./configs/all');
+const recommended = require('./configs/recommended');
 
 module.exports = {
   parserOptions: {
@@ -13,6 +13,6 @@ module.exports = {
   },
   rules: requireIndex(__dirname + '/rules'), // import all rules in lib/rules
   configs: {
-    all,
+    recommended,
   },
 };
