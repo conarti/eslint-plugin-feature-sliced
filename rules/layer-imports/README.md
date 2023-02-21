@@ -1,37 +1,41 @@
 # Checks layer imports (`conarti-fsd/layer-imports`)
 
-<!-- end auto-generated rule header -->
-
-Please describe the origin of the rule here.
+This rule is aimed at checking the compliance of layer imports by methodology.
 
 ## Rule Details
-
-This rule aims to...
 
 Examples of **incorrect** code for this rule:
 
 ```js
-
-// fill me in
-
+import { Bar } from 'entities/bar' // filename: src/entities/baz/ui.tsx 
+import { FooType } from 'app/config' // filename: src/entities/bar/model.tsx 
 ```
 
 Examples of **correct** code for this rule:
 
 ```js
-
-// fill me in
-
+import { Baz } from 'shared/bar'; // filename: src/shared/ui/foo
+import { AppRouter } from 'app/providers/router'; // filename: src/app/App.tsx
+import { Foo } from '@/entities/foo' // filename: src/features/bar/ui.tsx 
 ```
 
 ### Options
 
-If there are any options, describe them here. Otherwise, delete this section.
+`allowTypeImports: true`
+
+Disables the rule for type imports. This setting is included in the 'recommended' config.
+
+```typescript
+import type { FooType } from 'app/config' // filename: src/entities/bar/model.tsx
+// Attention! Doesn't work if the type was imported like this. You should always use 'type' prefix
+import { FooType } from 'app/config' // filename: src/entities/bar/model.tsx - still ERROR
+```
 
 ## When Not To Use It
 
-Give a short description of when it would be appropriate to turn off this rule.
+Disable this rule if you are just migrating to fsd. Or set it to display warnings instead of errors (default behavior).
+In other situations, it is recommended to use this rule always.
 
 ## Further Reading
 
-If there are other links that describe the issue this rule addresses, please include them here in a bulleted list.
+https://feature-sliced.design/docs/reference/units/layers
