@@ -1,5 +1,5 @@
 /**
- * @fileoverview Feature-sliced design methodology plugin for react
+ * @fileoverview Feature-sliced design methodology plugin
  * @author conarti
  */
 
