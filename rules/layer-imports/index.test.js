@@ -11,32 +11,26 @@ ruleTester.run('layer-imports', rule, {
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\features\\Article',
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/shared/Button.tsx\'',
-      errors: [],
     },
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\features\\Article',
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
-      errors: [],
     },
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\app\\providers',
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/widgets/Articl\'',
-      errors: [],
     },
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\widgets\\pages',
       code: 'import { useLocation } from \'react-router-dom\'',
-      errors: [],
     },
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\app\\providers',
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'redux\'',
-      errors: [],
     },
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\index.tsx',
       code: 'import { StoreProvider } from \'@/app/providers/StoreProvider\';',
-      errors: [],
     },
     {
       filename: 'src/shared/ui/foo',
