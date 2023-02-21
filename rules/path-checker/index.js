@@ -52,6 +52,13 @@ module.exports = {
         return true;
       }
 
+      if (
+        currentFileLayer === 'shared' && importLayer === 'shared'
+        || currentFileLayer === 'app' && importLayer === 'app'
+      ) {
+        return true;
+      }
+
       return currentFileSlice === importSlice && currentFileLayer === importLayer;
     };
 
