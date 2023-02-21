@@ -25,10 +25,21 @@ module.exports = {
     messages: {
       [ERROR_MESSAGE_ID.CAN_NOT_IMPORT]: 'A layer can only import underlying layers into itself (shared, entities, features, widgets, pages, app)',
     },
-    schema: [],
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          allowTypeImports: {
+            type: 'boolean',
+          },
+        },
+      },
+    ],
   },
 
   create(context) {
+    const allowTypeImports = context.options[0]?.allowTypeImports;
+
     const canImportLayer = (importLayer, currentFileLayer, currentFileSlice, layersMap) => {
       if (!currentFileSlice) {
         return true;
@@ -44,8 +55,16 @@ module.exports = {
       return currentFileLayerOrder > importLayerOrder;
     };
 
+    const isTypeImport = (node) => {
+      return node.importKind === 'type';
+    };
+
     return {
       ImportDeclaration(node) {
+        if (allowTypeImports && isTypeImport(node)) {
+          return;
+        }
+
         const importPath = normalizePath(node.source.value);
 
         if (isPathRelative(importPath)) {
