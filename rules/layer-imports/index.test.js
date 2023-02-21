@@ -3,8 +3,18 @@ const rule = require('./index');
 const { ERROR_MESSAGE_ID } = require('./constants');
 
 const ruleTester = new RuleTester({
-  parserOptions: { ecmaVersion: 6, sourceType: 'module' },
+  parserOptions: {
+    ecmaVersion: 6,
+    sourceType: 'module',
+  },
+  parser: require.resolve('@typescript-eslint/parser'),
 });
+
+const allowTypeImportsOptions = [
+  {
+    allowTypeImports: true
+  },
+]
 
 ruleTester.run('layer-imports', rule, {
   valid: [
@@ -39,6 +49,16 @@ ruleTester.run('layer-imports', rule, {
     {
       filename: 'src/app/App.tsx',
       code: 'import { AppRouter } from \'app/providers/router\';',
+    },
+    {
+      filename: 'src/entities/bar',
+      code: 'import type { Baz } from \'entities/baz\';',
+      options: allowTypeImportsOptions,
+    },
+    {
+      filename: 'src/shared/ui/foo',
+      code: 'import type { Bar } from \'@/entities/bar\';',
+      options: allowTypeImportsOptions,
     },
   ],
 
