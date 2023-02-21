@@ -102,9 +102,24 @@ You can use _warnings_ instead of _errors_ for specific rules. Or turn off certa
 {
   "rules": {
     "conarti-fsd/layer-imports": "warn",
-    "conarti-fsd/path-checker": "warn",
+    "conarti-fsd/path-checker": "off",
     "conarti-fsd/public-api-imports": "warn",
-    "import/order": "off"
+    "import/order": "warn"
+  }
+}
+```
+
+If you don't want to use the 'import/order' rule, you can choose not to install the 'eslint-plugin-import' package.
+And also you will have to configure all the rules separately, without using the config.
+Recommended settings:
+```json
+{
+  "rules": {
+    "conarti-fsd/layer-imports": ["error", { 
+      "allowTypeImports": true
+    }],
+    "conarti-fsd/path-checker": "error",
+    "conarti-fsd/public-api-imports": "error"
   }
 }
 ```
