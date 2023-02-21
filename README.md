@@ -89,7 +89,7 @@ Then enable rules:
 ```json
 {
   "extends": [
-    "plugin:conarti-fsd/all"
+    "plugin:conarti-fsd/recommended"
   ]
 }
 ```
