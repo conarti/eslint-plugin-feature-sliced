@@ -4,6 +4,7 @@
  */
 'use strict';
 
+const micromatch = require('micromatch');
 const {
   isPathRelative,
   getLayerSliceFromPath,
@@ -32,13 +33,23 @@ module.exports = {
           allowTypeImports: {
             type: 'boolean',
           },
+          ignorePatterns: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          }
         },
       },
     ],
   },
 
   create(context) {
-    const allowTypeImports = context.options[0]?.allowTypeImports;
+    const ruleOptions = context.options[0] || {};
+    const {
+      allowTypeImports,
+      ignorePatterns,
+    } = ruleOptions;
 
     const canImportLayer = (importLayer, currentFileLayer, currentFileSlice, layersMap) => {
       if (!currentFileSlice) {
@@ -66,6 +77,10 @@ module.exports = {
         }
 
         const importPath = normalizePath(node.source.value);
+
+        if (ignorePatterns && micromatch.isMatch(importPath, ignorePatterns)) {
+          return;
+        }
 
         if (isPathRelative(importPath)) {
           return;
