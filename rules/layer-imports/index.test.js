@@ -16,6 +16,12 @@ const allowTypeImportsOptions = [
   },
 ]
 
+const makeIgnoreOptions = (patterns) => [
+  {
+    ignorePatterns: patterns,
+  }
+]
+
 ruleTester.run('layer-imports', rule, {
   valid: [
     {
@@ -59,6 +65,16 @@ ruleTester.run('layer-imports', rule, {
       filename: 'src/shared/ui/foo',
       code: 'import type { Bar } from \'@/entities/bar\';',
       options: allowTypeImportsOptions,
+    },
+    {
+      filename: 'src/shared/ui/foo',
+      code: 'import { Bar } from \'@/entities/bar\';',
+      options: makeIgnoreOptions(['@/entities/bar']),
+    },
+    {
+      filename: 'src/shared/ui/foo',
+      code: 'import { Bar } from \'@/entities/bar\';',
+      options: makeIgnoreOptions(['**/bar']),
     },
   ],
 
