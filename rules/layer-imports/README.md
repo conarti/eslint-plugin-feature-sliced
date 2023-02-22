@@ -31,6 +31,10 @@ import type { FooType } from 'app/config' // filename: src/entities/bar/model.ts
 import { FooType } from 'app/config' // filename: src/entities/bar/model.tsx - still ERROR
 ```
 
+Recommended to be used in conjunction with the `@typescript-eslint/no-restricted-imports` rule 
+and the ` allowTypeImports: true` setting.
+https://typescript-eslint.io/rules/no-restricted-imports/#allowtypeimports
+
 ## When Not To Use It
 
 Disable this rule if you are just migrating to fsd. Or set it to display warnings instead of errors (default behavior).
