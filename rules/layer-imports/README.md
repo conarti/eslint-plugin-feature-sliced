@@ -35,9 +35,30 @@ Recommended to be used in conjunction with the `@typescript-eslint/no-restricted
 and the ` allowTypeImports: true` setting.
 https://typescript-eslint.io/rules/no-restricted-imports/#allowtypeimports
 
+`ignorePatterns`
+
+Array of patterns to ignore validation.
+
+Example settings:
+
+```json
+{
+  "conarti-fsd/layer-imports": ["error", {
+    "ignorePatterns": ["**/foo", "@/entities/bar"]
+  }]
+}
+```
+
+This example setting will ignore such paths:
+```typescript
+import { Bar } from '@/entities/bar'; // filename: src/shared/ui/baz, no error
+import { Foo } from 'src/entities/foo'; // filename: src/shared/ui/baz, no error
+```
+
 ## When Not To Use It
 
 Disable this rule if you are just migrating to fsd. Or set it to display warnings instead of errors (default behavior).
+You can also specify settings to ignore certain paths during migration.
 In other situations, it is recommended to use this rule always.
 
 ## Further Reading
