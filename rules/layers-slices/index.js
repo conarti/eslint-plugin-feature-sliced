@@ -12,6 +12,7 @@ const {
 } = require('../../lib/helpers');
 const { layersMap } = require('../../lib/constants');
 const { ERROR_MESSAGE_ID } = require('./constants');
+const { canImportLayer } = require('./model');
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
@@ -50,21 +51,6 @@ module.exports = {
       allowTypeImports,
       ignorePatterns,
     } = ruleOptions;
-
-    const canImportLayer = (importLayer, currentFileLayer, currentFileSlice, layersMap) => {
-      if (!currentFileSlice) {
-        return true;
-      }
-
-      if (importLayer === 'shared' && currentFileLayer === 'shared') {
-        return true;
-      }
-
-      const importLayerOrder = layersMap.get(importLayer);
-      const currentFileLayerOrder = layersMap.get(currentFileLayer);
-
-      return currentFileLayerOrder > importLayerOrder;
-    };
 
     const isTypeImport = (node) => {
       return node.importKind === 'type';
