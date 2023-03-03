@@ -22,6 +22,14 @@ const makeIgnoreOptions = (patterns) => [
   }
 ]
 
+const makeErrorMessage = (importLayer, currentFileLayer) => ({
+  messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
+  data: {
+    importLayer,
+    currentFileLayer,
+  }
+});
+
 ruleTester.run('layer-imports', rule, {
   valid: [
     {
@@ -86,65 +94,37 @@ ruleTester.run('layer-imports', rule, {
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\entities\\providers',
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/features/Articl\'',
-      errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
-        },
-      ],
+      errors: [makeErrorMessage('features', 'entities')],
     },
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\features\\providers',
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/widgets/Articl\'',
-      errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
-        },
-      ],
+      errors: [makeErrorMessage('widgets', 'features')],
     },
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\entities\\providers',
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/widgets/Articl\'',
-      errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
-        },
-      ],
+      errors: [makeErrorMessage('widgets', 'entities')],
     },
     {
       filename: 'src/shared/ui/foo',
       code: 'import { StoreProvider } from \'@/entities/bar\';',
-      errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
-        },
-      ],
+      errors: [makeErrorMessage('entities', 'shared')],
     },
     {
       filename: 'src/shared/ui/foo',
       code: 'import { StoreProvider } from \'app/bar\';',
-      errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
-        },
-      ],
+      errors: [makeErrorMessage('app', 'shared')],
     },
     {
       filename: 'src/shared/ui/foo',
       code: 'import { StoreProvider } from \'src/app/bar\';',
-      errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
-        },
-      ],
+      errors: [makeErrorMessage('app', 'shared')],
     },
     {
       filename: 'src/entities/bar',
       code: 'import { Baz } from \'entities/baz\';',
-      errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
-        },
-      ],
+      errors: [makeErrorMessage('entities', 'entities')],
     },
   ],
 });
