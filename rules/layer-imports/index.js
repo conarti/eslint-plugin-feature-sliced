@@ -87,8 +87,14 @@ module.exports = {
         }
 
         const currentFilePath = normalizePath(context.getFilename());
-        const [importLayer] = getLayerSliceFromPath(importPath);
+        const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
         const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
+
+        const isImportFromSameSlice = importSlice === currentFileSlice;
+
+        if (isImportFromSameSlice) {
+          return;
+        }
 
         if (!layersMap.has(importLayer) || !layersMap.has(currentFileLayer)) {
           return;
