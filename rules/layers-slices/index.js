@@ -25,7 +25,7 @@ module.exports = {
     },
     fixable: null,
     messages: {
-      [ERROR_MESSAGE_ID.CAN_NOT_IMPORT]: 'A layer can only import underlying layers into itself (shared, entities, features, widgets, pages, processes, app)',
+      [ERROR_MESSAGE_ID.CAN_NOT_IMPORT]: 'You cannot import layer "{{ importLayer }}" into "{{ currentFileLayer }}" (shared ->> entities -> features -> widgets -> pages -> processes -> app)',
     },
     schema: [
       {
@@ -93,6 +93,10 @@ module.exports = {
         context.report({
           node,
           messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
+          data: {
+            importLayer,
+            currentFileLayer,
+          }
         });
       },
     };
