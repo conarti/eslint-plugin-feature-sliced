@@ -1,6 +1,6 @@
-# Checks layer imports (`conarti-fsd/layer-imports`)
+# Check layers and slices imports (`conarti-fsd/layers-slices`)
 
-This rule is aimed at checking the compliance of layer imports by methodology.
+This rule is aimed at checking the compliance of layer and slice imports by methodology.
 
 ## Rule Details
 
@@ -43,7 +43,7 @@ Example settings:
 
 ```json
 {
-  "conarti-fsd/layer-imports": ["error", {
+  "conarti-fsd/layers-slices": ["error", {
     "ignorePatterns": ["**/foo", "@/entities/bar"]
   }]
 }

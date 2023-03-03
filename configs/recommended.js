@@ -8,7 +8,7 @@ module.exports = {
     path.resolve(__dirname, '../rules/import-order'),
   ],
   rules: {
-    'conarti-fsd/layer-imports': ['error', {
+    'conarti-fsd/layers-slices': ['error', {
       allowTypeImports: true,
     }],
     'conarti-fsd/path-checker': 'error',
