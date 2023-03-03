@@ -19,7 +19,7 @@ module.exports = {
           order: 'asc',
           caseInsensitive: true,
         },
-        'newlines-between': 'never',
+        'newlines-between': 'always',
         pathGroups: FS_LAYERS.map(
           (layer) => ({
             pattern: `**/?(*)${layer}{,/**}`,
@@ -27,8 +27,9 @@ module.exports = {
             position: 'after',
           }),
         ),
-        pathGroupsExcludedImportTypes: ['builtin'],
-        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+        distinctGroup: false,
+        pathGroupsExcludedImportTypes: ['builtin', 'type'],
+        groups: ['builtin', 'external', 'internal', 'type', 'parent', 'sibling', 'index'],
       },
     ],
   },
