@@ -11,7 +11,7 @@ module.exports = {
     'conarti-fsd/layers-slices': ['error', {
       allowTypeImports: true,
     }],
-    'conarti-fsd/path-checker': 'error',
+    'conarti-fsd/absolute-relative': 'error',
     'conarti-fsd/public-api-imports': 'error',
   },
 };

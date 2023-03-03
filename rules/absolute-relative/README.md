@@ -1,4 +1,4 @@
-# Checks for absolute and relative paths (`conarti-fsd/path-checker`)
+# Checks for absolute and relative paths (`conarti-fsd/absolute-relative`)
 
 <!-- end auto-generated rule header -->
 
