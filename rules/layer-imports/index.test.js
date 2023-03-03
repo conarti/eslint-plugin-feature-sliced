@@ -76,6 +76,10 @@ ruleTester.run('layer-imports', rule, {
       code: 'import { Bar } from \'@/entities/bar\';',
       options: makeIgnoreOptions(['**/bar']),
     },
+    {
+      filename: 'src/entities/bar/ui',
+      code: 'import { Bar } from \'@/entities/bar/model\';',
+    },
   ],
 
   invalid: [
