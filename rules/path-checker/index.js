@@ -39,24 +39,22 @@ module.exports = {
         const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
         const isImportRelative = isPathRelative(importPath);
 
-        if (shouldBeRelative({
+        const pathsInfo = {
           isImportRelative,
           importLayer,
           importSlice,
           currentFileLayer,
           currentFileSlice,
-        })) {
+        };
+
+        if (shouldBeRelative(pathsInfo)) {
           context.report({
             node: node.source,
             messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
           });
         }
 
-        if (shouldBeAbsolute({
-          isImportRelative,
-          importLayer,
-          currentFileLayer,
-        })) {
+        if (shouldBeAbsolute(pathsInfo)) {
           context.report({
             node: node.source,
             messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
