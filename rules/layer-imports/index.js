@@ -24,7 +24,7 @@ module.exports = {
     },
     fixable: null,
     messages: {
-      [ERROR_MESSAGE_ID.CAN_NOT_IMPORT]: 'A layer can only import underlying layers into itself (shared, entities, features, widgets, pages, app)',
+      [ERROR_MESSAGE_ID.CAN_NOT_IMPORT]: 'A layer can only import underlying layers into itself (shared, entities, features, widgets, pages, processes, app)',
     },
     schema: [
       {
