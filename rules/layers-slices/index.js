@@ -91,7 +91,7 @@ module.exports = {
         }
 
         context.report({
-          node,
+          node: node.source,
           messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
           data: {
             importLayer,

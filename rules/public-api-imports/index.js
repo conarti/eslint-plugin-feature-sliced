@@ -65,7 +65,7 @@ module.exports = {
         }
 
         context.report({
-          node,
+          node: node.source,
           messageId: ERROR_MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
           fix: (fixer) => {
             const fixedImportPath = convertToPublicApi(importPath);

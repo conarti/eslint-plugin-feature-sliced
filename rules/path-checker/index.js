@@ -99,7 +99,7 @@ module.exports = {
           currentFileSlice,
         })) {
           context.report({
-            node,
+            node: node.source,
             messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
           });
         }
@@ -110,7 +110,7 @@ module.exports = {
           currentFileLayer,
         })) {
           context.report({
-            node,
+            node: node.source,
             messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
           });
         }
