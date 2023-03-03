@@ -10,6 +10,7 @@ const {
   normalizePath,
 } = require('../../lib/helpers');
 const { ERROR_MESSAGE_ID } = require('./constants');
+const { shouldBeRelative, shouldBeAbsolute } = require('./model');
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
@@ -29,59 +30,6 @@ module.exports = {
   },
 
   create(context) {
-    const shouldBeRelative = ({
-      isImportRelative,
-      importLayer,
-      importSlice,
-      currentFileLayer,
-      currentFileSlice,
-    }) => {
-      if (isImportRelative) {
-        return false;
-      }
-
-      if (!importLayer || !importSlice) {
-        return false;
-      }
-
-      if (!currentFileLayer && !currentFileSlice) {
-        return false;
-      }
-
-      if (!currentFileSlice && importSlice && currentFileLayer === importLayer) {
-        return true;
-      }
-
-      if (
-        currentFileLayer === 'shared' && importLayer === 'shared'
-        || currentFileLayer === 'app' && importLayer === 'app'
-      ) {
-        return true;
-      }
-
-      return currentFileSlice === importSlice && currentFileLayer === importLayer;
-    };
-
-    const shouldBeAbsolute = ({
-      isImportRelative,
-      importLayer,
-      currentFileLayer,
-    }) => {
-      if (!isImportRelative) {
-        return false;
-      }
-
-      if (!importLayer) {
-        return false;
-      }
-
-      if (!currentFileLayer) {
-        return false;
-      }
-
-      return currentFileLayer !== importLayer;
-    };
-
     return {
       ImportDeclaration(node) {
         const importPath = normalizePath(node.source.value);
