@@ -25,7 +25,7 @@ module.exports = {
     hasSuggestions: true,
     fixable: null,
     messages: {
-      [MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API]: 'Absolute imports are only allowed from public api (index.ts)',
+      [MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API]: 'Absolute imports are only allowed from public api ("{{ fixedPath }}")',
       [MESSAGE_ID.REMOVE_SUGGESTION]:  'Remove the "{{ segments }}"',
     },
     schema: [],
@@ -42,7 +42,7 @@ module.exports = {
     const convertToPublicApi = (targetPath) => {
       const publicApiPath = targetPath.replace(segmentsElementsRegExp, '');
       const publicApiPathWithoutSeparatorAtTheEnd = publicApiPath.replace(/\/$/, '');
-      return `'${publicApiPathWithoutSeparatorAtTheEnd}'`;
+      return publicApiPathWithoutSeparatorAtTheEnd;
     };
 
     const getSegmentsFromPath = (targetPath) => {
@@ -71,9 +71,14 @@ module.exports = {
           return;
         }
 
+        const fixedPath = convertToPublicApi(importPath);
+
         context.report({
           node: node.source,
           messageId: MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
+          data: {
+            fixedPath,
+          },
           suggest: [
             {
               messageId: MESSAGE_ID.REMOVE_SUGGESTION,
@@ -81,8 +86,7 @@ module.exports = {
                 segments: getSegmentsFromPath(importPath),
               },
               fix: (fixer) => {
-                const fixedImportPath = convertToPublicApi(importPath);
-                return fixer.replaceText(node.source, fixedImportPath);
+                return fixer.replaceText(node.source, `'${fixedPath}'`);
               },
             },
           ],
