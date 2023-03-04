@@ -1,16 +1,16 @@
 const rule = require('./index');
 const { RuleTester } = require('eslint');
-const { ERROR_MESSAGE_ID } = require('./constants');
+const { MESSAGE_ID } = require('./constants');
 
 const ruleTester = new RuleTester({
   parserOptions: { ecmaVersion: 6, sourceType: 'module' },
 });
 
 const makeErrorWithSuggestion = (suggestionSegments, suggestionOutput) => ({
-  messageId: ERROR_MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
+  messageId: MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
   suggestions: [
     {
-      messageId: ERROR_MESSAGE_ID.REMOVE_SUGGESTION,
+      messageId: MESSAGE_ID.REMOVE_SUGGESTION,
       data: {
         segments: suggestionSegments,
       },
