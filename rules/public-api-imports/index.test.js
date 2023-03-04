@@ -6,6 +6,19 @@ const ruleTester = new RuleTester({
   parserOptions: { ecmaVersion: 6, sourceType: 'module' },
 });
 
+const makeErrorWithSuggestion = (suggestionSegments, suggestionOutput) => ({
+  messageId: ERROR_MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
+  suggestions: [
+    {
+      messageId: ERROR_MESSAGE_ID.REMOVE_SUGGESTION,
+      data: {
+        segments: suggestionSegments,
+      },
+      output: suggestionOutput,
+    },
+  ],
+});
+
 ruleTester.run('public-api-imports', rule, {
   valid: [
     {
@@ -49,58 +62,58 @@ ruleTester.run('public-api-imports', rule, {
     {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'entities/Article/model/file.ts\'',
       errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
-        },
+        makeErrorWithSuggestion(
+          'model/file.ts',
+          'import { addCommentFormActions, addCommentFormReducer } from \'entities/Article\'',
+        ),
       ],
-      output: 'import { addCommentFormActions, addCommentFormReducer } from \'entities/Article\'',
     },
     {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article/model/file.ts\'',
       errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
-        },
+        makeErrorWithSuggestion(
+          'model/file.ts',
+          'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
+        ),
       ],
-      output: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
     },
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\entities\\StoreDecorator.tsx',
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article/testing/file.tsx\'',
       errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
-        },
+        makeErrorWithSuggestion(
+          'testing/file.tsx',
+          'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
+        ),
       ],
-      output: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
     },
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\entities\\StoreDecorator.tsx',
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article/testing/file.tsx\'',
       errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
-        },
+        makeErrorWithSuggestion(
+          'testing/file.tsx',
+          'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article\'',
+        ),
       ],
-      output: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article\'',
     },
     {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article/model/file.ts\'',
       errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
-        },
+        makeErrorWithSuggestion(
+          'model/file.ts',
+          'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article\'',
+        ),
       ],
-      output: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article\'',
     },
     {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'some/root/path/entities/Article/model/file.ts\'',
       errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
-        },
+        makeErrorWithSuggestion(
+          'model/file.ts',
+          'import { addCommentFormActions, addCommentFormReducer } from \'some/root/path/entities/Article\'',
+        ),
       ],
-      output: 'import { addCommentFormActions, addCommentFormReducer } from \'some/root/path/entities/Article\'',
     },
   ],
 });
