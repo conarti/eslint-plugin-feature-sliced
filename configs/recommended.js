@@ -12,6 +12,6 @@ module.exports = {
       allowTypeImports: true,
     }],
     'conarti-fsd/absolute-relative': 'error',
-    'conarti-fsd/public-api-imports': 'error',
+    'conarti-fsd/public-api': 'error',
   },
 };

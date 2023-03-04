@@ -108,7 +108,7 @@ You can use _warnings_ instead of _errors_ for specific rules. Or turn off certa
   "rules": {
     "conarti-fsd/layers-slices": "warn",
     "conarti-fsd/absolute-relative": "off",
-    "conarti-fsd/public-api-imports": "warn",
+    "conarti-fsd/public-api": "warn",
     "import/order": "warn"
   }
 }
@@ -124,7 +124,7 @@ Recommended settings:
       "allowTypeImports": true
     }],
     "conarti-fsd/absolute-relative": "error",
-    "conarti-fsd/public-api-imports": "error"
+    "conarti-fsd/public-api": "error"
   }
 }
 ```
@@ -138,4 +138,4 @@ Recommended settings:
 | [import/order](rules/import-order/README.md)             | | 🔧 |
 | [conarti-fsd/layers-slices](rules/layers-slices/README.md)           | Checks layer imports | |
 | [conarti-fsd/absolute-relative](rules/absolute-relative/README.md)             | Checks for absolute and relative paths | |
-| [conarti-fsd/public-api-imports](rules/public-api-imports/README.md) | Check for module imports from public api | 🔧 |
+| [conarti-fsd/public-api](rules/public-api/README.md) | Check for module imports from public api | 🔧 |
