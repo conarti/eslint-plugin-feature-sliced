@@ -6,8 +6,11 @@ const ruleTester = new RuleTester({
   parserOptions: { ecmaVersion: 6, sourceType: 'module' },
 });
 
-const makeErrorWithSuggestion = (suggestionSegments, suggestionOutput) => ({
+const makeErrorWithSuggestion = (suggestionSegments, suggestionOutput, fixedPath) => ({
   messageId: MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
+  data: {
+    fixedPath,
+  },
   suggestions: [
     {
       messageId: MESSAGE_ID.REMOVE_SUGGESTION,
@@ -65,6 +68,7 @@ ruleTester.run('public-api-imports', rule, {
         makeErrorWithSuggestion(
           'model/file.ts',
           'import { addCommentFormActions, addCommentFormReducer } from \'entities/Article\'',
+          'entities/Article',
         ),
       ],
     },
@@ -74,6 +78,7 @@ ruleTester.run('public-api-imports', rule, {
         makeErrorWithSuggestion(
           'model/file.ts',
           'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
+          '@/entities/Article'
         ),
       ],
     },
@@ -84,6 +89,7 @@ ruleTester.run('public-api-imports', rule, {
         makeErrorWithSuggestion(
           'testing/file.tsx',
           'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
+          '@/entities/Article'
         ),
       ],
     },
@@ -94,6 +100,7 @@ ruleTester.run('public-api-imports', rule, {
         makeErrorWithSuggestion(
           'testing/file.tsx',
           'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article\'',
+          'src/entities/Article',
         ),
       ],
     },
@@ -103,6 +110,7 @@ ruleTester.run('public-api-imports', rule, {
         makeErrorWithSuggestion(
           'model/file.ts',
           'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article\'',
+          'src/entities/Article'
         ),
       ],
     },
@@ -112,6 +120,7 @@ ruleTester.run('public-api-imports', rule, {
         makeErrorWithSuggestion(
           'model/file.ts',
           'import { addCommentFormActions, addCommentFormReducer } from \'some/root/path/entities/Article\'',
+          'some/root/path/entities/Article'
         ),
       ],
     },
