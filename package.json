@@ -12,6 +12,14 @@
     "feature-driven",
     "feature-based"
   ],
+  "files": [
+    "index.js",
+    "rules/**/*.{js,md}",
+    "lib/**/*.js",
+    "!rules/**/*.test.js",
+    "!lib/**/*.test.js",
+    "configs"
+  ],
   "author": "conarti",
   "main": "./index.js",
   "exports": "./index.js",
