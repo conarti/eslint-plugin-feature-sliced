@@ -8,9 +8,10 @@ const {
   isPathRelative,
   getLayerSliceFromPath,
   normalizePath,
+  getByRegExp,
 } = require('../../lib/helpers');
 const { layersRegExp, layersMap } = require('../../lib/constants');
-const { ERROR_MESSAGE_ID } = require('./constants');
+const { MESSAGE_ID } = require('./constants');
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
@@ -21,9 +22,11 @@ module.exports = {
       recommended: false,
       url: null,
     },
-    fixable: 'code',
+    hasSuggestions: true,
+    fixable: null,
     messages: {
-      [ERROR_MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API]: 'Absolute imports are only allowed from public api (index.ts)',
+      [MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API]: 'Absolute imports are only allowed from public api (index.ts)',
+      [MESSAGE_ID.REMOVE_SUGGESTION]:  'Remove the "{{ segments }}"',
     },
     schema: [],
   },
@@ -40,6 +43,10 @@ module.exports = {
       const publicApiPath = targetPath.replace(segmentsElementsRegExp, '');
       const publicApiPathWithoutSeparatorAtTheEnd = publicApiPath.replace(/\/$/, '');
       return `'${publicApiPathWithoutSeparatorAtTheEnd}'`;
+    };
+
+    const getSegmentsFromPath = (targetPath) => {
+      return getByRegExp(targetPath, segmentsElementsRegExp);
     };
 
     const isImportFromSameSlice = (importSlice, currentFileSlice) => importSlice === currentFileSlice;
@@ -66,11 +73,19 @@ module.exports = {
 
         context.report({
           node: node.source,
-          messageId: ERROR_MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
-          fix: (fixer) => {
-            const fixedImportPath = convertToPublicApi(importPath);
-            return fixer.replaceText(node.source, fixedImportPath);
-          },
+          messageId: MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
+          suggest: [
+            {
+              messageId: MESSAGE_ID.REMOVE_SUGGESTION,
+              data: {
+                segments: getSegmentsFromPath(importPath),
+              },
+              fix: (fixer) => {
+                const fixedImportPath = convertToPublicApi(importPath);
+                return fixer.replaceText(node.source, fixedImportPath);
+              },
+            },
+          ],
         });
       },
     };
