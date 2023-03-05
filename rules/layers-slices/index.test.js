@@ -88,6 +88,18 @@ ruleTester.run('layer-imports', rule, {
       filename: 'src/entities/bar/ui',
       code: 'import { Bar } from \'@/entities/bar/model\';',
     },
+    {
+      filename: 'src/shared/ui/foo/index.ts',
+      code: 'import { useBar } from \'../../../hooks/useBar.ts\';',
+    },
+    {
+      filename: 'src/shared/ui/foo/index.test.ts',
+      code: 'import { Foo } from \'./index.ts\';',
+    },
+    {
+      filename: 'src/shared/ui/foo/index.test.ts',
+      code: 'import { Foo } from \'.\';',
+    },
   ],
 
   invalid: [
@@ -124,6 +136,26 @@ ruleTester.run('layer-imports', rule, {
     {
       filename: 'src/entities/bar',
       code: 'import { Baz } from \'entities/baz\';',
+      errors: [makeErrorMessage('entities', 'entities')],
+    },
+    {
+      filename: 'src/entities/article/model/services.ts',
+      code: 'import { userModel } from \'../../user\';',
+      errors: [makeErrorMessage('entities', 'entities')],
+    },
+    {
+      filename: 'src/entities/foo/model.ts',
+      code: 'import { bar } from \'../../../features/bar\';',
+      errors: [makeErrorMessage('features', 'entities')],
+    },
+    {
+      filename: 'src/entities/foo/model.ts',
+      code: 'import { bar } from \'../../../features\';',
+      errors: [makeErrorMessage('features', 'entities')],
+    },
+    {
+      filename: '/Users/conarti/Projects/feature-sliced-frontend/src/entities/foo-bar-baz/ui/index.vue',
+      code: 'import FooBar from \'../foo-bar/ui/index.vue\';',
       errors: [makeErrorMessage('entities', 'entities')],
     },
   ],
