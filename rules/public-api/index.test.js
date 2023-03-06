@@ -22,7 +22,7 @@ const makeErrorWithSuggestion = (suggestionSegments, suggestionOutput, fixedPath
   ],
 });
 
-ruleTester.run('public-api-imports', rule, {
+ruleTester.run('public-api', rule, {
   valid: [
     {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'../../model/slices/addCommentFormSlice\'',

@@ -30,7 +30,7 @@ const makeErrorMessage = (importLayer, currentFileLayer) => ({
   }
 });
 
-ruleTester.run('layer-imports', rule, {
+ruleTester.run('layers-slices', rule, {
   valid: [
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\features\\Article',
