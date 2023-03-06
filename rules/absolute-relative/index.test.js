@@ -35,6 +35,14 @@ ruleTester.run('absolute-relative', rule, {
       filename: 'src/pages/passport-info-case-edit/lib/index.ts',
       code: 'import generatePayloadMapper from \'./generatePayloadMapper\';',
     },
+    {
+      filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/widgets/payments-widget-wrapper/index.ts',
+      code: 'export * from \'./model\';',
+    },
+    {
+      filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/components/blocks/MarriageDetails/index.ts',
+      code: 'export { MarriageDetails } from \'./MarriageDetails\';',
+    },
   ],
 
   invalid: [
@@ -119,6 +127,25 @@ ruleTester.run('absolute-relative', rule, {
     {
       filename: 'src/app/foo/bar/ui.tsx',
       code: 'import { Baz } from \'src/app/baz\';',
+      errors: [
+        {
+          messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
+        },
+      ],
+    },
+    {
+      filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/widgets/payments-widget-wrapper/index.ts',
+      code: 'export * from \'@/widgets/payments-widget-wrapper/model\';',
+      errors: [
+        {
+          messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
+        },
+      ],
+    },
+
+    {
+      filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/widgets/blocks/MarriageDetails/index.ts',
+      code: 'export { MarriageDetails } from \'@/widgets/blocks/MarriageDetails/MarriageDetails\';',
       errors: [
         {
           messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
