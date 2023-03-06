@@ -26,38 +26,30 @@ ruleTester.run('public-api', rule, {
   valid: [
     {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'../../model/slices/addCommentFormSlice\'',
-      errors: [],
     },
     {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
-      errors: [],
     },
     {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article\'',
-      errors: [],
     },
     {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'some/root/path/entities/Article\'',
-      errors: [],
     },
     {
       code: 'import { setStylesForTheme } from \'app/providers/ThemeProvider\'',
-      errors: [],
     },
     {
       code: 'import { formConfig } from \'src/features/form/config\'',
       filename: 'src/features/form/ui/index.js',
-      errors: [],
     },
     {
       code: 'import { ThemeSwitcher } from \'shared/ui/ThemeSwitcher\';',
       filename: 'src/features/form/ui/index.js',
-      errors: [],
     },
     {
       code: 'import { foo } from \'shared/lib/foo\';',
       filename: 'src/features/form/ui/index.js',
-      errors: [],
     },
   ],
 
