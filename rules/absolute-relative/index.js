@@ -76,6 +76,10 @@ module.exports = {
         }
       },
       ExportNamedDeclaration(node) {
+        if (node.source === null) {
+          return;
+        }
+
         const pathsInfo = getPathsInfo(node, context);
 
         if (shouldBeRelative(pathsInfo)) {
