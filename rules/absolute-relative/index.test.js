@@ -31,6 +31,10 @@ ruleTester.run('absolute-relative', rule, {
       filename: 'src/app/App.tsx',
       code: 'import { Foo } from \'widgets/foo\';',
     },
+    {
+      filename: 'src/pages/passport-info-case-edit/lib/index.ts',
+      code: 'import generatePayloadMapper from \'./generatePayloadMapper\';',
+    },
   ],
 
   invalid: [
