@@ -49,7 +49,7 @@
   },
   "peerDependencies": {
     "eslint": ">=7",
-    "eslint-plugin-import": ">=2"
+    "eslint-plugin-import": ">=2.26"
   },
   "license": "ISC"
 }
