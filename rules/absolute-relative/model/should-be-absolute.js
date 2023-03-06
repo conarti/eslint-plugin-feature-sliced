@@ -1,13 +1,13 @@
 module.exports.shouldBeAbsolute = ({
   isImportRelative,
-  importLayer,
+  targetLayer,
   currentFileLayer,
 }) => {
   if (!isImportRelative) {
     return false;
   }
 
-  if (!importLayer) {
+  if (!targetLayer) {
     return false;
   }
 
@@ -15,5 +15,5 @@ module.exports.shouldBeAbsolute = ({
     return false;
   }
 
-  return currentFileLayer !== importLayer;
+  return currentFileLayer !== targetLayer;
 };

@@ -30,22 +30,26 @@ module.exports = {
   },
 
   create(context) {
+    const getPathsInfo = (node, context) => {
+      const importPath = normalizePath(node.source.value);
+      const currentFilePath = normalizePath(context.getFilename());
+
+      const [targetLayer, targetSlice] = getLayerSliceFromPath(importPath);
+      const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
+      const isImportRelative = isPathRelative(importPath);
+
+      return {
+        isImportRelative,
+        targetLayer,
+        targetSlice,
+        currentFileLayer,
+        currentFileSlice,
+      };
+    };
+
     return {
       ImportDeclaration(node) {
-        const importPath = normalizePath(node.source.value);
-        const currentFilePath = normalizePath(context.getFilename());
-
-        const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
-        const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
-        const isImportRelative = isPathRelative(importPath);
-
-        const pathsInfo = {
-          isImportRelative,
-          importLayer,
-          importSlice,
-          currentFileLayer,
-          currentFileSlice,
-        };
+        const pathsInfo = getPathsInfo(node, context);
 
         if (shouldBeRelative(pathsInfo)) {
           context.report({
@@ -58,6 +62,26 @@ module.exports = {
           context.report({
             node: node.source,
             messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
+          });
+        }
+      },
+      ExportAllDeclaration(node) {
+        const pathsInfo = getPathsInfo(node, context);
+
+        if (shouldBeRelative(pathsInfo)) {
+          context.report({
+            node: node.source,
+            messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
+          });
+        }
+      },
+      ExportNamedDeclaration(node) {
+        const pathsInfo = getPathsInfo(node, context);
+
+        if (shouldBeRelative(pathsInfo)) {
+          context.report({
+            node: node.source,
+            messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
           });
         }
       },

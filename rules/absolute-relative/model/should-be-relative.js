@@ -1,7 +1,7 @@
 module.exports.shouldBeRelative = ({
   isImportRelative,
-  importLayer,
-  importSlice,
+  targetLayer,
+  targetSlice,
   currentFileLayer,
   currentFileSlice,
 }) => {
@@ -9,7 +9,7 @@ module.exports.shouldBeRelative = ({
     return false;
   }
 
-  if (!importLayer || !importSlice) {
+  if (!targetLayer || !targetSlice) {
     return false;
   }
 
@@ -17,16 +17,16 @@ module.exports.shouldBeRelative = ({
     return false;
   }
 
-  if (!currentFileSlice && importSlice && currentFileLayer === importLayer) {
+  if (!currentFileSlice && targetSlice && currentFileLayer === targetLayer) {
     return true;
   }
 
   if (
-    currentFileLayer === 'shared' && importLayer === 'shared'
-    || currentFileLayer === 'app' && importLayer === 'app'
+    currentFileLayer === 'shared' && targetLayer === 'shared'
+    || currentFileLayer === 'app' && targetLayer === 'app'
   ) {
     return true;
   }
 
-  return currentFileSlice === importSlice && currentFileLayer === importLayer;
+  return currentFileSlice === targetSlice && currentFileLayer === targetLayer;
 };
