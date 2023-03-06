@@ -100,6 +100,10 @@ ruleTester.run('layers-slices', rule, {
       filename: 'src/shared/ui/foo/index.test.ts',
       code: 'import { Foo } from \'.\';',
     },
+    {
+      filename: 'src/pages/foo-bar/lib/index.ts',
+      code: 'import generatePayloadMapper from \'./generatePayloadMapper\';',
+    },
   ],
 
   invalid: [
