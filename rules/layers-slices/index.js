@@ -13,6 +13,7 @@ const {
 const { layersMap } = require('../../lib/constants');
 const { ERROR_MESSAGE_ID } = require('./constants');
 const { canImportLayer } = require('./model');
+const { convertToAbsolute } = require('../../lib/helpers/convert-to-absolute');
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
@@ -62,17 +63,18 @@ module.exports = {
           return;
         }
 
-        const importPath = normalizePath(node.source.value);
+        let importPath = normalizePath(node.source.value);
 
         if (ignorePatterns && micromatch.isMatch(importPath, ignorePatterns)) {
           return;
         }
 
+        const currentFilePath = normalizePath(context.getFilename());
+
         if (isPathRelative(importPath)) {
-          return;
+          importPath = convertToAbsolute(currentFilePath, importPath);
         }
 
-        const currentFilePath = normalizePath(context.getFilename());
         const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
         const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
 
