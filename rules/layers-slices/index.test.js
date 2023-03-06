@@ -155,7 +155,7 @@ ruleTester.run('layer-imports', rule, {
     },
     {
       filename: '/Users/conarti/Projects/feature-sliced-frontend/src/entities/foo-bar-baz/ui/index.vue',
-      code: 'import FooBar from \'../foo-bar/ui/index.vue\';',
+      code: 'import { FooBar } from \'../../foo-bar/ui/index.vue\';',
       errors: [makeErrorMessage('entities', 'entities')],
     },
   ],
