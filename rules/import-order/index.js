@@ -4,8 +4,8 @@
  */
 'use strict';
 
-const { layers } = require('../../lib/constants');
-const FS_LAYERS = Object.keys(layers).reverse();
+const { layersNames } = require('../../lib/constants');
+const FS_LAYERS = layersNames.reverse();
 
 module.exports = {
   plugins: [
