@@ -10,7 +10,10 @@ const {
   normalizePath,
 } = require('../../lib/helpers');
 const { ERROR_MESSAGE_ID } = require('./constants');
-const { shouldBeRelative, shouldBeAbsolute } = require('./model');
+const {
+  shouldBeRelative,
+  shouldBeAbsolute,
+} = require('./model');
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {

@@ -3,7 +3,10 @@ const { RuleTester } = require('eslint');
 const { MESSAGE_ID } = require('./constants');
 
 const ruleTester = new RuleTester({
-  parserOptions: { ecmaVersion: 6, sourceType: 'module' },
+  parserOptions: {
+    ecmaVersion: 6,
+    sourceType: 'module',
+  },
 });
 
 const makeErrorWithSuggestion = (suggestionSegments, suggestionOutput, fixedPath) => ({
@@ -70,7 +73,7 @@ ruleTester.run('public-api', rule, {
         makeErrorWithSuggestion(
           'model/file.ts',
           'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
-          '@/entities/Article'
+          '@/entities/Article',
         ),
       ],
     },
@@ -81,7 +84,7 @@ ruleTester.run('public-api', rule, {
         makeErrorWithSuggestion(
           'testing/file.tsx',
           'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
-          '@/entities/Article'
+          '@/entities/Article',
         ),
       ],
     },
@@ -102,7 +105,7 @@ ruleTester.run('public-api', rule, {
         makeErrorWithSuggestion(
           'model/file.ts',
           'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article\'',
-          'src/entities/Article'
+          'src/entities/Article',
         ),
       ],
     },
@@ -112,7 +115,7 @@ ruleTester.run('public-api', rule, {
         makeErrorWithSuggestion(
           'model/file.ts',
           'import { addCommentFormActions, addCommentFormReducer } from \'some/root/path/entities/Article\'',
-          'some/root/path/entities/Article'
+          'some/root/path/entities/Article',
         ),
       ],
     },

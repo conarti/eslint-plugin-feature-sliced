@@ -10,7 +10,10 @@ const {
   normalizePath,
   getByRegExp,
 } = require('../../lib/helpers');
-const { layersRegExp, layersMap, layersNames } = require('../../lib/constants');
+const {
+  layersMap,
+  layersNames,
+} = require('../../lib/constants');
 const { MESSAGE_ID } = require('./constants');
 
 /** @type {import('eslint').Rule.RuleModule} */

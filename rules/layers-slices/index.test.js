@@ -12,22 +12,22 @@ const ruleTester = new RuleTester({
 
 const allowTypeImportsOptions = [
   {
-    allowTypeImports: true
+    allowTypeImports: true,
   },
-]
+];
 
 const makeIgnoreOptions = (patterns) => [
   {
     ignorePatterns: patterns,
-  }
-]
+  },
+];
 
 const makeErrorMessage = (importLayer, currentFileLayer) => ({
   messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
   data: {
     importLayer,
     currentFileLayer,
-  }
+  },
 });
 
 ruleTester.run('layers-slices', rule, {

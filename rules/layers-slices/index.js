@@ -40,7 +40,7 @@ module.exports = {
             items: {
               type: 'string',
             },
-          }
+          },
         },
       },
     ],
@@ -98,7 +98,7 @@ module.exports = {
           data: {
             importLayer,
             currentFileLayer,
-          }
+          },
         });
       },
     };
