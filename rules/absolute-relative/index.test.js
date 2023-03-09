@@ -9,6 +9,24 @@ const ruleTester = new RuleTester({
   },
 });
 
+/**
+ * @param mustBe {'absolute'|'relative'}
+ * @returns {{messageId: string}}
+ */
+const makeError = (mustBe) => {
+  if (mustBe === 'absolute') {
+    return ({
+      messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
+    });
+  }
+
+  if (mustBe === 'relative') {
+    return ({
+      messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
+    });
+  }
+};
+
 ruleTester.run('absolute-relative', rule, {
   valid: [
     {
@@ -52,11 +70,7 @@ ruleTester.run('absolute-relative', rule, {
     {
       filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { TheHeader } from \'widgets/TheHeader\';',
-      errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
-        },
-      ],
+      errors: [makeError('relative') ],
     },
     /**
      * Import from a single slice with an alias
@@ -64,11 +78,7 @@ ruleTester.run('absolute-relative', rule, {
     {
       filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { TheHeader } from \'@/widgets/TheHeader\';',
-      errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
-        },
-      ],
+      errors: [makeError('relative')],
     },
     /**
      * Import from another layer
@@ -76,11 +86,7 @@ ruleTester.run('absolute-relative', rule, {
     {
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { useBar } from \'../../../shared/hooks\';',
-      errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
-        },
-      ],
+      errors: [makeError('absolute')],
     },
     /**
      * Import from a single slice
@@ -88,11 +94,7 @@ ruleTester.run('absolute-relative', rule, {
     {
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { useBar } from \'src/widgets/TheHeader/lib\';',
-      errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
-        },
-      ],
+      errors: [makeError('relative')],
     },
     /**
      * Import from a single layer
@@ -100,57 +102,33 @@ ruleTester.run('absolute-relative', rule, {
     {
       filename: 'src/app/App.tsx',
       code: 'import { AppRouter } from \'app/providers/router\';',
-      errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
-        },
-      ],
+      errors: [makeError('relative')],
     },
     {
       filename: 'src/app/App.tsx',
       code: 'import { Foo } from \'../features/foo\';',
-      errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
-        },
-      ],
+      errors: [makeError('absolute')],
     },
     {
       filename: 'src/shared/ui/AppSelect/AppSelect.tsx',
       code: 'import CheckIcon from \'shared/assets/icons/check.svg\';',
-      errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
-        },
-      ],
+      errors: [makeError('relative')],
     },
     {
       filename: 'src/app/foo/bar/ui.tsx',
       code: 'import { Baz } from \'src/app/baz\';',
-      errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
-        },
-      ],
+      errors: [makeError('relative')],
     },
     {
       filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/widgets/payments-widget-wrapper/index.ts',
       code: 'export * from \'@/widgets/payments-widget-wrapper/model\';',
-      errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
-        },
-      ],
+      errors: [makeError('relative')],
     },
 
     {
       filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/widgets/blocks/MarriageDetails/index.ts',
       code: 'export { MarriageDetails } from \'@/widgets/blocks/MarriageDetails/MarriageDetails\';',
-      errors: [
-        {
-          messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
-        },
-      ],
+      errors: [makeError('relative')],
     },
   ],
 });
