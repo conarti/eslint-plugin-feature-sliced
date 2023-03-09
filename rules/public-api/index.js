@@ -10,7 +10,7 @@ const {
   normalizePath,
   getByRegExp,
 } = require('../../lib/helpers');
-const { layersRegExp, layersMap } = require('../../lib/constants');
+const { layersRegExp, layersMap, layersNames } = require('../../lib/constants');
 const { MESSAGE_ID } = require('./constants');
 
 /** @type {import('eslint').Rule.RuleModule} */
@@ -32,7 +32,7 @@ module.exports = {
   },
 
   create(context) {
-    const segmentsElementsRegExp = new RegExp(`(?<=${layersRegExp.toString().replaceAll('/', '')}\\/\\w*\\/).*`);
+    const segmentsElementsRegExp = new RegExp(`(?<=(${layersNames.join('|')})\\/\\w*\\/).*`);
 
     const isImportFromPublicApi = (importPath) => {
       const hasSegments = segmentsElementsRegExp.test(importPath);
