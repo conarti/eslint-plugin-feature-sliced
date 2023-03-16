@@ -9,11 +9,11 @@ const {
   isPathRelative,
   getLayerSliceFromPath,
   normalizePath,
+  convertToAbsolute,
 } = require('../../lib/helpers');
 const { layersMap } = require('../../lib/constants');
 const { ERROR_MESSAGE_ID } = require('./constants');
 const { canImportLayer } = require('./model');
-const { convertToAbsolute } = require('../../lib/helpers/convert-to-absolute');
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
