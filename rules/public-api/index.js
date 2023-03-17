@@ -8,13 +8,15 @@ const {
   isPathRelative,
   getLayerSliceFromPath,
   normalizePath,
-  getByRegExp,
 } = require('../../lib/helpers');
-const {
-  layersMap,
-  layersNames,
-} = require('../../lib/constants');
+const { layersMap } = require('../../lib/constants');
 const { MESSAGE_ID } = require('./constants');
+const {
+  isImportFromPublicApi,
+  convertToPublicApi,
+  getSegmentsFromPath,
+  isImportFromSameSlice,
+} = require('./model');
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
@@ -35,25 +37,6 @@ module.exports = {
   },
 
   create(context) {
-    const segmentsElementsRegExp = new RegExp(`(?<=(${layersNames.join('|')})\\/[\\w-]*\\/).*`);
-
-    const isImportFromPublicApi = (importPath) => {
-      const hasSegments = segmentsElementsRegExp.test(importPath);
-      return !hasSegments;
-    };
-
-    const convertToPublicApi = (targetPath) => {
-      const publicApiPath = targetPath.replace(segmentsElementsRegExp, '');
-      const publicApiPathWithoutSeparatorAtTheEnd = publicApiPath.replace(/\/$/, '');
-      return publicApiPathWithoutSeparatorAtTheEnd;
-    };
-
-    const getSegmentsFromPath = (targetPath) => {
-      return getByRegExp(targetPath, segmentsElementsRegExp);
-    };
-
-    const isImportFromSameSlice = (importSlice, currentFileSlice) => importSlice === currentFileSlice;
-
     return {
       ImportDeclaration(node) {
         const importPath = normalizePath(node.source.value);
