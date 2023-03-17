@@ -35,7 +35,7 @@ module.exports = {
   },
 
   create(context) {
-    const segmentsElementsRegExp = new RegExp(`(?<=(${layersNames.join('|')})\\/\\w*\\/).*`);
+    const segmentsElementsRegExp = new RegExp(`(?<=(${layersNames.join('|')})\\/[\\w-]*\\/).*`);
 
     const isImportFromPublicApi = (importPath) => {
       const hasSegments = segmentsElementsRegExp.test(importPath);
