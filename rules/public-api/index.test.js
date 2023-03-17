@@ -119,5 +119,15 @@ ruleTester.run('public-api', rule, {
         ),
       ],
     },
+    {
+      code: 'import PassportIssuanceSearchRegistryParams from \'@/entities/passport-issuance/ui/search-registry-params.vue\';',
+      errors: [
+        makeErrorWithSuggestion(
+          'ui/search-registry-params.vue',
+          'import PassportIssuanceSearchRegistryParams from \'@/entities/passport-issuance\';',
+          '@/entities/passport-issuance',
+        ),
+      ],
+    },
   ],
 });
