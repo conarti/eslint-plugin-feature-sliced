@@ -18,4 +18,5 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: node
           package-name: release-please-action
-          versioning-strategy: github-release
+          bump-minor-pre-major: true
+          bump-patch-for-minor-pre-major: true
