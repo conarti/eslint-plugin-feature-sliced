@@ -54,6 +54,10 @@ ruleTester.run('public-api', rule, {
       code: 'import { foo } from \'shared/lib/foo\';',
       filename: 'src/features/form/ui/index.js',
     },
+    {
+      code: 'import { Bar } from \'@/features/group-folder/bar\';',
+      filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
+    },
   ],
 
   invalid: [
@@ -126,6 +130,73 @@ ruleTester.run('public-api', rule, {
           'ui/search-registry-params.vue',
           'import PassportIssuanceSearchRegistryParams from \'@/entities/passport-issuance\';',
           '@/entities/passport-issuance',
+        ),
+      ],
+    },
+    // shouldn't validate "ui", "model", "lib", "api", "config", "assets" as group folders
+    {
+      code: 'import { Bar } from \'@/features/bar/ui\';',
+      filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
+      errors: [
+        makeErrorWithSuggestion(
+          'ui',
+          'import { Bar } from \'@/features/bar\';',
+          '@/features/bar',
+        ),
+      ],
+    },
+    {
+      code: 'import { Bar } from \'@/features/bar/model\';',
+      filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
+      errors: [
+        makeErrorWithSuggestion(
+          'model',
+          'import { Bar } from \'@/features/bar\';',
+          '@/features/bar',
+        ),
+      ],
+    },
+    {
+      code: 'import { Bar } from \'@/features/bar/lib\';',
+      filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
+      errors: [
+        makeErrorWithSuggestion(
+          'lib',
+          'import { Bar } from \'@/features/bar\';',
+          '@/features/bar',
+        ),
+      ],
+    },
+    {
+      code: 'import { Bar } from \'@/features/bar/api\';',
+      filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
+      errors: [
+        makeErrorWithSuggestion(
+          'api',
+          'import { Bar } from \'@/features/bar\';',
+          '@/features/bar',
+        ),
+      ],
+    },
+    {
+      code: 'import { Bar } from \'@/features/bar/config\';',
+      filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
+      errors: [
+        makeErrorWithSuggestion(
+          'config',
+          'import { Bar } from \'@/features/bar\';',
+          '@/features/bar',
+        ),
+      ],
+    },
+    {
+      code: 'import { Bar } from \'@/features/bar/assets\';',
+      filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
+      errors: [
+        makeErrorWithSuggestion(
+          'assets',
+          'import { Bar } from \'@/features/bar\';',
+          '@/features/bar',
         ),
       ],
     },
