@@ -58,6 +58,10 @@ ruleTester.run('public-api', rule, {
       code: 'import { Bar } from \'@/features/group-folder/bar\';',
       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
     },
+    {
+      code: 'import { Bar } from \'@/features/group-folder/sub-group-folder/sub-sub-group/bar\';',
+      filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
+    },
   ],
 
   invalid: [
@@ -175,6 +179,17 @@ ruleTester.run('public-api', rule, {
           'assets',
           'import { Bar } from \'@/features/bar\';',
           '@/features/bar',
+        ),
+      ],
+    },
+    {
+      code: 'import { Bar } from \'@/features/group-folder/sub-group-folder/sub-sub-group/bar/assets\';',
+      filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
+      errors: [
+        makeErrorWithSuggestion(
+          'assets',
+          'import { Bar } from \'@/features/group-folder/sub-group-folder/sub-sub-group/bar\';',
+          '@/features/group-folder/sub-group-folder/sub-sub-group/bar',
         ),
       ],
     },
