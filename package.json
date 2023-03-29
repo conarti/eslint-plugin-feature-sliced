@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-conarti-fsd",
-  "version": "0.0.25",
+  "version": "1.0.0",
   "description": "Feature-sliced design methodology plugin",
   "repository": "https://github.com/conarti/eslint-plugin-fsd.git",
   "keywords": [
