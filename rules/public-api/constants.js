@@ -10,4 +10,4 @@ module.exports.MESSAGE_ID = {
 
 const layersUnion = layersNames.join('|');
 const segmentsUnion = segments.join('|');
-module.exports.segmentsElementsRegExp = new RegExp(`(?<=(${layersUnion})\\/([\\w-]*\\/){1,2})(${segmentsUnion}).*`);
+module.exports.segmentsElementsRegExp = new RegExp(`(?<=(${layersUnion})\\/([\\w-]*\\/)+)(${segmentsUnion}).*`);
