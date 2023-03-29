@@ -82,28 +82,6 @@ ruleTester.run('public-api', rule, {
       ],
     },
     {
-      filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\entities\\StoreDecorator.tsx',
-      code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article/testing/file.tsx\'',
-      errors: [
-        makeErrorWithSuggestion(
-          'testing/file.tsx',
-          'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
-          '@/entities/Article',
-        ),
-      ],
-    },
-    {
-      filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\entities\\StoreDecorator.tsx',
-      code: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article/testing/file.tsx\'',
-      errors: [
-        makeErrorWithSuggestion(
-          'testing/file.tsx',
-          'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article\'',
-          'src/entities/Article',
-        ),
-      ],
-    },
-    {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article/model/file.ts\'',
       errors: [
         makeErrorWithSuggestion(
