@@ -21,6 +21,7 @@ module.exports.shouldBeRelative = ({
     return true;
   }
 
+  // FIXME: 20я строка не то же самое делает?
   if (
     currentFileLayer === 'shared' && targetLayer === 'shared'
     || currentFileLayer === 'app' && targetLayer === 'app'
