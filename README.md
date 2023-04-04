@@ -136,7 +136,7 @@ Recommended settings:
 
 | Name | Description | 🔧 |
 | :----------------------------------------------------- | :--------------------------------------- | :- |
-| [import/order](configs/import-order/README.md)             | | 🔧 |
+| [import/order](rules/import-order/README.md)             | | 🔧 |
 | [conarti-fsd/layers-slices](rules/layers-slices/README.md)           | Checks layer imports | |
 | [conarti-fsd/absolute-relative](rules/absolute-relative/README.md)             | Checks for absolute and relative paths | |
 | [conarti-fsd/public-api](rules/public-api/README.md) | Check for module imports from public api | 💡 |
