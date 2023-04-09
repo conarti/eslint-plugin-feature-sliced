@@ -18,7 +18,7 @@ const {
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
   meta: {
-    type: null,
+    type: 'problem',
     docs: {
       description: 'Checks for absolute and relative paths',
       recommended: false,

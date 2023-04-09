@@ -18,7 +18,7 @@ const { canImportLayer } = require('./model');
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
   meta: {
-    type: null,
+    type: 'problem',
     docs: {
       description: 'Checks layer imports',
       recommended: false,

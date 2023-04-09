@@ -21,7 +21,7 @@ const {
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
   meta: {
-    type: null,
+    type: 'problem',
     docs: {
       description: 'Check for module imports from public api',
       recommended: false,
