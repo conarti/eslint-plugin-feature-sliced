@@ -83,7 +83,6 @@ async function main() {
   // Generate the changelog.
   step('Generating the changelog...');
   await run('npm', ['run', 'changelog']);
-  await run('npx', ['prettier', '--write', 'CHANGELOG.md']);
 
   const { yes: changelogOk } = await prompts({
     type: 'confirm',
