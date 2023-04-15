@@ -5,7 +5,6 @@
 'use strict';
 
 const {
-  isPathRelative,
   getLayerSliceFromPath,
   normalizePath,
   convertToAbsolute,
