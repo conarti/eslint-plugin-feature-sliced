@@ -29,47 +29,47 @@ ruleTester.run('public-api', rule, {
   valid: [
     {
       /* should work with slice public api */
-      code: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article\'',
+      code: "import { addCommentFormActions, addCommentFormReducer } from 'src/entities/Article'",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
     },
     {
       /* should work with slice public api and alias in path */
-      code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
+      code: "import { addCommentFormActions, addCommentFormReducer } from '@/entities/Article'",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
     },
     {
       /* should work with long paths */
-      code: 'import { addCommentFormActions, addCommentFormReducer } from \'some/root/path/entities/Article\'',
+      code: "import { addCommentFormActions, addCommentFormReducer } from 'some/root/path/entities/Article'",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
     },
     {
       /* should not validate public api relative paths in 'app' */
-      code: 'import { setStylesForTheme } from \'app/providers/ThemeProvider\'',
+      code: "import { setStylesForTheme } from 'app/providers/ThemeProvider'",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
     },
     {
       /* it should work with fsd segments */
-      code: 'import { formConfig } from \'src/features/form/config\'',
+      code: "import { formConfig } from 'src/features/form/config'",
       filename: 'src/features/form/ui/index.js',
     },
     {
       /* should not validate public api paths in 'shared' and fsd methodology segments (assets/api/model/lib/ui/config) */
-      code: 'import { ThemeSwitcher } from \'shared/ui/ThemeSwitcher\';',
+      code: "import { ThemeSwitcher } from 'shared/ui/ThemeSwitcher';",
       filename: 'src/features/form/ui/index.js',
     },
     {
       /* should not validate public api paths in 'shared' and fsd methodology segments (assets/api/model/lib/ui/config) */
-      code: 'import { foo } from \'shared/lib/foo\';',
+      code: "import { foo } from 'shared/lib/foo';",
       filename: 'src/features/form/ui/index.js',
     },
     {
       /* should work with group folders */
-      code: 'import { Bar } from \'@/features/group-folder/bar\';',
+      code: "import { Bar } from '@/features/group-folder/bar';",
       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
     },
     {
       /* should work with subgroup folders */
-      code: 'import { Bar } from \'@/features/group-folder/sub-group-folder/sub-sub-group/bar\';',
+      code: "import { Bar } from '@/features/group-folder/sub-group-folder/sub-sub-group/bar';",
       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
     },
     {
@@ -86,129 +86,129 @@ ruleTester.run('public-api', rule, {
 
   invalid: [
     {
-      code: 'import { addCommentFormActions, addCommentFormReducer } from \'entities/Article/model/file.ts\'',
+      code: "import { addCommentFormActions, addCommentFormReducer } from 'entities/Article/model/file.ts'",
       errors: [
         makeErrorWithSuggestion(
           'model/file.ts',
-          'import { addCommentFormActions, addCommentFormReducer } from \'entities/Article\'',
+          "import { addCommentFormActions, addCommentFormReducer } from 'entities/Article'",
           'entities/Article',
         ),
       ],
     },
     {
-      code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article/model/file.ts\'',
+      code: "import { addCommentFormActions, addCommentFormReducer } from '@/entities/Article/model/file.ts'",
       errors: [
         makeErrorWithSuggestion(
           'model/file.ts',
-          'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
+          "import { addCommentFormActions, addCommentFormReducer } from '@/entities/Article'",
           '@/entities/Article',
         ),
       ],
     },
     {
-      code: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article/model/file.ts\'',
+      code: "import { addCommentFormActions, addCommentFormReducer } from 'src/entities/Article/model/file.ts'",
       errors: [
         makeErrorWithSuggestion(
           'model/file.ts',
-          'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article\'',
+          "import { addCommentFormActions, addCommentFormReducer } from 'src/entities/Article'",
           'src/entities/Article',
         ),
       ],
     },
     {
-      code: 'import { addCommentFormActions, addCommentFormReducer } from \'some/root/path/entities/Article/model/file.ts\'',
+      code: "import { addCommentFormActions, addCommentFormReducer } from 'some/root/path/entities/Article/model/file.ts'",
       errors: [
         makeErrorWithSuggestion(
           'model/file.ts',
-          'import { addCommentFormActions, addCommentFormReducer } from \'some/root/path/entities/Article\'',
+          "import { addCommentFormActions, addCommentFormReducer } from 'some/root/path/entities/Article'",
           'some/root/path/entities/Article',
         ),
       ],
     },
     {
-      code: 'import PassportIssuanceSearchRegistryParams from \'@/entities/passport-issuance/ui/search-registry-params.vue\';',
+      code: "import PassportIssuanceSearchRegistryParams from '@/entities/passport-issuance/ui/search-registry-params.vue';",
       errors: [
         makeErrorWithSuggestion(
           'ui/search-registry-params.vue',
-          'import PassportIssuanceSearchRegistryParams from \'@/entities/passport-issuance\';',
+          "import PassportIssuanceSearchRegistryParams from '@/entities/passport-issuance';",
           '@/entities/passport-issuance',
         ),
       ],
     },
     // shouldn't validate "ui", "model", "lib", "api", "config", "assets" as group folders
     {
-      code: 'import { Bar } from \'@/features/bar/ui\';',
+      code: "import { Bar } from '@/features/bar/ui';",
       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
       errors: [
         makeErrorWithSuggestion(
           'ui',
-          'import { Bar } from \'@/features/bar\';',
+          "import { Bar } from '@/features/bar';",
           '@/features/bar',
         ),
       ],
     },
     {
-      code: 'import { Bar } from \'@/features/bar/model\';',
+      code: "import { Bar } from '@/features/bar/model';",
       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
       errors: [
         makeErrorWithSuggestion(
           'model',
-          'import { Bar } from \'@/features/bar\';',
+          "import { Bar } from '@/features/bar';",
           '@/features/bar',
         ),
       ],
     },
     {
-      code: 'import { Bar } from \'@/features/bar/lib\';',
+      code: "import { Bar } from '@/features/bar/lib';",
       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
       errors: [
         makeErrorWithSuggestion(
           'lib',
-          'import { Bar } from \'@/features/bar\';',
+          "import { Bar } from '@/features/bar';",
           '@/features/bar',
         ),
       ],
     },
     {
-      code: 'import { Bar } from \'@/features/bar/api\';',
+      code: "import { Bar } from '@/features/bar/api';",
       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
       errors: [
         makeErrorWithSuggestion(
           'api',
-          'import { Bar } from \'@/features/bar\';',
+          "import { Bar } from '@/features/bar';",
           '@/features/bar',
         ),
       ],
     },
     {
-      code: 'import { Bar } from \'@/features/bar/config\';',
+      code: "import { Bar } from '@/features/bar/config';",
       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
       errors: [
         makeErrorWithSuggestion(
           'config',
-          'import { Bar } from \'@/features/bar\';',
+          "import { Bar } from '@/features/bar';",
           '@/features/bar',
         ),
       ],
     },
     {
-      code: 'import { Bar } from \'@/features/bar/assets\';',
+      code: "import { Bar } from '@/features/bar/assets';",
       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
       errors: [
         makeErrorWithSuggestion(
           'assets',
-          'import { Bar } from \'@/features/bar\';',
+          "import { Bar } from '@/features/bar';",
           '@/features/bar',
         ),
       ],
     },
     {
-      code: 'import { Bar } from \'@/features/group-folder/sub-group-folder/sub-sub-group/bar/assets\';',
+      code: "import { Bar } from '@/features/group-folder/sub-group-folder/sub-sub-group/bar/assets';",
       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
       errors: [
         makeErrorWithSuggestion(
           'assets',
-          'import { Bar } from \'@/features/group-folder/sub-group-folder/sub-sub-group/bar\';',
+          "import { Bar } from '@/features/group-folder/sub-group-folder/sub-sub-group/bar';",
           '@/features/group-folder/sub-group-folder/sub-sub-group/bar',
         ),
       ],
