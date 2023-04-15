@@ -62,6 +62,16 @@ ruleTester.run('public-api', rule, {
       code: 'import { Bar } from \'@/features/group-folder/sub-group-folder/sub-sub-group/bar\';',
       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
     },
+    {
+      // should not validate public api relative paths
+      code: "import { Bar } from '../../../constants/bar';",
+      filename: '/Users/test-user/repository/src/shared/ui/foo/index.vue',
+    },
+    {
+      // should only swear at fsd methodology slices (assets/api/model/lib/ui)
+      code: "import { useFoo } from '../foo/use-foo';",
+      filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
+    },
   ],
 
   invalid: [
@@ -190,6 +200,17 @@ ruleTester.run('public-api', rule, {
           'assets',
           'import { Bar } from \'@/features/group-folder/sub-group-folder/sub-sub-group/bar\';',
           '@/features/group-folder/sub-group-folder/sub-sub-group/bar',
+        ),
+      ],
+    },
+    {
+      code: "import { useFoo } from '../model/use-foo';",
+      filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
+      errors: [
+        makeErrorWithSuggestion(
+          'use-foo',
+          "import { useFoo } from '../model';",
+          '../model',
         ),
       ],
     },
