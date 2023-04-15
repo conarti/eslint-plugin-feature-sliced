@@ -28,47 +28,57 @@ const makeErrorWithSuggestion = (suggestionSegments, suggestionOutput, fixedPath
 ruleTester.run('public-api', rule, {
   valid: [
     {
-      code: 'import { addCommentFormActions, addCommentFormReducer } from \'../../model/slices/addCommentFormSlice\'',
-    },
-    {
-      code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
-    },
-    {
+      /* should work with slice public api */
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'src/entities/Article\'',
+      filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
     },
     {
+      /* should work with slice public api and alias in path */
+      code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/entities/Article\'',
+      filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
+    },
+    {
+      /* should work with long paths */
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'some/root/path/entities/Article\'',
+      filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
     },
     {
+      /* should not validate public api relative paths in 'app' */
       code: 'import { setStylesForTheme } from \'app/providers/ThemeProvider\'',
+      filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
     },
     {
+      /* it should work with fsd segments */
       code: 'import { formConfig } from \'src/features/form/config\'',
       filename: 'src/features/form/ui/index.js',
     },
     {
+      /* should not validate public api paths in 'shared' and fsd methodology segments (assets/api/model/lib/ui/config) */
       code: 'import { ThemeSwitcher } from \'shared/ui/ThemeSwitcher\';',
       filename: 'src/features/form/ui/index.js',
     },
     {
+      /* should not validate public api paths in 'shared' and fsd methodology segments (assets/api/model/lib/ui/config) */
       code: 'import { foo } from \'shared/lib/foo\';',
       filename: 'src/features/form/ui/index.js',
     },
     {
+      /* should work with group folders */
       code: 'import { Bar } from \'@/features/group-folder/bar\';',
       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
     },
     {
+      /* should work with subgroup folders */
       code: 'import { Bar } from \'@/features/group-folder/sub-group-folder/sub-sub-group/bar\';',
       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
     },
     {
-      // should not validate public api relative paths
+      /* should not validate public api relative paths in 'shared' */
       code: "import { Bar } from '../../../constants/bar';",
       filename: '/Users/test-user/repository/src/shared/ui/foo/index.vue',
     },
     {
-      // should only swear at fsd methodology slices (assets/api/model/lib/ui)
+      /* should only swear at fsd methodology segments (assets/api/model/lib/ui/config) */
       code: "import { useFoo } from '../foo/use-foo';",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
     },
