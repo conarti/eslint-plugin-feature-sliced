@@ -11,7 +11,10 @@ const {
   convertToAbsolute,
 } = require('../../lib/helpers');
 const { layersMap } = require('../../lib/constants');
-const { MESSAGE_ID } = require('./constants');
+const {
+  MESSAGE_ID,
+  IGNORED_LAYERS,
+} = require('./constants');
 const {
   isImportFromPublicApi,
   convertToPublicApi,
@@ -54,7 +57,10 @@ module.exports = {
           return;
         }
 
-        if (!layersMap.has(importLayer) || importLayer === 'app' || importLayer === 'shared') {
+        const isImportNotFromFsdLayer = !layersMap.has(importLayer);
+        const isImportFromIgnoredLayer = IGNORED_LAYERS.has(importLayer);
+
+        if (isImportNotFromFsdLayer || isImportFromIgnoredLayer) {
           return;
         }
 
