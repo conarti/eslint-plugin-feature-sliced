@@ -6,7 +6,6 @@
 
 const micromatch = require('micromatch');
 const {
-  isPathRelative,
   getLayerSliceFromPath,
   normalizePath,
   convertToAbsolute,
