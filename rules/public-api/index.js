@@ -43,12 +43,9 @@ module.exports = {
   create(context) {
     return {
       ImportDeclaration(node) {
-        let importPath = normalizePath(node.source.value);
         const currentFilePath = normalizePath(context.getFilename());
-
-        if (isPathRelative(importPath)) {
-          importPath = convertToAbsolute(currentFilePath, importPath);
-        }
+        const normalizedImportPath = normalizePath(node.source.value);
+        const importPath = convertToAbsolute(currentFilePath, normalizedImportPath);
 
         const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
         const [, currentFileSlice] = getLayerSliceFromPath(currentFilePath);

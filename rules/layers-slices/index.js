@@ -63,16 +63,12 @@ module.exports = {
           return;
         }
 
-        let importPath = normalizePath(node.source.value);
+        const currentFilePath = normalizePath(context.getFilename());
+        const normalizedImportPath = normalizePath(node.source.value);
+        const importPath = convertToAbsolute(currentFilePath, normalizedImportPath);
 
         if (ignorePatterns && micromatch.isMatch(importPath, ignorePatterns)) {
           return;
-        }
-
-        const currentFilePath = normalizePath(context.getFilename());
-
-        if (isPathRelative(importPath)) {
-          importPath = convertToAbsolute(currentFilePath, importPath);
         }
 
         const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
