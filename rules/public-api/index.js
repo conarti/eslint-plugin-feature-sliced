@@ -8,6 +8,7 @@ const {
   isPathRelative,
   getLayerSliceFromPath,
   normalizePath,
+  convertToAbsolute,
 } = require('../../lib/helpers');
 const { layersMap } = require('../../lib/constants');
 const { MESSAGE_ID } = require('./constants');
@@ -39,13 +40,17 @@ module.exports = {
   create(context) {
     return {
       ImportDeclaration(node) {
-        const importPath = normalizePath(node.source.value);
+        let importPath = normalizePath(node.source.value);
         const currentFilePath = normalizePath(context.getFilename());
+
+        if (isPathRelative(importPath)) {
+          importPath = convertToAbsolute(currentFilePath, importPath);
+        }
 
         const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
         const [, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
 
-        if (isPathRelative(importPath) || isImportFromSameSlice(importSlice, currentFileSlice)) {
+        if (isImportFromSameSlice(importSlice, currentFileSlice)) {
           return;
         }
 
