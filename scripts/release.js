@@ -24,6 +24,28 @@ const run = (bin, args, opts = {}) =>
   });
 const step = (msg) => console.log(c.cyan(`\n${msg}`));
 
+const updatePackageVersion = (newVersion) => {
+  const getJsonPath = (filename) => resolve(resolve(__dirname, '..'), filename);
+
+  const readJson = (filename) => {
+    return JSON.parse(readFileSync(getJsonPath(filename), 'utf-8'));
+  };
+
+  const writeJson = (filename, data) => {
+    writeFileSync(getJsonPath(filename), JSON.stringify(data, null, 2) + '\n');
+  };
+
+  const pkg = readJson('package.json');
+  const pkgLock = readJson('package-lock.json');
+
+  pkg.version = newVersion;
+  pkgLock.version = newVersion;
+  pkgLock.packages[''].version = newVersion;
+
+  writeJson('package.json', pkg);
+  writeJson('package-lock.json', pkgLock);
+};
+
 async function main() {
   let targetVersion;
 
@@ -89,28 +111,6 @@ async function main() {
   step('Pushing to GitHub...');
   await run('git', ['push', 'origin', `refs/tags/v${targetVersion}`]);
   await run('git', ['push']);
-}
-
-function updatePackageVersion(newVersion) {
-  const getJsonPath = (filename) => resolve(resolve(__dirname, '..'), filename);
-
-  const readJson = (filename) => {
-    return JSON.parse(readFileSync(getJsonPath(filename), 'utf-8'));
-  };
-
-  const writeJson = (filename, data) => {
-    writeFileSync(getJsonPath(filename), JSON.stringify(data, null, 2) + '\n');
-  };
-
-  const pkg = readJson('package.json');
-  const pkgLock = readJson('package-lock.json');
-
-  pkg.version = newVersion;
-  pkgLock.version = newVersion;
-  pkgLock.packages[''].version = newVersion;
-
-  writeJson('package.json', pkg);
-  writeJson('package-lock.json', pkgLock);
 }
 
 main().catch((err) => console.error(err));
