@@ -50,47 +50,39 @@ module.exports = {
       };
     };
 
+    const validateAndReport = (node, options = {}) => {
+      const { needCheckForAbsolute = true } = options;
+
+      if (node.source === null) {
+        return;
+      }
+
+      const pathsInfo = getPathsInfo(node, context);
+
+      if (shouldBeRelative(pathsInfo)) {
+        context.report({
+          node: node.source,
+          messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
+        });
+      }
+
+      if (needCheckForAbsolute && shouldBeAbsolute(pathsInfo)) {
+        context.report({
+          node: node.source,
+          messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
+        });
+      }
+    };
+
     return {
       ImportDeclaration(node) {
-        const pathsInfo = getPathsInfo(node, context);
-
-        if (shouldBeRelative(pathsInfo)) {
-          context.report({
-            node: node.source,
-            messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
-          });
-        }
-
-        if (shouldBeAbsolute(pathsInfo)) {
-          context.report({
-            node: node.source,
-            messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
-          });
-        }
+        validateAndReport(node);
       },
       ExportAllDeclaration(node) {
-        const pathsInfo = getPathsInfo(node, context);
-
-        if (shouldBeRelative(pathsInfo)) {
-          context.report({
-            node: node.source,
-            messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
-          });
-        }
+        validateAndReport(node, { needCheckForAbsolute: false });
       },
       ExportNamedDeclaration(node) {
-        if (node.source === null) {
-          return;
-        }
-
-        const pathsInfo = getPathsInfo(node, context);
-
-        if (shouldBeRelative(pathsInfo)) {
-          context.report({
-            node: node.source,
-            messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
-          });
-        }
+        validateAndReport(node, { needCheckForAbsolute: false });
       },
     };
   },
