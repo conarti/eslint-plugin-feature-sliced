@@ -30,6 +30,8 @@ const makeErrorMessage = (importLayer, currentFileLayer) => ({
   },
 });
 
+// TODO: ретроспектировать тесты
+
 ruleTester.run('layers-slices', rule, {
   valid: [
     {
