@@ -7,6 +7,7 @@ const ruleTester = new RuleTester({
     ecmaVersion: 6,
     sourceType: 'module',
   },
+  parser: require.resolve('@typescript-eslint/parser'),
 });
 
 /**
@@ -70,6 +71,14 @@ ruleTester.run('absolute-relative', rule, {
     {
       filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { TheHeader } from \'widgets/TheHeader\';',
+      errors: [makeError('relative') ],
+    },
+    /**
+     * Import from a single slice and import expression
+     */
+    {
+      filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
+      code: 'const TheHeader = () => import(\'widgets/TheHeader\');',
       errors: [makeError('relative') ],
     },
     /**
