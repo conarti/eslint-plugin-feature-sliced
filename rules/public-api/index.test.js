@@ -7,6 +7,7 @@ const ruleTester = new RuleTester({
     ecmaVersion: 6,
     sourceType: 'module',
   },
+  parser: require.resolve('@typescript-eslint/parser'),
 });
 
 const makeErrorWithSuggestion = (suggestionSegments, suggestionOutput, fixedPath) => ({
@@ -117,6 +118,17 @@ ruleTester.run('public-api', rule, {
         makeErrorWithSuggestion(
           'model/file.ts',
           "import { addCommentFormActions, addCommentFormReducer } from 'entities/Article'",
+          'entities/Article',
+        ),
+      ],
+    },
+    /* should work with import expressions */
+    {
+      code: "const foo = () => import('entities/Article/model/file.ts')",
+      errors: [
+        makeErrorWithSuggestion(
+          'model/file.ts',
+          "const foo = () => import('entities/Article')",
           'entities/Article',
         ),
       ],
