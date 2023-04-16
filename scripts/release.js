@@ -53,6 +53,8 @@ async function main() {
     .map((versionType) => `${versionType} (${incrementCurrentVersion(versionType)})`)
     .concat(['custom']);
 
+  const customVersionIndex = versions.length - 1;
+
   const { release } = await prompts({
     type: 'select',
     name: 'release',
@@ -60,7 +62,7 @@ async function main() {
     choices: versions,
   });
 
-  const isSelectedCustom = release === 3;
+  const isSelectedCustom = release === customVersionIndex;
 
   if (isSelectedCustom) {
     targetVersion = (
