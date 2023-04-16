@@ -86,9 +86,7 @@ module.exports = {
               data: {
                 valueToRemove,
               },
-              fix: (fixer) => {
-                return fixer.replaceText(node.source, `'${fixedPath}'`);
-              },
+              fix: (fixer) => fixer.replaceText(node.source, `'${fixedPath}'`),
             },
           ],
         });
