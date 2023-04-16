@@ -33,7 +33,7 @@ module.exports = {
     fixable: null,
     messages: {
       [MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API]: 'Absolute imports are only allowed from public api ("{{ fixedPath }}")',
-      [MESSAGE_ID.REMOVE_SUGGESTION]:  'Remove the "{{ valueToRemove }}"',
+      [MESSAGE_ID.REMOVE_SUGGESTION]: 'Remove the "{{ valueToRemove }}"',
     },
     schema: [],
   },
