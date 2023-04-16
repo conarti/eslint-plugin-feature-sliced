@@ -69,7 +69,8 @@ module.exports = {
 
         const fixedPath = convertToPublicApi({
           targetPath: normalizedImportPath,
-          importPath,
+          segment: pathFsdParts.segment,
+          segmentFiles: pathFsdParts.segmentFiles,
           isImportFromSameSlice,
         });
 

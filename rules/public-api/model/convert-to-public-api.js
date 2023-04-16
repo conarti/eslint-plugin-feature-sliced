@@ -1,17 +1,15 @@
-const { getFsdPartsFromPath } = require('./get-fsd-parts-from-path');
-
 module.exports.convertToPublicApi = ({
   targetPath,
   isImportFromSameSlice,
-  importPath,
+  segmentFiles,
+  segment,
 }) => {
-  const pathFsdParts = getFsdPartsFromPath(importPath);
 
   const publicApiPath = targetPath.replace(
     /** @duplicate части пути для удаления */
     isImportFromSameSlice ?
-      `/${pathFsdParts.segmentFiles}`
-      : `/${pathFsdParts.segment}${pathFsdParts.segmentFiles ? `/${pathFsdParts.segmentFiles}` : ''}`,
+      `/${segmentFiles}`
+      : `/${segment}${segmentFiles ? `/${segmentFiles}` : ''}`,
     '',
   );
 
