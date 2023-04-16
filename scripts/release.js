@@ -16,8 +16,6 @@ const {
 
 const versionIncrements = ['patch', 'minor', 'major'];
 
-const tags = ['latest', 'next'];
-
 const inc = (i) => _inc(currentVersion, i);
 const run = (bin, args, opts = {}) =>
   execa(bin, args, {
@@ -57,23 +55,6 @@ async function main() {
 
   if (!valid(targetVersion)) {
     throw new Error(`Invalid target version: ${targetVersion}`);
-  }
-
-  const { tag } = await prompts({
-    type: 'select',
-    name: 'tag',
-    message: 'Select tag type',
-    choices: tags,
-  });
-
-  const { yes: tagOk } = await prompts({
-    type: 'confirm',
-    name: 'yes',
-    message: `Releasing v${targetVersion} on ${tags[tag]}. Confirm?`,
-  });
-
-  if (!tagOk) {
-    return;
   }
 
   // Update the package version.
