@@ -1,6 +1,15 @@
-const { segmentsElementsRegExp } = require('../constants');
+const { getFsdPartsFromPath } = require('./get-fsd-parts-from-path');
 
-module.exports.isImportFromPublicApi = (importPath) => {
-  const hasSegments = segmentsElementsRegExp.test(importPath);
-  return !hasSegments;
+module.exports.isImportFromPublicApi = ({
+  importPath,
+  importSlice,
+  currentFileSlice,
+}) => {
+  const pathFsdParts = getFsdPartsFromPath(importPath);
+
+  if (importSlice === currentFileSlice) {
+    return pathFsdParts.segmentFiles === '';
+  }
+
+  return pathFsdParts.segment === '';
 };

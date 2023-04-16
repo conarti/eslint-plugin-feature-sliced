@@ -17,9 +17,8 @@ const {
 const {
   isImportFromPublicApi,
   convertToPublicApi,
-  getSegmentsFromPath,
-  isImportFromSameSlice,
 } = require('./model');
+const { getFsdPartsFromPath } = require('./model/get-fsd-parts-from-path');
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
@@ -34,7 +33,7 @@ module.exports = {
     fixable: null,
     messages: {
       [MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API]: 'Absolute imports are only allowed from public api ("{{ fixedPath }}")',
-      [MESSAGE_ID.REMOVE_SUGGESTION]:  'Remove the "{{ segments }}"',
+      [MESSAGE_ID.REMOVE_SUGGESTION]:  'Remove the "{{ valueToRemove }}"',
     },
     schema: [],
   },
@@ -49,10 +48,6 @@ module.exports = {
         const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
         const [, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
 
-        if (isImportFromSameSlice(importSlice, currentFileSlice)) {
-          return;
-        }
-
         const isImportNotFromFsdLayer = !layersMap.has(importLayer);
         const isImportFromIgnoredLayer = IGNORED_LAYERS.has(importLayer);
 
@@ -60,11 +55,23 @@ module.exports = {
           return;
         }
 
-        if (isImportFromPublicApi(importPath)) {
+        if (isImportFromPublicApi({
+          importPath,
+          /** @duplicate isImportFromSameSlice */
+          importSlice,
+          currentFileSlice,
+        })) {
           return;
         }
 
-        const fixedPath = convertToPublicApi(importPath);
+        const fixedPath = convertToPublicApi({
+          targetPath: normalizedImportPath,
+          importPath,
+          isFromSameSlice: importSlice === currentFileSlice, /** @duplicate isImportFromSameSlice */
+        });
+
+        // TODO refactor this
+        const pathFsdParts = getFsdPartsFromPath(importPath);
 
         context.report({
           node: node.source,
@@ -76,7 +83,10 @@ module.exports = {
             {
               messageId: MESSAGE_ID.REMOVE_SUGGESTION,
               data: {
-                segments: getSegmentsFromPath(importPath),
+                /** @duplicate части пути для удаления */
+                valueToRemove: importSlice === currentFileSlice /** @duplicate isImportFromSameSlice */
+                  ? pathFsdParts.segmentFiles
+                  : `${pathFsdParts.segment}${pathFsdParts.segmentFiles ? `/${pathFsdParts.segmentFiles}` : ''}`,
               },
               fix: (fixer) => {
                 return fixer.replaceText(node.source, `'${fixedPath}'`);

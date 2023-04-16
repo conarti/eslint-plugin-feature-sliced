@@ -10,7 +10,7 @@ module.exports.MESSAGE_ID = {
 
 const layersUnion = layersNames.join('|');
 const segmentsUnion = segments.join('|');
-module.exports.segmentsElementsRegExp = new RegExp(`(?<=(${layersUnion})\\/([\\w-]*\\/)+)(${segmentsUnion}).*`);
+module.exports.segmentsElementsRegExp = new RegExp(`(?<layer>(?<=(${layersUnion})))\\/(?<slice>([\\w-]*\\/)+)(?<segment>${segmentsUnion})\\/*(?<segmentFiles>.*)`);
 
 module.exports.IGNORED_LAYERS = new Set([
   'app',
