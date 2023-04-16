@@ -114,6 +114,12 @@ ruleTester.run('layers-slices', rule, {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/features/Articl\'',
       errors: [makeErrorMessage('features', 'entities')],
     },
+    /* should work with import expressions */
+    {
+      filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\entities\\providers',
+      code: 'const foo = () => import(\'@/features/Articl\')',
+      errors: [makeErrorMessage('features', 'entities')],
+    },
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\features\\providers',
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/widgets/Articl\'',
