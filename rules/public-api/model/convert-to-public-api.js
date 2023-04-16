@@ -5,13 +5,11 @@ module.exports.convertToPublicApi = ({
   segment,
 }) => {
 
-  const publicApiPath = targetPath.replace(
-    /** @duplicate части пути для удаления */
-    isImportFromSameSlice ?
-      `/${segmentFiles}`
-      : `/${segment}${segmentFiles ? `/${segmentFiles}` : ''}`,
-    '',
-  );
+  const valueToRemove = isImportFromSameSlice
+    ? segmentFiles
+    : `${segment}${segmentFiles ? `/${segmentFiles}` : ''}`;
 
-  return publicApiPath;
+  const publicApiPath = targetPath.replace(`/${valueToRemove}`, '');
+
+  return [publicApiPath, valueToRemove];
 };

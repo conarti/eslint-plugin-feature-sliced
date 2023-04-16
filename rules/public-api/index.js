@@ -67,7 +67,7 @@ module.exports = {
           return;
         }
 
-        const fixedPath = convertToPublicApi({
+        const [fixedPath, valueToRemove] = convertToPublicApi({
           targetPath: normalizedImportPath,
           segment: pathFsdParts.segment,
           segmentFiles: pathFsdParts.segmentFiles,
@@ -84,10 +84,7 @@ module.exports = {
             {
               messageId: MESSAGE_ID.REMOVE_SUGGESTION,
               data: {
-                /** @duplicate части пути для удаления */
-                valueToRemove: isImportFromSameSlice /** @duplicate isImportFromSameSlice */
-                  ? pathFsdParts.segmentFiles
-                  : `${pathFsdParts.segment}${pathFsdParts.segmentFiles ? `/${pathFsdParts.segmentFiles}` : ''}`,
+                valueToRemove,
               },
               fix: (fixer) => {
                 return fixer.replaceText(node.source, `'${fixedPath}'`);
