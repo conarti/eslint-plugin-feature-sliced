@@ -50,6 +50,8 @@ module.exports = {
 
         const isImportNotFromFsdLayer = !layersMap.has(importLayer);
         const isImportFromIgnoredLayer = IGNORED_LAYERS.has(importLayer);
+        const isImportFromSameSlice = importSlice === currentFileSlice;
+
 
         if (isImportNotFromFsdLayer || isImportFromIgnoredLayer) {
           return;
@@ -57,9 +59,7 @@ module.exports = {
 
         if (isImportFromPublicApi({
           importPath,
-          /** @duplicate isImportFromSameSlice */
-          importSlice,
-          currentFileSlice,
+          isImportFromSameSlice,
         })) {
           return;
         }
@@ -67,7 +67,7 @@ module.exports = {
         const fixedPath = convertToPublicApi({
           targetPath: normalizedImportPath,
           importPath,
-          isFromSameSlice: importSlice === currentFileSlice, /** @duplicate isImportFromSameSlice */
+          isImportFromSameSlice,
         });
 
         // TODO refactor this
@@ -84,7 +84,7 @@ module.exports = {
               messageId: MESSAGE_ID.REMOVE_SUGGESTION,
               data: {
                 /** @duplicate части пути для удаления */
-                valueToRemove: importSlice === currentFileSlice /** @duplicate isImportFromSameSlice */
+                valueToRemove: isImportFromSameSlice /** @duplicate isImportFromSameSlice */
                   ? pathFsdParts.segmentFiles
                   : `${pathFsdParts.segment}${pathFsdParts.segmentFiles ? `/${pathFsdParts.segmentFiles}` : ''}`,
               },
