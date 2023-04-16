@@ -1,3 +1,11 @@
+## [0.0.30](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.29...v0.0.30) (2023-04-16)
+
+
+### Bug Fixes
+
+* **public-api:** don't replace quotes style to single after fix invalid paths ([5881993](https://github.com/conarti/eslint-plugin-fsd/commit/588199320d3ae6139f3016bf874b3119a6416407))
+
+
 ## [0.0.29](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.28...v0.0.29) (2023-04-16)
 
 
