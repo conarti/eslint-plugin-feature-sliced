@@ -78,6 +78,9 @@ module.exports = {
       ImportDeclaration(node) {
         validateAndReport(node);
       },
+      ImportExpression(node) {
+        validateAndReport(node);
+      },
       ExportAllDeclaration(node) {
         validateAndReport(node, { needCheckForAbsolute: false });
       },
