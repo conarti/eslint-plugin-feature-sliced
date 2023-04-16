@@ -40,56 +40,60 @@ module.exports = {
   },
 
   create(context) {
+    const validateAndReport = (node) => {
+      const currentFilePath = normalizePath(context.getFilename());
+      const normalizedImportPath = normalizePath(node.source.value);
+      const importPath = convertToAbsolute(currentFilePath, normalizedImportPath);
+
+      const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
+      const [, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
+
+      const isImportNotFromFsdLayer = !layersMap.has(importLayer);
+      const isImportFromIgnoredLayer = IGNORED_LAYERS.has(importLayer);
+      const isImportFromSameSlice = importSlice === currentFileSlice;
+
+      if (isImportNotFromFsdLayer || isImportFromIgnoredLayer) {
+        return;
+      }
+
+      const pathFsdParts = getFsdPartsFromPath(importPath);
+
+      if (isImportFromPublicApi({
+        segmentFiles: pathFsdParts.segmentFiles,
+        segment: pathFsdParts.segment,
+        isImportFromSameSlice,
+      })) {
+        return;
+      }
+
+      const [fixedPath, valueToRemove] = convertToPublicApi({
+        targetPath: normalizedImportPath,
+        segment: pathFsdParts.segment,
+        segmentFiles: pathFsdParts.segmentFiles,
+        isImportFromSameSlice,
+      });
+
+      context.report({
+        node: node.source,
+        messageId: MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
+        data: {
+          fixedPath,
+        },
+        suggest: [
+          {
+            messageId: MESSAGE_ID.REMOVE_SUGGESTION,
+            data: {
+              valueToRemove,
+            },
+            fix: (fixer) => fixer.replaceTextRange(getSourceRangeWithoutQuotes(node.source.range), fixedPath),
+          },
+        ],
+      });
+    };
+
     return {
       ImportDeclaration(node) {
-        const currentFilePath = normalizePath(context.getFilename());
-        const normalizedImportPath = normalizePath(node.source.value);
-        const importPath = convertToAbsolute(currentFilePath, normalizedImportPath);
-
-        const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
-        const [, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
-
-        const isImportNotFromFsdLayer = !layersMap.has(importLayer);
-        const isImportFromIgnoredLayer = IGNORED_LAYERS.has(importLayer);
-        const isImportFromSameSlice = importSlice === currentFileSlice;
-
-        if (isImportNotFromFsdLayer || isImportFromIgnoredLayer) {
-          return;
-        }
-
-        const pathFsdParts = getFsdPartsFromPath(importPath);
-
-        if (isImportFromPublicApi({
-          segmentFiles: pathFsdParts.segmentFiles,
-          segment: pathFsdParts.segment,
-          isImportFromSameSlice,
-        })) {
-          return;
-        }
-
-        const [fixedPath, valueToRemove] = convertToPublicApi({
-          targetPath: normalizedImportPath,
-          segment: pathFsdParts.segment,
-          segmentFiles: pathFsdParts.segmentFiles,
-          isImportFromSameSlice,
-        });
-
-        context.report({
-          node: node.source,
-          messageId: MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
-          data: {
-            fixedPath,
-          },
-          suggest: [
-            {
-              messageId: MESSAGE_ID.REMOVE_SUGGESTION,
-              data: {
-                valueToRemove,
-              },
-              fix: (fixer) => fixer.replaceTextRange(getSourceRangeWithoutQuotes(node.source.range), fixedPath),
-            },
-          ],
-        });
+        validateAndReport(node);
       },
     };
   },
