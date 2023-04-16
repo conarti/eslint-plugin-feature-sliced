@@ -8,6 +8,7 @@ const {
   getLayerSliceFromPath,
   normalizePath,
   convertToAbsolute,
+  getSourceRangeWithoutQuotes,
 } = require('../../lib/helpers');
 const { layersMap } = require('../../lib/constants');
 const {
@@ -85,7 +86,7 @@ module.exports = {
               data: {
                 valueToRemove,
               },
-              fix: (fixer) => fixer.replaceText(node.source, `'${fixedPath}'`),
+              fix: (fixer) => fixer.replaceTextRange(getSourceRangeWithoutQuotes(node.source.range), fixedPath),
             },
           ],
         });
