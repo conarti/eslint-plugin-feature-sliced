@@ -95,6 +95,9 @@ module.exports = {
       ImportDeclaration(node) {
         validateAndReport(node);
       },
+      ImportExpression(node) {
+        validateAndReport(node);
+      },
     };
   },
 };
