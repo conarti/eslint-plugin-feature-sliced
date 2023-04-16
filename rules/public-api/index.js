@@ -52,7 +52,6 @@ module.exports = {
         const isImportFromIgnoredLayer = IGNORED_LAYERS.has(importLayer);
         const isImportFromSameSlice = importSlice === currentFileSlice;
 
-
         if (isImportNotFromFsdLayer || isImportFromIgnoredLayer) {
           return;
         }
