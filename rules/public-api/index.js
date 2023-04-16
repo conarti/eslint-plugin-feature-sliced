@@ -70,7 +70,6 @@ module.exports = {
           isImportFromSameSlice,
         });
 
-        // TODO refactor this
         const pathFsdParts = getFsdPartsFromPath(importPath);
 
         context.report({
