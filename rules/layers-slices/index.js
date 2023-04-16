@@ -56,45 +56,49 @@ module.exports = {
       return node.importKind === 'type';
     };
 
+    const validateAndReport = (node) => {
+      if (allowTypeImports && isTypeImport(node)) {
+        return;
+      }
+
+      const currentFilePath = normalizePath(context.getFilename());
+      const normalizedImportPath = normalizePath(node.source.value);
+      const importPath = convertToAbsolute(currentFilePath, normalizedImportPath);
+
+      if (ignorePatterns && micromatch.isMatch(importPath, ignorePatterns)) {
+        return;
+      }
+
+      const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
+      const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
+
+      const isImportFromSameSlice = importSlice === currentFileSlice;
+
+      if (isImportFromSameSlice) {
+        return;
+      }
+
+      if (!layersMap.has(importLayer) || !layersMap.has(currentFileLayer)) {
+        return;
+      }
+
+      if (canImportLayer(importLayer, currentFileLayer, currentFileSlice, layersMap)) {
+        return;
+      }
+
+      context.report({
+        node: node.source,
+        messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
+        data: {
+          importLayer,
+          currentFileLayer,
+        },
+      });
+    };
+
     return {
       ImportDeclaration(node) {
-        if (allowTypeImports && isTypeImport(node)) {
-          return;
-        }
-
-        const currentFilePath = normalizePath(context.getFilename());
-        const normalizedImportPath = normalizePath(node.source.value);
-        const importPath = convertToAbsolute(currentFilePath, normalizedImportPath);
-
-        if (ignorePatterns && micromatch.isMatch(importPath, ignorePatterns)) {
-          return;
-        }
-
-        const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
-        const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
-
-        const isImportFromSameSlice = importSlice === currentFileSlice;
-
-        if (isImportFromSameSlice) {
-          return;
-        }
-
-        if (!layersMap.has(importLayer) || !layersMap.has(currentFileLayer)) {
-          return;
-        }
-
-        if (canImportLayer(importLayer, currentFileLayer, currentFileSlice, layersMap)) {
-          return;
-        }
-
-        context.report({
-          node: node.source,
-          messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
-          data: {
-            importLayer,
-            currentFileLayer,
-          },
-        });
+        validateAndReport(node);
       },
     };
   },
