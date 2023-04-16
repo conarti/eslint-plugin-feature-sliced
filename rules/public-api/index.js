@@ -17,8 +17,8 @@ const {
 const {
   isImportFromPublicApi,
   convertToPublicApi,
+  getFsdPartsFromPath,
 } = require('./model');
-const { getFsdPartsFromPath } = require('./model/get-fsd-parts-from-path');
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
