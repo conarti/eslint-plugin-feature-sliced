@@ -7,22 +7,22 @@ const c = require('picocolors');
 const prompts = require('prompts');
 const execa = require('execa');
 const semver = require('semver');
-const pkg = require('../package.json');
+const packageJson = require('../package.json');
 
-const { version: currentVersion } = pkg;
+const { version: currentVersion } = packageJson;
 const {
-  inc: _inc, valid,
+  inc, valid,
 } = semver;
 
 const versionIncrements = ['patch', 'minor', 'major'];
 
-const inc = (i) => _inc(currentVersion, i);
+const incrementCurrentVersion = (versionType) => inc(currentVersion, versionType);
 const run = (bin, args, opts = {}) =>
   execa(bin, args, {
     stdio: 'inherit',
     ...opts,
   });
-const step = (msg) => console.log(c.cyan(`\n${msg}`));
+const step = (message) => console.log(c.cyan(`\n${message}`));
 
 const updatePackageVersion = (newVersion) => {
   const getJsonPath = (filename) => resolve(resolve(__dirname, '..'), filename);
@@ -35,22 +35,22 @@ const updatePackageVersion = (newVersion) => {
     writeFileSync(getJsonPath(filename), JSON.stringify(data, null, 2) + '\n');
   };
 
-  const pkg = readJson('package.json');
-  const pkgLock = readJson('package-lock.json');
+  const packageJson = readJson('package.json');
+  const packageLockJson = readJson('package-lock.json');
 
-  pkg.version = newVersion;
-  pkgLock.version = newVersion;
-  pkgLock.packages[''].version = newVersion;
+  packageJson.version = newVersion;
+  packageLockJson.version = newVersion;
+  packageLockJson.packages[''].version = newVersion;
 
-  writeJson('package.json', pkg);
-  writeJson('package-lock.json', pkgLock);
+  writeJson('package.json', packageJson);
+  writeJson('package-lock.json', packageLockJson);
 };
 
 async function main() {
   let targetVersion;
 
   const versions = versionIncrements
-    .map((i) => `${i} (${inc(i)})`)
+    .map((versionType) => `${versionType} (${incrementCurrentVersion(versionType)})`)
     .concat(['custom']);
 
   const { release } = await prompts({
