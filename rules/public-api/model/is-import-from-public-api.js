@@ -1,14 +1,11 @@
-const { getFsdPartsFromPath } = require('./get-fsd-parts-from-path');
-
 module.exports.isImportFromPublicApi = ({
-  importPath,
+  segmentFiles,
+  segment,
   isImportFromSameSlice,
 }) => {
-  const pathFsdParts = getFsdPartsFromPath(importPath);
-
   if (isImportFromSameSlice) {
-    return pathFsdParts.segmentFiles === '';
+    return segmentFiles === '';
   }
 
-  return pathFsdParts.segment === '';
+  return segment === '';
 };

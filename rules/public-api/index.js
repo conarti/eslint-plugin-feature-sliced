@@ -57,8 +57,11 @@ module.exports = {
           return;
         }
 
+        const pathFsdParts = getFsdPartsFromPath(importPath);
+
         if (isImportFromPublicApi({
-          importPath,
+          segmentFiles: pathFsdParts.segmentFiles,
+          segment: pathFsdParts.segment,
           isImportFromSameSlice,
         })) {
           return;
@@ -69,8 +72,6 @@ module.exports = {
           importPath,
           isImportFromSameSlice,
         });
-
-        const pathFsdParts = getFsdPartsFromPath(importPath);
 
         context.report({
           node: node.source,
