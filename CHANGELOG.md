@@ -1,3 +1,19 @@
+## [0.0.31](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.30...v0.0.31) (2023-04-16)
+
+
+### Bug Fixes
+
+* **public-api:** working with file extension if import was from segment ([64ac21c](https://github.com/conarti/eslint-plugin-fsd/commit/64ac21c53c73b343600ec6708fa7a2b78852d90a))
+
+
+### Features
+
+* **absolute-relative:** validate in import expressions ([d0e82f0](https://github.com/conarti/eslint-plugin-fsd/commit/d0e82f00ddf8b296761abbfec3446e3adb9c9983))
+* **layers-slices:** validate in import expressions ([de3971b](https://github.com/conarti/eslint-plugin-fsd/commit/de3971b01bd9bfa983cea26fcd3ecfc9ded73e36))
+* **public-api:** validate in import expressions ([c439acc](https://github.com/conarti/eslint-plugin-fsd/commit/c439acc3c259d2d05ec52d1d8ff35b3254fc38ab))
+
+
+
 ## [0.0.30](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.29...v0.0.30) (2023-04-16)
 
 
