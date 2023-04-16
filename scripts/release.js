@@ -59,9 +59,7 @@ async function main() {
 
   // Update the package version.
   step('Updating the package version...');
-  updatePackage(targetVersion);
-
-  return;
+  updatePackageVersion(targetVersion);
 
   // Generate the changelog.
   step('Generating the changelog...');
@@ -93,7 +91,7 @@ async function main() {
   await run('git', ['push']);
 }
 
-function updatePackage(version) {
+function updatePackageVersion(newVersion) {
   const getJsonPath = (filename) => resolve(resolve(__dirname, '..'), filename);
 
   const readJson = (filename) => {
@@ -107,9 +105,9 @@ function updatePackage(version) {
   const pkg = readJson('package.json');
   const pkgLock = readJson('package-lock.json');
 
-  pkg.version = version;
-  pkgLock.version = version;
-  pkgLock.packages[''].version = version;
+  pkg.version = newVersion;
+  pkgLock.version = newVersion;
+  pkgLock.packages[''].version = newVersion;
 
   writeJson('package.json', pkg);
   writeJson('package-lock.json', pkgLock);
