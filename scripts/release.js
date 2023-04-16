@@ -61,6 +61,8 @@ async function main() {
   step('Updating the package version...');
   updatePackage(targetVersion);
 
+  return;
+
   // Generate the changelog.
   step('Generating the changelog...');
   await run('npm', ['run', 'changelog']);
@@ -92,17 +94,25 @@ async function main() {
 }
 
 function updatePackage(version) {
-  const pkgPath = resolve(resolve(__dirname, '..'), 'package.json');
-  const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
-  const pkgLockPath = resolve(resolve(__dirname, '..'), 'package-lock.json');
-  const pkgLock = JSON.parse(readFileSync(pkgLockPath, 'utf-8'));
+  const getJsonPath = (filename) => resolve(resolve(__dirname, '..'), filename);
+
+  const readJson = (filename) => {
+    return JSON.parse(readFileSync(getJsonPath(filename), 'utf-8'));
+  };
+
+  const writeJson = (filename, data) => {
+    writeFileSync(getJsonPath(filename), JSON.stringify(data, null, 2) + '\n');
+  };
+
+  const pkg = readJson('package.json');
+  const pkgLock = readJson('package-lock.json');
 
   pkg.version = version;
   pkgLock.version = version;
   pkgLock.packages[''].version = version;
 
-  writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
-  writeFileSync(pkgLockPath, JSON.stringify(pkgLock, null, 2) + '\n');
+  writeJson('package.json', pkg);
+  writeJson('package-lock.json', pkgLock);
 }
 
 main().catch((err) => console.error(err));
