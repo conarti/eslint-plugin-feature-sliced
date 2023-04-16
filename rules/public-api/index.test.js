@@ -18,7 +18,7 @@ const makeErrorWithSuggestion = (suggestionSegments, suggestionOutput, fixedPath
     {
       messageId: MESSAGE_ID.REMOVE_SUGGESTION,
       data: {
-        segments: suggestionSegments,
+        valueToRemove: suggestionSegments,
       },
       output: suggestionOutput,
     },
