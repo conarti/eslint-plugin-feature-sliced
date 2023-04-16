@@ -25,6 +25,22 @@ const makeErrorWithSuggestion = (suggestionSegments, suggestionOutput, fixedPath
   ],
 });
 
+/**
+ * TODO добавить проверки на импорты файлов не зарезервированных как сегменты fsd.
+ * Например (невалидный тест):
+ *     {
+ *       code: "import { Bar } from '@/features/group-folder/sub-group-folder/sub-sub-group/bar/test.js';",
+ *       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
+ *       errors: [
+ *         makeErrorWithSuggestion(
+ *           'test.js',
+ *           "import { Bar } from '@/features/group-folder/sub-group-folder/sub-sub-group/bar';",
+ *           '@/features/group-folder/sub-group-folder/sub-sub-group/bar',
+ *         ),
+ *       ],
+ *     },
+*/
+
 ruleTester.run('public-api', rule, {
   valid: [
     {
@@ -50,6 +66,16 @@ ruleTester.run('public-api', rule, {
     {
       /* it should work with fsd segments */
       code: "import { formConfig } from 'src/features/form/config'",
+      filename: 'src/features/form/ui/index.js',
+    },
+    {
+      /* it should work with fsd segments with file extension */
+      code: "import { formConfig } from 'src/features/form/config.ts'",
+      filename: 'src/features/form/ui/index.js',
+    },
+    {
+      /* it should work with fsd segments with relative path style */
+      code: "import { formConfig } from '../config'",
       filename: 'src/features/form/ui/index.js',
     },
     {
@@ -219,6 +245,17 @@ ruleTester.run('public-api', rule, {
       errors: [
         makeErrorWithSuggestion(
           'use-foo',
+          "import { useFoo } from '../model';",
+          '../model',
+        ),
+      ],
+    },
+    {
+      code: "import { useFoo } from '../model/use-foo.js';",
+      filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
+      errors: [
+        makeErrorWithSuggestion(
+          'use-foo.js',
           "import { useFoo } from '../model';",
           '../model',
         ),
