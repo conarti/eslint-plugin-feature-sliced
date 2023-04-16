@@ -1,3 +1,14 @@
+## [0.0.29](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.28...v0.0.29) (2023-04-16)
+
+
+### Features
+
+* **convert-to-absolute:** add work with absolute target path ([b36fb06](https://github.com/conarti/eslint-plugin-fsd/commit/b36fb06a912f327d4fba0fd07a823a748ba997c7))
+* **public-api:** add relative path validation ([af2a104](https://github.com/conarti/eslint-plugin-fsd/commit/af2a10459db3afeba1e12b52c5eba27ea436cee0))
+* **public-api:** validate relative paths ([93e287c](https://github.com/conarti/eslint-plugin-fsd/commit/93e287c2651dd81c8e56b38cc845c4a76f7c341a))
+
+
+
 ## [0.0.28](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.27...v0.0.28) (2023-04-09)
 
 
