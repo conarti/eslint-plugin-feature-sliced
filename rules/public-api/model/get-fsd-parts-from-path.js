@@ -14,6 +14,6 @@ module.exports.getFsdPartsFromPath = (targetPath) => {
   return {
     layer: segmentsRegexpMatch.groups.layer,
     segment: segmentsRegexpMatch.groups.segment,
-    segmentFiles: segmentsRegexpMatch.groups.segmentFiles,
+    segmentFiles: segmentsRegexpMatch.groups.segmentFiles || '',
   };
 };
