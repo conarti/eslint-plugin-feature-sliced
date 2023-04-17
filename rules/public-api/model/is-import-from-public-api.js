@@ -1,3 +1,7 @@
+const isImportFromIndexFile = (segmentFiles) => {
+  return /^index\.\w+/i.test(segmentFiles);
+};
+
 module.exports.isImportFromPublicApi = ({
   segmentFiles,
   segment,
@@ -11,6 +15,6 @@ module.exports.isImportFromPublicApi = ({
   if (isImportFromSameSegment) {
     return true;
   } else {
-    return segmentFiles === '';
+    return isImportFromIndexFile(segmentFiles) || segmentFiles === '';
   }
 };
