@@ -1,3 +1,14 @@
+## [0.0.32](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.31...v0.0.32) (2023-04-17)
+
+
+### Bug Fixes
+
+* **public-api:** incorrect getting slices from the path ([5876679](https://github.com/conarti/eslint-plugin-fsd/commit/5876679c69eb2248970b8680a9bf07775b1eed3f))
+* **public-api:** incorrect validation imports from 'index' files ([a335984](https://github.com/conarti/eslint-plugin-fsd/commit/a335984c33546b015e670ad95575c5ee3120cce5))
+* **public-api:** incorrect validation within same segment ([61425a4](https://github.com/conarti/eslint-plugin-fsd/commit/61425a455bcc3c86a74f5278cdf606f327378be5))
+
+
+
 ## [0.0.31](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.30...v0.0.31) (2023-04-16)
 
 
