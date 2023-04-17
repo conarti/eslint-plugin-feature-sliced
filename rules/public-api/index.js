@@ -56,20 +56,25 @@ module.exports = {
         return;
       }
 
-      const pathFsdParts = getFsdPartsFromPath(importPath);
+      /** @duplicate getLayerSliceFromPath - можно убрать функцию и использовать эту */
+      const importPathFsdParts = getFsdPartsFromPath(importPath);
+      const currentFilePathFsdParts = getFsdPartsFromPath(currentFilePath);
+
+      const isImportFromSameSegment = importPathFsdParts.segment === currentFilePathFsdParts.segment;
 
       if (isImportFromPublicApi({
-        segmentFiles: pathFsdParts.segmentFiles,
-        segment: pathFsdParts.segment,
+        segmentFiles: importPathFsdParts.segmentFiles,
+        segment: importPathFsdParts.segment,
         isImportFromSameSlice,
+        isImportFromSameSegment,
       })) {
         return;
       }
 
       const [fixedPath, valueToRemove] = convertToPublicApi({
         targetPath: normalizedImportPath,
-        segment: pathFsdParts.segment,
-        segmentFiles: pathFsdParts.segmentFiles,
+        segment: importPathFsdParts.segment,
+        segmentFiles: importPathFsdParts.segmentFiles,
         isImportFromSameSlice,
       });
 
