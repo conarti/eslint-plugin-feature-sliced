@@ -109,6 +109,11 @@ ruleTester.run('public-api', rule, {
       code: "import { useFoo } from '../foo/use-foo';",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
     },
+    {
+      /* should not validate imports inside segment */
+      code: "import { Foo } from './types';",
+      filename: '/Users/test-user/repository/src/features/foo/model/index.ts',
+    },
   ],
 
   invalid: [
