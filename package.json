@@ -18,7 +18,8 @@
     "lib/**/*.js",
     "!rules/**/*.test.js",
     "!lib/**/*.test.js",
-    "configs"
+    "configs",
+    "CHANGELOG.md"
   ],
   "author": "conarti",
   "main": "./index.js",
