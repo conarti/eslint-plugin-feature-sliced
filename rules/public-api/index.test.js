@@ -134,6 +134,11 @@ ruleTester.run('public-api', rule, {
       code: "import { Bar } from 'src/entities/bar/index';",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.ts',
     },
+    {
+      /* should correct read slices from paths */
+      code: "import { Foo } from '../models';",
+      filename: '/Users/test-user/repository/src/features/foo/ui/index.ts',
+    },
   ],
 
   invalid: [
