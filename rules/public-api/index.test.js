@@ -114,6 +114,16 @@ ruleTester.run('public-api', rule, {
       code: "import { Foo } from './types';",
       filename: '/Users/test-user/repository/src/features/foo/model/index.ts',
     },
+    {
+      /* should understand 'index' files with extensions */
+      code: "import { FooComponent } from './ui/index.ts';",
+      filename: '/Users/test-user/repository/src/features/foo/index.ts',
+    },
+    {
+      /* should understand 'index' files with different extensions */
+      code: "import FooComponent from './ui/index.vue';",
+      filename: '/Users/test-user/repository/src/features/foo/index.ts',
+    },
   ],
 
   invalid: [
