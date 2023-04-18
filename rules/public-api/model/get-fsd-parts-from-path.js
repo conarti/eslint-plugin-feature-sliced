@@ -1,19 +1,33 @@
-const { segmentsElementsRegExp } = require('../constants');
+const {
+  layersNames,
+  segments,
+} = require('../../../lib/constants');
+
+const layersUnion = layersNames.join('|');
+const segmentsUnion = segments.join('|');
+const fsdPartsRegExp = new RegExp(
+  `(?<=(?<layer>${layersUnion}))\\/(?<slice>([\\w-]*\\/)+)(?<segment>(${segmentsUnion})(\\.\\w+)?)(\\/(?<segmentFiles>.*))?`,
+);
 
 module.exports.getFsdPartsFromPath = (targetPath) => {
-  const segmentsRegexpMatch = targetPath.match(segmentsElementsRegExp);
+  const fsdParts = targetPath.match(fsdPartsRegExp);
 
-  if (segmentsRegexpMatch === null) {
+  if (fsdParts === null) {
     return {
       layer: '',
       segment: '',
       segmentFiles: '',
     };
   }
+  const {
+    layer = '',
+    segment = '',
+    segmentFiles = '',
+  } = fsdParts.groups || {};
 
   return {
-    layer: segmentsRegexpMatch.groups.layer,
-    segment: segmentsRegexpMatch.groups.segment,
-    segmentFiles: segmentsRegexpMatch.groups.segmentFiles || '',
+    layer,
+    segment,
+    segmentFiles,
   };
 };
