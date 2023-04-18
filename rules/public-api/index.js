@@ -9,6 +9,7 @@ const {
   normalizePath,
   convertToAbsolute,
   getSourceRangeWithoutQuotes,
+  getFsdPartsFromPath,
 } = require('../../lib/helpers');
 const { layersMap } = require('../../lib/constants');
 const {
@@ -18,7 +19,6 @@ const {
 const {
   isImportFromPublicApi,
   convertToPublicApi,
-  getFsdPartsFromPath,
 } = require('./model');
 
 /** @type {import('eslint').Rule.RuleModule} */
