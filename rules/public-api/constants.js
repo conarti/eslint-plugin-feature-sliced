@@ -12,7 +12,7 @@ const layersUnion = layersNames.join('|');
 const segmentsUnion = segments.join('|');
 // TODO rename this
 module.exports.segmentsElementsRegExp = new RegExp(
-  `(?<layer>(?<=(${layersUnion})))\\/(?<slice>([\\w-]*\\/)+)(?<segment>(${segmentsUnion})(\\.\\w+)?)(\\/(?<segmentFiles>.*))?`,
+  `(?<=(?<layer>${layersUnion}))\\/(?<slice>([\\w-]*\\/)+)(?<segment>(${segmentsUnion})(\\.\\w+)?)(\\/(?<segmentFiles>.*))?`,
 );
 
 module.exports.IGNORED_LAYERS = new Set([
