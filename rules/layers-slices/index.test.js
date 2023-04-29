@@ -170,5 +170,11 @@ ruleTester.run('layers-slices', rule, {
       code: 'import { FooBar } from \'../../foo-bar/ui/index.vue\';',
       errors: [makeErrorMessage('entities', 'entities')],
     },
+    /* if there are layer names in the path */
+    {
+      filename: '/Users/user/Documents/Files/projects/project/app/src/entities/Viewer/model/types.ts',
+      code: "import { u } from '@/entities/User';",
+      errors: [makeErrorMessage('entities', 'entities')],
+    },
   ],
 });
