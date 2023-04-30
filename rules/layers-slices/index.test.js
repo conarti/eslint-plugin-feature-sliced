@@ -106,6 +106,11 @@ ruleTester.run('layers-slices', rule, {
       filename: 'src/pages/foo-bar/lib/index.ts',
       code: 'import generatePayloadMapper from \'./generatePayloadMapper\';',
     },
+    /* import inside 'app' layer */
+    {
+      filename: 'src/app/foo/index.ts',
+      code: 'import { Bar } from \'../bar\';',
+    },
   ],
 
   invalid: [
