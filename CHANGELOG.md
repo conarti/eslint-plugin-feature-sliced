@@ -1,3 +1,12 @@
+## [0.0.35](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.34...v0.0.35) (2023-04-30)
+
+
+### Bug Fixes
+
+* **public-api:** incorrect working if segment files has segment-like naming ([4e7cade](https://github.com/conarti/eslint-plugin-fsd/commit/4e7cadecc3211f5e795258c04e68bc6623a04d1e))
+
+
+
 ## [0.0.34](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.33...v0.0.34) (2023-04-30)
 
 
