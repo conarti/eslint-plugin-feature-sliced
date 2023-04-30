@@ -1,3 +1,17 @@
+## [0.0.34](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.33...v0.0.34) (2023-04-30)
+
+
+### Bug Fixes
+
+* **layers-slices:** incorrect work with 'layers-like' names at not layer path part ([d13544b](https://github.com/conarti/eslint-plugin-fsd/commit/d13544b8311993be895133b8860b71e13fe868aa))
+
+
+### Features
+
+* **layers-slices:** allow imports inside 'app' layer ([a2cc503](https://github.com/conarti/eslint-plugin-fsd/commit/a2cc503cb2991b5cb7ad9f5acf3699a13ba75823))
+
+
+
 ## [0.0.33](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.32...v0.0.33) (2023-04-30)
 
 
