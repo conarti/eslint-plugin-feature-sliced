@@ -1,3 +1,12 @@
+## [0.0.33](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.32...v0.0.33) (2023-04-30)
+
+
+### Bug Fixes
+
+* **layers-slices:** correctly understand layers from paths if usual folder names is same as layer names ([0.0.33](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.32...v0.0.33))
+
+
+
 ## [0.0.32](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.31...v0.0.32) (2023-04-17)
 
 
