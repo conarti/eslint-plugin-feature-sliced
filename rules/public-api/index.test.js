@@ -139,6 +139,21 @@ ruleTester.run('public-api', rule, {
       code: "import { Foo } from '../models';",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.ts',
     },
+    {
+      /* allow imports inside segment with no extra sub dirs */
+      filename: 'src/features/foo/ui/bar.tsx',
+      code: "import { Foo } from './foo.tsx';",
+    },
+    {
+      /* allow imports inside segment with extra sub dirs */
+      filename: 'src/features/foo/ui/bar/index.tsx',
+      code: "import { Foo } from '../foo.tsx';",
+    },
+    {
+      /* allow imports inside segment with extra sub dirs and 'segment-like' file names */
+      filename: 'src/features/foo/ui/bar/ui.tsx',
+      code: "import { Foo } from '../foo.tsx';",
+    },
   ],
 
   invalid: [
