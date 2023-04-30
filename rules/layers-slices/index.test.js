@@ -111,6 +111,11 @@ ruleTester.run('layers-slices', rule, {
       filename: 'src/app/foo/index.ts',
       code: 'import { Bar } from \'../bar\';',
     },
+    /* has 'layer' name at not layer path part */
+    {
+      filename: 'src/features/foo/index.ts',
+      code: 'import { Bar } from \'src/entities/app-bar\';',
+    },
   ],
 
   invalid: [
