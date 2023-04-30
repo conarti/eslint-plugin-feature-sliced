@@ -3,7 +3,10 @@ module.exports.canImportLayer = (importLayer, currentFileLayer, currentFileSlice
     return true;
   }
 
-  if (importLayer === 'shared' && currentFileLayer === 'shared') {
+  const isInsideShared = importLayer === 'shared' && currentFileLayer === 'shared';
+  const isInsideApp = importLayer === 'app' && currentFileLayer === 'app';
+
+  if (isInsideShared || isInsideApp) {
     return true;
   }
 
