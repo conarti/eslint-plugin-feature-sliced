@@ -62,6 +62,11 @@ ruleTester.run('absolute-relative', rule, {
       filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/components/blocks/MarriageDetails/index.ts',
       code: 'export { MarriageDetails } from \'./MarriageDetails\';',
     },
+    {
+      /* should be valid if it has slice with 'layer' name */
+      filename: '/Users/conarti/Projects/frontend/src/processes/shared/index.ts',
+      code: 'import { BAR } from \'@/shared/constants\';',
+    },
   ],
 
   invalid: [
