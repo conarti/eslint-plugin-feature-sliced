@@ -4,6 +4,7 @@
  */
 'use strict';
 
+const micromatch = require('micromatch');
 const {
   isPathRelative,
   getLayerSliceFromPath,
@@ -29,10 +30,25 @@ module.exports = {
       [ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH]: 'There must be relative paths',
       [ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH]: 'There must be absolute paths',
     },
-    schema: [],
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          ignoreInFilesPatterns: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
+        },
+      },
+    ],
   },
 
   create(context) {
+    const ruleOptions = context.options[0] || {};
+    const { ignoreInFilesPatterns } = ruleOptions;
+
     const getPathsInfo = (node, context) => {
       const importPath = normalizePath(node.source.value);
       const currentFilePath = normalizePath(context.getFilename());
@@ -45,6 +61,7 @@ module.exports = {
         isImportRelative,
         targetLayer,
         targetSlice,
+        currentFilePath,
         currentFileLayer,
         currentFileSlice,
       };
@@ -58,6 +75,10 @@ module.exports = {
       }
 
       const pathsInfo = getPathsInfo(node, context);
+
+      if (ignoreInFilesPatterns && micromatch.isMatch(pathsInfo.currentFilePath, ignoreInFilesPatterns)) {
+        return;
+      }
 
       if (shouldBeRelative(pathsInfo)) {
         context.report({
