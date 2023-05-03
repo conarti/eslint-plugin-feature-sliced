@@ -28,6 +28,13 @@ const makeError = (mustBe) => {
   }
 };
 
+
+const makeIgnoreInFilesOptions = (patterns) => [
+  {
+    ignoreInFilesPatterns: patterns,
+  },
+];
+
 ruleTester.run('absolute-relative', rule, {
   valid: [
     {
@@ -63,9 +70,17 @@ ruleTester.run('absolute-relative', rule, {
       code: 'export { MarriageDetails } from \'./MarriageDetails\';',
     },
     {
+      /* should be valid if it has ignored in files options */
+      filename: '/Users/conarti/Projects/frontend/src/shared/foo/index.ts',
+      code: 'import { BAR } from \'@/shared/bar\';',
+      options: makeIgnoreInFilesOptions(['**/*/shared/foo/**/*']),
+    },
+    {
+      // FIXME: should works without extra options
       /* should be valid if it has slice with 'layer' name */
       filename: '/Users/conarti/Projects/frontend/src/processes/shared/index.ts',
       code: 'import { BAR } from \'@/shared/constants\';',
+      options: makeIgnoreInFilesOptions(['**/*/processes/shared/**/*']),
     },
   ],
 
