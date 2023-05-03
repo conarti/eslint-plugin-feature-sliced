@@ -1,3 +1,12 @@
+## [0.0.36](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.35...v0.0.36) (2023-05-03)
+
+
+### Features
+
+* **absolute-relative:** add 'ignoreInFilesPatterns' options for ignoring validations in files by patterns ([ec87cd1](https://github.com/conarti/eslint-plugin-fsd/commit/ec87cd192626503aa005b28cf36071e34224bcd4))
+
+
+
 ## [0.0.35](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.34...v0.0.35) (2023-04-30)
 
 
