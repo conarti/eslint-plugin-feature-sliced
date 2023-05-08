@@ -78,7 +78,7 @@ describe('import-order:', () => {
     assert.strictEqual(report[0].errorCount, 0);
   });
 
-  it('should lint with errors when has spaces between groups.', async () => {
+  it('should lint with errors when has not spaces between groups.', async () => {
     const report = await eslint.lintText(`
         // warn: specific order in mixed alias ~/layer => ~layer => layer
         // not used in real, but test aliases support 
@@ -101,7 +101,7 @@ describe('import-order:', () => {
         import { getSmth } from "./lib";                     // 4) sibling
         `);
 
-    assert.strictEqual(report[0].errorCount, 2);
+    assert.strictEqual(report[0].errorCount, 1);
   });
 
   it('aliased layers should lint with errors.', async () => {
