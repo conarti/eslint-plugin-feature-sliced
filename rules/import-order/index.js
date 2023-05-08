@@ -4,8 +4,19 @@
  */
 'use strict';
 
-const { layersNames } = require('../../lib/constants');
-const FS_LAYERS = layersNames.reverse();
+/**
+ *  fix cycle errors bug.
+ *  TODO: refactor and use from constants again
+ */
+const FS_LAYERS = [
+  'app',
+  'processes',
+  'pages',
+  'widgets',
+  'features',
+  'entities',
+  'shared',
+];
 
 module.exports = {
   plugins: [
