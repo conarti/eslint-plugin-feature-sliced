@@ -1,3 +1,12 @@
+## [0.0.37](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.36...v0.0.37) (2023-05-08)
+
+
+### Bug Fixes
+
+* **import-order:** cycle fsd imports errors bug ([f0107ed](https://github.com/conarti/eslint-plugin-fsd/commit/f0107ed90a10764b0bc2d9a70bd35ca6f69bda62))
+
+
+
 ## [0.0.36](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.35...v0.0.36) (2023-05-03)
 
 
