@@ -1,3 +1,12 @@
+## [0.0.38](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.37...v0.0.38) (2023-05-11)
+
+
+### Features
+
+* **public-api:** validate 'export ... from ...' syntax ([db343f4](https://github.com/conarti/eslint-plugin-fsd/commit/db343f4586f91b97c2a86a2a861ebdf810d9b185))
+
+
+
 ## [0.0.37](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.36...v0.0.37) (2023-05-08)
 
 
