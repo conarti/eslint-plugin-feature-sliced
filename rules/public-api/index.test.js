@@ -154,6 +154,14 @@ ruleTester.run('public-api', rule, {
       filename: 'src/features/foo/ui/bar/ui.tsx',
       code: "import { Foo } from '../foo.tsx';",
     },
+    {
+      filename: '/Users/macbook/Projects/the-rooms/src/entities/room/lib/index.ts',
+      code: "export { useRoom } from './useRoom';",
+    },
+    {
+      filename: '/Users/macbook/Projects/the-rooms/src/entities/room/lib/index.ts',
+      code: "export * from './useRoom';",
+    },
   ],
 
   invalid: [
@@ -308,13 +316,13 @@ ruleTester.run('public-api', rule, {
       ],
     },
     {
-      code: "import { useFoo } from '../model/use-foo.js';",
-      filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
+      code: "export { useRoom } from './lib/useRoom';",
+      filename: '/Users/macbook/Projects/the-rooms/src/entities/room/index.ts',
       errors: [
         makeErrorWithSuggestion(
-          'use-foo.js',
-          "import { useFoo } from '../model';",
-          '../model',
+          'useRoom',
+          "export { useRoom } from './lib';",
+          './lib',
         ),
       ],
     },
