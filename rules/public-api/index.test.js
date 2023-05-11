@@ -162,6 +162,11 @@ ruleTester.run('public-api', rule, {
       filename: '/Users/macbook/Projects/the-rooms/src/entities/room/lib/index.ts',
       code: "export * from './useRoom';",
     },
+    {
+      /* should not throw TypeError for 'export const' */
+      filename: '',
+      code: `export const foo = () => () => {};`,
+    },
   ],
 
   invalid: [
