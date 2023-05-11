@@ -50,7 +50,6 @@ module.exports = {
 
       const isImportNotFromFsdLayer = !layersMap.has(importLayer);
       const isImportFromIgnoredLayer = IGNORED_LAYERS.has(importLayer);
-      const isImportFromSameSlice = importSlice === currentFileSlice;
 
       if (isImportNotFromFsdLayer || isImportFromIgnoredLayer) {
         return;
@@ -60,6 +59,7 @@ module.exports = {
       const importPathFsdParts = getFsdPartsFromPath(importPath);
       const currentFilePathFsdParts = getFsdPartsFromPath(currentFilePath);
 
+      const isImportFromSameSlice = importSlice === currentFileSlice;
       const isImportFromSameSegment = importPathFsdParts.segment === currentFilePathFsdParts.segment;
 
       if (isImportFromPublicApi({
