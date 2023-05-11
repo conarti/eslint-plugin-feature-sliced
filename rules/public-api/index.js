@@ -41,6 +41,10 @@ module.exports = {
 
   create(context) {
     const validateAndReport = (node) => {
+      if (node.source === null) {
+        return;
+      }
+
       const currentFilePath = normalizePath(context.getFilename());
       const normalizedImportPath = normalizePath(node.source.value);
       const importPath = convertToAbsolute(currentFilePath, normalizedImportPath);
@@ -101,6 +105,12 @@ module.exports = {
         validateAndReport(node);
       },
       ImportExpression(node) {
+        validateAndReport(node);
+      },
+      ExportAllDeclaration(node) {
+        validateAndReport(node);
+      },
+      ExportNamedDeclaration(node) {
         validateAndReport(node);
       },
     };
