@@ -1,10 +1,12 @@
 const micromatch = require('micromatch');
 const { canImportLayer } = require('./can-import-layer');
 
-const isValidByRuleOptions = ({
-  isTypeImportKind,
-  normalizedImportPath,
-}, ruleOptions) => {
+const isValidByRuleOptions = (pathsInfo, ruleOptions) => {
+  const {
+    isTypeImportKind,
+    normalizedImportPath,
+  } = pathsInfo;
+
   const {
     allowTypeImports = false,
     ignorePatterns = null,
