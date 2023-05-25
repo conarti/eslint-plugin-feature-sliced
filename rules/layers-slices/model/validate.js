@@ -2,16 +2,10 @@ const micromatch = require('micromatch');
 const { layersMap } = require('../../../lib/constants');
 const { canImportLayer } = require('./can-import-layer');
 
-module.exports.validate = function(pathsInfo, ruleOptions){
-  const {
-    normalizedImportPath,
-    importLayer,
-    importSlice,
-    currentFileLayer,
-    currentFileSlice,
-    isTypeImportKind,
-  } = pathsInfo;
-
+const isValidByRuleOptions = ({
+  isTypeImportKind,
+  normalizedImportPath,
+}, ruleOptions) => {
   const {
     allowTypeImports = false,
     ignorePatterns = null,
@@ -22,6 +16,21 @@ module.exports.validate = function(pathsInfo, ruleOptions){
   }
 
   if (ignorePatterns && micromatch.isMatch(normalizedImportPath, ignorePatterns)) {
+    return true;
+  }
+
+  return false;
+};
+
+module.exports.validate = function(pathsInfo, ruleOptions){
+  const {
+    importLayer,
+    importSlice,
+    currentFileLayer,
+    currentFileSlice,
+  } = pathsInfo;
+
+  if (isValidByRuleOptions(pathsInfo, ruleOptions)) {
     return true;
   }
 
