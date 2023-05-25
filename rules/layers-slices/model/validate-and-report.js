@@ -8,16 +8,13 @@ const { layersMap } = require('../../../lib/constants');
 const { ERROR_MESSAGE_ID } = require('../constants');
 const { canImportLayer } = require('./can-import-layer');
 
-const isTypeImport = (node) => {
-  return node.importKind === 'type';
-};
-
 const extractPathsInfo = (node, context) => {
   const normalizedCurrentFilePath = normalizePath(context.getFilename());
   const normalizedImportPath = normalizePath(node.source.value);
   const importAbsolutePath = convertToAbsolute(normalizedCurrentFilePath, normalizedImportPath);
   const [importLayer, importSlice] = getLayerSliceFromPath(importAbsolutePath);
   const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(normalizedCurrentFilePath);
+  const isTypeImportKind = node.importKind === 'type';
 
   return {
     normalizedImportPath,
@@ -25,42 +22,50 @@ const extractPathsInfo = (node, context) => {
     importSlice,
     currentFileLayer,
     currentFileSlice,
+    isTypeImportKind,
   };
 };
 
-module.exports.validateAndReport = function(node, context, ruleOptions) {
-  const {
-    allowTypeImports = false,
-    ignorePatterns = null,
-  } = ruleOptions;
-
+const validate = (pathsInfo, ruleOptions) => {
   const {
     normalizedImportPath,
     importLayer,
     importSlice,
     currentFileLayer,
     currentFileSlice,
-  } = extractPathsInfo(node, context);
+    isTypeImportKind,
+  } = pathsInfo;
 
-  if (allowTypeImports && isTypeImport(node)) {
-    return;
+  const {
+    allowTypeImports = false,
+    ignorePatterns = null,
+  } = ruleOptions;
+
+  if (allowTypeImports && isTypeImportKind) {
+    return true;
   }
 
   if (ignorePatterns && micromatch.isMatch(normalizedImportPath, ignorePatterns)) {
-    return;
+    return true;
   }
 
   const isImportFromSameSlice = importSlice === currentFileSlice;
 
   if (isImportFromSameSlice) {
-    return;
+    return true;
   }
 
   if (!layersMap.has(importLayer) || !layersMap.has(currentFileLayer)) {
-    return;
+    return true;
   }
 
-  if (canImportLayer(importLayer, currentFileLayer, currentFileSlice, layersMap)) {
+  return canImportLayer(importLayer, currentFileLayer, currentFileSlice, layersMap);
+};
+
+module.exports.validateAndReport = function(node, context, ruleOptions) {
+  const pathsInfo = extractPathsInfo(node, context);
+
+  if (validate(pathsInfo, ruleOptions)) {
     return;
   }
 
@@ -68,8 +73,8 @@ module.exports.validateAndReport = function(node, context, ruleOptions) {
     node: node.source,
     messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
     data: {
-      importLayer,
-      currentFileLayer,
+      importLayer: pathsInfo.importLayer,
+      currentFileLayer: pathsInfo.currentFileLayer,
     },
   });
 };
