@@ -10,15 +10,10 @@ const isValidByRuleOptions = ({
     ignorePatterns = null,
   } = ruleOptions;
 
-  if (allowTypeImports && isTypeImportKind) {
-    return true;
-  }
+  const byAllowTypeImports = allowTypeImports && isTypeImportKind;
+  const byIgnorePatterns = ignorePatterns && micromatch.isMatch(normalizedImportPath, ignorePatterns);
 
-  if (ignorePatterns && micromatch.isMatch(normalizedImportPath, ignorePatterns)) {
-    return true;
-  }
-
-  return false;
+  return byAllowTypeImports || byIgnorePatterns;
 };
 
 module.exports.validate = function(pathsInfo, ruleOptions){
