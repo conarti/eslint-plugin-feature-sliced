@@ -6,6 +6,7 @@
 
 const { ERROR_MESSAGE_ID } = require('./constants');
 const { validateAndReport } = require('./model');
+const { extractRuleOptions } = require('../../lib/helpers');
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
@@ -39,7 +40,7 @@ module.exports = {
   },
 
   create(context) {
-    const ruleOptions = context.options[0] || {};
+    const ruleOptions = extractRuleOptions(context);
 
     return {
       ImportDeclaration(node) {

@@ -8,7 +8,7 @@ const micromatch = require('micromatch');
 const {
   isPathRelative,
   getLayerSliceFromPath,
-  normalizePath,
+  normalizePath, extractRuleOptions,
 } = require('../../lib/helpers');
 const { ERROR_MESSAGE_ID } = require('./constants');
 const {
@@ -46,7 +46,7 @@ module.exports = {
   },
 
   create(context) {
-    const ruleOptions = context.options[0] || {};
+    const ruleOptions = extractRuleOptions(context);
     const { ignoreInFilesPatterns } = ruleOptions;
 
     const getPathsInfo = (node, context) => {
