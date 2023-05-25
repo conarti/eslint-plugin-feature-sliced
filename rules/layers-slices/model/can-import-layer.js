@@ -1,7 +1,20 @@
 const { layersMap } = require('../../../lib/constants');
 
-module.exports.canImportLayer = (importLayer, currentFileLayer, currentFileSlice) => {
+module.exports.canImportLayer = (pathsInfo) => {
+  const {
+    importLayer,
+    importSlice,
+    currentFileLayer,
+    currentFileSlice,
+  } = pathsInfo;
+
   if (!currentFileSlice) {
+    return true;
+  }
+
+  const isImportFromSameSlice = importSlice === currentFileSlice;
+
+  if (isImportFromSameSlice) {
     return true;
   }
 
