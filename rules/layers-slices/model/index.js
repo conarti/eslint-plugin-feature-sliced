@@ -1,3 +1,3 @@
-const { canImportLayer } = require('./can-import-layer');
+const { validateAndReport } = require('./validate-and-report');
 
-module.exports.canImportLayer = canImportLayer;
+module.exports.validateAndReport = validateAndReport;
