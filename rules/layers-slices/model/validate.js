@@ -40,7 +40,9 @@ module.exports.validate = function(pathsInfo, ruleOptions){
     return true;
   }
 
-  if (!layersMap.has(importLayer) || !layersMap.has(currentFileLayer)) {
+  const hasUnknownLayers = !layersMap.has(importLayer) || !layersMap.has(currentFileLayer);
+
+  if (hasUnknownLayers) {
     return true;
   }
 
