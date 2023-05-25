@@ -19,9 +19,5 @@ const isValidByRuleOptions = (pathsInfo, ruleOptions) => {
 };
 
 module.exports.validate = function(pathsInfo, ruleOptions){
-  if (isValidByRuleOptions(pathsInfo, ruleOptions)) {
-    return true;
-  }
-
-  return canImportLayer(pathsInfo);
+  return isValidByRuleOptions(pathsInfo, ruleOptions) || canImportLayer(pathsInfo);
 };
