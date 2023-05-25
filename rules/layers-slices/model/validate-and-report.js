@@ -12,26 +12,43 @@ const isTypeImport = (node) => {
   return node.importKind === 'type';
 };
 
+const extractPathsInfo = (node, context) => {
+  const normalizedCurrentFilePath = normalizePath(context.getFilename());
+  const normalizedImportPath = normalizePath(node.source.value);
+  const importAbsolutePath = convertToAbsolute(normalizedCurrentFilePath, normalizedImportPath);
+  const [importLayer, importSlice] = getLayerSliceFromPath(importAbsolutePath);
+  const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(normalizedCurrentFilePath);
+
+  return {
+    normalizedImportPath,
+    importLayer,
+    importSlice,
+    currentFileLayer,
+    currentFileSlice,
+  };
+};
+
 module.exports.validateAndReport = function(node, context, ruleOptions) {
   const {
     allowTypeImports = false,
     ignorePatterns = null,
   } = ruleOptions;
 
+  const {
+    normalizedImportPath,
+    importLayer,
+    importSlice,
+    currentFileLayer,
+    currentFileSlice,
+  } = extractPathsInfo(node, context);
+
   if (allowTypeImports && isTypeImport(node)) {
     return;
   }
 
-  const currentFilePath = normalizePath(context.getFilename());
-  const normalizedImportPath = normalizePath(node.source.value);
-  const importPath = convertToAbsolute(currentFilePath, normalizedImportPath);
-
-  if (ignorePatterns && micromatch.isMatch(importPath, ignorePatterns)) {
+  if (ignorePatterns && micromatch.isMatch(normalizedImportPath, ignorePatterns)) {
     return;
   }
-
-  const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
-  const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
 
   const isImportFromSameSlice = importSlice === currentFileSlice;
 
