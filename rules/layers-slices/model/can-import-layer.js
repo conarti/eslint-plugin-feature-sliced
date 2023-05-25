@@ -1,5 +1,13 @@
-module.exports.canImportLayer = (importLayer, currentFileLayer, currentFileSlice, layersMap) => {
+const { layersMap } = require('../../../lib/constants');
+
+module.exports.canImportLayer = (importLayer, currentFileLayer, currentFileSlice) => {
   if (!currentFileSlice) {
+    return true;
+  }
+
+  const hasUnknownLayers = !layersMap.has(importLayer) || !layersMap.has(currentFileLayer);
+
+  if (hasUnknownLayers) {
     return true;
   }
 

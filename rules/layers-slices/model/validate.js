@@ -1,5 +1,4 @@
 const micromatch = require('micromatch');
-const { layersMap } = require('../../../lib/constants');
 const { canImportLayer } = require('./can-import-layer');
 
 const isValidByRuleOptions = ({
@@ -40,11 +39,5 @@ module.exports.validate = function(pathsInfo, ruleOptions){
     return true;
   }
 
-  const hasUnknownLayers = !layersMap.has(importLayer) || !layersMap.has(currentFileLayer);
-
-  if (hasUnknownLayers) {
-    return true;
-  }
-
-  return canImportLayer(importLayer, currentFileLayer, currentFileSlice, layersMap);
+  return canImportLayer(importLayer, currentFileLayer, currentFileSlice);
 };
