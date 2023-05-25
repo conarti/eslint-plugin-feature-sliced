@@ -30,6 +30,7 @@ module.exports.validate = function(pathsInfo, ruleOptions){
     return true;
   }
 
+  // TODO: Эта логика касается slice или слоев? проверить тесты и use case оттуда, выделить в функцию логику слайсов
   const isImportFromSameSlice = importSlice === currentFileSlice;
 
   if (isImportFromSameSlice) {
