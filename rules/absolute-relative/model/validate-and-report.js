@@ -1,22 +1,24 @@
 const {
   canValidate,
   isIgnored,
+  extractRuleOptions,
 } = require('../../../lib/helpers');
 const { ERROR_MESSAGE_ID } = require('../constants');
 const { shouldBeRelative } = require('./should-be-relative');
 const { shouldBeAbsolute } = require('./should-be-absolute');
 const { extractPathsInfo } = require('./extract-paths-info');
 
-module.exports.validateAndReport = function (node, context, ruleOptions, options = {}) {
+module.exports.validateAndReport = function (node, context, options = {}) {
   const { needCheckForAbsolute = true } = options;
 
   if (!canValidate(node)) {
     return;
   }
 
+  const userDefinedRuleOptions = extractRuleOptions(context);
   const pathsInfo = extractPathsInfo(node, context);
 
-  if (isIgnored(pathsInfo.currentFilePath, ruleOptions.ignoreInFilesPatterns)) {
+  if (isIgnored(pathsInfo.currentFilePath, userDefinedRuleOptions.ignoreInFilesPatterns)) {
     return;
   }
 

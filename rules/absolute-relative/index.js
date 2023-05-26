@@ -4,7 +4,6 @@
  */
 'use strict';
 
-const { extractRuleOptions } = require('../../lib/helpers');
 const { ERROR_MESSAGE_ID } = require('./constants');
 const { validateAndReport } = require('./model');
 
@@ -38,20 +37,18 @@ module.exports = {
   },
 
   create(context) {
-    const ruleOptions = extractRuleOptions(context);
-
     return {
       ImportDeclaration(node) {
-        validateAndReport(node, context, ruleOptions);
+        validateAndReport(node, context);
       },
       ImportExpression(node) {
-        validateAndReport(node, context, ruleOptions);
+        validateAndReport(node, context);
       },
       ExportAllDeclaration(node) {
-        validateAndReport(node, context, ruleOptions, { needCheckForAbsolute: false });
+        validateAndReport(node, context, { needCheckForAbsolute: false });
       },
       ExportNamedDeclaration(node) {
-        validateAndReport(node, context, ruleOptions, { needCheckForAbsolute: false });
+        validateAndReport(node, context, { needCheckForAbsolute: false });
       },
     };
   },
