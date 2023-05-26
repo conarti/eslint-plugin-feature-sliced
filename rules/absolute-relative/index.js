@@ -4,17 +4,9 @@
  */
 'use strict';
 
-const micromatch = require('micromatch');
-const {
-  isPathRelative,
-  getLayerSliceFromPath,
-  normalizePath, extractRuleOptions,
-} = require('../../lib/helpers');
+const { extractRuleOptions } = require('../../lib/helpers');
 const { ERROR_MESSAGE_ID } = require('./constants');
-const {
-  shouldBeRelative,
-  shouldBeAbsolute,
-} = require('./model');
+const { validateAndReport } = require('./model');
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
@@ -47,66 +39,19 @@ module.exports = {
 
   create(context) {
     const ruleOptions = extractRuleOptions(context);
-    const { ignoreInFilesPatterns } = ruleOptions;
-
-    const getPathsInfo = (node, context) => {
-      const importPath = normalizePath(node.source.value);
-      const currentFilePath = normalizePath(context.getFilename());
-
-      const [targetLayer, targetSlice] = getLayerSliceFromPath(importPath);
-      const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
-      const isImportRelative = isPathRelative(importPath);
-
-      return {
-        isImportRelative,
-        targetLayer,
-        targetSlice,
-        currentFilePath,
-        currentFileLayer,
-        currentFileSlice,
-      };
-    };
-
-    const validateAndReport = (node, options = {}) => {
-      const { needCheckForAbsolute = true } = options;
-
-      if (node.source === null) {
-        return;
-      }
-
-      const pathsInfo = getPathsInfo(node, context);
-
-      if (ignoreInFilesPatterns && micromatch.isMatch(pathsInfo.currentFilePath, ignoreInFilesPatterns)) {
-        return;
-      }
-
-      if (shouldBeRelative(pathsInfo)) {
-        context.report({
-          node: node.source,
-          messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
-        });
-      }
-
-      if (needCheckForAbsolute && shouldBeAbsolute(pathsInfo)) {
-        context.report({
-          node: node.source,
-          messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
-        });
-      }
-    };
 
     return {
       ImportDeclaration(node) {
-        validateAndReport(node);
+        validateAndReport(node, context, ruleOptions);
       },
       ImportExpression(node) {
-        validateAndReport(node);
+        validateAndReport(node, context, ruleOptions);
       },
       ExportAllDeclaration(node) {
-        validateAndReport(node, { needCheckForAbsolute: false });
+        validateAndReport(node, context, ruleOptions, { needCheckForAbsolute: false });
       },
       ExportNamedDeclaration(node) {
-        validateAndReport(node, { needCheckForAbsolute: false });
+        validateAndReport(node, context, ruleOptions, { needCheckForAbsolute: false });
       },
     };
   },

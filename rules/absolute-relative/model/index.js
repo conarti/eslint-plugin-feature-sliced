@@ -1,5 +1,3 @@
-const { shouldBeRelative } = require('./should-be-relative');
-const { shouldBeAbsolute } = require('./should-be-absolute');
+const { validateAndReport } = require('./validate-and-report');
 
-module.exports.shouldBeAbsolute = shouldBeAbsolute;
-module.exports.shouldBeRelative = shouldBeRelative;
+module.exports.validateAndReport = validateAndReport;
