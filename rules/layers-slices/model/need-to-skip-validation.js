@@ -4,7 +4,7 @@ module.exports.needToSkipValidation = function (pathsInfo, ruleOptions) {
   const { normalizedImportPath } = pathsInfo;
   const { ignorePatterns = null } = ruleOptions;
 
-  const byIgnorePatterns = ignorePatterns && micromatch.isMatch(normalizedImportPath, ignorePatterns);
+  const dueIgnorePatterns = ignorePatterns && micromatch.isMatch(normalizedImportPath, ignorePatterns);
 
-  return byIgnorePatterns;
+  return dueIgnorePatterns;
 };
