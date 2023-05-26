@@ -1,6 +1,7 @@
 const micromatch = require('micromatch');
-const { shouldBeRelative } = require('./should-be-relative');
+const { canValidate } = require('../../../lib/helpers');
 const { ERROR_MESSAGE_ID } = require('../constants');
+const { shouldBeRelative } = require('./should-be-relative');
 const { shouldBeAbsolute } = require('./should-be-absolute');
 const { extractPathsInfo } = require('./extract-paths-info');
 
@@ -15,9 +16,7 @@ function needToSkipValidation(pathsInfo, ruleOptions) {
 module.exports.validateAndReport = function (node, context, ruleOptions, options = {}) {
   const { needCheckForAbsolute = true } = options;
 
-  const hasNotExportSourceValue = (node) => node.source === null;
-
-  if (hasNotExportSourceValue(node)) {
+  if (!canValidate(node)) {
     return;
   }
 
