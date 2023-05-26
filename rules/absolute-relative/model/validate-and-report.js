@@ -8,9 +8,7 @@ const { shouldBeRelative } = require('./should-be-relative');
 const { shouldBeAbsolute } = require('./should-be-absolute');
 const { extractPathsInfo } = require('./extract-paths-info');
 
-module.exports.validateAndReport = function (node, context, options = {}) {
-  const { needCheckForAbsolute = true } = options;
-
+module.exports.validateAndReport = function (node, context, options = { needCheckForAbsolute: true }) {
   if (!canValidate(node)) {
     return;
   }
@@ -29,7 +27,7 @@ module.exports.validateAndReport = function (node, context, options = {}) {
     });
   }
 
-  if (needCheckForAbsolute && shouldBeAbsolute(pathsInfo)) {
+  if (options.needCheckForAbsolute && shouldBeAbsolute(pathsInfo)) {
     context.report({
       node: node.source,
       messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
