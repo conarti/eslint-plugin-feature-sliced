@@ -1,6 +1,6 @@
 const { layersMap } = require('../../../lib/constants');
 
-module.exports.canImportLayer = (pathsInfo) => {
+function isPathsInvalidForValidate(pathsInfo) {
   const {
     importLayer,
     importSlice,
@@ -12,15 +12,24 @@ module.exports.canImportLayer = (pathsInfo) => {
 
   const hasUnknownLayers = !layersMap.has(importLayer) || !layersMap.has(currentFileLayer);
 
+  return !currentFileSlice
+    || isImportFromSameSlice
+    || hasUnknownLayers;
+}
+
+module.exports.canImportLayer = (pathsInfo) => {
+  const {
+    importLayer,
+    currentFileLayer,
+  } = pathsInfo;
+
   const isInsideShared = importLayer === 'shared' && currentFileLayer === 'shared';
   const isInsideApp = importLayer === 'app' && currentFileLayer === 'app';
 
   const importLayerOrder = layersMap.get(importLayer);
   const currentFileLayerOrder = layersMap.get(currentFileLayer);
 
-  return !currentFileSlice
-    || isImportFromSameSlice
-    || hasUnknownLayers
+  return isPathsInvalidForValidate(pathsInfo)
     || isInsideShared
     || isInsideApp
     || currentFileLayerOrder > importLayerOrder;
