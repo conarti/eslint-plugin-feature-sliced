@@ -1,17 +1,11 @@
-const micromatch = require('micromatch');
-const { canValidate } = require('../../../lib/helpers');
+const {
+  canValidate,
+  isIgnored,
+} = require('../../../lib/helpers');
 const { ERROR_MESSAGE_ID } = require('../constants');
 const { shouldBeRelative } = require('./should-be-relative');
 const { shouldBeAbsolute } = require('./should-be-absolute');
 const { extractPathsInfo } = require('./extract-paths-info');
-
-function needToSkipValidation(pathsInfo, ruleOptions) {
-  const { ignoreInFilesPatterns = null } = ruleOptions;
-
-  const dueIgnoreInFilesPatterns = ignoreInFilesPatterns && micromatch.isMatch(pathsInfo.currentFilePath, ignoreInFilesPatterns);
-
-  return dueIgnoreInFilesPatterns;
-}
 
 module.exports.validateAndReport = function (node, context, ruleOptions, options = {}) {
   const { needCheckForAbsolute = true } = options;
@@ -22,7 +16,7 @@ module.exports.validateAndReport = function (node, context, ruleOptions, options
 
   const pathsInfo = extractPathsInfo(node, context);
 
-  if (needToSkipValidation(pathsInfo, ruleOptions)) {
+  if (isIgnored(pathsInfo.currentFilePath, ruleOptions.ignoreInFilesPatterns)) {
     return;
   }
 
