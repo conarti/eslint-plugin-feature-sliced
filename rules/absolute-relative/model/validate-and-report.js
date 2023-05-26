@@ -8,7 +8,7 @@ const {
 } = require('../../../lib/helpers');
 const { shouldBeAbsolute } = require('./should-be-absolute');
 
-const getPathsInfo = (node, context) => {
+const extractPathsInfo = (node, context) => {
   const importPath = normalizePath(node.source.value);
   const currentFilePath = normalizePath(context.getFilename());
 
@@ -34,7 +34,7 @@ module.exports.validateAndReport = function (node, context, ruleOptions, options
     return;
   }
 
-  const pathsInfo = getPathsInfo(node, context);
+  const pathsInfo = extractPathsInfo(node, context);
 
   if (ignoreInFilesPatterns && micromatch.isMatch(pathsInfo.currentFilePath, ignoreInFilesPatterns)) {
     return;
