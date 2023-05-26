@@ -1,6 +1,6 @@
 const { layersMap } = require('../../../lib/constants');
 
-function isPathsInvalidForValidate(pathsInfo) {
+function isPathsIncorrectForValidate(pathsInfo) {
   const {
     importLayer,
     importSlice,
@@ -29,7 +29,7 @@ module.exports.canImportLayer = function (pathsInfo) {
   const importLayerOrder = layersMap.get(importLayer);
   const currentFileLayerOrder = layersMap.get(currentFileLayer);
 
-  return isPathsInvalidForValidate(pathsInfo)
+  return isPathsIncorrectForValidate(pathsInfo)
     || isInsideShared
     || isInsideApp
     || currentFileLayerOrder > importLayerOrder;
