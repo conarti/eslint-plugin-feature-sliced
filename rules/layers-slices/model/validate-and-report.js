@@ -1,6 +1,6 @@
 const { ERROR_MESSAGE_ID } = require('../constants');
 const { extractPathsInfo } = require('./extract-paths-info');
-const { needToSkipValidation } = require('./need-to-skip-validation');
+const { isIgnored } = require('./is-ignored');
 const { canImportLayer } = require('./can-import-layer');
 
 function reportLayerError(context, node, pathsInfo) {
@@ -17,7 +17,7 @@ function reportLayerError(context, node, pathsInfo) {
 module.exports.validateAndReport = function (node, context, ruleOptions) {
   const pathsInfo = extractPathsInfo(node, context);
 
-  if (needToSkipValidation(pathsInfo, ruleOptions)) {
+  if (isIgnored(pathsInfo.importPath, ruleOptions.ignorePatterns)) {
     return;
   }
 
