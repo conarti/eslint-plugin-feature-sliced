@@ -1,22 +1,24 @@
 const {
   normalizePath,
   getLayerSliceFromPath,
-  isPathRelative,
 } = require('../../../lib/helpers');
 
 module.exports.extractPathsInfo = function (node, context) {
-  const importPath = normalizePath(node.source.value);
-  const currentFilePath = normalizePath(context.getFilename());
+  const currentFilePath = context.getFilename();
+  const importPath = node.source.value;
 
-  const [targetLayer, targetSlice] = getLayerSliceFromPath(importPath);
-  const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
-  const isImportRelative = isPathRelative(importPath);
+  const normalizedCurrentFilePath = normalizePath(currentFilePath);
+  const normalizedImportPath = normalizePath(importPath);
+
+  const [targetLayer, targetSlice] = getLayerSliceFromPath(normalizedImportPath);
+  const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(normalizedCurrentFilePath);
 
   return {
-    isImportRelative,
+    currentFilePath,
+    normalizedImportPath,
+    normalizedCurrentFilePath,
     targetLayer,
     targetSlice,
-    currentFilePath,
     currentFileLayer,
     currentFileSlice,
   };

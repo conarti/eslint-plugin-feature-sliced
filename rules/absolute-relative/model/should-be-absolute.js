@@ -1,8 +1,14 @@
-module.exports.shouldBeAbsolute = ({
-  isImportRelative,
-  targetLayer,
-  currentFileLayer,
-}) => {
+const { isPathRelative } = require('../../../lib/helpers');
+
+module.exports.shouldBeAbsolute = (pathsInfo) => {
+  const {
+    normalizedImportPath,
+    targetLayer,
+    currentFileLayer,
+  } = pathsInfo;
+
+  const isImportRelative = isPathRelative(normalizedImportPath);
+
   if (!isImportRelative) {
     return false;
   }
