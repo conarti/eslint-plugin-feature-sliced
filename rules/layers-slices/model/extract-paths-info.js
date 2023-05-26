@@ -4,6 +4,7 @@ const {
   getLayerSliceFromPath,
 } = require('../../../lib/helpers');
 
+/* @duplicate - the same function at 'absolute-relative' */
 module.exports.extractPathsInfo = function (node, context) {
   const importPath = node.source.value;
   const normalizedImportPath = normalizePath(importPath);

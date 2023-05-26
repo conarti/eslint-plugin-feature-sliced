@@ -3,6 +3,7 @@ const {
   getLayerSliceFromPath,
 } = require('../../../lib/helpers');
 
+/* @duplicate - the same function at 'layers-slices' */
 module.exports.extractPathsInfo = function (node, context) {
   const currentFilePath = context.getFilename();
   const importPath = node.source.value;
