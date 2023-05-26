@@ -15,7 +15,9 @@ function needToSkipValidation(pathsInfo, ruleOptions) {
 module.exports.validateAndReport = function (node, context, ruleOptions, options = {}) {
   const { needCheckForAbsolute = true } = options;
 
-  if (node.source === null) {
+  const hasNotExportSourceValue = (node) => node.source === null;
+
+  if (hasNotExportSourceValue(node)) {
     return;
   }
 
