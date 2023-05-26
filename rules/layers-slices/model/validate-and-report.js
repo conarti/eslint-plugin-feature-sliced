@@ -1,6 +1,6 @@
+const { isIgnored } = require('../../../lib/helpers');
 const { ERROR_MESSAGE_ID } = require('../constants');
 const { extractPathsInfo } = require('./extract-paths-info');
-const { isIgnored } = require('./is-ignored');
 const { canImportLayer } = require('./can-import-layer');
 
 function reportLayerError(context, node, pathsInfo) {
