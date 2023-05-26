@@ -3,7 +3,7 @@ const { extractPathsInfo } = require('./extract-paths-info');
 const { isValidByRuleOptions } = require('./is-valid-by-rule-options');
 const { canImportLayer } = require('./can-import-layer');
 
-module.exports.validateAndReport = function(node, context, ruleOptions) {
+module.exports.validateAndReport = function (node, context, ruleOptions) {
   const pathsInfo = extractPathsInfo(node, context);
 
   if (isValidByRuleOptions(pathsInfo, ruleOptions)) {

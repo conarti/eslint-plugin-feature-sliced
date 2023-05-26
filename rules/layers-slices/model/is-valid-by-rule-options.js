@@ -1,6 +1,6 @@
 const micromatch = require('micromatch');
 
-module.exports.isValidByRuleOptions  = function (pathsInfo, ruleOptions) {
+module.exports.isValidByRuleOptions = function (pathsInfo, ruleOptions) {
   const {
     isTypeImportKind,
     normalizedImportPath,

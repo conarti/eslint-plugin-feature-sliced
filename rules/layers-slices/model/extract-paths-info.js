@@ -4,7 +4,7 @@ const {
   getLayerSliceFromPath,
 } = require('../../../lib/helpers');
 
-module.exports.extractPathsInfo = function(node, context) {
+module.exports.extractPathsInfo = function (node, context) {
   const normalizedCurrentFilePath = normalizePath(context.getFilename());
   const normalizedImportPath = normalizePath(node.source.value);
   const importAbsolutePath = convertToAbsolute(normalizedCurrentFilePath, normalizedImportPath);
