@@ -1,4 +1,7 @@
-const { isIgnored } = require('../../../lib/helpers');
+const {
+  isIgnored,
+  extractRuleOptions,
+} = require('../../../lib/helpers');
 const { ERROR_MESSAGE_ID } = require('../constants');
 const { extractPathsInfo } = require('./extract-paths-info');
 const { canImportLayer } = require('./can-import-layer');
@@ -14,14 +17,15 @@ function reportLayerError(context, node, pathsInfo) {
   });
 }
 
-module.exports.validateAndReport = function (node, context, ruleOptions) {
+module.exports.validateAndReport = function (node, context) {
   const pathsInfo = extractPathsInfo(node, context);
+  const userDefinedRuleOptions = extractRuleOptions(context);
 
-  if (isIgnored(pathsInfo.importPath, ruleOptions.ignorePatterns)) {
+  if (isIgnored(pathsInfo.importPath, userDefinedRuleOptions.ignorePatterns)) {
     return;
   }
 
-  if (!canImportLayer(pathsInfo, ruleOptions)) {
+  if (!canImportLayer(pathsInfo, userDefinedRuleOptions)) {
     reportLayerError(context, node, pathsInfo);
   }
 };
