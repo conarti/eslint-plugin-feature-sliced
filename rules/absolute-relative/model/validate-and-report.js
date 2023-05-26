@@ -4,8 +4,15 @@ const { ERROR_MESSAGE_ID } = require('../constants');
 const { shouldBeAbsolute } = require('./should-be-absolute');
 const { extractPathsInfo } = require('./extract-paths-info');
 
-module.exports.validateAndReport = function (node, context, ruleOptions, options = {}) {
+function needToSkipValidation(pathsInfo, ruleOptions) {
   const { ignoreInFilesPatterns = null } = ruleOptions;
+
+  const dueIgnoreInFilesPatterns = ignoreInFilesPatterns && micromatch.isMatch(pathsInfo.currentFilePath, ignoreInFilesPatterns);
+
+  return dueIgnoreInFilesPatterns;
+}
+
+module.exports.validateAndReport = function (node, context, ruleOptions, options = {}) {
   const { needCheckForAbsolute = true } = options;
 
   if (node.source === null) {
@@ -14,7 +21,7 @@ module.exports.validateAndReport = function (node, context, ruleOptions, options
 
   const pathsInfo = extractPathsInfo(node, context);
 
-  if (ignoreInFilesPatterns && micromatch.isMatch(pathsInfo.currentFilePath, ignoreInFilesPatterns)) {
+  if (needToSkipValidation(pathsInfo, ruleOptions)) {
     return;
   }
 
