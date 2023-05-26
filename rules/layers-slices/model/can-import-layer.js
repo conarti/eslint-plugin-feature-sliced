@@ -8,11 +8,11 @@ function isPathsIncorrectForValidate(pathsInfo) {
     currentFileSlice,
   } = pathsInfo;
 
+  const isImportToNotFsdEntity = !currentFileSlice;
   const isImportFromSameSlice = importSlice === currentFileSlice;
-
   const hasUnknownLayers = !layersMap.has(importLayer) || !layersMap.has(currentFileLayer);
 
-  return !currentFileSlice
+  return isImportToNotFsdEntity
     || isImportFromSameSlice
     || hasUnknownLayers;
 }
