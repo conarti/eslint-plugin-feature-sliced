@@ -1,18 +1,10 @@
 const micromatch = require('micromatch');
 
 module.exports.needToSkipValidation = function (pathsInfo, ruleOptions) {
-  const {
-    isTypeImportKind,
-    normalizedImportPath,
-  } = pathsInfo;
+  const { normalizedImportPath } = pathsInfo;
+  const { ignorePatterns = null } = ruleOptions;
 
-  const {
-    allowTypeImports = false,
-    ignorePatterns = null,
-  } = ruleOptions;
-
-  const byAllowTypeImports = allowTypeImports && isTypeImportKind;
   const byIgnorePatterns = ignorePatterns && micromatch.isMatch(normalizedImportPath, ignorePatterns);
 
-  return byAllowTypeImports || byIgnorePatterns;
+  return byIgnorePatterns;
 };

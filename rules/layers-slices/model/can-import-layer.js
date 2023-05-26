@@ -17,11 +17,15 @@ function isPathsIncorrectForValidate(pathsInfo) {
     || hasUnknownLayers;
 }
 
-module.exports.canImportLayer = function (pathsInfo) {
+module.exports.canImportLayer = function (pathsInfo, ruleOptions) {
   const {
+    isTypeImportKind,
     importLayer,
     currentFileLayer,
   } = pathsInfo;
+  const { allowTypeImports = false } = ruleOptions;
+
+  const isTypeAndAllowedToImport = allowTypeImports && isTypeImportKind;
 
   const isInsideShared = importLayer === 'shared' && currentFileLayer === 'shared';
   const isInsideApp = importLayer === 'app' && currentFileLayer === 'app';
@@ -31,6 +35,7 @@ module.exports.canImportLayer = function (pathsInfo) {
   const isImportLayerBelowCurrent = currentFileLayerOrder > importLayerOrder;
 
   return isPathsIncorrectForValidate(pathsInfo)
+    || isTypeAndAllowedToImport
     || isInsideShared
     || isInsideApp
     || isImportLayerBelowCurrent;

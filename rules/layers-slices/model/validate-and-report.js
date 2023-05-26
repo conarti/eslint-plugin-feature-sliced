@@ -21,7 +21,7 @@ module.exports.validateAndReport = function (node, context, ruleOptions) {
     return;
   }
 
-  if (!canImportLayer(pathsInfo)) {
+  if (!canImportLayer(pathsInfo, ruleOptions)) {
     reportLayerError(context, node, pathsInfo);
   }
 };
