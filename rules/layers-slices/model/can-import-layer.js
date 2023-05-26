@@ -17,7 +17,7 @@ function isPathsInvalidForValidate(pathsInfo) {
     || hasUnknownLayers;
 }
 
-module.exports.canImportLayer = (pathsInfo) => {
+module.exports.canImportLayer = function (pathsInfo) {
   const {
     importLayer,
     currentFileLayer,
