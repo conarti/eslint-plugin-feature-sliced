@@ -28,9 +28,10 @@ module.exports.canImportLayer = function (pathsInfo) {
 
   const importLayerOrder = layersMap.get(importLayer);
   const currentFileLayerOrder = layersMap.get(currentFileLayer);
+  const isImportLayerBelowCurrent = currentFileLayerOrder > importLayerOrder;
 
   return isPathsIncorrectForValidate(pathsInfo)
     || isInsideShared
     || isInsideApp
-    || currentFileLayerOrder > importLayerOrder;
+    || isImportLayerBelowCurrent;
 };
