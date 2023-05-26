@@ -12,7 +12,7 @@ function isPathsIncorrectForValidate(pathsInfo) {
   const isImportFromSameSlice = importSlice === currentFileSlice;
   const hasUnknownLayers = !layersMap.has(importLayer) || !layersMap.has(currentFileLayer);
 
-  return isImportToNotFsdEntity
+  return isImportToNotFsdEntity // FIXME: is it needed here? removing this won't break any test
     || isImportFromSameSlice
     || hasUnknownLayers;
 }
