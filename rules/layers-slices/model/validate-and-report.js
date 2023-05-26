@@ -3,6 +3,17 @@ const { extractPathsInfo } = require('./extract-paths-info');
 const { isValidByRuleOptions } = require('./is-valid-by-rule-options');
 const { canImportLayer } = require('./can-import-layer');
 
+function reportLayerError(context, node, pathsInfo) {
+  context.report({
+    node: node.source,
+    messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
+    data: {
+      importLayer: pathsInfo.importLayer,
+      currentFileLayer: pathsInfo.currentFileLayer,
+    },
+  });
+}
+
 module.exports.validateAndReport = function (node, context, ruleOptions) {
   const pathsInfo = extractPathsInfo(node, context);
 
@@ -11,13 +22,6 @@ module.exports.validateAndReport = function (node, context, ruleOptions) {
   }
 
   if (!canImportLayer(pathsInfo)) {
-    context.report({
-      node: node.source,
-      messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
-      data: {
-        importLayer: pathsInfo.importLayer,
-        currentFileLayer: pathsInfo.currentFileLayer,
-      },
-    });
+    reportLayerError(context, node, pathsInfo);
   }
 };
