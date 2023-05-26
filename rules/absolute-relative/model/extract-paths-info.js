@@ -10,15 +10,15 @@ module.exports.extractPathsInfo = function (node, context) {
   const normalizedCurrentFilePath = normalizePath(currentFilePath);
   const normalizedImportPath = normalizePath(importPath);
 
-  const [targetLayer, targetSlice] = getLayerSliceFromPath(normalizedImportPath);
+  const [importLayer, importSlice] = getLayerSliceFromPath(normalizedImportPath);
   const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(normalizedCurrentFilePath);
 
   return {
     currentFilePath,
     normalizedImportPath,
     normalizedCurrentFilePath,
-    targetLayer,
-    targetSlice,
+    importLayer,
+    importSlice,
     currentFileLayer,
     currentFileSlice,
   };

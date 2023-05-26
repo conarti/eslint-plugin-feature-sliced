@@ -3,7 +3,7 @@ const { isPathRelative } = require('../../../lib/helpers');
 module.exports.shouldBeAbsolute = (pathsInfo) => {
   const {
     normalizedImportPath,
-    targetLayer,
+    importLayer,
     currentFileLayer,
   } = pathsInfo;
 
@@ -13,7 +13,7 @@ module.exports.shouldBeAbsolute = (pathsInfo) => {
     return false;
   }
 
-  if (!targetLayer) {
+  if (!importLayer) {
     return false;
   }
 
@@ -21,5 +21,5 @@ module.exports.shouldBeAbsolute = (pathsInfo) => {
     return false;
   }
 
-  return currentFileLayer !== targetLayer;
+  return currentFileLayer !== importLayer;
 };
