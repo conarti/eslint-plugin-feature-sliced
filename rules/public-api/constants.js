@@ -8,7 +8,13 @@ const IGNORED_LAYERS = new Set([
   'shared',
 ]);
 
+const VALIDATION_LEVEL = {
+  SEGMENTS: 'segments',
+  SLICES: 'slices',
+};
+
 module.exports = {
   MESSAGE_ID,
   IGNORED_LAYERS,
+  VALIDATION_LEVEL,
 };
