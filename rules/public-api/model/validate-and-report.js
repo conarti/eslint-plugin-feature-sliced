@@ -1,7 +1,7 @@
 const { extractPathsInfo } = require('../../../lib/fsd-lib');
 const { canValidate } = require('../../../lib/rule-lib');
 const { IGNORED_LAYERS } = require('../constants');
-const { isImportFromPublicApi } = require('./is-import-from-public-api');
+const { isPublicApi } = require('./is-public-api');
 const errorsLib = require('./errors-lib');
 
 module.exports.validateAndReport = function (node, context) {
@@ -17,7 +17,7 @@ module.exports.validateAndReport = function (node, context) {
     return;
   }
 
-  if (!isImportFromPublicApi(pathsInfo)) {
+  if (!isPublicApi(pathsInfo)) {
     errorsLib.reportShouldBeFromPublicApi(node, context, pathsInfo);
   }
 };

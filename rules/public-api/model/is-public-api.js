@@ -2,7 +2,7 @@ const isIndexFile = (segmentFiles) => {
   return /^index\.\w+/i.test(segmentFiles);
 };
 
-module.exports.isImportFromPublicApi = (pathsInfo) => {
+module.exports.isPublicApi = (pathsInfo) => {
   const {
     segmentFiles,
     segment,
