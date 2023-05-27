@@ -13,7 +13,7 @@ const {
   getLayerSliceFromPath,
   getFsdPartsFromPath,
 } = require('../../lib/fsd-lib');
-const { layersMap } = require('../../lib/constants');
+const { layersMap } = require('../../config');
 const {
   MESSAGE_ID,
   IGNORED_LAYERS,

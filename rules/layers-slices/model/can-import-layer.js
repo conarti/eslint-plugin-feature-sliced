@@ -1,4 +1,4 @@
-const { layersMap } = require('../../../lib/constants');
+const { layersMap } = require('../../../config');
 
 function isPathsIncorrectForValidate(pathsInfo) {
   const {
