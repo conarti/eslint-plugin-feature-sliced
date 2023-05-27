@@ -1,4 +1,4 @@
-const isImportFromIndexFile = (segmentFiles) => {
+const isIndexFile = (segmentFiles) => {
   return /^index\.\w+/i.test(segmentFiles);
 };
 
@@ -18,5 +18,5 @@ module.exports.isImportFromPublicApi = (pathsInfo) => {
     return true;
   }
 
-  return isImportFromIndexFile(segmentFiles) || segmentFiles === '';
+  return isIndexFile(segmentFiles) || segmentFiles === '';
 };
