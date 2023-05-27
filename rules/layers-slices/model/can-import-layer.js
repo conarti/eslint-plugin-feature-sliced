@@ -11,9 +11,9 @@ function isPathsIncorrectForValidate(pathsInfo) {
     currentFileSlice,
   } = pathsInfo;
 
-  const isImportToNotFsdEntity = !currentFileSlice;
-  const isImportFromSameSlice = importSlice === currentFileSlice;
-  const hasUnknownLayers = !isLayer(importLayer) || !isLayer(currentFileLayer);
+  const isImportToNotFsdEntity = !currentFileSlice; /* TODO: move to 'extractPathsInfo' */
+  const isImportFromSameSlice = importSlice === currentFileSlice; /* TODO: move to 'extractPathsInfo' */
+  const hasUnknownLayers = !isLayer(importLayer) || !isLayer(currentFileLayer); /* TODO: move to 'extractPathsInfo' */
 
   return isImportToNotFsdEntity // FIXME: is it needed here? removing this won't break any test
     || isImportFromSameSlice
