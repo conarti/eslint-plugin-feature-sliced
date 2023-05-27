@@ -4,9 +4,9 @@ const {
   extractRuleOptions,
   extractPathsInfo,
 } = require('../../../lib/helpers');
-const { ERROR_MESSAGE_ID } = require('../constants');
 const { shouldBeRelative } = require('./should-be-relative');
 const { shouldBeAbsolute } = require('./should-be-absolute');
+const errorsLib = require('./errors-lib');
 
 module.exports.validateAndReport = function (node, context, options = { needCheckForAbsolute: true }) {
   if (!canValidate(node)) {
@@ -21,16 +21,10 @@ module.exports.validateAndReport = function (node, context, options = { needChec
   }
 
   if (shouldBeRelative(pathsInfo)) {
-    context.report({
-      node: node.source,
-      messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
-    });
+    errorsLib.reportShouldBeRelative(node, context);
   }
 
   if (options.needCheckForAbsolute && shouldBeAbsolute(pathsInfo)) {
-    context.report({
-      node: node.source,
-      messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
-    });
+    errorsLib.reportShouldBeAbsolute(node, context);
   }
 };
