@@ -19,13 +19,13 @@ function isPathsIncorrectForValidate(pathsInfo) {
 
 module.exports.canImportLayer = function (pathsInfo, ruleOptions) {
   const {
-    isTypeImportKind,
+    isType,
     importLayer,
     currentFileLayer,
   } = pathsInfo;
   const { allowTypeImports = false } = ruleOptions;
 
-  const isTypeAndAllowedToImport = allowTypeImports && isTypeImportKind;
+  const isTypeAndAllowedToImport = allowTypeImports && isType;
 
   const isInsideShared = importLayer === 'shared' && currentFileLayer === 'shared';
   const isInsideApp = importLayer === 'app' && currentFileLayer === 'app';
