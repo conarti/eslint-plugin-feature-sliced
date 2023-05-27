@@ -4,6 +4,16 @@ const execa = require('execa');
 const packageJson = require('../package.json');
 const path = require('path');
 
+/**
+ * @description
+ * Use this script if you want to test package in your local project.
+ * This script compiles the files as they will be published via 'npm publish'
+ * and copies them into the project's node_modules.
+ * The package name will be taken from package.json (corresponds to the name as when published to npm).
+ * Double-check the path to your local project
+ * because the script uses 'rm -rf' to remove an already installed package with the same name.
+ */
+
 const run = (bin, args, opts = {}) =>
   execa(bin, args, {
     stdio: 'inherit',
