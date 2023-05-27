@@ -1,7 +1,4 @@
-const {
-  getFsdPartsFromPath,
-  extractPathsInfo,
-} = require('../../../lib/fsd-lib');
+const { extractPathsInfo } = require('../../../lib/fsd-lib');
 const { canValidate } = require('../../../lib/rule-lib');
 const { IGNORED_LAYERS } = require('../constants');
 const { isImportFromPublicApi } = require('./is-import-from-public-api');
@@ -20,23 +17,19 @@ module.exports.validateAndReport = function (node, context) {
     return;
   }
 
-  /** TODO: move getting 'segment', 'segmentFiles' and 'isSameSegment' logic to 'extractPathsInfo'. Delete this func  */
-  const importPathFsdParts = getFsdPartsFromPath(pathsInfo.importAbsolutePath);
-  const currentFilePathFsdParts = getFsdPartsFromPath(pathsInfo.currentFilePath);
-  const isImportFromSameSegment = importPathFsdParts.segment === currentFilePathFsdParts.segment;
-
   if (isImportFromPublicApi({
-    segmentFiles: importPathFsdParts.segmentFiles,
-    segment: importPathFsdParts.segment,
+    segment: pathsInfo.segment,
+    segmentFiles: pathsInfo.segmentFiles,
     isImportFromSameSlice: pathsInfo.isSameSlice,
-    isImportFromSameSegment,
+    isImportFromSameSegment: pathsInfo.isSameSegment,
   })) {
     return;
   }
 
   const pathsInfo1 = {
+    segment: pathsInfo.segment,
+    segmentFiles: pathsInfo.segmentFiles,
     normalizedImportPath: pathsInfo.normalizedImportPath,
-    importPathFsdParts,
     isImportFromSameSlice: pathsInfo.isSameSlice,
   };
 

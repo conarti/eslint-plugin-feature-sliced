@@ -5,14 +5,15 @@ const { convertToPublicApi } = require('./convert-to-public-api');
 function reportShouldBeFromPublicApi(node, context, pathsInfo) {
   const {
     normalizedImportPath,
-    importPathFsdParts,
+    segment,
+    segmentFiles,
     isImportFromSameSlice,
   } = pathsInfo;
 
   const [fixedPath, valueToRemove] = convertToPublicApi({
     targetPath: normalizedImportPath,
-    segment: importPathFsdParts.segment,
-    segmentFiles: importPathFsdParts.segmentFiles,
+    segment,
+    segmentFiles,
     isImportFromSameSlice,
   });
 
