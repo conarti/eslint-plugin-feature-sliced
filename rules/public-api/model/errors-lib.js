@@ -3,19 +3,7 @@ const { getSourceRangeWithoutQuotes } = require('../../../lib/rule-lib');
 const { convertToPublicApi } = require('./convert-to-public-api');
 
 function reportShouldBeFromPublicApi(node, context, pathsInfo) {
-  const {
-    normalizedImportPath,
-    segment,
-    segmentFiles,
-    isImportFromSameSlice,
-  } = pathsInfo;
-
-  const [fixedPath, valueToRemove] = convertToPublicApi({
-    targetPath: normalizedImportPath,
-    segment,
-    segmentFiles,
-    isImportFromSameSlice,
-  });
+  const [fixedPath, valueToRemove] = convertToPublicApi(pathsInfo);
 
   context.report({
     node: node.source,

@@ -2,17 +2,19 @@ const isImportFromIndexFile = (segmentFiles) => {
   return /^index\.\w+/i.test(segmentFiles);
 };
 
-module.exports.isImportFromPublicApi = ({
-  segmentFiles,
-  segment,
-  isImportFromSameSlice,
-  isImportFromSameSegment,
-}) => {
-  if (!isImportFromSameSlice) {
+module.exports.isImportFromPublicApi = (pathsInfo) => {
+  const {
+    segmentFiles,
+    segment,
+    isSameSlice,
+    isSameSegment,
+  } = pathsInfo;
+
+  if (!isSameSlice) {
     return segment === '';
   }
 
-  if (isImportFromSameSegment) {
+  if (isSameSegment) {
     return true;
   } else {
     return isImportFromIndexFile(segmentFiles) || segmentFiles === '';

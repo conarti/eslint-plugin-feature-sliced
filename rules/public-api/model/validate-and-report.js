@@ -17,21 +17,9 @@ module.exports.validateAndReport = function (node, context) {
     return;
   }
 
-  if (isImportFromPublicApi({
-    segment: pathsInfo.segment,
-    segmentFiles: pathsInfo.segmentFiles,
-    isImportFromSameSlice: pathsInfo.isSameSlice,
-    isImportFromSameSegment: pathsInfo.isSameSegment,
-  })) {
+  if (isImportFromPublicApi(pathsInfo)) {
     return;
   }
 
-  const pathsInfo1 = {
-    segment: pathsInfo.segment,
-    segmentFiles: pathsInfo.segmentFiles,
-    normalizedImportPath: pathsInfo.normalizedImportPath,
-    isImportFromSameSlice: pathsInfo.isSameSlice,
-  };
-
-  errorsLib.reportShouldBeFromPublicApi(node, context, pathsInfo1);
+  errorsLib.reportShouldBeFromPublicApi(node, context, pathsInfo);
 };

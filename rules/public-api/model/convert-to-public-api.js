@@ -1,17 +1,18 @@
 const addSlashToStart = (targetPath) => targetPath ? `/${targetPath}` : '';
 
-module.exports.convertToPublicApi = ({
-  targetPath,
-  isImportFromSameSlice,
-  segmentFiles,
-  segment,
-}) => {
+module.exports.convertToPublicApi = (pathsInfo) => {
+  const {
+    normalizedImportPath,
+    isSameSlice,
+    segmentFiles,
+    segment,
+  } = pathsInfo;
 
-  const valueToRemove = isImportFromSameSlice
+  const valueToRemove = isSameSlice
     ? segmentFiles
     : `${segment}${addSlashToStart(segmentFiles)}`;
 
-  const publicApiPath = targetPath.replace(`/${valueToRemove}`, '');
+  const publicApiPath = normalizedImportPath.replace(`/${valueToRemove}`, '');
 
   return [publicApiPath, valueToRemove];
 };
