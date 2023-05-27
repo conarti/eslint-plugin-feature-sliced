@@ -13,6 +13,7 @@
     "feature-based"
   ],
   "files": [
+    "config.js",
     "index.js",
     "rules/**/*.{js,md}",
     "lib/**/*.js",
