@@ -5,7 +5,7 @@ module.exports = {
     'conarti-fsd',
   ],
   extends: [
-    path.resolve(__dirname, '../rules/import-order'),
+    path.resolve(__dirname, './import-order'),
   ],
   rules: {
     'conarti-fsd/layers-slices': ['error', {
