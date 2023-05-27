@@ -7,13 +7,9 @@ const {
   isLayer,
   getFsdPartsFromPath,
 } = require('../../../lib/fsd-lib');
-const { getSourceRangeWithoutQuotes } = require('../../../lib/rule-lib');
-const {
-  IGNORED_LAYERS,
-  MESSAGE_ID,
-} = require('../constants');
-const { convertToPublicApi } = require('./convert-to-public-api');
+const { IGNORED_LAYERS } = require('../constants');
 const { isImportFromPublicApi } = require('./is-import-from-public-api');
+const errorsLib = require('./errors-lib');
 
 module.exports.validateAndReport = function (node, context) {
   if (node.source === null) {
@@ -50,27 +46,11 @@ module.exports.validateAndReport = function (node, context) {
     return;
   }
 
-  const [fixedPath, valueToRemove] = convertToPublicApi({
-    targetPath: normalizedImportPath,
-    segment: importPathFsdParts.segment,
-    segmentFiles: importPathFsdParts.segmentFiles,
+  const pathsInfo = {
+    normalizedImportPath,
+    importPathFsdParts,
     isImportFromSameSlice,
-  });
+  };
 
-  context.report({
-    node: node.source,
-    messageId: MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
-    data: {
-      fixedPath,
-    },
-    suggest: [
-      {
-        messageId: MESSAGE_ID.REMOVE_SUGGESTION,
-        data: {
-          valueToRemove,
-        },
-        fix: (fixer) => fixer.replaceTextRange(getSourceRangeWithoutQuotes(node.source.range), fixedPath),
-      },
-    ],
-  });
+  errorsLib.reportShouldBeFromPublicApi(node, context, pathsInfo);
 };
