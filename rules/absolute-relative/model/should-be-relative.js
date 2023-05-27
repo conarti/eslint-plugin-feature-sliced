@@ -1,17 +1,13 @@
-const { isPathRelative } = require('../../../lib/helpers');
-
 module.exports.shouldBeRelative = (pathsInfo) => {
   const {
-    normalizedImportPath,
+    isRelative,
     importLayer,
     importSlice,
     currentFileLayer,
     currentFileSlice,
   } = pathsInfo;
 
-  const isImportRelative = isPathRelative(normalizedImportPath);
-
-  if (isImportRelative) {
+  if (isRelative) {
     return false;
   }
 
@@ -27,7 +23,6 @@ module.exports.shouldBeRelative = (pathsInfo) => {
     return true;
   }
 
-  // FIXME: 20я строка не то же самое делает?
   if (
     currentFileLayer === 'shared' && importLayer === 'shared'
     || currentFileLayer === 'app' && importLayer === 'app'
