@@ -12,8 +12,8 @@ const {
 const {
   getLayerSliceFromPath,
   getFsdPartsFromPath,
+  isLayer,
 } = require('../../lib/fsd-lib');
-const { layersMap } = require('../../config');
 const {
   MESSAGE_ID,
   IGNORED_LAYERS,
@@ -54,7 +54,7 @@ module.exports = {
       const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
       const [, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
 
-      const isImportNotFromFsdLayer = !layersMap.has(importLayer);
+      const isImportNotFromFsdLayer = !isLayer(importLayer);
       const isImportFromIgnoredLayer = IGNORED_LAYERS.has(importLayer);
 
       if (isImportNotFromFsdLayer || isImportFromIgnoredLayer) {

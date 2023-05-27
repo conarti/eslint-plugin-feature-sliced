@@ -1,13 +1,36 @@
-const layers = {
-  'shared': 0,
-  'entities': 1,
-  'features': 2,
-  'widgets': 3,
-  'pages': 4,
-  'processes': 5,
-  'app': 6,
-};
+/**
+ * Layers arranged in order of their weight in the feature-sliced methodology
+ * @type {[
+ *   'shared',
+ *   'entities',
+ *   'features',
+ *   'widgets',
+ *   'pages',
+ *   'processes',
+ *   'app',
+ * ]}
+ */
+const layers = [
+  'shared',
+  'entities',
+  'features',
+  'widgets',
+  'pages',
+  'processes',
+  'app',
+];
 
+/**
+ * Slice segments regulated by feature-sliced methodologies
+ * @type {[
+ *   'ui',
+ *   'model',
+ *   'lib',
+ *   'api',
+ *   'config',
+ *   'assets',
+ * ]}
+ */
 const segments = [
   'ui',
   'model',
@@ -17,16 +40,8 @@ const segments = [
   'assets',
 ];
 
-const layersNames = Object.keys(layers);
-
-/**
- * Collection of layers with their import weight
- * @type {Map<'app' | 'shared' | 'features' | 'processes' | 'pages' | 'entities' | 'widgets', number>}
- */
-module.exports.layersMap = new Map(Object.entries(layers));
-
-module.exports.layersNames = layersNames;
-
-module.exports.pathSeparator = '/';
-
-module.exports.segments = segments;
+module.exports = {
+  pathSeparator: '/',
+  layers,
+  segments,
+};

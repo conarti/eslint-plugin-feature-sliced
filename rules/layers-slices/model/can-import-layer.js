@@ -1,4 +1,7 @@
-const { layersMap } = require('../../../config');
+const {
+  getLayerWeight,
+  isLayer,
+} = require('../../../lib/fsd-lib');
 
 function isPathsIncorrectForValidate(pathsInfo) {
   const {
@@ -10,7 +13,7 @@ function isPathsIncorrectForValidate(pathsInfo) {
 
   const isImportToNotFsdEntity = !currentFileSlice;
   const isImportFromSameSlice = importSlice === currentFileSlice;
-  const hasUnknownLayers = !layersMap.has(importLayer) || !layersMap.has(currentFileLayer);
+  const hasUnknownLayers = !isLayer(importLayer) || !isLayer(currentFileLayer);
 
   return isImportToNotFsdEntity // FIXME: is it needed here? removing this won't break any test
     || isImportFromSameSlice
@@ -30,8 +33,8 @@ module.exports.canImportLayer = function (pathsInfo, ruleOptions) {
   const isInsideShared = importLayer === 'shared' && currentFileLayer === 'shared';
   const isInsideApp = importLayer === 'app' && currentFileLayer === 'app';
 
-  const importLayerOrder = layersMap.get(importLayer);
-  const currentFileLayerOrder = layersMap.get(currentFileLayer);
+  const importLayerOrder = getLayerWeight(importLayer);
+  const currentFileLayerOrder = getLayerWeight(currentFileLayer);
   const isImportLayerBelowCurrent = currentFileLayerOrder > importLayerOrder;
 
   return isPathsIncorrectForValidate(pathsInfo)
