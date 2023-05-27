@@ -4,13 +4,15 @@
  */
 'use strict';
 
+const { getSourceRangeWithoutQuotes } = require('../../lib/rule-lib');
 const {
-  getLayerSliceFromPath,
   normalizePath,
   convertToAbsolute,
-  getSourceRangeWithoutQuotes,
+} = require('../../lib/path-lib');
+const {
+  getLayerSliceFromPath,
   getFsdPartsFromPath,
-} = require('../../lib/helpers');
+} = require('../../lib/fsd-lib');
 const { layersMap } = require('../../lib/constants');
 const {
   MESSAGE_ID,

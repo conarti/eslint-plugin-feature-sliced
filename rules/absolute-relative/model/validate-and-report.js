@@ -1,9 +1,9 @@
 const {
   canValidate,
-  isIgnored,
   extractRuleOptions,
-  extractPathsInfo,
-} = require('../../../lib/helpers');
+  isIgnored,
+} = require('../../../lib/rule-lib');
+const { extractPathsInfo } = require('../../../lib/fsd-lib');
 const { shouldBeRelative } = require('./should-be-relative');
 const { shouldBeAbsolute } = require('./should-be-absolute');
 const errorsLib = require('./errors-lib');

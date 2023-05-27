@@ -1,8 +1,8 @@
+const { extractPathsInfo } = require('../../../lib/fsd-lib');
 const {
-  isIgnored,
   extractRuleOptions,
-  extractPathsInfo,
-} = require('../../../lib/helpers');
+  isIgnored,
+} = require('../../../lib/rule-lib');
 const { canImportLayer } = require('./can-import-layer');
 const errorsLib = require('./errors-lib');
 
