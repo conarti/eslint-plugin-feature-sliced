@@ -16,7 +16,7 @@ module.exports.isImportFromPublicApi = (pathsInfo) => {
 
   if (isSameSegment) {
     return true;
-  } else {
-    return isImportFromIndexFile(segmentFiles) || segmentFiles === '';
   }
+
+  return isImportFromIndexFile(segmentFiles) || segmentFiles === '';
 };
