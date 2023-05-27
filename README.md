@@ -134,9 +134,9 @@ Recommended settings:
 🔧 Automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/user-guide/command-line-interface#--fix).
 💡 Suggestion fix (no automatic fix)
 
-| Name | Description | 🔧 |
-| :----------------------------------------------------- | :--------------------------------------- | :- |
-| [import/order](configs/import-order/README.md)             | | 🔧 |
-| [conarti-fsd/layers-slices](rules/layers-slices/README.md)           | Checks layer imports | |
-| [conarti-fsd/absolute-relative](rules/absolute-relative/README.md)             | Checks for absolute and relative paths | |
-| [conarti-fsd/public-api](rules/public-api/README.md) | Check for module imports from public api | 💡 |
+| Name                                                               | Description                               | 🔧 |
+|:-------------------------------------------------------------------|:------------------------------------------|:---|
+| [conarti-fsd/layers-slices](rules/layers-slices/README.md)         | Checks layer imports                      |    |
+| [conarti-fsd/absolute-relative](rules/absolute-relative/README.md) | Checks for absolute and relative paths    |    |
+| [conarti-fsd/public-api](rules/public-api/README.md)               | Check for module imports from public api  | 💡 |
+| import/order                                                       | Sort imports using 'eslint-plugin-import' | 🔧 |
