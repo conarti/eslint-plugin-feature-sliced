@@ -3,19 +3,8 @@ const {
   extractRuleOptions,
   extractPathsInfo,
 } = require('../../../lib/helpers');
-const { ERROR_MESSAGE_ID } = require('../constants');
 const { canImportLayer } = require('./can-import-layer');
-
-function reportLayerError(context, node, pathsInfo) {
-  context.report({
-    node: node.source,
-    messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
-    data: {
-      importLayer: pathsInfo.importLayer,
-      currentFileLayer: pathsInfo.currentFileLayer,
-    },
-  });
-}
+const errorsLib = require('./errors-lib');
 
 module.exports.validateAndReport = function (node, context) {
   const pathsInfo = extractPathsInfo(node, context);
@@ -26,6 +15,6 @@ module.exports.validateAndReport = function (node, context) {
   }
 
   if (!canImportLayer(pathsInfo, userDefinedRuleOptions)) {
-    reportLayerError(context, node, pathsInfo);
+    errorsLib.reportCanNotImportLayer(context, node, pathsInfo);
   }
 };
