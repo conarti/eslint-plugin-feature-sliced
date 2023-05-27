@@ -1,11 +1,6 @@
 const {
-  normalizePath,
-  convertToAbsolute,
-} = require('../../../lib/path-lib');
-const {
-  getLayerSliceFromPath,
-  isLayer,
   getFsdPartsFromPath,
+  extractPathsInfo,
 } = require('../../../lib/fsd-lib');
 const { canValidate } = require('../../../lib/rule-lib');
 const { IGNORED_LAYERS } = require('../constants');
@@ -17,41 +12,33 @@ module.exports.validateAndReport = function (node, context) {
     return;
   }
 
-  const currentFilePath = normalizePath(context.getFilename());
-  const normalizedImportPath = normalizePath(node.source.value);
-  const importPath = convertToAbsolute(currentFilePath, normalizedImportPath);
+  const pathsInfo = extractPathsInfo(node, context);
 
-  const [importLayer, importSlice] = getLayerSliceFromPath(importPath);
-  const [, currentFileSlice] = getLayerSliceFromPath(currentFilePath);
+  const isIgnoredLayer = IGNORED_LAYERS.has(pathsInfo.importLayer);
 
-  const isImportNotFromFsdLayer = !isLayer(importLayer);
-  const isImportFromIgnoredLayer = IGNORED_LAYERS.has(importLayer);
-
-  if (isImportNotFromFsdLayer || isImportFromIgnoredLayer) {
+  if (pathsInfo.isUnknownLayer || isIgnoredLayer) {
     return;
   }
 
-  /** @duplicate getLayerSliceFromPath - можно убрать функцию и использовать эту */
-  const importPathFsdParts = getFsdPartsFromPath(importPath);
-  const currentFilePathFsdParts = getFsdPartsFromPath(currentFilePath);
-
-  const isImportFromSameSlice = importSlice === currentFileSlice;
+  /** TODO: move getting 'segment', 'segmentFiles' and 'isSameSegment' logic to 'extractPathsInfo'. Delete this func  */
+  const importPathFsdParts = getFsdPartsFromPath(pathsInfo.importAbsolutePath);
+  const currentFilePathFsdParts = getFsdPartsFromPath(pathsInfo.currentFilePath);
   const isImportFromSameSegment = importPathFsdParts.segment === currentFilePathFsdParts.segment;
 
   if (isImportFromPublicApi({
     segmentFiles: importPathFsdParts.segmentFiles,
     segment: importPathFsdParts.segment,
-    isImportFromSameSlice,
+    isImportFromSameSlice: pathsInfo.isSameSlice,
     isImportFromSameSegment,
   })) {
     return;
   }
 
-  const pathsInfo = {
-    normalizedImportPath,
+  const pathsInfo1 = {
+    normalizedImportPath: pathsInfo.normalizedImportPath,
     importPathFsdParts,
-    isImportFromSameSlice,
+    isImportFromSameSlice: pathsInfo.isSameSlice,
   };
 
-  errorsLib.reportShouldBeFromPublicApi(node, context, pathsInfo);
+  errorsLib.reportShouldBeFromPublicApi(node, context, pathsInfo1);
 };
