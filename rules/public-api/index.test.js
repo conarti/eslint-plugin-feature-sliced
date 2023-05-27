@@ -1,6 +1,9 @@
 const rule = require('./index');
 const { RuleTester } = require('eslint');
-const { MESSAGE_ID } = require('./constants');
+const {
+  MESSAGE_ID,
+  VALIDATION_LEVEL,
+} = require('./constants');
 
 const ruleTester = new RuleTester({
   parserOptions: {
@@ -26,6 +29,14 @@ const makeErrorWithSuggestion = (suggestionSegments, suggestionOutput, fixedPath
   ],
 });
 
+const setValidationLevel = (level) => {
+  return [
+    {
+      level,
+    },
+  ];
+};
+
 /**
  * TODO добавить проверки на импорты файлов не зарезервированных как сегменты fsd.
  * Например (невалидный тест):
@@ -40,7 +51,7 @@ const makeErrorWithSuggestion = (suggestionSegments, suggestionOutput, fixedPath
  *         ),
  *       ],
  *     },
-*/
+ */
 
 ruleTester.run('public-api', rule, {
   valid: [
@@ -166,6 +177,11 @@ ruleTester.run('public-api', rule, {
       /* should not throw TypeError for 'export const' */
       filename: '',
       code: `export const foo = () => () => {};`,
+    },
+    {
+      /* should allow segments without index files by default */
+      filename: 'src/features/foo/index.ts',
+      code: `import { bar } from "./ui/bar";`,
     },
   ],
 
@@ -310,24 +326,15 @@ ruleTester.run('public-api', rule, {
       ],
     },
     {
+      /* shouldn't allow segments without index files if enabled segments validation level */
       code: "import { useFoo } from '../model/use-foo';",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
+      options: setValidationLevel(VALIDATION_LEVEL.SEGMENTS),
       errors: [
         makeErrorWithSuggestion(
           'use-foo',
           "import { useFoo } from '../model';",
           '../model',
-        ),
-      ],
-    },
-    {
-      code: "export { useRoom } from './lib/useRoom';",
-      filename: '/Users/macbook/Projects/the-rooms/src/entities/room/index.ts',
-      errors: [
-        makeErrorWithSuggestion(
-          'useRoom',
-          "export { useRoom } from './lib';",
-          './lib',
         ),
       ],
     },
