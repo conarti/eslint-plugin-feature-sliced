@@ -17,9 +17,7 @@ module.exports.validateAndReport = function (node, context) {
     return;
   }
 
-  if (isImportFromPublicApi(pathsInfo)) {
-    return;
+  if (!isImportFromPublicApi(pathsInfo)) {
+    errorsLib.reportShouldBeFromPublicApi(node, context, pathsInfo);
   }
-
-  errorsLib.reportShouldBeFromPublicApi(node, context, pathsInfo);
 };
