@@ -61,16 +61,12 @@ module.exports = {
 
       /** @duplicate getLayerSliceFromPath - можно убрать функцию и использовать эту */
       const importPathFsdParts = getFsdPartsFromPath(importPath);
-      const currentFilePathFsdParts = getFsdPartsFromPath(currentFilePath);
 
       const isImportFromSameSlice = importSlice === currentFileSlice;
-      const isImportFromSameSegment = importPathFsdParts.segment === currentFilePathFsdParts.segment;
 
       if (isImportFromPublicApi({
-        segmentFiles: importPathFsdParts.segmentFiles,
         segment: importPathFsdParts.segment,
         isImportFromSameSlice,
-        isImportFromSameSegment,
       })) {
         return;
       }

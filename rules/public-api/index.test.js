@@ -167,6 +167,11 @@ ruleTester.run('public-api', rule, {
       filename: '',
       code: `export const foo = () => () => {};`,
     },
+    {
+      /* should allow segments without index files */
+      filename: 'src/features/foo/index.ts',
+      code: `import { bar } from "./ui/bar";`,
+    },
   ],
 
   invalid: [
@@ -306,28 +311,6 @@ ruleTester.run('public-api', rule, {
           'assets',
           "import { Bar } from '@/features/group-folder/sub-group-folder/sub-sub-group/bar';",
           '@/features/group-folder/sub-group-folder/sub-sub-group/bar',
-        ),
-      ],
-    },
-    {
-      code: "import { useFoo } from '../model/use-foo';",
-      filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
-      errors: [
-        makeErrorWithSuggestion(
-          'use-foo',
-          "import { useFoo } from '../model';",
-          '../model',
-        ),
-      ],
-    },
-    {
-      code: "export { useRoom } from './lib/useRoom';",
-      filename: '/Users/macbook/Projects/the-rooms/src/entities/room/index.ts',
-      errors: [
-        makeErrorWithSuggestion(
-          'useRoom',
-          "export { useRoom } from './lib';",
-          './lib',
         ),
       ],
     },
