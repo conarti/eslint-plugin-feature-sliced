@@ -4,7 +4,10 @@
  */
 'use strict';
 
-const { MESSAGE_ID } = require('./constants');
+const {
+  MESSAGE_ID,
+  VALIDATION_LEVEL,
+} = require('./constants');
 const { validateAndReport } = require('./model');
 
 /** @type {import('eslint').Rule.RuleModule} */
@@ -24,7 +27,19 @@ module.exports = {
       [MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API]: 'Absolute imports are only allowed from public api ("{{ fixedPath }}")',
       [MESSAGE_ID.REMOVE_SUGGESTION]: 'Remove the "{{ valueToRemove }}"',
     },
-    schema: [],
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          level: {
+            enum: [
+              VALIDATION_LEVEL.SEGMENTS,
+              VALIDATION_LEVEL.SLICES,
+            ],
+          },
+        },
+      },
+    ],
   },
 
   create(context) {
