@@ -1,3 +1,19 @@
+## [0.0.39](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.38...v0.0.39) (2023-05-28)
+
+
+### Bug Fixes
+
+* **layers-slices:** remove import path normalization to check if it is ignored ([6569e75](https://github.com/conarti/eslint-plugin-fsd/commit/6569e7537f18efa9eba5010ac37e68dcd6eef57e))
+* **import-order:** error when using 'recommended' config without 'eslint-plugin-import' package installed (now the rule simply won't work, and you can always use 'recommended' config) ([8f3dfa7](https://github.com/conarti/eslint-plugin-fsd/commit/8f3dfa73c3d44b6287e6267a2d62f74f1791ea30))
+
+
+### Features
+
+* **absolute-relative:** improve logic for getting layer and slice from paths (now understands relative paths) ([c6d264a](https://github.com/conarti/eslint-plugin-fsd/commit/c6d264aa9f0226162842e758af04082ca418edc1))
+* **public-api:** add the option which adjust the level of validation ([ab6b7e5](https://github.com/conarti/eslint-plugin-fsd/commit/ab6b7e568c7e9dc2e8791b8fc2bd55ba4815d83f)), closes [#5](https://github.com/conarti/eslint-plugin-fsd/issues/5)
+
+
+
 ## [0.0.38](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.37...v0.0.38) (2023-05-11)
 
 
