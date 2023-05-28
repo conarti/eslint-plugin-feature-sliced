@@ -3,7 +3,7 @@ const {
   canValidate,
   extractRuleOptions,
 } = require('../../../lib/rule-lib');
-const { IGNORED_LAYERS } = require('../constants');
+const { IGNORED_LAYERS } = require('../config');
 const { isPublicApi } = require('./is-public-api');
 const errorsLib = require('./errors-lib');
 

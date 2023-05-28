@@ -7,7 +7,7 @@
 const {
   MESSAGE_ID,
   VALIDATION_LEVEL,
-} = require('./constants');
+} = require('./config');
 const { validateAndReport } = require('./model');
 
 /** @type {import('eslint').Rule.RuleModule} */

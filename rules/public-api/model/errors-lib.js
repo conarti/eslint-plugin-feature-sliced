@@ -1,4 +1,4 @@
-const { MESSAGE_ID } = require('../constants');
+const { MESSAGE_ID } = require('../config');
 const { getSourceRangeWithoutQuotes } = require('../../../lib/rule-lib');
 const { convertToPublicApi } = require('./convert-to-public-api');
 

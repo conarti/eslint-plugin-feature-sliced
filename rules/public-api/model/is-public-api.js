@@ -1,4 +1,4 @@
-const { VALIDATION_LEVEL } = require('../constants');
+const { VALIDATION_LEVEL } = require('../config');
 
 const isIndexFile = (segmentFiles) => {
   return /^index\.\w+/i.test(segmentFiles);

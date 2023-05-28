@@ -3,7 +3,7 @@ const { RuleTester } = require('eslint');
 const {
   MESSAGE_ID,
   VALIDATION_LEVEL,
-} = require('./constants');
+} = require('./config');
 
 const ruleTester = new RuleTester({
   parserOptions: {
