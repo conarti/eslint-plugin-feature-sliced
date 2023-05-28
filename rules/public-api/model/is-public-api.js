@@ -4,12 +4,23 @@ const isIndexFile = (segmentFiles) => {
   return /^index\.\w+/i.test(segmentFiles);
 };
 
+const validateSegments = (pathsInfo) => {
+  const {
+    isSameSegment,
+    segmentFiles,
+  } = pathsInfo;
+
+  if (isSameSegment) {
+    return true;
+  }
+
+  return isIndexFile(segmentFiles) || segmentFiles === '';
+};
+
 module.exports.isPublicApi = (pathsInfo, validateOptions = {}) => {
   const {
-    segmentFiles,
     segment,
     isSameSlice,
-    isSameSegment,
   } = pathsInfo;
 
   const { level = VALIDATION_LEVEL.SLICES } = validateOptions;
@@ -20,13 +31,9 @@ module.exports.isPublicApi = (pathsInfo, validateOptions = {}) => {
 
   const needValidateSegments = level === VALIDATION_LEVEL.SEGMENTS;
 
-  if (!needValidateSegments) {
-    return true;
+  if (needValidateSegments) {
+    return validateSegments(pathsInfo);
   }
 
-  if (isSameSegment) {
-    return true;
-  }
-
-  return isIndexFile(segmentFiles) || segmentFiles === '';
+  return true;
 };
