@@ -10,21 +10,19 @@ const validateSegments = (pathsInfo) => {
     segmentFiles,
   } = pathsInfo;
 
-  return isSameSegment
-    || isIndexFile(segmentFiles)
-    || segmentFiles === '';
+  const isSegmentPublicApi = isIndexFile(segmentFiles) || segmentFiles === '';
+
+  return isSameSegment || isSegmentPublicApi;
 };
 
 module.exports.isPublicApi = (pathsInfo, validateOptions = {}) => {
-  const {
-    segment,
-    isSameSlice,
-  } = pathsInfo;
-
   const { level = VALIDATION_LEVEL.SLICES } = validateOptions;
 
-  if (!isSameSlice) {
-    return segment === '';
+  const isAnotherSlice = !pathsInfo.isSameSlice;
+  const isSlicePublicApi = pathsInfo.segment === '';
+
+  if (isAnotherSlice) {
+    return isSlicePublicApi;
   }
 
   const needValidateSegments = level === VALIDATION_LEVEL.SEGMENTS;
