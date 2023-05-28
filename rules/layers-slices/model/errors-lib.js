@@ -1,4 +1,4 @@
-const { ERROR_MESSAGE_ID } = require('../constants');
+const { ERROR_MESSAGE_ID } = require('../config');
 
 function reportCanNotImportLayer(context, node, pathsInfo) {
   context.report({

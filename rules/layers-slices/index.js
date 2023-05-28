@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const { ERROR_MESSAGE_ID } = require('./constants');
+const { ERROR_MESSAGE_ID } = require('./config');
 const { validateAndReport } = require('./model');
 
 /** @type {import('eslint').Rule.RuleModule} */

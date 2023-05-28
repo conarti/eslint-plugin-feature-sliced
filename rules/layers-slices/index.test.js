@@ -1,6 +1,6 @@
 const { RuleTester } = require('eslint');
 const rule = require('./index');
-const { ERROR_MESSAGE_ID } = require('./constants');
+const { ERROR_MESSAGE_ID } = require('./config');
 
 const ruleTester = new RuleTester({
   parserOptions: {
