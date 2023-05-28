@@ -10,11 +10,9 @@ const validateSegments = (pathsInfo) => {
     segmentFiles,
   } = pathsInfo;
 
-  if (isSameSegment) {
-    return true;
-  }
-
-  return isIndexFile(segmentFiles) || segmentFiles === '';
+  return isSameSegment
+    || isIndexFile(segmentFiles)
+    || segmentFiles === '';
 };
 
 module.exports.isPublicApi = (pathsInfo, validateOptions = {}) => {
