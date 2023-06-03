@@ -10,24 +10,13 @@ const ruleTester = new RuleTester({
   parser: require.resolve('@typescript-eslint/parser'),
 });
 
-/**
- * @param mustBe {'absolute'|'relative'}
- * @returns {{messageId: string}}
- */
-const makeError = (mustBe) => {
-  if (mustBe === 'absolute') {
-    return ({
-      messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
-    });
-  }
-
-  if (mustBe === 'relative') {
-    return ({
-      messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
-    });
-  }
+const errorMustBeAbsolute = {
+  messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
 };
 
+const errorMustBeRelative = {
+  messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
+};
 
 const makeIgnoreInFilesOptions = (patterns) => [
   {
@@ -89,62 +78,62 @@ ruleTester.run('absolute-relative', rule, {
       name: 'Import from a single slice',
       filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { TheHeader } from \'widgets/TheHeader\';',
-      errors: [makeError('relative') ],
+      errors: [errorMustBeRelative],
     },
     {
       name: 'Import from a single slice and import expression',
       filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'const TheHeader = () => import(\'widgets/TheHeader\');',
-      errors: [makeError('relative') ],
+      errors: [errorMustBeRelative],
     },
     {
       name: 'Import from a single slice with an alias',
       filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { TheHeader } from \'@/widgets/TheHeader\';',
-      errors: [makeError('relative')],
+      errors: [errorMustBeRelative],
     },
     {
       name: 'Import from another layer',
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { useBar } from \'../../../shared/hooks\';',
-      errors: [makeError('absolute')],
+      errors: [errorMustBeAbsolute],
     },
     {
       name: 'Import from a single slice',
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { useBar } from \'src/widgets/TheHeader/lib\';',
-      errors: [makeError('relative')],
+      errors: [errorMustBeRelative],
     },
     {
       name: 'Import from a single layer',
       filename: 'src/app/App.tsx',
       code: 'import { AppRouter } from \'app/providers/router\';',
-      errors: [makeError('relative')],
+      errors: [errorMustBeRelative],
     },
     {
       filename: 'src/app/App.tsx',
       code: 'import { Foo } from \'../features/foo\';',
-      errors: [makeError('absolute')],
+      errors: [errorMustBeAbsolute],
     },
     {
       filename: 'src/shared/ui/AppSelect/AppSelect.tsx',
       code: 'import CheckIcon from \'shared/assets/icons/check.svg\';',
-      errors: [makeError('relative')],
+      errors: [errorMustBeRelative],
     },
     {
       filename: 'src/app/foo/bar/ui.tsx',
       code: 'import { Baz } from \'src/app/baz\';',
-      errors: [makeError('relative')],
+      errors: [errorMustBeRelative],
     },
     {
       filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/widgets/payments-widget-wrapper/index.ts',
       code: 'export * from \'@/widgets/payments-widget-wrapper/model\';',
-      errors: [makeError('relative')],
+      errors: [errorMustBeRelative],
     },
     {
       filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/widgets/blocks/MarriageDetails/index.ts',
       code: 'export { MarriageDetails } from \'@/widgets/blocks/MarriageDetails/MarriageDetails\';',
-      errors: [makeError('relative')],
+      errors: [errorMustBeRelative],
     },
   ],
 });
