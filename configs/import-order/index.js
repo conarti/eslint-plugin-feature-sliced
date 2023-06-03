@@ -20,7 +20,7 @@ module.exports = {
           order: 'asc',
           caseInsensitive: true,
         },
-        'newlines-between': 'always',
+        'newlines-between': 'never',
         pathGroups: LAYERS_REVERSED.map(
           (layer) => ({
             pattern: `**/?(*)${layer}{,/**}`,
