@@ -14,7 +14,6 @@
   ],
   "files": [
     "config.js",
-    "import-order.js",
     "index.js",
     "rules",
     "lib",
@@ -26,7 +25,7 @@
   "main": "./index.js",
   "exports": {
     ".": "./index.js",
-    "./import-order": "./import-order.js"
+    "./import-order": "./configs/import-order/index.js"
   },
   "scripts": {
     "lint": "npm-run-all \"lint:*\"",
