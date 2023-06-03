@@ -1,6 +1,6 @@
 const { ESLint } = require('eslint');
 const assert = require('assert');
-const cfg = require('./index');
+const cfg = require('./recommended');
 const { configLib } = require('../../lib/shared');
 
 const eslint = new ESLint({

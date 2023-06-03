@@ -1,4 +1,4 @@
-const importOrder = require('./configs/import-order');
+const importOrder = require('./configs/import-order/recommended');
 const importOrderWithNewlines = require('./configs/import-order/with-newlines');
 const importOrderWithNewlinesAndTypeGroup = require('./configs/import-order/with-newlines-and-type-group');
 const importOrderWithTypeGroup = require('./configs/import-order/with-type-group');
