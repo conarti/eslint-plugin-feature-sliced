@@ -106,13 +106,13 @@ ruleTester.run('layers-slices', rule, {
       filename: 'src/pages/foo-bar/lib/index.ts',
       code: 'import generatePayloadMapper from \'./generatePayloadMapper\';',
     },
-    /* import inside 'app' layer */
     {
+      name: "import inside 'app' layer",
       filename: 'src/app/foo/index.ts',
       code: 'import { Bar } from \'../bar\';',
     },
-    /* has 'layer' name at not layer path part */
     {
+      name: "has 'layer' name at not layer path part",
       filename: 'src/features/foo/index.ts',
       code: 'import { Bar } from \'src/entities/app-bar\';',
     },
@@ -124,8 +124,8 @@ ruleTester.run('layers-slices', rule, {
       code: 'import { addCommentFormActions, addCommentFormReducer } from \'@/features/Articl\'',
       errors: [makeErrorMessage('features', 'entities')],
     },
-    /* should work with import expressions */
     {
+      name: 'should work with import expressions',
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\entities\\providers',
       code: 'const foo = () => import(\'@/features/Articl\')',
       errors: [makeErrorMessage('features', 'entities')],
@@ -180,8 +180,8 @@ ruleTester.run('layers-slices', rule, {
       code: 'import { FooBar } from \'../../foo-bar/ui/index.vue\';',
       errors: [makeErrorMessage('entities', 'entities')],
     },
-    /* if there are layer names in the path */
     {
+      name: 'if there are layer names in the path',
       filename: '/Users/user/Documents/Files/projects/project/app/src/entities/Viewer/model/types.ts',
       code: "import { u } from '@/entities/User';",
       errors: [makeErrorMessage('entities', 'entities')],
