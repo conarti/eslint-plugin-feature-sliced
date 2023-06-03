@@ -70,14 +70,14 @@ ruleTester.run('absolute-relative', rule, {
       code: 'export { MarriageDetails } from \'./MarriageDetails\';',
     },
     {
-      /* should be valid if it has ignored in files options */
+      name: 'should be valid if it has ignored in files options',
       filename: '/Users/conarti/Projects/frontend/src/shared/foo/index.ts',
       code: 'import { BAR } from \'@/shared/bar\';',
       options: makeIgnoreInFilesOptions(['**/*/shared/foo/**/*']),
     },
     {
       // FIXME: should works without extra options
-      /* should be valid if it has slice with 'layer' name */
+      name: "should be valid if it has slice with 'layer' name",
       filename: '/Users/conarti/Projects/frontend/src/processes/shared/index.ts',
       code: 'import { BAR } from \'@/shared/constants\';',
       options: makeIgnoreInFilesOptions(['**/*/processes/shared/**/*']),
@@ -85,50 +85,38 @@ ruleTester.run('absolute-relative', rule, {
   ],
 
   invalid: [
-    /**
-     * Import from a single slice
-     */
     {
+      name: 'Import from a single slice',
       filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { TheHeader } from \'widgets/TheHeader\';',
       errors: [makeError('relative') ],
     },
-    /**
-     * Import from a single slice and import expression
-     */
     {
+      name: 'Import from a single slice and import expression',
       filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'const TheHeader = () => import(\'widgets/TheHeader\');',
       errors: [makeError('relative') ],
     },
-    /**
-     * Import from a single slice with an alias
-     */
     {
+      name: 'Import from a single slice with an alias',
       filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { TheHeader } from \'@/widgets/TheHeader\';',
       errors: [makeError('relative')],
     },
-    /**
-     * Import from another layer
-     */
     {
+      name: 'Import from another layer',
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { useBar } from \'../../../shared/hooks\';',
       errors: [makeError('absolute')],
     },
-    /**
-     * Import from a single slice
-     */
     {
+      name: 'Import from a single slice',
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { useBar } from \'src/widgets/TheHeader/lib\';',
       errors: [makeError('relative')],
     },
-    /**
-     * Import from a single layer
-     */
     {
+      name: 'Import from a single layer',
       filename: 'src/app/App.tsx',
       code: 'import { AppRouter } from \'app/providers/router\';',
       errors: [makeError('relative')],
@@ -153,7 +141,6 @@ ruleTester.run('absolute-relative', rule, {
       code: 'export * from \'@/widgets/payments-widget-wrapper/model\';',
       errors: [makeError('relative')],
     },
-
     {
       filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/widgets/blocks/MarriageDetails/index.ts',
       code: 'export { MarriageDetails } from \'@/widgets/blocks/MarriageDetails/MarriageDetails\';',
