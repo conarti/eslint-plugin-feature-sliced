@@ -14,17 +14,20 @@
   ],
   "files": [
     "config.js",
+    "import-order.js",
     "index.js",
-    "rules/**/*.{js,md}",
-    "lib/**/*.js",
-    "!rules/**/*.test.js",
-    "!lib/**/*.test.js",
+    "rules",
+    "lib",
     "configs",
+    "!**/*.test.js",
     "CHANGELOG.md"
   ],
   "author": "conarti",
   "main": "./index.js",
-  "exports": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./import-order": "./import-order.js"
+  },
   "scripts": {
     "lint": "npm-run-all \"lint:*\"",
     "lint:js": "eslint .",
