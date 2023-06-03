@@ -4,19 +4,9 @@
  */
 'use strict';
 
-/**
- *  fix cycle errors bug.
- *  TODO: refactor and use from constants again
- */
-const FS_LAYERS = [
-  'app',
-  'processes',
-  'pages',
-  'widgets',
-  'features',
-  'entities',
-  'shared',
-];
+const { layers } = require('../../config');
+
+const LAYERS_REVERSED = [...layers].reverse();
 
 module.exports = {
   plugins: [
@@ -31,7 +21,7 @@ module.exports = {
           caseInsensitive: true,
         },
         'newlines-between': 'always',
-        pathGroups: FS_LAYERS.map(
+        pathGroups: LAYERS_REVERSED.map(
           (layer) => ({
             pattern: `**/?(*)${layer}{,/**}`,
             group: 'internal',
