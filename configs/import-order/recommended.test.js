@@ -9,9 +9,7 @@ const eslint = new ESLint({
 });
 
 describe('import-order:', () => {
-
-  // TODO: update for new implementation
-  it.skip('should lint with errors.', async () => {
+  it('should lint with errors.', async () => {
     const report = await eslint.lintText(`
         import { Cart } from "@/entities/cart";    // 5 
         import { Input } from "~/shared/ui";       // 3.1
@@ -30,8 +28,7 @@ describe('import-order:', () => {
     assert.strictEqual(report[0].errorCount, 8);
   });
 
-  // TODO: update for new implementation
-  it.skip('should lint without errors.', async () => {
+  it('should lint without errors.', async () => {
     const report = await eslint.lintText(`
         // warn: specific order in mixed alias ~/layer => ~layer => layer 
         import axios from "axios";                           // 1) external libs
@@ -53,8 +50,7 @@ describe('import-order:', () => {
     assert.strictEqual(report[0].errorCount, 0);
   });
 
-  // TODO: update for new implementation
-  it.skip('should lint without errors.', async () => {
+  it('should lint without errors.', async () => {
     const report = await eslint.lintText(`
         // warn: specific order in mixed alias ~/layer => ~layer => layer
         // not used in real, but test aliases support 
@@ -78,7 +74,7 @@ describe('import-order:', () => {
     assert.strictEqual(report[0].errorCount, 0);
   });
 
-  it('should lint with errors when has not spaces between groups.', async () => {
+  it('should lint with errors when has spaces between groups.', async () => {
     const report = await eslint.lintText(`
         // warn: specific order in mixed alias ~/layer => ~layer => layer
         // not used in real, but test aliases support 
@@ -101,7 +97,7 @@ describe('import-order:', () => {
         import { getSmth } from "./lib";                     // 4) sibling
         `);
 
-    assert.strictEqual(report[0].errorCount, 1);
+    assert.strictEqual(report[0].errorCount, 2);
   });
 
   it('aliased layers should lint with errors.', async () => {
@@ -125,8 +121,7 @@ describe('import-order:', () => {
     assert.strictEqual(report[0].errorCount, 0);
   });
 
-  // TODO: update for new implementation
-  it.skip('~aliased should lint without errors.', async () => {
+  it('~aliased should lint without errors.', async () => {
     const report = await eslint.lintText(`
         import axios from "axios";
         import { Widgets } from "~widgets";
@@ -147,8 +142,7 @@ describe('import-order:', () => {
     assert.strictEqual(report[0].errorCount, 0);
   });
 
-  // TODO: update for new implementation
-  it.skip('~/aliased should lint without errors.', async () => {
+  it('~/aliased should lint without errors.', async () => {
     const report = await eslint.lintText(`
         import axios from "axios";
         import { Widgets } from "~/widgets";
@@ -170,7 +164,6 @@ describe('import-order:', () => {
   });
 
   describe('Alphabetic sort feature:', () => {
-
     it('should be alphabetic', async () => {
       const report = await eslint.lintText(`
             import { Apple } from 'features/apple';
@@ -192,6 +185,5 @@ describe('import-order:', () => {
 
       assert.strictEqual(report[0].errorCount, 3);
     });
-
   });
 });
