@@ -56,112 +56,112 @@ const setValidationLevel = (level) => {
 ruleTester.run('public-api', rule, {
   valid: [
     {
-      /* should work with slice public api */
+      name: 'should work with slice public api',
       code: "import { addCommentFormActions, addCommentFormReducer } from 'src/entities/Article'",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
     },
     {
-      /* should work with slice public api and alias in path */
+      name: 'should work with slice public api and alias in path',
       code: "import { addCommentFormActions, addCommentFormReducer } from '@/entities/Article'",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
     },
     {
-      /* should work with long paths */
+      name: 'should work with long paths',
       code: "import { addCommentFormActions, addCommentFormReducer } from 'some/root/path/entities/Article'",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
     },
     {
-      /* should not validate public api relative paths in 'app' */
+      name: "should not validate public api relative paths in 'app'",
       code: "import { setStylesForTheme } from 'app/providers/ThemeProvider'",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
     },
     {
-      /* it should work with fsd segments */
+      name: 'it should work with fsd segments',
       code: "import { formConfig } from 'src/features/form/config'",
       filename: 'src/features/form/ui/index.js',
     },
     {
-      /* it should work with fsd segments with file extension */
+      name: 'it should work with fsd segments with file extension',
       code: "import { formConfig } from 'src/features/form/config.ts'",
       filename: 'src/features/form/ui/index.js',
     },
     {
-      /* it should work with fsd segments with relative path style */
+      name: 'it should work with fsd segments with relative path style',
       code: "import { formConfig } from '../config'",
       filename: 'src/features/form/ui/index.js',
     },
     {
-      /* should not validate public api paths in 'shared' and fsd methodology segments (assets/api/model/lib/ui/config) */
+      name: "should not validate public api paths in 'shared' and fsd methodology segments (assets/api/model/lib/ui/config)",
       code: "import { ThemeSwitcher } from 'shared/ui/ThemeSwitcher';",
       filename: 'src/features/form/ui/index.js',
     },
     {
-      /* should not validate public api paths in 'shared' and fsd methodology segments (assets/api/model/lib/ui/config) */
+      name: "should not validate public api paths in 'shared' and fsd methodology segments (assets/api/model/lib/ui/config)",
       code: "import { foo } from 'shared/lib/foo';",
       filename: 'src/features/form/ui/index.js',
     },
     {
-      /* should work with group folders */
+      name: 'should work with group folders',
       code: "import { Bar } from '@/features/group-folder/bar';",
       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
     },
     {
-      /* should work with subgroup folders */
+      name: 'should work with subgroup folders',
       code: "import { Bar } from '@/features/group-folder/sub-group-folder/sub-sub-group/bar';",
       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
     },
     {
-      /* should not validate public api relative paths in 'shared' */
+      name: "should not validate public api relative paths in 'shared'",
       code: "import { Bar } from '../../../constants/bar';",
       filename: '/Users/test-user/repository/src/shared/ui/foo/index.vue',
     },
     {
-      /* should only swear at fsd methodology segments (assets/api/model/lib/ui/config) */
+      name: 'should only swear at fsd methodology segments (assets/api/model/lib/ui/config)',
       code: "import { useFoo } from '../foo/use-foo';",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
     },
     {
-      /* should not validate imports inside segment */
+      name: 'should not validate imports inside segment',
       code: "import { Foo } from './types';",
       filename: '/Users/test-user/repository/src/features/foo/model/index.ts',
     },
     {
-      /* should understand 'index' files with extensions */
+      name: "should understand 'index' files with extensions",
       code: "import { FooComponent } from './ui/index.ts';",
       filename: '/Users/test-user/repository/src/features/foo/index.ts',
     },
     {
-      /* should understand 'index' files with different extensions */
+      name: "should understand 'index' files with different extensions",
       code: "import FooComponent from './ui/index.vue';",
       filename: '/Users/test-user/repository/src/features/foo/index.ts',
     },
     {
-      /* should understand 'index' files with extensions and different layers */
+      name: "should understand 'index' files with extensions and different layers",
       code: "import { Bar } from 'src/entities/bar/index.ts';",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.ts',
     },
     {
-      /* should understand 'index' files without extensions and with different layers */
+      name: "should understand 'index' files without extensions and with different layers",
       code: "import { Bar } from 'src/entities/bar/index';",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.ts',
     },
     {
-      /* should correct read slices from paths */
+      name: 'should correct read slices from paths',
       code: "import { Foo } from '../models';",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.ts',
     },
     {
-      /* allow imports inside segment with no extra sub dirs */
+      name: 'allow imports inside segment with no extra sub dirs',
       filename: 'src/features/foo/ui/bar.tsx',
       code: "import { Foo } from './foo.tsx';",
     },
     {
-      /* allow imports inside segment with extra sub dirs */
+      name: 'allow imports inside segment with extra sub dirs',
       filename: 'src/features/foo/ui/bar/index.tsx',
       code: "import { Foo } from '../foo.tsx';",
     },
     {
-      /* allow imports inside segment with extra sub dirs and 'segment-like' file names */
+      name: "allow imports inside segment with extra sub dirs and 'segment-like' file names",
       filename: 'src/features/foo/ui/bar/ui.tsx',
       code: "import { Foo } from '../foo.tsx';",
     },
@@ -174,12 +174,12 @@ ruleTester.run('public-api', rule, {
       code: "export * from './useRoom';",
     },
     {
-      /* should not throw TypeError for 'export const' */
+      name: "should not throw TypeError for 'export const'",
       filename: '',
       code: `export const foo = () => () => {};`,
     },
     {
-      /* should allow segments without index files by default */
+      name: 'should allow segments without index files by default',
       filename: 'src/features/foo/index.ts',
       code: `import { bar } from "./ui/bar";`,
     },
@@ -196,8 +196,8 @@ ruleTester.run('public-api', rule, {
         ),
       ],
     },
-    /* should work with import expressions */
     {
+      name: 'should work with import expressions',
       code: "const foo = () => import('entities/Article/model/file.ts')",
       errors: [
         makeErrorWithSuggestion(
@@ -247,8 +247,8 @@ ruleTester.run('public-api', rule, {
         ),
       ],
     },
-    // shouldn't validate "ui", "model", "lib", "api", "config", "assets" as group folders
     {
+      name: `shouldn't validate "ui", "model", "lib", "api", "config", "assets" as group folders`,
       code: "import { Bar } from '@/features/bar/ui';",
       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
       errors: [
@@ -326,7 +326,7 @@ ruleTester.run('public-api', rule, {
       ],
     },
     {
-      /* shouldn't allow segments without index files if enabled segments validation level */
+      name: "shouldn't allow segments without index files if enabled segments validation level",
       code: "import { useFoo } from '../model/use-foo';",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
       options: setValidationLevel(VALIDATION_LEVEL.SEGMENTS),
