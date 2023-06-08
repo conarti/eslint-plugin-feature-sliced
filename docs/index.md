@@ -3,9 +3,8 @@
 layout: home
 
 hero:
-  name: "Feature Sliced Eslint Plugin"
-  text: "Feature Sliced Design Eslint Plugin Docs"
-  tagline: My great project tagline
+  name: 'eslint-plugin-conarti-fsd'
+  tagline: A simple and lightweight eslint plugin that provides custom rules and configurations to check code against the principles of the feature-sliced.design architectural methodology.
   actions:
     - theme: brand
       text: Markdown Examples
