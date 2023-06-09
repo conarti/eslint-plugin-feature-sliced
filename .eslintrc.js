@@ -79,6 +79,7 @@ module.exports = {
   },
   ignorePatterns: [
     'dist',
+    'docs',
   ],
   overrides: [
     {
