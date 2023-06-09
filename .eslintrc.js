@@ -6,8 +6,8 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:eslint-plugin/recommended",
-    "plugin:node/recommended",
   ],
+  parser: "@typescript-eslint/parser",
   plugins: [
     'filenames-simple',
     'unused-imports',
