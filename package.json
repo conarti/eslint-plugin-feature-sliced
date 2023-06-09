@@ -46,6 +46,7 @@
     "requireindex": "^1.2.0"
   },
   "devDependencies": {
+    "@types/node": "^20.2.5",
     "@typescript-eslint/parser": "^5.53.0",
     "@typescript-eslint/utils": "^5.59.9",
     "conventional-changelog-cli": "^2.2.2",
