@@ -65,7 +65,7 @@ const push = async (targetVersion) => {
   await run('git', ['push']);
 };
 
-async function main() {
+const selectVersion = async () => {
   let targetVersion;
 
   const versions = versionIncrements
@@ -99,6 +99,12 @@ async function main() {
   if (!valid(targetVersion)) {
     throw new Error(`Invalid target version: ${targetVersion}`);
   }
+
+  return targetVersion;
+};
+
+async function main() {
+  const targetVersion = await selectVersion();
 
   // Update the package version.
   step('Updating the package version...');
