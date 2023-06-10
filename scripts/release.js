@@ -25,6 +25,8 @@ const run = (bin, args, opts = {}) =>
 const step = (message) => console.log(c.cyan(`\n${message}`));
 
 const updatePackageVersion = (newVersion) => {
+  step('Updating the package version...');
+
   const getJsonPath = (filename) => resolve(resolve(__dirname, '..'), filename);
 
   const readJson = (filename) => {
@@ -47,6 +49,8 @@ const updatePackageVersion = (newVersion) => {
 };
 
 const generateChangelog = async () => {
+  step('Generating the changelog...');
+
   await run('npm', ['run', 'changelog']);
 
   const { yes: isChangelogOk } = await prompts({
@@ -59,16 +63,22 @@ const generateChangelog = async () => {
 };
 
 const commit = async (targetVersion) => {
+  step('Committing changes...');
+
   await run('git', ['add', 'CHANGELOG.md', 'package.json', 'package-lock.json']);
   await run('git', ['commit', '-m', targetVersion]);
   await run('git', ['tag', `v${targetVersion}`]);
 };
 
 const publish = async () => {
+  step('Publishing the package...');
+
   await run('npm', ['publish']);
 };
 
 const push = async (targetVersion) => {
+  step('Pushing to GitHub...');
+
   await run('git', ['push', 'origin', `refs/tags/v${targetVersion}`]);
   await run('git', ['push']);
 };
@@ -114,28 +124,18 @@ const selectVersion = async () => {
 async function main() {
   const targetVersion = await selectVersion();
 
-  // Update the package version.
-  step('Updating the package version...');
   updatePackageVersion(targetVersion);
 
-  // Generate the changelog.
-  step('Generating the changelog...');
   const isChangelogOk = await generateChangelog();
 
   if (!isChangelogOk) {
     return;
   }
 
-  // Commit changes to the Git and create a tag.
-  step('Committing changes...');
   await commit(targetVersion);
 
-  // Publish the package.
-  step('Publishing the package...');
   await publish();
 
-  // Push to GitHub.
-  step('Pushing to GitHub...');
   await push(targetVersion);
 }
 
