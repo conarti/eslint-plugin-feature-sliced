@@ -23,6 +23,7 @@
     "./import-order": "./dist/configs/import-order/index.js"
   },
   "scripts": {
+    "build": "tsc -b",
     "lint": "npm-run-all \"lint:*\"",
     "lint:js": "eslint .",
     "test": "mocha \"*(rules|lib|configs)/**/*.test.js\" --recursive",
@@ -41,7 +42,7 @@
     "requireindex": "^1.2.0"
   },
   "devDependencies": {
-    "@tsconfig/node18": "^2.0.1",
+    "@tsconfig/node14": "^1.0.3",
     "@tsconfig/strictest": "^2.0.1",
     "@types/node": "^20.2.5",
     "@types/requireindex": "^1.2.0",
