@@ -45,6 +45,9 @@ module.exports = {
       },
     }],
   },
+  ignorePatterns: [
+    'dist',
+  ],
   overrides: [
     {
       files: ["**/*.test.js"],
