@@ -13,19 +13,14 @@
     "feature-based"
   ],
   "files": [
-    "config.js",
-    "index.js",
-    "rules",
-    "lib",
-    "configs",
-    "!**/*.test.js",
+    "dist",
     "CHANGELOG.md"
   ],
   "author": "conarti",
   "main": "./index.js",
   "exports": {
-    ".": "./index.js",
-    "./import-order": "./configs/import-order/index.js"
+    ".": "./dist/index.js",
+    "./import-order": "./dist/configs/import-order/index.js"
   },
   "scripts": {
     "lint": "npm-run-all \"lint:*\"",
