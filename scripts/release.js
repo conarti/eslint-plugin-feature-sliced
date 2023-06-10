@@ -121,8 +121,15 @@ const selectVersion = async () => {
   return targetVersion;
 };
 
+const build = async () => {
+  step('Building package...');
+  await run('npm', ['run', 'build']);
+};
+
 async function main() {
   const targetVersion = await selectVersion();
+
+  await build();
 
   updatePackageVersion(targetVersion);
 
