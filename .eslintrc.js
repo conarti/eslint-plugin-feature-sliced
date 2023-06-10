@@ -6,9 +6,11 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:eslint-plugin/recommended",
+    'plugin:@typescript-eslint/recommended',
   ],
   parser: "@typescript-eslint/parser",
   plugins: [
+    '@typescript-eslint',
     'filenames-simple',
     'unused-imports',
   ],
@@ -46,6 +48,7 @@ module.exports = {
       },
     }],
     /* TODO: add airbnb config or something like this */
+    '@typescript-eslint/consistent-type-imports': ['error'],
   },
   ignorePatterns: [
     'dist',
