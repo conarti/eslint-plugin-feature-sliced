@@ -46,6 +46,25 @@ const updatePackageVersion = (newVersion) => {
   writeJson('package-lock.json', packageLockJson);
 };
 
+const generateChangelog = async () => {
+  await run('npm', ['run', 'changelog']);
+};
+
+const commit = async (targetVersion) => {
+  await run('git', ['add', 'CHANGELOG.md', 'package.json', 'package-lock.json']);
+  await run('git', ['commit', '-m', targetVersion]);
+  await run('git', ['tag', `v${targetVersion}`]);
+};
+
+const publish = async () => {
+  await run('npm', ['publish']);
+};
+
+const push = async (targetVersion) => {
+  await run('git', ['push', 'origin', `refs/tags/v${targetVersion}`]);
+  await run('git', ['push']);
+};
+
 async function main() {
   let targetVersion;
 
@@ -87,7 +106,7 @@ async function main() {
 
   // Generate the changelog.
   step('Generating the changelog...');
-  await run('npm', ['run', 'changelog']);
+  await generateChangelog();
 
   const { yes: changelogOk } = await prompts({
     type: 'confirm',
@@ -101,18 +120,15 @@ async function main() {
 
   // Commit changes to the Git and create a tag.
   step('Committing changes...');
-  await run('git', ['add', 'CHANGELOG.md', 'package.json', 'package-lock.json']);
-  await run('git', ['commit', '-m', targetVersion]);
-  await run('git', ['tag', `v${targetVersion}`]);
+  await commit(targetVersion);
 
   // Publish the package.
   step('Publishing the package...');
-  await run('npm', ['publish']);
+  await publish();
 
   // Push to GitHub.
   step('Pushing to GitHub...');
-  await run('git', ['push', 'origin', `refs/tags/v${targetVersion}`]);
-  await run('git', ['push']);
+  await push(targetVersion);
 }
 
 main().catch((err) => console.error(err));
