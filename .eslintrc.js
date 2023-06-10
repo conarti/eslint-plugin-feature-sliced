@@ -24,6 +24,7 @@ module.exports = {
     'semi': ['error', 'always'],
     'object-property-newline': 'error',
     'object-curly-spacing': ['error', 'always'],
+    /* TODO: update this configuration for ts imports */
     'object-curly-newline': ['error', {
       'ObjectExpression': {
         multiline: true,
@@ -44,6 +45,7 @@ module.exports = {
         consistent: true,
       },
     }],
+    /* TODO: add airbnb config or something like this */
   },
   ignorePatterns: [
     'dist',
