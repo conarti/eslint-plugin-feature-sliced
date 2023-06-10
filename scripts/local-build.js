@@ -22,7 +22,30 @@ const run = (bin, args, opts = {}) =>
 
 const step = (message) => console.log(c.cyan(`\n${message}`));
 
-async function main() {
+const cleanCompiledFiles = async (buildDir, packedPackageFileName) => {
+  step('Clean compiled files...');
+
+  await run('rm', [packedPackageFileName]);
+  await run('rm', ['-rf', buildDir]);
+};
+
+const build = async (buildDir, packedPackageFileName) => {
+  step('Compiling package...');
+
+  await run('npm', ['pack']);
+  await run('mkdir', [buildDir]);
+  await run('tar', ['-xzf', packedPackageFileName, '-C', buildDir, '--strip-components', '1']);
+};
+
+const moveToProject = async (destinationDir, buildDir) => {
+  step('Move compiled package to project...');
+
+  await run('rm', ['-rf', destinationDir]);
+  await run('mkdir', ['-p', destinationDir]);
+  await run('cp', ['-a', `./${buildDir}/`, destinationDir]);
+};
+
+const getCompilationInfo = async () => {
   const packageName = packageJson.name;
   const packageVersion = packageJson.version;
   const packedPackageFileName = `${packageName}-${packageVersion}.tgz`;
@@ -38,23 +61,25 @@ async function main() {
 
   const destinationDir = path.join(targetProjectRoot, 'node_modules', packageName);
 
-  const cleanCompiledFiles = async () => {
-    await run('rm', [packedPackageFileName]);
-    await run('rm', ['-rf', buildDir]);
+  return {
+    packedPackageFileName,
+    buildDir,
+    destinationDir,
   };
+};
 
-  step('Compiling package...');
-  await run('npm', ['pack']);
-  await run('mkdir', [buildDir]);
-  await run('tar', ['-xzf', packedPackageFileName, '-C', buildDir, '--strip-components', '1']);
+async function main() {
+  const {
+    packedPackageFileName,
+    buildDir,
+    destinationDir,
+  } = await getCompilationInfo();
 
-  step('Move compiled package to project...');
-  await run('rm', ['-rf', destinationDir]);
-  await run('mkdir', ['-p', destinationDir]);
-  await run('cp', ['-a', `./${buildDir}/`, destinationDir]);
+  await build(buildDir, packedPackageFileName);
 
-  step('Clean compiled files...');
-  await cleanCompiledFiles();
+  await moveToProject(destinationDir, buildDir);
+
+  await cleanCompiledFiles(buildDir, packedPackageFileName);
 
   step(`Done. Compiled package and move it to "${destinationDir}"`);
 }
