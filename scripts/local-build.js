@@ -32,6 +32,7 @@ const cleanCompiledFiles = async (buildDir, packedPackageFileName) => {
 const build = async (buildDir, packedPackageFileName) => {
   step('Compiling package...');
 
+  await run('npm', ['run', 'build']);
   await run('npm', ['pack']);
   await run('mkdir', [buildDir]);
   await run('tar', ['-xzf', packedPackageFileName, '-C', buildDir, '--strip-components', '1']);
