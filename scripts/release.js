@@ -48,6 +48,14 @@ const updatePackageVersion = (newVersion) => {
 
 const generateChangelog = async () => {
   await run('npm', ['run', 'changelog']);
+
+  const { yes: isChangelogOk } = await prompts({
+    type: 'confirm',
+    name: 'yes',
+    message: `Changelog generated. Does it look good?`,
+  });
+
+  return isChangelogOk;
 };
 
 const commit = async (targetVersion) => {
@@ -112,15 +120,9 @@ async function main() {
 
   // Generate the changelog.
   step('Generating the changelog...');
-  await generateChangelog();
+  const isChangelogOk = await generateChangelog();
 
-  const { yes: changelogOk } = await prompts({
-    type: 'confirm',
-    name: 'yes',
-    message: `Changelog generated. Does it look good?`,
-  });
-
-  if (!changelogOk) {
+  if (!isChangelogOk) {
     return;
   }
 
