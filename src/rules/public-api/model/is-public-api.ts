@@ -1,4 +1,4 @@
-const { VALIDATION_LEVEL } = require('../config');
+import { VALIDATION_LEVEL } from '../config';
 
 const isIndexFile = (segmentFiles) => {
   return /^index\.\w+/i.test(segmentFiles);
@@ -15,8 +15,10 @@ const validateSegments = (pathsInfo) => {
   return isSameSegment || isSegmentPublicApi;
 };
 
-module.exports.isPublicApi = (pathsInfo, validateOptions = {}) => {
-  const { level = VALIDATION_LEVEL.SLICES } = validateOptions;
+type ValidateOptions = { level: VALIDATION_LEVEL }
+
+export function isPublicApi(pathsInfo, validateOptions: ValidateOptions) {
+  const { level } = validateOptions;
 
   const isAnotherSlice = !pathsInfo.isSameSlice;
   const isSlicePublicApi = pathsInfo.segment === '';
@@ -32,4 +34,4 @@ module.exports.isPublicApi = (pathsInfo, validateOptions = {}) => {
   }
 
   return true;
-};
+}

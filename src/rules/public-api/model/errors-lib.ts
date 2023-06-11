@@ -1,8 +1,8 @@
-const { MESSAGE_ID } = require('../config');
-const { getSourceRangeWithoutQuotes } = require('../../../lib/rule-lib');
-const { convertToPublicApi } = require('./convert-to-public-api');
+import { MESSAGE_ID } from '../config';
+import { getSourceRangeWithoutQuotes } from '../../../lib/rule-lib';
+import { convertToPublicApi } from './convert-to-public-api';
 
-function reportShouldBeFromPublicApi(node, context, pathsInfo) {
+export function reportShouldBeFromPublicApi(node, context, pathsInfo) {
   const [fixedPath, valueToRemove] = convertToPublicApi(pathsInfo);
 
   context.report({
@@ -22,7 +22,3 @@ function reportShouldBeFromPublicApi(node, context, pathsInfo) {
     ],
   });
 }
-
-module.exports = {
-  reportShouldBeFromPublicApi,
-};

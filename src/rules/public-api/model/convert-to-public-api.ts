@@ -1,6 +1,6 @@
 const addSlashToStart = (targetPath) => targetPath ? `/${targetPath}` : '';
 
-module.exports.convertToPublicApi = (pathsInfo) => {
+export function convertToPublicApi(pathsInfo): [string, string] {
   const {
     normalizedImportPath,
     isSameSlice,
@@ -15,4 +15,4 @@ module.exports.convertToPublicApi = (pathsInfo) => {
   const publicApiPath = normalizedImportPath.replace(`/${valueToRemove}`, '');
 
   return [publicApiPath, valueToRemove];
-};
+}

@@ -1,23 +1,18 @@
-/**
- * @fileoverview Check for module imports from public api
- * @author conarti
- */
-'use strict';
-
-const {
+import type { MessageIds, Options } from './config';
+import {
   MESSAGE_ID,
   VALIDATION_LEVEL,
-} = require('./config');
-const { validateAndReport } = require('./model');
+} from './config';
+import { validateAndReport }from './model';
+import { createRule } from '../../lib/rule-lib';
 
-/** @type {import('eslint').Rule.RuleModule} */
-module.exports = {
+export default createRule<Options, MessageIds>({
+  name: 'public-api',
   meta: {
     type: 'problem',
     docs: {
       description: 'Check for module imports from public api',
       recommended: false,
-      url: null,
     },
     /* it doesn't understand when context.report is not in this module */
     // eslint-disable-next-line eslint-plugin/require-meta-has-suggestions
@@ -41,6 +36,11 @@ module.exports = {
       },
     ],
   },
+  defaultOptions: [
+    {
+      level: VALIDATION_LEVEL.SLICES,
+    },
+  ],
 
   create(context) {
     return {
@@ -58,4 +58,4 @@ module.exports = {
       },
     };
   },
-};
+});
