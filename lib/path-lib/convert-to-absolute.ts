@@ -1,7 +1,7 @@
-const { joinPath } = require('./join-path');
-const { isPathRelative } = require('./is-path-relative');
+import { joinPath } from './join-path';
+import { isPathRelative } from './is-path-relative';
 
-module.exports.convertToAbsolute = (fromPath, targetPath) => {
+export function convertToAbsolute(fromPath: string, targetPath: string): string {
   if (targetPath === '') {
     return fromPath;
   }
@@ -15,4 +15,4 @@ module.exports.convertToAbsolute = (fromPath, targetPath) => {
   }
 
   return joinPath(fromPath, `../${targetPath}`);
-};
+}
