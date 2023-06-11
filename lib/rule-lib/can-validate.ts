@@ -9,7 +9,7 @@
  *  import './foo'; // true
  *  import foo from './foo'; // true
  * ```
- * @param node
- * @returns {boolean}
  */
-module.exports.canValidate = (node) => node.source !== null;
+export function canValidate(node): boolean {
+  return node.source !== null;
+}
