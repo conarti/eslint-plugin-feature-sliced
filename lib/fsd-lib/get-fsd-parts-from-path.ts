@@ -1,7 +1,7 @@
-const {
+import {
   layers,
   segments,
-} = require('../../config');
+} from '../../config';
 
 const layersUnion = layers.join('|');
 const segmentsUnion = segments.join('|');
@@ -11,10 +11,8 @@ const fsdPartsRegExp = new RegExp(
 
 /**
  * @deprecated This module use an overly complex regular expression. It's better to complement the logic in 'getLayerSliceFromPath' (segment + segmentFiles)
- * @param targetPath
- * @returns {{segment: string, segmentFiles: string, layer: string}}
  */
-module.exports.getFsdPartsFromPath = (targetPath) => {
+export function getFsdPartsFromPath(targetPath: string) {
   const fsdParts = targetPath.match(fsdPartsRegExp);
 
   if (fsdParts === null) {
@@ -35,4 +33,4 @@ module.exports.getFsdPartsFromPath = (targetPath) => {
     segment,
     segmentFiles,
   };
-};
+}

@@ -1,12 +1,14 @@
-const { normalizePath } = require('../path-lib/normalize-path');
-const { convertToAbsolute } = require('../path-lib/convert-to-absolute');
-const { getLayerSliceFromPath } = require('./get-layer-slice-from-path');
-const { isPathRelative } = require('../path-lib/is-path-relative');
-const { isLayer } = require('./layers');
-const { getFsdPartsFromPath } = require('./get-fsd-parts-from-path');
+import {
+  normalizePath,
+  convertToAbsolute,
+  isPathRelative,
+} from '../path-lib';
+import { getLayerSliceFromPath } from './get-layer-slice-from-path';
+import { isLayer } from './layers';
+import { getFsdPartsFromPath } from './get-fsd-parts-from-path';
 
 /* TODO: remove 'import' prefix from all vars */
-module.exports.extractPathsInfo = function (node, context) {
+export function extractPathsInfo(node, context) {
   const currentFilePath = context.getFilename(); /* FIXME: getFilename is deprecated */
   const importPath = node.source.value;
 
@@ -48,4 +50,4 @@ module.exports.extractPathsInfo = function (node, context) {
     isSameSlice,
     isSameSegment,
   };
-};
+}
