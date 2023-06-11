@@ -1,22 +1,19 @@
-/**
- * @fileoverview Checks for absolute and relative paths
- * @author conarti
- */
-'use strict';
+import { validateAndReport } from './model';
+import { createRule } from '../../lib/rule-lib';
+import type {
+  MessageIds,
+  Options,
+} from './config';
+import { ERROR_MESSAGE_ID } from './config';
 
-const { ERROR_MESSAGE_ID } = require('./config');
-const { validateAndReport } = require('./model');
-
-/** @type {import('eslint').Rule.RuleModule} */
-module.exports = {
+export default createRule<Options, MessageIds>({
+  name: 'absolute-relative',
   meta: {
     type: 'problem',
     docs: {
       description: 'Checks for absolute and relative paths',
       recommended: false,
-      url: null,
     },
-    fixable: null,
     messages: {
       [ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH]: 'There must be relative paths',
       [ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH]: 'There must be absolute paths',
@@ -35,6 +32,11 @@ module.exports = {
       },
     ],
   },
+  defaultOptions: [
+    {
+      ignoreInFilesPatterns: [],
+    },
+  ],
 
   create(context) {
     return {
@@ -52,4 +54,4 @@ module.exports = {
       },
     };
   },
-};
+});

@@ -1,4 +1,4 @@
-module.exports.shouldBeAbsolute = (pathsInfo) => {
+export function shouldBeAbsolute(pathsInfo): boolean {
   const {
     isRelative,
     importLayer,
@@ -18,4 +18,4 @@ module.exports.shouldBeAbsolute = (pathsInfo) => {
   }
 
   return currentFileLayer !== importLayer;
-};
+}

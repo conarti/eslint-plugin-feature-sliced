@@ -1,4 +1,4 @@
-module.exports.shouldBeRelative = (pathsInfo) => {
+export function shouldBeRelative(pathsInfo): boolean {
   const {
     isRelative,
     importLayer,
@@ -31,4 +31,4 @@ module.exports.shouldBeRelative = (pathsInfo) => {
   }
 
   return currentFileSlice === importSlice && currentFileLayer === importLayer;
-};
+}

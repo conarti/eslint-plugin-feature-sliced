@@ -1,0 +1,12 @@
+export const enum ERROR_MESSAGE_ID {
+  MUST_BE_RELATIVE_PATH = 'must-be-relative-path',
+  MUST_BE_ABSOLUTE_PATH = 'must-be-absolute-path',
+}
+
+export type MessageIds = typeof ERROR_MESSAGE_ID[keyof typeof ERROR_MESSAGE_ID];
+
+export type Options = [
+  {
+    ignoreInFilesPatterns: string[],
+  },
+];
