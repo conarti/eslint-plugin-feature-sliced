@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const { layers } = require('../../config');
+const { layers } = require('../../src/config');
 
 const LAYERS_REVERSED = [...layers].reverse();
 

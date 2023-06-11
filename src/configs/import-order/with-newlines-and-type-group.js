@@ -4,7 +4,7 @@
  */
 'use strict';
 
-const { layers } = require('../../config');
+const { layers } = require('../../src/config');
 
 const LAYERS_REVERSED = [...layers].reverse();
 
@@ -20,7 +20,7 @@ module.exports = {
           order: 'asc',
           caseInsensitive: true,
         },
-        'newlines-between': 'never',
+        'newlines-between': 'always',
         pathGroups: LAYERS_REVERSED.map(
           (layer) => ({
             pattern: `**/?(*)${layer}{,/**}`,
