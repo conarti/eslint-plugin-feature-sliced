@@ -6,4 +6,4 @@ const setParser = (config, version = '2015') => ({
   },
 });
 
-module.exports.configLib = { setParser };
+export const configLib = { setParser };
