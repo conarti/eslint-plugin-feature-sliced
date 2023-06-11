@@ -17,7 +17,7 @@
     "CHANGELOG.md"
   ],
   "author": "conarti",
-  "main": "./index.js",
+  "main": "./dist/index.js",
   "exports": {
     ".": "./dist/index.js",
     "./import-order": "./dist/configs/import-order/index.js"
