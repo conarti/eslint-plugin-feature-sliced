@@ -1,7 +1,8 @@
-const {
+import {
   getLayerWeight,
   isLayer,
-} = require('../../../lib/fsd-lib');
+} from '../../../lib/fsd-lib';
+import type { Options } from '../config';
 
 function isPathsIncorrectForValidate(pathsInfo) {
   const {
@@ -20,13 +21,15 @@ function isPathsIncorrectForValidate(pathsInfo) {
     || hasUnknownLayers;
 }
 
-module.exports.canImportLayer = function (pathsInfo, ruleOptions) {
+type RuleOptions = Options[0];
+
+export function canImportLayer(pathsInfo, ruleOptions: RuleOptions) {
   const {
     isType,
     importLayer,
     currentFileLayer,
   } = pathsInfo;
-  const { allowTypeImports = false } = ruleOptions;
+  const { allowTypeImports } = ruleOptions;
 
   const isTypeAndAllowedToImport = allowTypeImports && isType;
 
@@ -42,4 +45,4 @@ module.exports.canImportLayer = function (pathsInfo, ruleOptions) {
     || isInsideShared
     || isInsideApp
     || isImportLayerBelowCurrent;
-};
+}

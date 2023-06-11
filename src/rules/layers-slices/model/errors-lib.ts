@@ -1,6 +1,6 @@
-const { ERROR_MESSAGE_ID } = require('../config');
+import { ERROR_MESSAGE_ID } from '../config';
 
-function reportCanNotImportLayer(context, node, pathsInfo) {
+export function reportCanNotImportLayer(context, node, pathsInfo) {
   context.report({
     node: node.source,
     messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
@@ -10,7 +10,3 @@ function reportCanNotImportLayer(context, node, pathsInfo) {
     },
   });
 }
-
-module.exports = {
-  reportCanNotImportLayer,
-};

@@ -1,20 +1,18 @@
-/**
- * @fileoverview Checks layer imports
- * @author conarti
- */
-'use strict';
+import type {
+  MessageIds,
+  Options,
+} from './config';
+import { ERROR_MESSAGE_ID } from './config';
+import { validateAndReport } from './model';
+import { createRule } from '../../lib/rule-lib';
 
-const { ERROR_MESSAGE_ID } = require('./config');
-const { validateAndReport } = require('./model');
-
-/** @type {import('eslint').Rule.RuleModule} */
-module.exports = {
+export default createRule<Options, MessageIds>({
+  name: 'layers-slices',
   meta: {
     type: 'problem',
     docs: {
       description: 'Checks layer imports',
       recommended: false,
-      url: null,
     },
     fixable: null,
     messages: {
@@ -37,6 +35,12 @@ module.exports = {
       },
     ],
   },
+  defaultOptions: [
+    {
+      allowTypeImports: false, /* TODO: set to 'true' */
+      ignorePatterns: [],
+    },
+  ],
 
   create(context) {
     return {
@@ -48,4 +52,4 @@ module.exports = {
       },
     };
   },
-};
+});
