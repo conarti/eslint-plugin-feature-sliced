@@ -1,5 +1,7 @@
 import { getLayerSliceFromPath } from './get-layer-slice-from-path';
 
+/* TODO: refactor using 'it.each' */
+
 describe('get-layer-slice-from-path', () => {
   it('should return layer 1', () => {
     const path = 'src/entities/foo';
