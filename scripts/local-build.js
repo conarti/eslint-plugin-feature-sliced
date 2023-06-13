@@ -25,8 +25,8 @@ const step = (message) => console.log(c.cyan(`\n${message}`));
 const cleanCompiledFiles = async (buildDir, packedPackageFileName) => {
   step('Clean compiled files...');
 
-  await run('rm', [packedPackageFileName]);
-  await run('rm', ['-rf', buildDir]);
+  await run('rimraf', [packedPackageFileName]);
+  await run('rimraf', [buildDir]);
 };
 
 const build = async (buildDir, packedPackageFileName) => {
@@ -41,7 +41,7 @@ const build = async (buildDir, packedPackageFileName) => {
 const moveToProject = async (destinationDir, buildDir) => {
   step('Move compiled package to project...');
 
-  await run('rm', ['-rf', destinationDir]);
+  await run('rimraf', [destinationDir]);
   await run('mkdir', ['-p', destinationDir]);
   await run('cp', ['-a', `./${buildDir}/`, destinationDir]);
 };
