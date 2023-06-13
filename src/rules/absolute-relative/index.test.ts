@@ -1,13 +1,13 @@
-const rule = require('./index');
-const { RuleTester } = require('eslint');
-const { ERROR_MESSAGE_ID } = require('./config');
+import { ESLintUtils } from '@typescript-eslint/utils';
+import rule from './index';
+import { ERROR_MESSAGE_ID } from './config';
 
-const ruleTester = new RuleTester({
+const ruleTester = new ESLintUtils.RuleTester({
   parserOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
   },
-  parser: require.resolve('@typescript-eslint/parser'),
+  parser: '@typescript-eslint/parser',
 });
 
 const errorMustBeAbsolute = {
@@ -18,7 +18,7 @@ const errorMustBeRelative = {
   messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
 };
 
-const makeIgnoreInFilesOptions = (patterns) => [
+const makeIgnoreInFilesOptions = (patterns: string[]): [{ ignoreInFilesPatterns: string[] }] => [
   {
     ignoreInFilesPatterns: patterns,
   },
