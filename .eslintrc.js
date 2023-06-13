@@ -1,11 +1,11 @@
 // eslint-disable-next-line filenames-simple/naming-convention
-"use strict";
+'use strict';
 
 module.exports = {
   root: true,
   extends: [
-    "eslint:recommended",
-    "plugin:eslint-plugin/recommended",
+    'eslint:recommended',
+    'plugin:eslint-plugin/recommended',
     'plugin:jest/recommended',
     'plugin:jest-formatting/recommended',
   ],
@@ -59,7 +59,7 @@ module.exports = {
   overrides: [
     {
       files: ['**/*.ts?(x)'],
-      parser: "@typescript-eslint/parser",
+      parser: '@typescript-eslint/parser',
       parserOptions: {
         tsconfigRootDir: __dirname,
         project: ['./tsconfig.eslint.json'],
