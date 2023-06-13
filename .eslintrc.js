@@ -6,11 +6,13 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:eslint-plugin/recommended",
-    'plugin:@typescript-eslint/recommended',
+    'plugin:jest/recommended',
+    'plugin:jest-formatting/recommended',
   ],
-  parser: "@typescript-eslint/parser",
+  parserOptions: {
+    ecmaVersion: 'latest',
+  },
   plugins: [
-    '@typescript-eslint',
     'filenames-simple',
     'unused-imports',
   ],
@@ -55,10 +57,15 @@ module.exports = {
   ],
   overrides: [
     {
-      files: ["**/*.test.js"],
-      env: {
-        mocha: true,
+      files: ['**/*.ts?(x)'],
+      parser: "@typescript-eslint/parser",
+      parserOptions: {
+        tsconfigRootDir: __dirname,
+        project: ['./tsconfig.eslint.json'],
       },
+      extends: [
+        'plugin:@typescript-eslint/recommended',
+      ],
     },
   ],
 };
