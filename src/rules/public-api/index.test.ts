@@ -1,16 +1,16 @@
-const rule = require('./index');
-const { RuleTester } = require('eslint');
-const {
+import { ESLintUtils } from '@typescript-eslint/utils';
+import rule from './index';
+import {
   MESSAGE_ID,
   VALIDATION_LEVEL,
-} = require('./config');
+} from './config';
 
-const ruleTester = new RuleTester({
+const ruleTester = new ESLintUtils.RuleTester({
   parserOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
   },
-  parser: require.resolve('@typescript-eslint/parser'),
+  parser: '@typescript-eslint/parser',
 });
 
 const makeErrorWithSuggestion = (suggestionSegments, suggestionOutput, fixedPath) => ({
@@ -29,7 +29,7 @@ const makeErrorWithSuggestion = (suggestionSegments, suggestionOutput, fixedPath
   ],
 });
 
-const setValidationLevel = (level) => {
+const setValidationLevel = (level: VALIDATION_LEVEL): [{ level: VALIDATION_LEVEL }] => {
   return [
     {
       level,
