@@ -1,5 +1,4 @@
-const assert = require('assert');
-const { getLayerSliceFromPath } = require('./get-layer-slice-from-path');
+import { getLayerSliceFromPath } from './get-layer-slice-from-path';
 
 describe('get-layer-slice-from-path', () => {
   it('should return layer 1', () => {
@@ -7,7 +6,7 @@ describe('get-layer-slice-from-path', () => {
     const expectedLayer = 'entities';
     const [actualLayer] = getLayerSliceFromPath(path);
 
-    assert.strictEqual(actualLayer, expectedLayer);
+    expect(actualLayer).toStrictEqual(expectedLayer);
   });
 
   it('should return layer 2', () => {
@@ -15,7 +14,7 @@ describe('get-layer-slice-from-path', () => {
     const expectedLayer = 'entities';
     const [actualLayer] = getLayerSliceFromPath(path);
 
-    assert.strictEqual(actualLayer, expectedLayer);
+    expect(actualLayer).toStrictEqual(expectedLayer);
   });
 
   it('should return layer 3', () => {
@@ -23,7 +22,7 @@ describe('get-layer-slice-from-path', () => {
     const expectedLayer = 'entities';
     const [actualLayer] = getLayerSliceFromPath(path);
 
-    assert.strictEqual(actualLayer, expectedLayer);
+    expect(actualLayer).toStrictEqual(expectedLayer);
   });
 
   it('should return layer 4', () => {
@@ -31,7 +30,7 @@ describe('get-layer-slice-from-path', () => {
     const expectedLayer = 'entities';
     const [actualLayer] = getLayerSliceFromPath(path);
 
-    assert.strictEqual(actualLayer, expectedLayer);
+    expect(actualLayer).toStrictEqual(expectedLayer);
   });
 
   it('should not return layer 1', () => {
@@ -39,7 +38,7 @@ describe('get-layer-slice-from-path', () => {
     const expectedLayer = null;
     const [actualLayer] = getLayerSliceFromPath(path);
 
-    assert.strictEqual(actualLayer, expectedLayer);
+    expect(actualLayer).toStrictEqual(expectedLayer);
   });
 
   it('should not return layer 2', () => {
@@ -47,7 +46,7 @@ describe('get-layer-slice-from-path', () => {
     const expectedLayer = null;
     const [actualLayer] = getLayerSliceFromPath(path);
 
-    assert.strictEqual(actualLayer, expectedLayer);
+    expect(actualLayer).toStrictEqual(expectedLayer);
   });
 
   it('should not return layer 3', () => {
@@ -55,7 +54,7 @@ describe('get-layer-slice-from-path', () => {
     const expectedLayer = null;
     const [actualLayer] = getLayerSliceFromPath(path);
 
-    assert.strictEqual(actualLayer, expectedLayer);
+    expect(actualLayer).toStrictEqual(expectedLayer);
   });
 
   it('should return slice 1', () => {
@@ -63,7 +62,7 @@ describe('get-layer-slice-from-path', () => {
     const expectedSlice = 'foo';
     const [, actualSlice] = getLayerSliceFromPath(path);
 
-    assert.strictEqual(actualSlice, expectedSlice);
+    expect(actualSlice).toStrictEqual(expectedSlice);
   });
 
   it('should return slice 2', () => {
@@ -71,7 +70,7 @@ describe('get-layer-slice-from-path', () => {
     const expectedSlice = 'foo';
     const [, actualSlice] = getLayerSliceFromPath(path);
 
-    assert.strictEqual(actualSlice, expectedSlice);
+    expect(actualSlice).toStrictEqual(expectedSlice);
   });
 
   it('should return slice 3', () => {
@@ -79,7 +78,7 @@ describe('get-layer-slice-from-path', () => {
     const expectedSlice = 'foo';
     const [, actualSlice] = getLayerSliceFromPath(path);
 
-    assert.strictEqual(actualSlice, expectedSlice);
+    expect(actualSlice).toStrictEqual(expectedSlice);
   });
 
   it('should return slice 4', () => {
@@ -87,7 +86,7 @@ describe('get-layer-slice-from-path', () => {
     const expectedSlice = 'foo';
     const [, actualSlice] = getLayerSliceFromPath(path);
 
-    assert.strictEqual(actualSlice, expectedSlice);
+    expect(actualSlice).toStrictEqual(expectedSlice);
   });
 
   it('should return slice 5', () => {
@@ -95,7 +94,7 @@ describe('get-layer-slice-from-path', () => {
     const expectedSlice = 'foo';
     const [, actualSlice] = getLayerSliceFromPath(path);
 
-    assert.strictEqual(actualSlice, expectedSlice);
+    expect(actualSlice).toStrictEqual(expectedSlice);
   });
 
   it('should not return slice 6', () => {
@@ -103,7 +102,7 @@ describe('get-layer-slice-from-path', () => {
     const expectedSlice = null;
     const [, actualSlice] = getLayerSliceFromPath(path);
 
-    assert.strictEqual(actualSlice, expectedSlice);
+    expect(actualSlice).toStrictEqual(expectedSlice);
   });
 
   it('should not return slice 7', () => {
@@ -111,7 +110,7 @@ describe('get-layer-slice-from-path', () => {
     const expectedSlice = null;
     const [, actualSlice] = getLayerSliceFromPath(path);
 
-    assert.strictEqual(actualSlice, expectedSlice);
+    expect(actualSlice).toStrictEqual(expectedSlice);
   });
 
   it('should not return slice 8 (kebab-case)', () => {
@@ -119,6 +118,6 @@ describe('get-layer-slice-from-path', () => {
     const expectedSlice = 'foo-bar-baz';
     const [, actualSlice] = getLayerSliceFromPath(path);
 
-    assert.strictEqual(actualSlice, expectedSlice);
+    expect(actualSlice).toStrictEqual(expectedSlice);
   });
 });
