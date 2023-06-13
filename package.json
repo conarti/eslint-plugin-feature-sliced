@@ -39,8 +39,7 @@
     "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
-    "micromatch": "^4.0.5",
-    "requireindex": "^1.2.0"
+    "micromatch": "^4.0.5"
   },
   "devDependencies": {
     "@tsconfig/node14": "^1.0.3",
