@@ -2,10 +2,6 @@
   "include": [
     "src"
   ],
-  "exclude": [
-    "**/*.test.ts",
-    "**/*.test.js"
-  ],
   "extends": [
 //    "@tsconfig/strictest/tsconfig",
     "@tsconfig/node14"
