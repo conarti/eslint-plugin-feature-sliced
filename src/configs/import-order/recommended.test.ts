@@ -1,7 +1,6 @@
-const { ESLint } = require('eslint');
-const assert = require('assert');
-const cfg = require('./recommended');
-const { configLib } = require('../../lib/shared');
+import { ESLint } from 'eslint';
+import cfg from './recommended';
+import { configLib } from '../../lib/shared';
 
 const eslint = new ESLint({
   useEslintrc: false,
@@ -25,7 +24,7 @@ describe('import-order:', () => {
         import { Two } from "~entities/two";       // 7
         `);
 
-    assert.strictEqual(report[0].errorCount, 8);
+    expect(report[0].errorCount).toBe(8);
   });
 
   it('should lint without errors.', async () => {
@@ -47,7 +46,7 @@ describe('import-order:', () => {
         import { getSmth } from "./lib";                     // 4) sibling
         `);
 
-    assert.strictEqual(report[0].errorCount, 0);
+    expect(report[0].errorCount).toBe(0);
   });
 
   it('should lint without errors.', async () => {
@@ -71,7 +70,7 @@ describe('import-order:', () => {
         import { getSmth } from "./lib";                     // 4) sibling
         `);
 
-    assert.strictEqual(report[0].errorCount, 0);
+    expect(report[0].errorCount).toBe(0);
   });
 
   it('should lint with errors when has spaces between groups.', async () => {
@@ -97,7 +96,7 @@ describe('import-order:', () => {
         import { getSmth } from "./lib";                     // 4) sibling
         `);
 
-    assert.strictEqual(report[0].errorCount, 2);
+    expect(report[0].errorCount).toBe(2);
   });
 
   it('aliased layers should lint with errors.', async () => {
@@ -107,7 +106,7 @@ describe('import-order:', () => {
         import { First } from '@features/first';
         `);
 
-    assert.strictEqual(report[0].errorCount, 2);
+    expect(report[0].errorCount).toBe(2);
   });
 
   it('aliased layers should lint without errors.', async () => {
@@ -118,7 +117,7 @@ describe('import-order:', () => {
         import { Third } from '@shared/third';
         `);
 
-    assert.strictEqual(report[0].errorCount, 0);
+    expect(report[0].errorCount).toBe(0);
   });
 
   it('~aliased should lint without errors.', async () => {
@@ -139,7 +138,7 @@ describe('import-order:', () => {
         import { getSmth } from "./lib";
         `);
 
-    assert.strictEqual(report[0].errorCount, 0);
+    expect(report[0].errorCount).toBe(0);
   });
 
   it('~/aliased should lint without errors.', async () => {
@@ -160,7 +159,7 @@ describe('import-order:', () => {
         import { getSmth } from "./lib";
         `);
 
-    assert.strictEqual(report[0].errorCount, 0);
+    expect(report[0].errorCount).toBe(0);
   });
 
   describe('Alphabetic sort feature:', () => {
@@ -172,7 +171,7 @@ describe('import-order:', () => {
             import { Dream } from 'features/dream';
             `);
 
-      assert.strictEqual(report[0].errorCount, 0);
+      expect(report[0].errorCount).toBe(0);
     });
 
     it('should be alphabetic error', async () => {
@@ -183,7 +182,7 @@ describe('import-order:', () => {
             import { Apple } from 'features/apple';
             `);
 
-      assert.strictEqual(report[0].errorCount, 3);
+      expect(report[0].errorCount).toBe(3);
     });
   });
 });
