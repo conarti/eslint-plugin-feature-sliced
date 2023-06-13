@@ -22,11 +22,29 @@ const run = (bin, args, opts = {}) =>
 
 const step = (message) => console.log(c.cyan(`\n${message}`));
 
+const createDir = async (dirname) => {
+  await run('mkdir', [dirname]);
+};
+
+const copy = async (from, to) => {
+  const isRunningOnWin = process.platform === 'win32';
+
+  if (isRunningOnWin) {
+    await run('xcopy', ['/e', '/k', '/h', '/i', from, to]);
+  } else {
+    await run('cp', ['-a', from, to]);
+  }
+};
+
+const deleteFiles = async (path) => {
+  await run('rimraf', [path]);
+};
+
 const cleanCompiledFiles = async (buildDir, packedPackageFileName) => {
   step('Clean compiled files...');
 
-  await run('rimraf', [packedPackageFileName]);
-  await run('rimraf', [buildDir]);
+  await deleteFiles(packedPackageFileName);
+  await deleteFiles(buildDir);
 };
 
 const build = async (buildDir, packedPackageFileName) => {
@@ -34,16 +52,16 @@ const build = async (buildDir, packedPackageFileName) => {
 
   await run('npm', ['run', 'build']);
   await run('npm', ['pack']);
-  await run('mkdir', [buildDir]);
+  await createDir(buildDir);
   await run('tar', ['-xzf', packedPackageFileName, '-C', buildDir, '--strip-components', '1']);
 };
 
 const moveToProject = async (destinationDir, buildDir) => {
   step('Move compiled package to project...');
 
-  await run('rimraf', [destinationDir]);
-  await run('mkdir', ['-p', destinationDir]);
-  await run('cp', ['-a', `./${buildDir}/`, destinationDir]);
+  await deleteFiles(destinationDir);
+  await createDir(destinationDir);
+  await copy(buildDir, destinationDir);
 };
 
 const getCompilationInfo = async () => {
