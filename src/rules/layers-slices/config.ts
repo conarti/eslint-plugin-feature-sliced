@@ -6,8 +6,8 @@ export type MessageIds = ERROR_MESSAGE_ID;
 
 export type Options = [
   {
-    allowTypeImports: boolean;
-    ignorePatterns: string[];
+    allowTypeImports?: boolean;
+    ignorePatterns?: string[];
   },
 ];
 
