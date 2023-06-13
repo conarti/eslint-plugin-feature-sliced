@@ -1,3 +1,5 @@
+import type { ImportExportNodes } from './models';
+
 /**
  * Checks if a node has a path for validation.
  * This function can be used in any rule because all rules only check paths.
@@ -10,6 +12,6 @@
  *  import foo from './foo'; // true
  * ```
  */
-export function canValidate(node): boolean {
+export function canValidate<T extends ImportExportNodes>(node: T): boolean {
   return node.source !== null;
 }
