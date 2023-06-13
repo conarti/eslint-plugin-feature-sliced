@@ -56,7 +56,7 @@ const generateChangelog = async () => {
   const { yes: isChangelogOk } = await prompts({
     type: 'confirm',
     name: 'yes',
-    message: `Changelog generated. Does it look good?`,
+    message: 'Changelog generated. Does it look good?',
   });
 
   return isChangelogOk;

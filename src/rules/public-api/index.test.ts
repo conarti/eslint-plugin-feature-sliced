@@ -176,12 +176,12 @@ ruleTester.run('public-api', rule, {
     {
       name: "should not throw TypeError for 'export const'",
       filename: '',
-      code: `export const foo = () => () => {};`,
+      code: 'export const foo = () => () => {};',
     },
     {
       name: 'should allow segments without index files by default',
       filename: 'src/features/foo/index.ts',
-      code: `import { bar } from "./ui/bar";`,
+      code: 'import { bar } from "./ui/bar";',
     },
   ],
 
@@ -248,7 +248,7 @@ ruleTester.run('public-api', rule, {
       ],
     },
     {
-      name: `shouldn't validate "ui", "model", "lib", "api", "config", "assets" as group folders`,
+      name: 'should not validate "ui", "model", "lib", "api", "config", "assets" as group folders',
       code: "import { Bar } from '@/features/bar/ui';",
       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
       errors: [
