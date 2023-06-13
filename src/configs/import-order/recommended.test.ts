@@ -49,7 +49,7 @@ describe('import-order:', () => {
     expect(report[0].errorCount).toBe(0);
   });
 
-  it('should lint without errors.', async () => {
+  it('should lint without errors (check aliases support)', async () => {
     const report = await eslint.lintText(`
         // warn: specific order in mixed alias ~/layer => ~layer => layer
         // not used in real, but test aliases support 
