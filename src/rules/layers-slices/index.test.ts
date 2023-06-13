@@ -1,22 +1,22 @@
-const { RuleTester } = require('eslint');
-const rule = require('./index');
-const { ERROR_MESSAGE_ID } = require('./config');
+import { ESLintUtils } from '@typescript-eslint/utils';
+import rule from './index';
+import { ERROR_MESSAGE_ID } from './config';
 
-const ruleTester = new RuleTester({
+const ruleTester = new ESLintUtils.RuleTester({
   parserOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
   },
-  parser: require.resolve('@typescript-eslint/parser'),
+  parser: '@typescript-eslint/parser',
 });
 
-const allowTypeImportsOptions = [
+const allowTypeImportsOptions: [{ allowTypeImports: boolean }] = [
   {
     allowTypeImports: true,
   },
 ];
 
-const makeIgnoreOptions = (patterns) => [
+const makeIgnoreOptions = (patterns: string[]): [{ ignorePatterns: string[] }] => [
   {
     ignorePatterns: patterns,
   },
