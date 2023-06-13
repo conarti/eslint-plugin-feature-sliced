@@ -17,7 +17,6 @@ export default createRule<Options, MessageIds>({
     /* it doesn't understand when context.report is not in this module */
     // eslint-disable-next-line eslint-plugin/require-meta-has-suggestions
     hasSuggestions: true,
-    fixable: null,
     messages: {
       [MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API]: 'Absolute imports are only allowed from public api ("{{ fixedPath }}")',
       [MESSAGE_ID.REMOVE_SUGGESTION]: 'Remove the "{{ valueToRemove }}"',
