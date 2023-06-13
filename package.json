@@ -23,7 +23,7 @@
     "./import-order": "./dist/configs/import-order/index.js"
   },
   "scripts": {
-    "build": "tsc -b",
+    "build": "tsc -p tsconfig.build.json",
     "lint": "npm-run-all \"lint:*\"",
     "lint:js": "eslint .",
     "test": "jest",
