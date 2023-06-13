@@ -1,9 +1,9 @@
-const recommended = require('./recommended');
-const withNewlines = require('./with-newlines');
-const withNewlinesAndTypeGroup = require('./with-newlines-and-type-group');
-const withTypeGroup = require('./with-type-group');
+import recommended from './recommended';
+import withNewlines from './with-newlines';
+import withNewlinesAndTypeGroup from './with-newlines-and-type-group';
+import withTypeGroup from './with-type-group';
 
-module.exports = {
+export = {
   parserOptions: {
     'ecmaVersion': '2015',
     'sourceType': 'module',

@@ -1,14 +1,8 @@
-/**
- * @fileoverview Import sorting
- * @author conarti
- */
-'use strict';
-
-const { layers } = require('../../src/config');
+import { layers } from '../../config';
 
 const LAYERS_REVERSED = [...layers].reverse();
 
-module.exports = {
+export = {
   plugins: [
     'import',
   ],
@@ -20,7 +14,7 @@ module.exports = {
           order: 'asc',
           caseInsensitive: true,
         },
-        'newlines-between': 'never',
+        'newlines-between': 'always',
         pathGroups: LAYERS_REVERSED.map(
           (layer) => ({
             pattern: `**/?(*)${layer}{,/**}`,

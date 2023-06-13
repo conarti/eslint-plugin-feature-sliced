@@ -1,14 +1,8 @@
-/**
- * @fileoverview Import sorting
- * @author conarti
- */
-'use strict';
-
-const { layers } = require('../../config');
+import { layers } from '../../config';
 
 const LAYERS_REVERSED = [...layers].reverse();
 
-module.exports = {
+export = {
   plugins: [
     'import',
   ],
