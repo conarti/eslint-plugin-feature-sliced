@@ -27,6 +27,7 @@
     "lint": "npm-run-all \"lint:*\"",
     "lint:js": "eslint .",
     "test": "jest",
+    "test:watch": "npm run test -- --watch",
     "publish:patch": "npm version patch && npm publish",
     "publish:minor": "npm version minor && npm publish",
     "publish:major": "npm version major && npm publish",
