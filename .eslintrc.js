@@ -26,6 +26,7 @@ module.exports = {
     'indent': ['error', 2],
     'brace-style': 'error',
     'semi': ['error', 'always'],
+    'quotes': ['error', 'single'],
     'object-property-newline': 'error',
     'object-curly-spacing': ['error', 'always'],
     /* TODO: update this configuration for ts imports */
