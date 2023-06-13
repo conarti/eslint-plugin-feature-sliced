@@ -10,6 +10,5 @@
     "outDir": "dist",
 
     "allowJs": true, // TODO remove it
-    "strict": false // TODO remove it + use @tsconfig/strictest
   }
 }
