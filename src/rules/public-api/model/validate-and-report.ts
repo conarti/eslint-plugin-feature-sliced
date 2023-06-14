@@ -1,19 +1,17 @@
-import type { RuleContext } from '@typescript-eslint/utils/dist/ts-eslint';
 import { extractPathsInfo } from '../../../lib/fsd-lib';
-import type { ImportExportNodes } from '../../../lib/rule-lib';
 import {
   canValidate,
   extractRuleOptions,
+  type ImportExportNodes,
 } from '../../../lib/rule-lib';
-import type {
-  MessageIds,
-  Options,
+import {
+  IGNORED_LAYERS,
+  type RuleContext,
 } from '../config';
-import { IGNORED_LAYERS } from '../config';
 import { isPublicApi } from './is-public-api';
 import { reportShouldBeFromPublicApi } from './errors-lib';
 
-export function validateAndReport(node: ImportExportNodes, context: Readonly<RuleContext<MessageIds, Options>>) {
+export function validateAndReport(node: ImportExportNodes, context: RuleContext) {
   if (!canValidate(node)) {
     return;
   }
