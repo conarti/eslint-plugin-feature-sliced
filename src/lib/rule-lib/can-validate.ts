@@ -1,4 +1,5 @@
-import type { ImportExportNodes } from './models';
+import { isObject } from '../shared';
+import type { ImportExportNodesWithSourceValue } from './models';
 
 /**
  * Checks if a node has a path for validation.
@@ -12,6 +13,10 @@ import type { ImportExportNodes } from './models';
  *  import foo from './foo'; // true
  * ```
  */
-export function canValidate<T extends ImportExportNodes>(node: T): boolean {
-  return node.source !== null;
+export function canValidate(node: unknown): node is ImportExportNodesWithSourceValue {
+  if (isObject(node) && 'source' in node) {
+    return node.source !== null;
+  }
+
+  return false;
 }
