@@ -13,7 +13,7 @@ const ruleTester = new ESLintUtils.RuleTester({
   parser: '@typescript-eslint/parser',
 });
 
-const makeErrorWithSuggestion = (suggestionSegments, suggestionOutput, fixedPath) => ({
+const makeErrorWithSuggestion = (suggestionSegments: string, suggestionOutput: string, fixedPath: string) => ({
   messageId: MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
   data: {
     fixedPath,
