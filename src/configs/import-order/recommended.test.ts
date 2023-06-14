@@ -1,6 +1,6 @@
 import { ESLint } from 'eslint';
 import cfg from './recommended';
-import { configLib } from '../../lib/shared';
+import { configLib } from '../../../tests/utils';
 
 const eslint = new ESLint({
   useEslintrc: false,
