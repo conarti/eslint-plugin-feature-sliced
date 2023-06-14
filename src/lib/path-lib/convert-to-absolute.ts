@@ -1,19 +1,18 @@
 import { joinPath } from './join-path';
 import { isPathRelative } from './is-path-relative';
 
-/* TODO: rename 'fromPath' to 'base', 'targetPath' to 'target' */
-export function convertToAbsolute(fromPath: string, targetPath: string): string {
-  if (targetPath === '') {
-    return fromPath;
+export function convertToAbsolute(base: string, target: string): string {
+  if (target === '') {
+    return base;
   }
 
-  if (fromPath === '') {
-    return targetPath;
+  if (base === '') {
+    return target;
   }
 
-  if (!isPathRelative(targetPath)) {
-    return targetPath;
+  if (!isPathRelative(target)) {
+    return target;
   }
 
-  return joinPath(fromPath, `../${targetPath}`);
+  return joinPath(base, `../${target}`);
 }
