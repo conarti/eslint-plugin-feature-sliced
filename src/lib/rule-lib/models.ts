@@ -10,3 +10,8 @@ export type ImportExportNodes = TSESTree.ImportDeclaration
 	| ImportExpression
 	| TSESTree.ExportAllDeclaration
 	| TSESTree.ExportNamedDeclaration;
+
+export type ImportExportNodesWithSourceValue = TSESTree.ImportDeclaration
+	| ImportExpression
+	| TSESTree.ExportAllDeclaration
+	| TSESTree.ExportNamedDeclarationWithSource;
