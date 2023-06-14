@@ -15,3 +15,10 @@ export type ImportExportNodesWithSourceValue = TSESTree.ImportDeclaration
 	| ImportExpression
 	| TSESTree.ExportAllDeclaration
 	| TSESTree.ExportNamedDeclarationWithSource;
+
+type ImportKindType = { importKind: 'type' }
+type ExportKindType = { exportKind: 'type' };
+
+export type ImportDeclarationKindType = TSESTree.ImportDeclaration & ImportKindType;
+export type ExportAllDeclarationKindType = TSESTree.ExportAllDeclaration & ExportKindType;
+export type ExportNamedDeclarationKindType = TSESTree.ExportNamedDeclaration & ExportKindType
