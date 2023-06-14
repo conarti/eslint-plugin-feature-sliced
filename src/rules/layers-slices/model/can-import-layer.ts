@@ -1,35 +1,34 @@
 import {
   getLayerWeight,
   isLayer,
+  type PathsInfo,
 } from '../../../lib/fsd-lib';
-import type { Options } from '../config';
 
-function isPathsIncorrectForValidate(pathsInfo) {
+type RuleOptions = {
+  allowTypeImports: boolean
+};
+
+export function canImportLayer(pathsInfo: PathsInfo, ruleOptions: RuleOptions) {
   const {
+    isType,
     importLayer,
     importSlice,
     currentFileLayer,
     currentFileSlice,
   } = pathsInfo;
-
-  const isImportToNotFsdEntity = !currentFileSlice; /* TODO: move to 'extractPathsInfo' */
-  const isImportFromSameSlice = importSlice === currentFileSlice; /* TODO: move to 'extractPathsInfo' */
-  const hasUnknownLayers = !isLayer(importLayer) || !isLayer(currentFileLayer); /* TODO: move to 'extractPathsInfo' */
-
-  return isImportToNotFsdEntity // FIXME: is it needed here? removing this won't break any test
-    || isImportFromSameSlice
-    || hasUnknownLayers;
-}
-
-type RuleOptions = Options[0];
-
-export function canImportLayer(pathsInfo, ruleOptions: RuleOptions) {
-  const {
-    isType,
-    importLayer,
-    currentFileLayer,
-  } = pathsInfo;
   const { allowTypeImports } = ruleOptions;
+
+  const hasUnknownLayers = !isLayer(importLayer) || !isLayer(currentFileLayer); /* TODO: extract to PathsInfo with correct type. Extracting just constant is not working here */
+  const isImportToNotFsdEntity = !currentFileSlice;
+  const isImportFromSameSlice = importSlice === currentFileSlice;
+
+  const isInvalidForValidate = hasUnknownLayers
+      || isImportToNotFsdEntity
+      || isImportFromSameSlice;
+
+  if (isInvalidForValidate) {
+    return true;
+  }
 
   const isTypeAndAllowedToImport = allowTypeImports && isType;
 
@@ -40,8 +39,7 @@ export function canImportLayer(pathsInfo, ruleOptions: RuleOptions) {
   const currentFileLayerOrder = getLayerWeight(currentFileLayer);
   const isImportLayerBelowCurrent = currentFileLayerOrder > importLayerOrder;
 
-  return isPathsIncorrectForValidate(pathsInfo)
-    || isTypeAndAllowedToImport
+  return isTypeAndAllowedToImport
     || isInsideShared
     || isInsideApp
     || isImportLayerBelowCurrent;

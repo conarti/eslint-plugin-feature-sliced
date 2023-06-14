@@ -2,14 +2,20 @@ import { extractPathsInfo } from '../../../lib/fsd-lib';
 import {
   extractRuleOptions,
   isIgnored,
+  canValidate,
+  type ImportExportNodes,
 } from '../../../lib/rule-lib';
-import type { Options } from '../config';
+import { type RuleContext } from '../config';
 import { canImportLayer } from './can-import-layer';
 import { reportCanNotImportLayer } from './errors-lib';
 
-export function validateAndReport(node, context) {
+export function validateAndReport(node: ImportExportNodes, context: RuleContext) {
+  if (!canValidate(node)) {
+    return;
+  }
+
   const pathsInfo = extractPathsInfo(node, context);
-  const userDefinedRuleOptions = extractRuleOptions<Options>(context);
+  const userDefinedRuleOptions = extractRuleOptions(context);
 
   if (isIgnored(pathsInfo.importPath, userDefinedRuleOptions.ignorePatterns)) {
     return;

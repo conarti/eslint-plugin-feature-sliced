@@ -1,5 +1,5 @@
 import { ESLintUtils } from '@typescript-eslint/utils';
-import { ERROR_MESSAGE_ID } from './config';
+import { ERROR_MESSAGE_ID, type Options } from './config';
 import rule from './index';
 
 const ruleTester = new ESLintUtils.RuleTester({
@@ -10,17 +10,17 @@ const ruleTester = new ESLintUtils.RuleTester({
   parser: '@typescript-eslint/parser',
 });
 
-const allowTypeImportsOptions: [{ allowTypeImports: boolean }] = [
+const allowTypeImportsOptions: Options = [
   {
     allowTypeImports: true,
   },
-];
+] as Options;
 
-const makeIgnoreOptions = (patterns: string[]): [{ ignorePatterns: string[] }] => [
+const makeIgnoreOptions = (patterns: string[]): Options => [
   {
     ignorePatterns: patterns,
   },
-];
+] as Options;
 
 const makeErrorMessage = (importLayer: string, currentFileLayer: string) => ({
   messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
