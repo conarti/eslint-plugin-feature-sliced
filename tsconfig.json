@@ -7,7 +7,6 @@
     "@tsconfig/node14"
   ],
   "compilerOptions": {
-    "outDir": "dist",
-    "allowJs": true // TODO remove it
+    "outDir": "dist"
   }
 }
