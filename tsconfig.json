@@ -8,7 +8,6 @@
   ],
   "compilerOptions": {
     "outDir": "dist",
-
-    "allowJs": true, // TODO remove it
+    "allowJs": true // TODO remove it
   }
 }
