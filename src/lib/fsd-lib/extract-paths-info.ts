@@ -6,9 +6,12 @@ import {
 import { getLayerSliceFromPath } from './get-layer-slice-from-path';
 import { isLayer } from './layers';
 import { getFsdPartsFromPath } from './get-fsd-parts-from-path';
+import type { ImportExportNodesWithSourceValue } from '../rule-lib';
+import type { TSESLint } from '@typescript-eslint/utils';
+import { isNodeType } from '../rule-lib';
 
 /* TODO: remove 'import' prefix from all vars */
-export function extractPathsInfo(node, context) {
+export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context: Readonly<TSESLint.RuleContext<string, unknown[]>>) {
   const currentFilePath = context.getFilename(); /* FIXME: getFilename is deprecated */
   const importPath = node.source.value;
 
@@ -19,7 +22,7 @@ export function extractPathsInfo(node, context) {
   const [importLayer, importSlice] = getLayerSliceFromPath(importAbsolutePath);
   const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(normalizedCurrentFilePath);
 
-  const isType = node.importKind === 'type' || node.exportKind === 'type';
+  const isType = isNodeType(node);
   const isRelative = isPathRelative(normalizedImportPath);
   const isUnknownLayer = !isLayer(importLayer);
   const isSameSlice = importSlice === currentFileSlice;
@@ -51,3 +54,5 @@ export function extractPathsInfo(node, context) {
     isSameSegment,
   };
 }
+
+export type PathsInfo = ReturnType<typeof extractPathsInfo>
