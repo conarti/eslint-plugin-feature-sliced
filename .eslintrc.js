@@ -54,7 +54,9 @@ module.exports = {
     'import/no-duplicates': ['error'],
     'import/order': ['error'],
     /* TODO: add airbnb config or something like this */
-    '@typescript-eslint/consistent-type-imports': ['error'],
+    '@typescript-eslint/consistent-type-imports': ['error', {
+      fixStyle: 'inline-type-imports',
+    }],
   },
   ignorePatterns: [
     'dist',
