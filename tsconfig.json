@@ -3,7 +3,7 @@
     "src"
   ],
   "extends": [
-//    "@tsconfig/strictest/tsconfig",
+    "@tsconfig/strictest",
     "@tsconfig/node14"
   ],
   "compilerOptions": {
