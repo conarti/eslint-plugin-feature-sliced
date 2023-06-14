@@ -39,15 +39,13 @@
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
   },
-  "dependencies": {
-    "micromatch": "^4.0.5"
-  },
   "devDependencies": {
     "@tsconfig/node14": "^1.0.3",
     "@tsconfig/strictest": "^2.0.1",
     "@types/eslint": "^8.40.2",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.2.5",
+    "@types/picomatch": "^2.3.0",
     "@types/requireindex": "^1.2.0",
     "@typescript-eslint/eslint-plugin": "^5.59.9",
     "@typescript-eslint/parser": "^5.53.0",
@@ -79,5 +77,8 @@
     "eslint": ">=7",
     "eslint-plugin-import": ">=2.26"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "picomatch": "^2.3.1"
+  }
 }
