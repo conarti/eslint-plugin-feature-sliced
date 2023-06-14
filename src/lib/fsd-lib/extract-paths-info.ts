@@ -9,7 +9,6 @@ import type {
 } from '../rule-lib';
 import { isNodeType } from '../rule-lib';
 import { getLayerSliceFromPath } from './get-layer-slice-from-path';
-import { isLayer } from './layers';
 import { getFsdPartsFromPath } from './get-fsd-parts-from-path';
 
 /* TODO: remove 'import' prefix from all vars */
@@ -26,7 +25,6 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
 
   const isType = isNodeType(node);
   const isRelative = isPathRelative(normalizedImportPath);
-  const isUnknownLayer = !isLayer(importLayer);
   const isSameSlice = importSlice === currentFileSlice;
 
   /** TODO: move getting 'segment', 'segmentFiles' logic to this func. Delete 'getFsdPartsFromPath'  */
@@ -51,7 +49,6 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     currentFileSlice,
     isType,
     isRelative,
-    isUnknownLayer,
     isSameSlice,
     isSameSegment,
   };

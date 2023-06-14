@@ -1,4 +1,7 @@
-import { extractPathsInfo } from '../../../lib/fsd-lib';
+import {
+  extractPathsInfo,
+  isLayer,
+} from '../../../lib/fsd-lib';
 import {
   canValidate,
   extractRuleOptions,
@@ -20,8 +23,9 @@ export function validateAndReport(node: ImportExportNodes, context: RuleContext)
   const pathsInfo = extractPathsInfo(node, context);
 
   const isIgnoredLayer = pathsInfo.importLayer !== null && IGNORED_LAYERS.includes(pathsInfo.importLayer);
+  const isUnknownLayer = !isLayer(pathsInfo.importLayer);
 
-  if (pathsInfo.isUnknownLayer || isIgnoredLayer) {
+  if (isUnknownLayer || isIgnoredLayer) {
     return;
   }
 
