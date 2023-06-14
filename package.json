@@ -45,6 +45,7 @@
   "devDependencies": {
     "@tsconfig/node14": "^1.0.3",
     "@tsconfig/strictest": "^2.0.1",
+    "@types/eslint": "^8.40.2",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.2.5",
     "@types/requireindex": "^1.2.0",
