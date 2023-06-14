@@ -7,5 +7,6 @@ export type {
   ImportExpression,
   ImportExportNodes,
   ImportExportNodesWithSourceValue,
+  UnknownRuleContext,
 } from './models';
 export { isNodeType } from './is-node-type';

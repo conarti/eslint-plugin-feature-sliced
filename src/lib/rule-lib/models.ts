@@ -1,4 +1,7 @@
-import type { TSESTree } from '@typescript-eslint/utils';
+import type {
+  TSESTree,
+  TSESLint,
+} from '@typescript-eslint/utils';
 
 /**
  *  TSESTree has invalid type for this node.
@@ -22,3 +25,5 @@ type ExportKindType = { exportKind: 'type' };
 export type ImportDeclarationKindType = TSESTree.ImportDeclaration & ImportKindType;
 export type ExportAllDeclarationKindType = TSESTree.ExportAllDeclaration & ExportKindType;
 export type ExportNamedDeclarationKindType = TSESTree.ExportNamedDeclaration & ExportKindType
+
+export type UnknownRuleContext = Readonly<TSESLint.RuleContext<string, unknown[]>>
