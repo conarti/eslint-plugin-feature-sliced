@@ -1,4 +1,10 @@
-export function shouldBeAbsolute(pathsInfo): boolean {
+import {
+  isLayer,
+  type PathsInfo,
+} from '../../../lib/fsd-lib';
+
+/* TODO refactor this */
+export function shouldBeAbsolute(pathsInfo: PathsInfo): boolean {
   const {
     isRelative,
     importLayer,
@@ -9,11 +15,11 @@ export function shouldBeAbsolute(pathsInfo): boolean {
     return false;
   }
 
-  if (!importLayer) {
+  if (!isLayer(importLayer)) {
     return false;
   }
 
-  if (!currentFileLayer) {
+  if (!isLayer(currentFileLayer)) {
     return false;
   }
 

@@ -1,4 +1,7 @@
-import { createRule } from '../../lib/rule-lib';
+import {
+  createRule,
+  type ImportExpression,
+} from '../../lib/rule-lib';
 import { validateAndReport } from './model';
 import type {
   MessageIds,
@@ -44,7 +47,7 @@ export default createRule<Options, MessageIds>({
         validateAndReport(node, context);
       },
       ImportExpression(node) {
-        validateAndReport(node, context);
+        validateAndReport(node as ImportExpression /* TSESTree has invalid type for this node */, context);
       },
       ExportAllDeclaration(node) {
         validateAndReport(node, context, { needCheckForAbsolute: false });

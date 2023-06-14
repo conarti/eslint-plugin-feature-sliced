@@ -2,9 +2,10 @@ import {
   canValidate,
   extractRuleOptions,
   isIgnored,
+  type ImportExportNodes,
 } from '../../../lib/rule-lib';
 import { extractPathsInfo } from '../../../lib/fsd-lib';
-import type { Options } from '../config';
+import { type RuleContext } from '../config';
 import { shouldBeRelative } from './should-be-relative';
 import { shouldBeAbsolute } from './should-be-absolute';
 import {
@@ -12,12 +13,16 @@ import {
   reportShouldBeAbsolute,
 } from './errors-lib';
 
-export function validateAndReport(node, context, options = { needCheckForAbsolute: true }) {
+type Options = {
+  needCheckForAbsolute: boolean;
+}
+
+export function validateAndReport(node: ImportExportNodes, context: RuleContext, options: Options = { needCheckForAbsolute: true }) {
   if (!canValidate(node)) {
     return;
   }
 
-  const userDefinedRuleOptions = extractRuleOptions<Options>(context);
+  const userDefinedRuleOptions = extractRuleOptions(context);
   const pathsInfo = extractPathsInfo(node, context);
 
   if (isIgnored(pathsInfo.currentFilePath, userDefinedRuleOptions.ignoreInFilesPatterns)) {

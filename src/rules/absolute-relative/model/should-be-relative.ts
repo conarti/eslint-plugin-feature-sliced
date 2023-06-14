@@ -1,4 +1,10 @@
-export function shouldBeRelative(pathsInfo): boolean {
+import {
+  isLayer,
+  type PathsInfo,
+} from '../../../lib/fsd-lib';
+
+/* TODO refactor this */
+export function shouldBeRelative(pathsInfo: PathsInfo): boolean {
   const {
     isRelative,
     importLayer,
@@ -11,11 +17,11 @@ export function shouldBeRelative(pathsInfo): boolean {
     return false;
   }
 
-  if (!importLayer || !importSlice) {
+  if (!isLayer(importLayer) || !importSlice) {
     return false;
   }
 
-  if (!currentFileLayer && !currentFileSlice) {
+  if (!isLayer(currentFileLayer) && !currentFileSlice) {
     return false;
   }
 
@@ -23,6 +29,7 @@ export function shouldBeRelative(pathsInfo): boolean {
     return true;
   }
 
+  /* TODO @duplicate of 'isInsideShared'/'isInsideApp' */
   if (
     currentFileLayer === 'shared' && importLayer === 'shared'
     || currentFileLayer === 'app' && importLayer === 'app'
