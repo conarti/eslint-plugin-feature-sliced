@@ -22,7 +22,7 @@ const makeIgnoreOptions = (patterns: string[]): [{ ignorePatterns: string[] }] =
   },
 ];
 
-const makeErrorMessage = (importLayer, currentFileLayer) => ({
+const makeErrorMessage = (importLayer: string, currentFileLayer: string) => ({
   messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
   data: {
     importLayer,
