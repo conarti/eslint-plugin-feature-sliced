@@ -9,11 +9,13 @@ import type {
  */
 export type ImportExpression = TSESTree.ImportExpression & { source: TSESTree.StringLiteral }
 
+/* TODO: mb rename to 'ValidationNodes' or something else */
 export type ImportExportNodes = TSESTree.ImportDeclaration
 	| ImportExpression
 	| TSESTree.ExportAllDeclaration
 	| TSESTree.ExportNamedDeclaration;
 
+/* TODO: mb rename to 'ValidationNodesWithSourceValue' */
 export type ImportExportNodesWithSourceValue = TSESTree.ImportDeclaration
 	| ImportExpression
 	| TSESTree.ExportAllDeclaration
