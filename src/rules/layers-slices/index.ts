@@ -1,10 +1,10 @@
+import { createRule } from '../../lib/rule-lib';
 import type {
   MessageIds,
   Options,
 } from './config';
 import { ERROR_MESSAGE_ID } from './config';
 import { validateAndReport } from './model';
-import { createRule } from '../../lib/rule-lib';
 
 export default createRule<Options, MessageIds>({
   name: 'layers-slices',

@@ -1,5 +1,5 @@
-import { validateAndReport } from './model';
 import { createRule } from '../../lib/rule-lib';
+import { validateAndReport } from './model';
 import type {
   MessageIds,
   Options,

@@ -3,14 +3,14 @@ import {
   convertToAbsolute,
   isPathRelative,
 } from '../path-lib';
-import { getLayerSliceFromPath } from './get-layer-slice-from-path';
-import { isLayer } from './layers';
-import { getFsdPartsFromPath } from './get-fsd-parts-from-path';
 import type {
   ImportExportNodesWithSourceValue,
   UnknownRuleContext,
 } from '../rule-lib';
 import { isNodeType } from '../rule-lib';
+import { getLayerSliceFromPath } from './get-layer-slice-from-path';
+import { isLayer } from './layers';
+import { getFsdPartsFromPath } from './get-fsd-parts-from-path';
 
 /* TODO: remove 'import' prefix from all vars */
 export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context: UnknownRuleContext) {

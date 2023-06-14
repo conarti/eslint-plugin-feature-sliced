@@ -1,9 +1,9 @@
 import { ESLintUtils } from '@typescript-eslint/utils';
-import rule from './index';
 import {
   MESSAGE_ID,
   VALIDATION_LEVEL,
 } from './config';
+import rule from './index';
 
 const ruleTester = new ESLintUtils.RuleTester({
   parserOptions: {

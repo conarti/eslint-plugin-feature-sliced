@@ -1,6 +1,6 @@
 import { ESLintUtils } from '@typescript-eslint/utils';
-import rule from './index';
 import { ERROR_MESSAGE_ID } from './config';
+import rule from './index';
 
 const ruleTester = new ESLintUtils.RuleTester({
   parserOptions: {
