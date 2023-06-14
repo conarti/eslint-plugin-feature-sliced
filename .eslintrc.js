@@ -70,6 +70,11 @@ module.exports = {
       extends: [
         'plugin:@typescript-eslint/recommended',
       ],
+      rules: {
+        '@typescript-eslint/consistent-type-exports': ['error', {
+          fixMixedExportsWithInlineTypeSpecifier: true,
+        }],
+      },
     },
     {
       files: ['tests/**/*'],
