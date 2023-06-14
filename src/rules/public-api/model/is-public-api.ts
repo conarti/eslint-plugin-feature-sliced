@@ -1,10 +1,11 @@
 import { VALIDATION_LEVEL } from '../config';
+import type { PathsInfo } from '../../../lib/fsd-lib';
 
-const isIndexFile = (segmentFiles) => {
+const isIndexFile = (segmentFiles: string) => {
   return /^index\.\w+/i.test(segmentFiles);
 };
 
-const validateSegments = (pathsInfo) => {
+const validateSegments = (pathsInfo: PathsInfo) => {
   const {
     isSameSegment,
     segmentFiles,
@@ -17,7 +18,7 @@ const validateSegments = (pathsInfo) => {
 
 type ValidateOptions = { level: VALIDATION_LEVEL }
 
-export function isPublicApi(pathsInfo, validateOptions: ValidateOptions) {
+export function isPublicApi(pathsInfo: PathsInfo, validateOptions: ValidateOptions) {
   const { level } = validateOptions;
 
   const isAnotherSlice = !pathsInfo.isSameSlice;

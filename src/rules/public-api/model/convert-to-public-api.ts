@@ -1,6 +1,8 @@
-const addSlashToStart = (targetPath) => targetPath ? `/${targetPath}` : '';
+import type { PathsInfo } from '../../../lib/fsd-lib';
 
-export function convertToPublicApi(pathsInfo): [string, string] {
+const addSlashToStart = (targetPath: string) => targetPath ? `/${targetPath}` : '';
+
+export function convertToPublicApi(pathsInfo: PathsInfo): [string, string] {
   const {
     normalizedImportPath,
     isSameSlice,

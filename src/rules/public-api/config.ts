@@ -3,10 +3,10 @@ export const enum MESSAGE_ID {
   REMOVE_SUGGESTION = 'remove-suggestion',
 }
 
-export const IGNORED_LAYERS = new Set([
+export const IGNORED_LAYERS = [
   'app',
   'shared',
-]);
+];
 
 export const enum VALIDATION_LEVEL {
   SEGMENTS = 'segments',
