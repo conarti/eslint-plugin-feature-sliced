@@ -11,10 +11,6 @@ export function isLayer(layer: unknown): layer is Layer {
 /**
  * Returns layer fsd weight
  */
-export function getLayerWeight(layer: unknown): number | null { /* TODO: set 'layer' type to 'Layer', remove guard expression */
-  if (!isLayer(layer)) {
-    return null;
-  }
-
+export function getLayerWeight(layer: Layer): number {
   return layers.indexOf(layer);
 }
