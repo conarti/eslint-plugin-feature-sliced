@@ -5,6 +5,7 @@ export const enum MESSAGE_ID {
   REMOVE_SUGGESTION = 'remove-suggestion',
 }
 
+/* TODO probably @duplicate of 'isInsideShared'/'isInsideApp' in extractPathsInfo */
 export const IGNORED_LAYERS = [
   'app',
   'shared',
