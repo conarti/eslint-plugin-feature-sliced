@@ -1,11 +1,14 @@
-import { createRule } from '../../lib/rule-lib';
-import type { ImportExpression } from '../../lib/rule-lib';
-import type { MessageIds, Options } from './config';
+import {
+  createRule,
+  type ImportExpression,
+} from '../../lib/rule-lib';
 import {
   MESSAGE_ID,
   VALIDATION_LEVEL,
+  type MessageIds,
+  type Options,
 } from './config';
-import { validateAndReport }from './model';
+import { validateAndReport } from './model';
 
 export default createRule<Options, MessageIds>({
   name: 'public-api',
