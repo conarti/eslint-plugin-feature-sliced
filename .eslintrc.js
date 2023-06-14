@@ -8,8 +8,6 @@ module.exports = {
     'plugin:eslint-plugin/recommended',
     'plugin:jest/recommended',
     'plugin:jest-formatting/recommended',
-    'plugin:import/recommended',
-    'plugin:import/typescript',
   ],
   parserOptions: {
     ecmaVersion: 'latest',
@@ -17,6 +15,7 @@ module.exports = {
   plugins: [
     'filenames-simple',
     'unused-imports',
+    'import',
   ],
   env: {
     node: true,
@@ -52,7 +51,7 @@ module.exports = {
         consistent: true,
       },
     }],
-    'import/namespace': ['off'],
+    'import/no-duplicates': ['error'],
     'import/order': ['error'],
     /* TODO: add airbnb config or something like this */
     '@typescript-eslint/consistent-type-imports': ['error'],
