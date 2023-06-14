@@ -1,6 +1,7 @@
 import type { Layer } from '../../config';
 import { layers } from '../../config';
 import { getByRegExp } from '../shared';
+import { isLayer } from './layers';
 
 const layersRegExpPattern = `(${layers.join('|')})(?![\\w\\.-])`;
 
@@ -10,11 +11,17 @@ const layersRegExpPattern = `(${layers.join('|')})(?![\\w\\.-])`;
 function getLayerFromPath(targetPath: string): Layer | null {
   const layer = getByRegExp<Layer>(targetPath, new RegExp(layersRegExpPattern, 'ig'), true);
 
-  if (typeof layer === 'string') {
-    return layer.toLowerCase() as Layer; // FIXME
+  if (typeof layer !== 'string') {
+    return null;
   }
 
-  return layer;
+  const lowercasedLayer = layer.toLowerCase();
+
+  if (!isLayer(lowercasedLayer)) {
+    return null;
+  }
+
+  return lowercasedLayer;
 }
 
 /**
