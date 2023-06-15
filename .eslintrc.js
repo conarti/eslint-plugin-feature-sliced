@@ -6,8 +6,6 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:eslint-plugin/recommended',
-    'plugin:jest/recommended',
-    'plugin:jest-formatting/recommended',
   ],
   parserOptions: {
     ecmaVersion: 'latest',
