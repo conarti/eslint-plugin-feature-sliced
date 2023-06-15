@@ -49,6 +49,7 @@
     "@typescript-eslint/eslint-plugin": "^5.59.9",
     "@typescript-eslint/parser": "^5.53.0",
     "@typescript-eslint/utils": "^5.59.9",
+    "@vitest/coverage-v8": "^0.32.0",
     "@vitest/ui": "^0.32.0",
     "conventional-changelog-cli": "^2.2.2",
     "eslint": "^8.42.0",
