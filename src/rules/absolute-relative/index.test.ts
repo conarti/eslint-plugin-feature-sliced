@@ -71,6 +71,11 @@ ruleTester.run('absolute-relative', rule, {
       code: 'import { BAR } from \'@/shared/constants\';',
       options: makeIgnoreInFilesOptions(['**/*/processes/shared/**/*']),
     },
+    {
+      name: 'should be valid if the import is not from a layer',
+      filename: '/Users/conarti/Projects/frontend/src/shared/foo/index.ts',
+      code: 'import { BAR } from \'@/bar\';',
+    },
   ],
 
   invalid: [
