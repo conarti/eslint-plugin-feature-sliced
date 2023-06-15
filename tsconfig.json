@@ -2,11 +2,24 @@
   "include": [
     "src"
   ],
-  "extends": [
-    "@tsconfig/strictest",
-    "@tsconfig/node14"
-  ],
+  "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
+    "strict": true,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
     "outDir": "dist",
     "removeComments": true,
     "types": [
