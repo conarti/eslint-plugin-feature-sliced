@@ -30,6 +30,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui --api 9527",
     "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "publish:patch": "npm version patch && npm publish",
     "publish:minor": "npm version minor && npm publish",
     "publish:major": "npm version major && npm publish",
