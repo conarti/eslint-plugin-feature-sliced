@@ -58,6 +58,7 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-unused-imports": "^2.0.0",
+    "eslint-plugin-vitest": "^0.2.6",
     "execa": "5.1.1",
     "npm-run-all": "^4.1.5",
     "picocolors": "^1.0.0",
