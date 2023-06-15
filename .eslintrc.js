@@ -82,6 +82,18 @@ module.exports = {
         '@typescript-eslint/no-explicit-any': 'off',
       },
     },
+    {
+      files: ['**/*.test.ts'],
+      extends: [
+        'plugin:vitest/all',
+      ],
+    },
+    {
+      files: ['./src/rules/**/index.test.ts'],
+      rules: {
+        'vitest/require-hook': 'off',
+      },
+    },
   ],
   settings: {
     'import/parsers': {
