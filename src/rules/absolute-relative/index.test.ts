@@ -72,9 +72,14 @@ ruleTester.run('absolute-relative', rule, {
       options: makeIgnoreInFilesOptions(['**/*/processes/shared/**/*']),
     },
     {
-      name: 'should be valid if the import is not from a layer',
+      name: 'should be valid if the import is not from a layer (absolute import)',
       filename: '/Users/conarti/Projects/frontend/src/shared/foo/index.ts',
       code: 'import { BAR } from \'@/bar\';',
+    },
+    {
+      name: 'should be valid if the import is not from a layer (relative import)',
+      filename: '/Users/conarti/Projects/frontend/src/shared/foo/index.ts',
+      code: 'import { BAR } from \'../../../bar\';',
     },
   ],
 
