@@ -8,6 +8,9 @@
   ],
   "compilerOptions": {
     "outDir": "dist",
-    "removeComments": true
+    "removeComments": true,
+    "types": [
+      "vitest/globals"
+    ]
   }
 }
