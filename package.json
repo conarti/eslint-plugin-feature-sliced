@@ -69,7 +69,8 @@
     "semver": "^7.3.8",
     "ts-jest": "^29.1.0",
     "typescript": "^5.1.3",
-    "vitepress": "^1.0.0-alpha.64"
+    "vitepress": "^1.0.0-alpha.64",
+    "vitest": "^0.32.0"
   },
   "engines": {
     "node": "^14.17.0 || ^16.0.0 || >= 18.0.0"
