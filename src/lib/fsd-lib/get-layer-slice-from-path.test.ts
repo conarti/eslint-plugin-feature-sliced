@@ -9,6 +9,11 @@ const layerCases = [
     path: 'some/long/root/path/entities/foo',
     expected: 'entities',
   },
+  // {
+  //   name: 'should correct return layer if path contain multiple layer names',
+  //   path: 'src/processes/shared/index.ts',
+  //   expected: 'processes',
+  // },
   {
     path: 'entities/foo',
     expected: 'entities',
