@@ -79,7 +79,12 @@ ruleTester.run('absolute-relative', rule, {
     {
       name: 'should be valid if the import is not from a layer (relative import)',
       filename: '/Users/conarti/Projects/frontend/src/shared/foo/index.ts',
-      code: 'import { BAR } from \'../../../bar\';',
+      code: "import { BAR } from '../../../bar';",
+    },
+    {
+      name: 'should be valid if the import is not from a slice (absolute import)',
+      filename: 'frontend/src/shared/foo/index.ts',
+      code: "import { Something } from '@/app';",
     },
   ],
 
@@ -144,6 +149,12 @@ ruleTester.run('absolute-relative', rule, {
       filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/widgets/blocks/MarriageDetails/index.ts',
       code: 'export { MarriageDetails } from \'@/widgets/blocks/MarriageDetails/MarriageDetails\';',
       errors: [errorMustBeRelative],
+    },
+    {
+      name: 'should be invalid if the import is from layer public api (relative import)',
+      filename: 'frontend/src/shared/foo/index.ts',
+      code: "import { Something } from '../../app';",
+      errors: [errorMustBeAbsolute],
     },
   ],
 });
