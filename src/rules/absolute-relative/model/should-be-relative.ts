@@ -1,5 +1,4 @@
 import {
-  isLayer,
   type PathsInfo,
 } from '../../../lib/fsd-lib';
 
@@ -7,13 +6,13 @@ import {
 export function shouldBeRelative(pathsInfo: PathsInfo): boolean {
   const {
     isRelative,
-    importLayer,
-    currentFileLayer,
     isInsideShared,
     isInsideApp,
     isSameLayer,
     isSameSlice,
+    hasNotLayer,
     hasNotSlice,
+    hasNotCurrentFileLayer,
     hasNotCurrentFileSlice,
   } = pathsInfo;
 
@@ -21,11 +20,11 @@ export function shouldBeRelative(pathsInfo: PathsInfo): boolean {
     return false;
   }
 
-  if (!isLayer(importLayer) || hasNotSlice) {
+  if (hasNotLayer || hasNotSlice) {
     return false;
   }
 
-  if (!isLayer(currentFileLayer) && hasNotCurrentFileSlice) {
+  if (hasNotCurrentFileLayer && hasNotCurrentFileSlice) {
     return false;
   }
 
