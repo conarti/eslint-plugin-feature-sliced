@@ -50,7 +50,22 @@ module.exports = {
       },
     }],
     'import/no-duplicates': ['error'],
-    'import/order': ['error'],
+    'import/order': ['error', {
+      alphabetize: {
+        order: 'asc',
+        caseInsensitive: true,
+      },
+      'newlines-between': 'never',
+      pathGroupsExcludedImportTypes: ['builtin'],
+      groups: [
+        'builtin',
+        'external',
+        'internal',
+        'parent',
+        'sibling',
+        'index',
+      ],
+    }],
     /* TODO: add airbnb config or something like this */
     '@typescript-eslint/consistent-type-imports': ['error', {
       fixStyle: 'inline-type-imports',
