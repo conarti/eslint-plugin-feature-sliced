@@ -11,6 +11,8 @@ export function shouldBeRelative(pathsInfo: PathsInfo): boolean {
     importSlice,
     currentFileLayer,
     currentFileSlice,
+    isInsideShared,
+    isInsideApp,
   } = pathsInfo;
 
   if (isRelative) {
@@ -29,11 +31,7 @@ export function shouldBeRelative(pathsInfo: PathsInfo): boolean {
     return true;
   }
 
-  /* TODO @duplicate of 'isInsideShared'/'isInsideApp' */
-  if (
-    currentFileLayer === 'shared' && importLayer === 'shared'
-    || currentFileLayer === 'app' && importLayer === 'app'
-  ) {
+  if (isInsideShared || isInsideApp) {
     return true;
   }
 

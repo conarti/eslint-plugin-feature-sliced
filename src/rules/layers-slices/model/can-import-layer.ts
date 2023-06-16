@@ -15,6 +15,8 @@ export function canImportLayer(pathsInfo: PathsInfo, ruleOptions: RuleOptions) {
     currentFileLayer,
     currentFileSlice,
     isSameSlice,
+    isInsideShared,
+    isInsideApp,
   } = pathsInfo;
   const { allowTypeImports } = ruleOptions;
 
@@ -30,9 +32,6 @@ export function canImportLayer(pathsInfo: PathsInfo, ruleOptions: RuleOptions) {
   }
 
   const isTypeAndAllowedToImport = allowTypeImports && isType;
-
-  const isInsideShared = importLayer === 'shared' && currentFileLayer === 'shared';
-  const isInsideApp = importLayer === 'app' && currentFileLayer === 'app';
 
   const importLayerOrder = getLayerWeight(importLayer);
   const currentFileLayerOrder = getLayerWeight(currentFileLayer);
