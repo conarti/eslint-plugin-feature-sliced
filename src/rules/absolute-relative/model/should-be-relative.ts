@@ -15,6 +15,7 @@ export function shouldBeRelative(pathsInfo: PathsInfo): boolean {
     isInsideApp,
     isSameLayer,
     isSameSlice,
+    hasNotCurrentFileSlice,
   } = pathsInfo;
 
   if (isRelative) {
@@ -25,7 +26,7 @@ export function shouldBeRelative(pathsInfo: PathsInfo): boolean {
     return false;
   }
 
-  if (!isLayer(currentFileLayer) && !currentFileSlice) {
+  if (!isLayer(currentFileLayer) && hasNotCurrentFileSlice) {
     return false;
   }
 
