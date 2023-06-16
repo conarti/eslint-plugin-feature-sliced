@@ -12,7 +12,6 @@ export function shouldBeRelative(pathsInfo: PathsInfo): boolean {
     isSameSlice,
     hasNotLayer,
     hasNotSlice,
-    hasNotCurrentFileLayer,
     hasNotCurrentFileSlice,
   } = pathsInfo;
 
@@ -21,10 +20,6 @@ export function shouldBeRelative(pathsInfo: PathsInfo): boolean {
   }
 
   if (hasNotLayer || hasNotSlice) {
-    return false;
-  }
-
-  if (hasNotCurrentFileLayer && hasNotCurrentFileSlice) {
     return false;
   }
 
