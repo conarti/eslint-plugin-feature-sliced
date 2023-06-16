@@ -11,7 +11,10 @@ import { isNodeType } from '../rule-lib';
 import { isNull } from '../shared';
 import { getLayerSliceFromPath } from './get-layer-slice-from-path';
 import { getFsdPartsFromPath } from './get-fsd-parts-from-path';
-import { isLayer } from './layers';
+import {
+  canLayerContainSlices,
+  isLayer,
+} from './layers';
 
 /* TODO: remove 'import' prefix from all vars */
 export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context: UnknownRuleContext) {
@@ -29,12 +32,25 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
   const isRelative = isPathRelative(normalizedImportPath);
   const isSameLayer = importLayer === currentFileLayer;
   const isSameSlice = importSlice === currentFileSlice;
-  const isInsideShared = currentFileLayer === 'shared' && importLayer === 'shared';
-  const isInsideApp = currentFileLayer === 'app' && importLayer === 'app';
-  const hasNotLayer = !isLayer(importLayer);
+
+  const hasLayer = isLayer(importLayer);
+  const hasCurrentFileLayer = isLayer(currentFileLayer);
+  const hasNotLayer = !hasLayer;
+  const hasNotCurrentFileLayer = !hasCurrentFileLayer;
+
   const hasNotSlice = isNull(importSlice);
-  const hasNotCurrentFileLayer = !isLayer(currentFileLayer);
   const hasNotCurrentFileSlice = isNull(currentFileSlice);
+
+  const canImportLayerContainSlices = hasLayer && canLayerContainSlices(importLayer);
+  const canCurrentFileLayerContainSlices = hasCurrentFileLayer && canLayerContainSlices(currentFileLayer);
+
+  /**
+   * Whether the import/export file and the current file are inside the same layer that cannot contain slices
+   */
+  const isSameLayerWithoutSlices =
+    isSameLayer
+    && !canImportLayerContainSlices
+    && !canCurrentFileLayerContainSlices;
 
   /** TODO: move getting 'segment', 'segmentFiles' logic to this func. Delete 'getFsdPartsFromPath'  */
   const {
@@ -61,8 +77,7 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     isSameLayer,
     isSameSlice,
     isSameSegment,
-    isInsideShared,
-    isInsideApp,
+    isSameLayerWithoutSlices,
     hasNotLayer,
     hasNotSlice,
     hasNotCurrentFileLayer,

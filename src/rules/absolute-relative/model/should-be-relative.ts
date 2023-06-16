@@ -6,8 +6,7 @@ import {
 export function shouldBeRelative(pathsInfo: PathsInfo): boolean {
   const {
     isRelative,
-    isInsideShared,
-    isInsideApp,
+    isSameLayerWithoutSlices,
     isSameLayer,
     isSameSlice,
     hasNotLayer,
@@ -27,7 +26,7 @@ export function shouldBeRelative(pathsInfo: PathsInfo): boolean {
     return true;
   }
 
-  if (isInsideShared || isInsideApp) {
+  if (isSameLayerWithoutSlices) {
     return true;
   }
 

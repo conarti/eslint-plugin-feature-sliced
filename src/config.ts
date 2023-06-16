@@ -23,6 +23,16 @@ export const layers: Layers = [
   'app',
 ];
 
+/**
+ * Layers where no slices exist. This affects the behavior of some rules.
+ * For example, if there are no slices in a layer, then imports should always be relative between the modules of this layer,
+ * and the layers-slices rule will ignore the cross-import rule for layers with slices ("you cannot import a slice into a slice")
+ */
+export const layersWithoutSlices: Layer[] = [
+  'shared',
+  'app',
+];
+
 export type Segments = ReadonlyArray<
     'ui'
     | 'model'

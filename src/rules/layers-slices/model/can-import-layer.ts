@@ -14,8 +14,7 @@ export function canImportLayer(pathsInfo: PathsInfo, ruleOptions: RuleOptions) {
     importLayer,
     currentFileLayer,
     isSameSlice,
-    isInsideShared,
-    isInsideApp,
+    isSameLayerWithoutSlices,
     hasNotCurrentFileSlice,
   } = pathsInfo;
   const { allowTypeImports } = ruleOptions;
@@ -37,7 +36,6 @@ export function canImportLayer(pathsInfo: PathsInfo, ruleOptions: RuleOptions) {
   const isImportLayerBelowCurrent = currentFileLayerOrder > importLayerOrder;
 
   return isTypeAndAllowedToImport
-    || isInsideShared
-    || isInsideApp
+    || isSameLayerWithoutSlices
     || isImportLayerBelowCurrent;
 }
