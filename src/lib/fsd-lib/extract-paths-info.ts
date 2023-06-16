@@ -8,6 +8,7 @@ import type {
   UnknownRuleContext,
 } from '../rule-lib';
 import { isNodeType } from '../rule-lib';
+import { isNull } from '../shared';
 import { getLayerSliceFromPath } from './get-layer-slice-from-path';
 import { getFsdPartsFromPath } from './get-fsd-parts-from-path';
 
@@ -29,8 +30,8 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
   const isSameSlice = importSlice === currentFileSlice;
   const isInsideShared = currentFileLayer === 'shared' && importLayer === 'shared';
   const isInsideApp = currentFileLayer === 'app' && importLayer === 'app';
-  const hasNotSlice = !importSlice;
-  const hasNotCurrentFileSlice = !currentFileSlice;
+  const hasNotSlice = isNull(importSlice);
+  const hasNotCurrentFileSlice = isNull(currentFileSlice);
 
   /** TODO: move getting 'segment', 'segmentFiles' logic to this func. Delete 'getFsdPartsFromPath'  */
   const {
