@@ -13,7 +13,9 @@ export function shouldBeRelative(pathsInfo: PathsInfo): boolean {
     return false;
   }
 
-  if (hasNotCurrentFileSlice && isSameLayer) {
+  const isImportToLayerPublicApi = hasNotCurrentFileSlice && isSameLayer;
+
+  if (isImportToLayerPublicApi) {
     return true;
   }
 
