@@ -37,6 +37,7 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
   const hasCurrentFileLayer = isLayer(currentFileLayer);
   const hasNotLayer = !hasLayer;
   const hasNotCurrentFileLayer = !hasCurrentFileLayer;
+  const hasUnknownLayers = hasNotLayer || hasNotCurrentFileLayer;
 
   const hasNotSlice = isNull(importSlice);
   const hasNotCurrentFileSlice = isNull(currentFileSlice);
@@ -82,6 +83,7 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     hasNotSlice,
     hasNotCurrentFileLayer,
     hasNotCurrentFileSlice,
+    hasUnknownLayers,
   };
 }
 
