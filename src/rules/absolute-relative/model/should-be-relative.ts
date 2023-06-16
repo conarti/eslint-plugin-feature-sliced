@@ -23,5 +23,7 @@ export function shouldBeRelative(pathsInfo: PathsInfo): boolean {
     return true;
   }
 
-  return isSameSlice && isSameLayer;
+  const isSameLayerAndSlice = isSameLayer && isSameSlice;
+
+  return isSameLayerAndSlice;
 }
