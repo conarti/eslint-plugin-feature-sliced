@@ -34,12 +34,12 @@ export const layersWithoutSlices: Layer[] = [
 ];
 
 export type Segments = ReadonlyArray<
-    'ui'
-    | 'model'
-    | 'lib'
-    | 'api'
-    | 'config'
-    | 'assets'
+	'ui'
+	| 'model'
+	| 'lib'
+	| 'api'
+	| 'config'
+	| 'assets'
 >;
 
 /**
