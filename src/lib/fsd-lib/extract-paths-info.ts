@@ -9,8 +9,8 @@ import type {
 } from '../rule-lib';
 import { isNodeType } from '../rule-lib';
 import { isNull } from '../shared';
-import { getLayerSliceFromPath } from './get-layer-slice-from-path';
 import { getFsdPartsFromPath } from './get-fsd-parts-from-path';
+import { getLayerSliceFromPath } from './get-layer-slice-from-path';
 import {
   canLayerContainSlices,
   isLayer,

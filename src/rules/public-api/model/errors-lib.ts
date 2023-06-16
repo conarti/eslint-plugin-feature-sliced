@@ -1,12 +1,15 @@
-import type { RuleContext } from '@typescript-eslint/utils/dist/ts-eslint';
-import type { MessageIds, Options } from '../config';
-import { MESSAGE_ID } from '../config';
-import { getSourceRangeWithoutQuotes } from '../../../lib/rule-lib';
-import type { PathsInfo } from '../../../lib/fsd-lib';
-import type { ImportExportNodesWithSourceValue } from '../../../lib/rule-lib';
+import { type PathsInfo } from '../../../lib/fsd-lib';
+import {
+  getSourceRangeWithoutQuotes,
+  type ImportExportNodesWithSourceValue,
+} from '../../../lib/rule-lib';
+import {
+  MESSAGE_ID,
+  type RuleContext,
+} from '../config';
 import { convertToPublicApi } from './convert-to-public-api';
 
-export function reportShouldBeFromPublicApi(node: ImportExportNodesWithSourceValue, context: Readonly<RuleContext<MessageIds, Options>>, pathsInfo: PathsInfo) {
+export function reportShouldBeFromPublicApi(node: ImportExportNodesWithSourceValue, context: RuleContext, pathsInfo: PathsInfo) {
   const [fixedPath, valueToRemove] = convertToPublicApi(pathsInfo);
 
   context.report({

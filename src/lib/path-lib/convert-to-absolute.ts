@@ -1,5 +1,5 @@
-import { joinPath } from './join-path';
 import { isPathRelative } from './is-path-relative';
+import { joinPath } from './join-path';
 
 export function convertToAbsolute(base: string, target: string): string {
   if (target === '') {

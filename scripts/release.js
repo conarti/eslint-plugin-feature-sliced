@@ -3,9 +3,9 @@ const {
   writeFileSync,
 } = require('fs');
 const { resolve } = require('path');
+const execa = require('execa');
 const c = require('picocolors');
 const prompts = require('prompts');
-const execa = require('execa');
 const semver = require('semver');
 const packageJson = require('../package.json');
 

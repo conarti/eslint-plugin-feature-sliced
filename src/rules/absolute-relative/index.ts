@@ -2,12 +2,12 @@ import {
   createRule,
   type ImportExpression,
 } from '../../lib/rule-lib';
-import { validateAndReport } from './model';
 import type {
   MessageIds,
   Options,
 } from './config';
 import { ERROR_MESSAGE_ID } from './config';
+import { validateAndReport } from './model';
 
 export default createRule<Options, MessageIds>({
   name: 'absolute-relative',

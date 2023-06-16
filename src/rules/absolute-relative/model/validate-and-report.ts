@@ -1,17 +1,17 @@
+import { extractPathsInfo } from '../../../lib/fsd-lib';
 import {
   canValidate,
   extractRuleOptions,
   isIgnored,
   type ImportExportNodes,
 } from '../../../lib/rule-lib';
-import { extractPathsInfo } from '../../../lib/fsd-lib';
 import { type RuleContext } from '../config';
-import { shouldBeRelative } from './should-be-relative';
-import { shouldBeAbsolute } from './should-be-absolute';
 import {
   reportShouldBeRelative,
   reportShouldBeAbsolute,
 } from './errors-lib';
+import { shouldBeAbsolute } from './should-be-absolute';
+import { shouldBeRelative } from './should-be-relative';
 
 type Options = {
   needCheckForAbsolute: boolean;

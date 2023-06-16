@@ -1,7 +1,7 @@
 const path = require('path');
-const prompts = require('prompts');
-const c = require('picocolors');
 const execa = require('execa');
+const c = require('picocolors');
+const prompts = require('prompts');
 const packageJson = require('../package.json');
 
 /**

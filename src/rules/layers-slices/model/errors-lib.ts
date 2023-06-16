@@ -1,9 +1,9 @@
+import { type PathsInfo } from '../../../lib/fsd-lib';
+import { type ImportExportNodesWithSourceValue } from '../../../lib/rule-lib';
 import {
   ERROR_MESSAGE_ID,
   type RuleContext,
 } from '../config';
-import { type ImportExportNodesWithSourceValue } from '../../../lib/rule-lib';
-import { type PathsInfo } from '../../../lib/fsd-lib';
 
 export function reportCanNotImportLayer(context: RuleContext, node: ImportExportNodesWithSourceValue, pathsInfo: PathsInfo) {
   context.report({
