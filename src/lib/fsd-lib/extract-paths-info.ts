@@ -25,6 +25,7 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
 
   const isType = isNodeType(node);
   const isRelative = isPathRelative(normalizedImportPath);
+  const isSameLayer = importLayer === currentFileLayer;
   const isSameSlice = importSlice === currentFileSlice;
   const isInsideShared = currentFileLayer === 'shared' && importLayer === 'shared';
   const isInsideApp = currentFileLayer === 'app' && importLayer === 'app';
@@ -51,6 +52,7 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     currentFileSlice,
     isType,
     isRelative,
+    isSameLayer,
     isSameSlice,
     isSameSegment,
     isInsideShared,
