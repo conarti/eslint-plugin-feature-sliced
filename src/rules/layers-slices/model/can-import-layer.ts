@@ -13,18 +13,17 @@ export function canImportLayer(pathsInfo: PathsInfo, ruleOptions: RuleOptions) {
     isType,
     importLayer,
     currentFileLayer,
-    currentFileSlice,
     isSameSlice,
     isInsideShared,
     isInsideApp,
+    hasNotCurrentFileSlice,
   } = pathsInfo;
   const { allowTypeImports } = ruleOptions;
 
   const hasUnknownLayers = !isLayer(importLayer) || !isLayer(currentFileLayer); /* TODO: extract to PathsInfo with correct type. Extracting just constant is not working here */
-  const isImportToNotFsdEntity = !currentFileSlice;
 
   const isInvalidForValidate = hasUnknownLayers
-      || isImportToNotFsdEntity
+      || hasNotCurrentFileSlice
       || isSameSlice;
 
   if (isInvalidForValidate) {
