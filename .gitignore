@@ -142,7 +142,7 @@ dist
 .svelte-kit
 
 ### Webstorm ###
-.idea
+.idea/*
 
 docs/.vitepress/dist
 docs/.vitepress/cache
