@@ -29,6 +29,7 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
   const isSameSlice = importSlice === currentFileSlice;
   const isInsideShared = currentFileLayer === 'shared' && importLayer === 'shared';
   const isInsideApp = currentFileLayer === 'app' && importLayer === 'app';
+  const hasNotCurrentFileSlice = !currentFileSlice;
 
   /** TODO: move getting 'segment', 'segmentFiles' logic to this func. Delete 'getFsdPartsFromPath'  */
   const {
@@ -57,6 +58,7 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     isSameSegment,
     isInsideShared,
     isInsideApp,
+    hasNotCurrentFileSlice,
   };
 }
 
