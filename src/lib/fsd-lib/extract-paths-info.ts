@@ -18,7 +18,7 @@ import {
 
 /* TODO: remove 'import' prefix from all vars */
 export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context: UnknownRuleContext) {
-  const currentFilePath = context.getFilename(); /* FIXME: getFilename is deprecated */
+  const currentFilePath = context.getPhysicalFilename ? context.getPhysicalFilename() : context.getFilename(); /* FIXME: getFilename is deprecated */
   const importPath = node.source.value;
 
   const normalizedCurrentFilePath = normalizePath(currentFilePath);
