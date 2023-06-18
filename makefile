@@ -2,7 +2,7 @@ publish:
 	npm publish
 
 test:
-	npm run test
+	npm run test:ui
 
 lint:
 	npm run lint
