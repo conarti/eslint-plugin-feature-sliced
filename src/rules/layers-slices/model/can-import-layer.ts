@@ -1,6 +1,6 @@
+import { type Layer } from '../../../config';
 import {
   getLayerWeight,
-  isLayer,
   type PathsInfo,
 } from '../../../lib/fsd-lib';
 
@@ -15,11 +15,9 @@ export function canImportLayer(pathsInfo: PathsInfo, ruleOptions: RuleOptions) {
     currentFileLayer,
     isSameSlice,
     isSameLayerWithoutSlices,
+    hasUnknownLayers,
   } = pathsInfo;
   const { allowTypeImports } = ruleOptions;
-
-  /* TODO: extract to PathsInfo with correct type. Extracting just constant is not working here */
-  const hasUnknownLayers = !isLayer(importLayer) || !isLayer(currentFileLayer);
 
   const isInvalidForValidate = hasUnknownLayers || isSameSlice;
 
@@ -29,8 +27,8 @@ export function canImportLayer(pathsInfo: PathsInfo, ruleOptions: RuleOptions) {
 
   const isTypeAndAllowedToImport = allowTypeImports && isType;
 
-  const importLayerOrder = getLayerWeight(importLayer);
-  const currentFileLayerOrder = getLayerWeight(currentFileLayer);
+  const importLayerOrder = getLayerWeight(importLayer as Layer /* ts doesn't understand that the check was done on hasUnknownLayers */);
+  const currentFileLayerOrder = getLayerWeight(currentFileLayer as Layer /* ts doesn't understand that the check was done on hasUnknownLayers */);
   const isImportLayerBelowCurrent = currentFileLayerOrder > importLayerOrder;
 
   return isTypeAndAllowedToImport
