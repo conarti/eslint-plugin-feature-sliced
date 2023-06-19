@@ -1,5 +1,8 @@
-import type { Layer } from '../../config';
-import { layers } from '../../config';
+import {
+  layers,
+  layersWithSlices,
+  type Layer,
+} from '../../config';
 import { getByRegExp } from '../shared';
 import { isLayer } from './layers';
 
@@ -28,9 +31,8 @@ function getLayerFromPath(targetPath: string): Layer | null {
  * Returns the slice from the path
  */
 function getSliceFromPath(targetPath: string): string | null {
-  /* TODO: shared and app has not slices. Remove it from regexp and return null if layer is shared or app */
   const targetPathWithoutCurrentFileName = targetPath.replace(/\/\w+\.\w+$/, '');
-  return getByRegExp(targetPathWithoutCurrentFileName, new RegExp(`(?<=(${layers.join('|')})\\/)(\\w|-)+`, 'ig'), true);
+  return getByRegExp(targetPathWithoutCurrentFileName, new RegExp(`(?<=(${layersWithSlices.join('|')})\\/)(\\w|-)+`, 'ig'), true);
 }
 
 /**

@@ -33,6 +33,11 @@ export const layersWithoutSlices: Layer[] = [
   'app',
 ];
 
+/**
+ * Layers that can contain slices by feature-sliced methodology
+ */
+export const layersWithSlices: Layer[] = layers.filter((layer) => !layersWithoutSlices.includes(layer));
+
 export type Segments = ReadonlyArray<
   'ui'
   | 'model'
