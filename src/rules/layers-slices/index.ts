@@ -39,7 +39,7 @@ export default createRule<Options, MessageIds>({
   },
   defaultOptions: [
     {
-      allowTypeImports: false, /* TODO: set to 'true' */
+      allowTypeImports: true,
       ignorePatterns: [],
     },
   ],
