@@ -28,19 +28,21 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
   const [importLayer, importSlice] = getLayerSliceFromPath(importAbsolutePath);
   const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(normalizedCurrentFilePath);
 
-  const isType = isNodeType(node);
-  const isRelative = isPathRelative(normalizedImportPath);
-  const isSameLayer = importLayer === currentFileLayer;
-  const isSameSlice = importSlice === currentFileSlice;
-
   const hasLayer = isLayer(importLayer);
   const hasCurrentFileLayer = isLayer(currentFileLayer);
   const hasNotLayer = !hasLayer;
   const hasNotCurrentFileLayer = !hasCurrentFileLayer;
   const hasUnknownLayers = hasNotLayer || hasNotCurrentFileLayer;
+  const hasSlice = !isNull(importSlice);
+  const hasCurrentFileSlice = !isNull(currentFileSlice);
 
-  const hasNotSlice = isNull(importSlice);
-  const hasNotCurrentFileSlice = isNull(currentFileSlice);
+  const hasNotSlice = !hasSlice;
+  const hasNotCurrentFileSlice = !hasCurrentFileLayer;
+
+  const isType = isNodeType(node);
+  const isRelative = isPathRelative(normalizedImportPath);
+  const isSameLayer = importLayer === currentFileLayer;
+  const isSameSlice = hasSlice && hasCurrentFileSlice && importSlice === currentFileSlice;
 
   const canImportLayerContainSlices = hasLayer && canLayerContainSlices(importLayer);
   const canCurrentFileLayerContainSlices = hasCurrentFileLayer && canLayerContainSlices(currentFileLayer);
