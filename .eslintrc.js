@@ -1,6 +1,4 @@
-// eslint-disable-next-line filenames-simple/naming-convention
-'use strict';
-
+/* eslint-disable filenames-simple/naming-convention */
 module.exports = {
   root: true,
   extends: [
@@ -23,29 +21,29 @@ module.exports = {
     'filenames-simple/naming-convention': ['error', { rule: 'kebab-case' }],
     'unused-imports/no-unused-imports': 'error',
     'comma-dangle': ['error', 'always-multiline'],
-    'indent': ['error', 2],
+    indent: ['error', 2],
     'brace-style': 'error',
-    'semi': ['error', 'always'],
-    'quotes': ['error', 'single', { avoidEscape: true }],
+    semi: ['error', 'always'],
+    quotes: ['error', 'single', { avoidEscape: true }],
     'object-property-newline': 'error',
     'max-len': ['error', 120],
     'object-curly-spacing': ['error', 'always'],
     /* TODO: update this configuration for ts imports */
     'object-curly-newline': ['error', {
-      'ObjectExpression': {
+      ObjectExpression: {
         multiline: true,
         minProperties: 2,
         consistent: true,
       },
-      'ObjectPattern': {
+      ObjectPattern: {
         multiline: true,
         minProperties: 2,
       },
-      'ImportDeclaration': {
+      ImportDeclaration: {
         multiline: true,
         consistent: true,
       },
-      'ExportDeclaration': {
+      ExportDeclaration: {
         multiline: true,
         minProperties: 2,
         consistent: true,
@@ -121,8 +119,8 @@ module.exports = {
     },
     'import/resolver': {
       typescript: {
-        'alwaysTryTypes': true,
-        'project': '<root>/tsconfig.eslint.json',
+        alwaysTryTypes: true,
+        project: '<root>/tsconfig.eslint.json',
       },
     },
   },
