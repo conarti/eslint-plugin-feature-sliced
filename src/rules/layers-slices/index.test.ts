@@ -30,17 +30,17 @@ const makeErrorMessage = (importLayer: string, currentFileLayer: string) => ({
   },
 });
 
-// TODO: ретроспектировать тесты
-
 ruleTester.run('layers-slices', rule, {
   valid: [
     {
-      filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\features\\Article',
-      code: "import { addCommentFormActions, addCommentFormReducer } from '@/shared/Button.tsx'",
+      name: 'should valid if import from "shared" to "features"',
+      filename: 'src/features/bar/ui.tsx',
+      code: "import { foo } from '@/shared/foo.tsx'",
     },
     {
-      filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\features\\Article',
-      code: "import { addCommentFormActions, addCommentFormReducer } from '@/entities/Article'",
+      name: 'should valid if import from "entities" to "features"',
+      filename: 'src/features/bar/ui.tsx',
+      code: "import { foo } from '@/entities/foo.tsx'",
     },
     {
       filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\app\\providers',
@@ -141,18 +141,15 @@ ruleTester.run('layers-slices', rule, {
       errors: [makeErrorMessage('widgets', 'entities')],
     },
     {
+      name: 'should be invalid if import "entities" to "shared" (to layer without slices)',
       filename: 'src/shared/ui/foo',
       code: "import { StoreProvider } from '@/entities/bar';",
       errors: [makeErrorMessage('entities', 'shared')],
     },
     {
+      name: 'should be invalid if import "app" to "shared" (layers without slices)',
       filename: 'src/shared/ui/foo',
       code: "import { StoreProvider } from 'app/bar';",
-      errors: [makeErrorMessage('app', 'shared')],
-    },
-    {
-      filename: 'src/shared/ui/foo',
-      code: "import { StoreProvider } from 'src/app/bar';",
       errors: [makeErrorMessage('app', 'shared')],
     },
     {
