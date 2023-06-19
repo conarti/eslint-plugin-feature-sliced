@@ -8,9 +8,7 @@ export = {
     path.resolve(__dirname, './import-order/recommended'),
   ],
   rules: {
-    'conarti-fsd/layers-slices': ['error', {
-      allowTypeImports: true,
-    }],
+    'conarti-fsd/layers-slices': 'error',
     'conarti-fsd/absolute-relative': 'error',
     'conarti-fsd/public-api': 'error',
   },
