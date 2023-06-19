@@ -26,7 +26,7 @@ module.exports = {
     semi: ['error', 'always'],
     quotes: ['error', 'single', { avoidEscape: true }],
     'object-property-newline': 'error',
-    'max-len': ['error', 120],
+    'max-len': ['error', 150],
     'object-curly-spacing': ['error', 'always'],
     /* TODO: update this configuration for ts imports */
     'object-curly-newline': ['error', {
@@ -66,10 +66,15 @@ module.exports = {
         'index',
       ],
     }],
-    /* TODO: add airbnb config or something like this */
     '@typescript-eslint/consistent-type-imports': ['error', {
       fixStyle: 'inline-type-imports',
     }],
+    'import/prefer-default-export': 'off',
+    'import/extensions': 'off',
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': 'error',
+    'import/no-extraneous-dependencies': 'off',
+    'prefer-destructuring': 'off',
   },
   ignorePatterns: [
     'dist',
@@ -110,9 +115,15 @@ module.exports = {
       },
     },
     {
+      files: ['./src/rules/*/index.ts'],
+      rules: {
+        'max-len': 'off',
+      },
+    },
+    {
       files: ['scripts/**/*'],
       rules: {
-        'import/no-extraneous-dependencies': 'off',
+        'no-console': 'off',
       },
     },
   ],
