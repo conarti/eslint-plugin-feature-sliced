@@ -53,6 +53,7 @@
     "@vitest/ui": "^0.32.0",
     "conventional-changelog-cli": "^2.2.2",
     "eslint": "^8.42.0",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-eslint-plugin": "^5.0.0",
     "eslint-plugin-filenames-simple": "^0.8.0",
