@@ -109,6 +109,12 @@ module.exports = {
         'vitest/require-hook': 'off',
       },
     },
+    {
+      files: ['scripts/**/*'],
+      rules: {
+        'import/no-extraneous-dependencies': 'off',
+      },
+    },
   ],
   settings: {
     'import/parsers': {
