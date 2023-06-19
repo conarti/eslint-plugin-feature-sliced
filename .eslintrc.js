@@ -28,6 +28,7 @@ module.exports = {
     'semi': ['error', 'always'],
     'quotes': ['error', 'single', { avoidEscape: true }],
     'object-property-newline': 'error',
+    'max-len': ['error', 120],
     'object-curly-spacing': ['error', 'always'],
     /* TODO: update this configuration for ts imports */
     'object-curly-newline': ['error', {
