@@ -5,11 +5,11 @@ import withTypeGroup from './with-type-group';
 
 export = {
   parserOptions: {
-    'ecmaVersion': '2015',
-    'sourceType': 'module',
+    ecmaVersion: '2015',
+    sourceType: 'module',
   },
   configs: {
-    'recommended': recommended,
+    recommended,
     'with-newlines': withNewlines,
     'with-type-group': withTypeGroup,
     'with-newlines-and-type-group': withNewlinesAndTypeGroup,

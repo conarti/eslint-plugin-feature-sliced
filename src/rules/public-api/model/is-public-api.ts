@@ -1,9 +1,7 @@
 import { type PathsInfo } from '../../../lib/fsd-lib';
 import { VALIDATION_LEVEL } from '../config';
 
-const isIndexFile = (segmentFiles: string) => {
-  return /^index\.\w+/i.test(segmentFiles);
-};
+const isIndexFile = (segmentFiles: string) => /^index\.\w+/i.test(segmentFiles);
 
 const validateSegments = (pathsInfo: PathsInfo) => {
   const {

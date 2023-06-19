@@ -29,13 +29,11 @@ const makeErrorWithSuggestion = (suggestionSegments: string, suggestionOutput: s
   ],
 });
 
-const setValidationLevel = (level: VALIDATION_LEVEL): [{ level: VALIDATION_LEVEL }] => {
-  return [
-    {
-      level,
-    },
-  ];
-};
+const setValidationLevel = (level: VALIDATION_LEVEL): [{ level: VALIDATION_LEVEL }] => [
+  {
+    level,
+  },
+];
 
 /**
  * TODO добавить проверки на импорты файлов не зарезервированных как сегменты fsd.

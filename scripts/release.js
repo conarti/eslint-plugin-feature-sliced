@@ -17,11 +17,10 @@ const {
 const versionIncrements = ['patch', 'minor', 'major'];
 
 const incrementCurrentVersion = (versionType) => inc(currentVersion, versionType);
-const run = (bin, args, opts = {}) =>
-  execa(bin, args, {
-    stdio: 'inherit',
-    ...opts,
-  });
+const run = (bin, args, opts = {}) => execa(bin, args, {
+  stdio: 'inherit',
+  ...opts,
+});
 const step = (message) => console.log(c.cyan(`\n${message}`));
 
 const updatePackageVersion = (newVersion) => {
@@ -29,23 +28,21 @@ const updatePackageVersion = (newVersion) => {
 
   const getJsonPath = (filename) => resolve(resolve(__dirname, '..'), filename);
 
-  const readJson = (filename) => {
-    return JSON.parse(readFileSync(getJsonPath(filename), 'utf-8'));
-  };
+  const readJson = (filename) => JSON.parse(readFileSync(getJsonPath(filename), 'utf-8'));
 
   const writeJson = (filename, data) => {
-    writeFileSync(getJsonPath(filename), JSON.stringify(data, null, 2) + '\n');
+    writeFileSync(getJsonPath(filename), `${JSON.stringify(data, null, 2)}\n`);
   };
 
-  const packageJson = readJson('package.json');
-  const packageLockJson = readJson('package-lock.json');
+  const parsedPackageJson = readJson('package.json');
+  const parsedPackageLockJson = readJson('package-lock.json');
 
-  packageJson.version = newVersion;
-  packageLockJson.version = newVersion;
-  packageLockJson.packages[''].version = newVersion;
+  parsedPackageJson.version = newVersion;
+  parsedPackageLockJson.version = newVersion;
+  parsedPackageLockJson.packages[''].version = newVersion;
 
-  writeJson('package.json', packageJson);
-  writeJson('package-lock.json', packageLockJson);
+  writeJson('package.json', parsedPackageJson);
+  writeJson('package-lock.json', parsedPackageLockJson);
 };
 
 const generateChangelog = async () => {

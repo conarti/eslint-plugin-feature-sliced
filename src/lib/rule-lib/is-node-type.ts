@@ -14,7 +14,7 @@ type ImportExportTypeNode = ImportDeclarationKindType | ExportAllDeclarationKind
 export function isNodeType(node: ImportExportNodes): node is ImportExportTypeNode {
   const isImport = node.type === AST_NODE_TYPES.ImportDeclaration;
   const isExport = node.type === AST_NODE_TYPES.ExportAllDeclaration
-	|| node.type === AST_NODE_TYPES.ExportNamedDeclaration;
+    || node.type === AST_NODE_TYPES.ExportNamedDeclaration;
 
   if (isImport) {
     return node.importKind === 'type';

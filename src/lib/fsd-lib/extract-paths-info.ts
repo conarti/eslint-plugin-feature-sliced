@@ -48,8 +48,7 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
   /**
    * Whether the import/export file and the current file are inside the same layer that cannot contain slices
    */
-  const isSameLayerWithoutSlices =
-    isSameLayer
+  const isSameLayerWithoutSlices = isSameLayer
     && !canImportLayerContainSlices
     && !canCurrentFileLayerContainSlices;
 

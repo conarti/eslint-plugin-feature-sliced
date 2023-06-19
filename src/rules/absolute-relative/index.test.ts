@@ -28,40 +28,40 @@ ruleTester.run('absolute-relative', rule, {
   valid: [
     {
       filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
-      code: 'import { TheHeader } from \'./TheHeader\';',
+      code: "import { TheHeader } from './TheHeader';",
     },
     {
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
-      code: 'import { useBar } from \'src/shared/hooks\';',
+      code: "import { useBar } from 'src/shared/hooks';",
     },
     {
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
-      code: 'import { useBar } from \'../../lib\';',
+      code: "import { useBar } from '../../lib';",
     },
     {
       filename: 'src/app/App.tsx',
-      code: 'import { AppRouter } from \'./providers/router\';',
+      code: "import { AppRouter } from './providers/router';",
     },
     {
       filename: 'src/app/App.tsx',
-      code: 'import { Foo } from \'widgets/foo\';',
+      code: "import { Foo } from 'widgets/foo';",
     },
     {
       filename: 'src/pages/passport-info-case-edit/lib/index.ts',
-      code: 'import generatePayloadMapper from \'./generatePayloadMapper\';',
+      code: "import generatePayloadMapper from './generatePayloadMapper';",
     },
     {
       filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/widgets/payments-widget-wrapper/index.ts',
-      code: 'export * from \'./model\';',
+      code: "export * from './model';",
     },
     {
       filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/components/blocks/MarriageDetails/index.ts',
-      code: 'export { MarriageDetails } from \'./MarriageDetails\';',
+      code: "export { MarriageDetails } from './MarriageDetails';",
     },
     {
       name: 'should be valid if it has ignored in files options',
       filename: '/Users/conarti/Projects/frontend/src/shared/foo/index.ts',
-      code: 'import { BAR } from \'@/shared/bar\';',
+      code: "import { BAR } from '@/shared/bar';",
       options: makeIgnoreInFilesOptions(['**/*/shared/foo/**/*']),
     },
     {

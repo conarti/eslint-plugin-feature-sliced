@@ -14,11 +14,10 @@ const packageJson = require('../package.json');
  * because the script uses 'rm -rf' to remove an already installed package with the same name.
  */
 
-const run = (bin, args, opts = {}) =>
-  execa(bin, args, {
-    stdio: 'inherit',
-    ...opts,
-  });
+const run = (bin, args, opts = {}) => execa(bin, args, {
+  stdio: 'inherit',
+  ...opts,
+});
 
 const step = (message) => console.log(c.cyan(`\n${message}`));
 
@@ -36,8 +35,8 @@ const copy = async (from, to) => {
   }
 };
 
-const deleteFiles = async (path) => {
-  await run('rimraf', [path]);
+const deleteFiles = async (dirnameOrFile) => {
+  await run('rimraf', [dirnameOrFile]);
 };
 
 const cleanCompiledFiles = async (buildDir, packedPackageFileName) => {

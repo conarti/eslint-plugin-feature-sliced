@@ -1,11 +1,11 @@
 export type Layers = ReadonlyArray<
-	'shared'
-	| 'entities'
-	| 'features'
-	| 'widgets'
-	| 'pages'
-	| 'processes'
-	| 'app'
+  'shared'
+  | 'entities'
+  | 'features'
+  | 'widgets'
+  | 'pages'
+  | 'processes'
+  | 'app'
 >;
 
 export type Layer = Layers[number]
@@ -34,12 +34,12 @@ export const layersWithoutSlices: Layer[] = [
 ];
 
 export type Segments = ReadonlyArray<
-	'ui'
-	| 'model'
-	| 'lib'
-	| 'api'
-	| 'config'
-	| 'assets'
+  'ui'
+  | 'model'
+  | 'lib'
+  | 'api'
+  | 'config'
+  | 'assets'
 >;
 
 /**

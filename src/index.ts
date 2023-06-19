@@ -5,8 +5,8 @@ import publicApi from './rules/public-api';
 
 export = {
   parserOptions: {
-    'ecmaVersion': '2015',
-    'sourceType': 'module',
+    ecmaVersion: '2015',
+    sourceType: 'module',
   },
   rules: {
     'absolute-relative': absoluteRelative,

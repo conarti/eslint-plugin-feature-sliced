@@ -10,7 +10,8 @@ const fsdPartsRegExp = new RegExp(
 );
 
 /**
- * @deprecated This module use an overly complex regular expression. It's better to complement the logic in 'getLayerSliceFromPath' (segment + segmentFiles)
+ * @deprecated This module use an overly complex regular expression.
+ * It's better to complement the logic in 'getLayerSliceFromPath' (segment + segmentFiles)
  */
 export function getFsdPartsFromPath(targetPath: string) {
   const fsdParts = targetPath.match(fsdPartsRegExp);
