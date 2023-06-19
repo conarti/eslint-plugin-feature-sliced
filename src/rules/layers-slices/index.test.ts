@@ -30,6 +30,8 @@ const makeErrorMessage = (importLayer: string, currentFileLayer: string) => ({
   },
 });
 
+// TODO refactor tests
+
 ruleTester.run('layers-slices', rule, {
   valid: [
     {
