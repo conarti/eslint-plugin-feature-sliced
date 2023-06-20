@@ -3,7 +3,7 @@ import {
   type Layer,
 } from '../../config';
 import { getByRegExp } from '../shared';
-import { getLayerFromPath } from './get-layer-from-path';
+import { extractLayer } from './extract-layer';
 
 /**
  * Returns the slice from the path
@@ -18,7 +18,7 @@ function getSliceFromPath(targetPath: string): string | null {
  * TODO: split into two functions
  */
 export function getLayerSliceFromPath(filePath: string): [Layer | null, string | null] {
-  const layer = getLayerFromPath(filePath);
+  const layer = extractLayer(filePath);
   const slice = getSliceFromPath(filePath);
   return [layer, slice];
 }

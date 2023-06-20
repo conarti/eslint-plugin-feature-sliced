@@ -8,7 +8,7 @@ import { isLayer } from './layers';
 /**
  * Returns the layer from the path
  */
-export function getLayerFromPath(targetPath: string): Layer | null {
+export function extractLayer(targetPath: string): Layer | null {
   const layersRegExpPattern = `(${layers.join('|')})(?![\\w\\.-])`;
 
   const layer = getByRegExp<Layer>(targetPath, new RegExp(layersRegExpPattern, 'ig'), true);
