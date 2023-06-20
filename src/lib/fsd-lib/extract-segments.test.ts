@@ -1,14 +1,17 @@
-import { layersWithoutSlices, segments } from '../../config';
-import { extractSegments } from './extract-segments';
+import {
+  layersWithoutSlices,
+  segments,
+} from '../../config';
+import { extractSegment } from './extract-segment';
 
 const FSD_SEGMENTS = segments;
 const FSD_LAYERS_WITHOUT_SLICES = layersWithoutSlices;
 
-describe('extract-segments', () => {
+describe('extract-segment', () => {
   type TestCase = {
     name: string;
     path: string;
-    expected: ReturnType<typeof extractSegments>
+    expected: ReturnType<typeof extractSegment>
   }
 
   const shouldUnderstandAllFsdSegmentsTestCases: TestCase[] = FSD_SEGMENTS.map((segment) => ({
@@ -102,7 +105,7 @@ describe('extract-segments', () => {
     path,
     expected,
   }) => {
-    const actual = extractSegments(path);
+    const actual = extractSegment(path);
     expect(actual).toStrictEqual(expected);
   });
 });

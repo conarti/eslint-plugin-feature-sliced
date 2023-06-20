@@ -12,7 +12,7 @@ const fsdPartsRegExp = new RegExp(
 
 type SegmentFiles = string | null;
 
-export function extractSegments(targetPath: string): [Segment | null, SegmentFiles] {
+export function extractSegment(targetPath: string): [Segment | null, SegmentFiles] {
   const fsdParts = targetPath.match(fsdPartsRegExp);
 
   if (fsdParts === null) {
