@@ -5,6 +5,7 @@ import {
 import {
   canValidate,
   extractRuleOptions,
+  isIgnored,
   type ImportExportNodes,
 } from '../../../lib/rule-lib';
 import {
@@ -28,8 +29,9 @@ export function validateAndReport(node: ImportExportNodes, context: RuleContext)
 
   const isIgnoredLayer = pathsInfo.importLayer !== null && IGNORED_LAYERS.includes(pathsInfo.importLayer);
   const isUnknownLayer = !isLayer(pathsInfo.importLayer);
+  const isIgnoredCurrentFile = isIgnored(pathsInfo.normalizedCurrentFilePath, ruleOptions.ignoreInFilesPatterns);
 
-  if (isUnknownLayer || isIgnoredLayer) {
+  if (isUnknownLayer || isIgnoredLayer || isIgnoredCurrentFile) {
     return;
   }
 

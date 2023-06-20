@@ -36,6 +36,12 @@ export default createRule<Options, MessageIds>({
               VALIDATION_LEVEL.SLICES,
             ],
           },
+          ignoreInFilesPatterns: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
         },
       },
     ],
@@ -43,6 +49,7 @@ export default createRule<Options, MessageIds>({
   defaultOptions: [
     {
       level: VALIDATION_LEVEL.SLICES,
+      ignoreInFilesPatterns: [],
     },
   ],
 
