@@ -75,6 +75,7 @@ module.exports = {
     '@typescript-eslint/no-shadow': 'error',
     'import/no-extraneous-dependencies': 'off',
     'prefer-destructuring': 'off',
+    'linebreak-style': ['error', 'unix'],
   },
   ignorePatterns: [
     'dist',
