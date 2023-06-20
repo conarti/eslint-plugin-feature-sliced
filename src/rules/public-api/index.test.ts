@@ -1,5 +1,5 @@
 import { ESLintUtils } from '@typescript-eslint/utils';
-import { layers } from '../../config';
+import { layers, layersWithoutSlices } from '../../config';
 import {
   MESSAGE_ID,
   VALIDATION_LEVEL,
@@ -8,6 +8,7 @@ import {
 import rule from './index';
 
 const FSD_LAYERS = layers;
+const FSD_LAYERS_WITHOUT_SLICES = layersWithoutSlices;
 
 const ruleTester = new ESLintUtils.RuleTester({
   parserOptions: {
@@ -65,8 +66,15 @@ const makeIgnoreInFilesOptions = (patterns: string[]) => [
  *     },
  */
 
+const shouldNotValidateLayersWithoutSlices: Parameters<typeof ruleTester.run>[2]['valid'] = FSD_LAYERS_WITHOUT_SLICES.map((layer) => ({
+  name: `should not validate public api with layers that can not contain slices ("${layer}")`,
+  filename: 'src/features/foo/index.ts',
+  code: `import { baz } from "src/${layer}/foo/ui.ts";`,
+}));
+
 ruleTester.run('public-api', rule, {
   valid: [
+    ...shouldNotValidateLayersWithoutSlices,
     {
       name: 'should work with slice public api',
       code: "import { addCommentFormActions, addCommentFormReducer } from 'src/entities/Article'",
