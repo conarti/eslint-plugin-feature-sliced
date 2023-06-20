@@ -17,7 +17,10 @@ export function validateAndReport(node: ImportExportNodes, context: RuleContext)
   const pathsInfo = extractPathsInfo(node, context);
   const userDefinedRuleOptions = extractRuleOptions(context);
 
-  if (isIgnored(pathsInfo.importPath, userDefinedRuleOptions.ignorePatterns)) {
+  const isIgnoredTargetPath = isIgnored(pathsInfo.importPath, userDefinedRuleOptions.ignorePatterns);
+  const isIgnoredCurrentFile = isIgnored(pathsInfo.currentFilePath, userDefinedRuleOptions.ignoreInFilesPatterns);
+
+  if (isIgnoredTargetPath || isIgnoredCurrentFile) {
     return;
   }
 

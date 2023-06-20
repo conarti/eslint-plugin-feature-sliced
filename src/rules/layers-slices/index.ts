@@ -41,6 +41,7 @@ export default createRule<Options, MessageIds>({
     {
       allowTypeImports: true,
       ignorePatterns: [],
+      ignoreInFilesPatterns: [],
     },
   ],
 

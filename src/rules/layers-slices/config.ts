@@ -10,6 +10,7 @@ export type Options = [
   {
     allowTypeImports: boolean;
     ignorePatterns?: string[];
+    ignoreInFilesPatterns?: string[];
   },
 ];
 
