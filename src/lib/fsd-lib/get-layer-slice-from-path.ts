@@ -1,17 +1,6 @@
-import {
-  layersWithSlices,
-  type Layer,
-} from '../../config';
-import { getByRegExp } from '../shared';
+import { type Layer } from '../../config';
 import { extractLayer } from './extract-layer';
-
-/**
- * Returns the slice from the path
- */
-function getSliceFromPath(targetPath: string): string | null {
-  const targetPathWithoutCurrentFileName = targetPath.replace(/\/\w+\.\w+$/, '');
-  return getByRegExp(targetPathWithoutCurrentFileName, new RegExp(`(?<=(${layersWithSlices.join('|')})\\/)(\\w|-)+`, 'ig'), true);
-}
+import { getSliceFromPath } from './get-slice-from-path';
 
 /**
  * Returns the layer and slice from the path
