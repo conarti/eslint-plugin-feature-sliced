@@ -3,26 +3,27 @@ import {
   getLayerWeight,
   type PathsInfo,
 } from '../../../lib/fsd-lib';
+import { type ImportExportNodesWithSourceValue, isNodeType } from '../../../lib/rule-lib';
 
 type RuleOptions = {
   allowTypeImports: boolean
 };
 
-export function canImportLayer(pathsInfo: PathsInfo, ruleOptions: RuleOptions) {
+export function canImportLayer(pathsInfo: PathsInfo, node: ImportExportNodesWithSourceValue, ruleOptions: RuleOptions) {
   const {
     fsdPartsOfTarget,
     fsdPartsOfCurrentFile,
-    isType,
     isSameSlice,
     isSameLayerWithoutSlices,
     hasUnknownLayers,
   } = pathsInfo;
-  const { allowTypeImports } = ruleOptions;
 
   if (hasUnknownLayers) {
     return true;
   }
 
+  const { allowTypeImports } = ruleOptions;
+  const isType = isNodeType(node);
   const isTypeAndAllowedToImport = allowTypeImports && isType;
 
   const importLayerOrder = getLayerWeight(

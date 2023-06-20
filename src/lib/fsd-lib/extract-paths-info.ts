@@ -2,7 +2,6 @@ import { isPathRelative } from '../path-lib';
 import {
   type ImportExportNodesWithSourceValue,
   type UnknownRuleContext,
-  isNodeType,
 } from '../rule-lib';
 import { extractFeatureSlicedParts } from './extract-feature-sliced-parts';
 import { extractPaths } from './extract-paths';
@@ -24,7 +23,6 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
   const validatedFeatureSlicedPartsOfCurrentFile = validateExtractedFeatureSlicedParts(fsdPartsOfCurrentFile);
 
   const hasUnknownLayers = validatedFeatureSlicedPartsOfTarget.hasNotLayer || validatedFeatureSlicedPartsOfCurrentFile.hasNotLayer;
-  const isType = isNodeType(node);
   const isRelative = isPathRelative(normalizedTargetPath);
   const isSameLayer = fsdPartsOfTarget.layer === fsdPartsOfCurrentFile.layer;
   const isSameSlice = validatedFeatureSlicedPartsOfTarget.hasSlice && validatedFeatureSlicedPartsOfCurrentFile.hasSlice
@@ -47,7 +45,6 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     fsdPartsOfTarget,
     fsdPartsOfCurrentFile,
 
-    isType,
     isRelative,
     isSameLayer,
     isSameSlice,

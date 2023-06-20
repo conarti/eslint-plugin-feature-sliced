@@ -24,7 +24,7 @@ export function validateAndReport(node: ImportExportNodes, context: RuleContext)
     return;
   }
 
-  if (!canImportLayer(pathsInfo, userDefinedRuleOptions)) {
+  if (!canImportLayer(pathsInfo, node, userDefinedRuleOptions)) {
     reportCanNotImportLayer(context, node, pathsInfo);
   }
 }
