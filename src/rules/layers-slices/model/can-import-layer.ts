@@ -10,8 +10,8 @@ type RuleOptions = {
 
 export function canImportLayer(pathsInfo: PathsInfo, ruleOptions: RuleOptions) {
   const {
+    targetPathFeatureSlicedParts,
     isType,
-    importLayer,
     currentFileLayer,
     isSameSlice,
     isSameLayerWithoutSlices,
@@ -25,7 +25,9 @@ export function canImportLayer(pathsInfo: PathsInfo, ruleOptions: RuleOptions) {
 
   const isTypeAndAllowedToImport = allowTypeImports && isType;
 
-  const importLayerOrder = getLayerWeight(importLayer as Layer /* ts doesn't understand that the check was done on hasUnknownLayers */);
+  const importLayerOrder = getLayerWeight(
+    targetPathFeatureSlicedParts.layer as Layer, /* ts doesn't understand that the check was done on hasUnknownLayers */
+  );
   const currentFileLayerOrder = getLayerWeight(currentFileLayer as Layer /* ts doesn't understand that the check was done on hasUnknownLayers */);
   const isImportLayerBelowCurrent = currentFileLayerOrder > importLayerOrder;
 

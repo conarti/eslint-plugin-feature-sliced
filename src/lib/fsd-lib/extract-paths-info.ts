@@ -117,10 +117,7 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     normalizedCurrentFilePath,
     absoluteTargetPath,
 
-    importLayer: targetPathFeatureSlicedParts.layer,
-    importSlice: targetPathFeatureSlicedParts.slice,
-    segment: targetPathFeatureSlicedParts.segment,
-    segmentFiles: targetPathFeatureSlicedParts.segmentFiles,
+    targetPathFeatureSlicedParts,
 
     currentFileLayer: currentFileFeatureSlicedParts.layer,
     currentFileSlice: currentFileFeatureSlicedParts.slice,

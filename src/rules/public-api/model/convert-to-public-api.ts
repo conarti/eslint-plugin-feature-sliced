@@ -12,15 +12,14 @@ function addSlashToStart(targetPath: string | null): string {
 function extractValueToRemove(pathsInfo: PathsInfo): string | null {
   const {
     isSameSlice,
-    segment,
-    segmentFiles,
+    targetPathFeatureSlicedParts,
   } = pathsInfo;
 
   if (isSameSlice) {
-    return segmentFiles;
+    return targetPathFeatureSlicedParts.segmentFiles;
   }
 
-  return `${segment}${addSlashToStart(segmentFiles)}`;
+  return `${targetPathFeatureSlicedParts.segment}${addSlashToStart(targetPathFeatureSlicedParts.segmentFiles)}`;
 }
 
 export function convertToPublicApi(pathsInfo: PathsInfo): [string, (string | null)] {
