@@ -94,42 +94,23 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
   const importLayerSliceSegment = extractLayerSliceSegment(importAbsolutePath);
   const currentFileLayerSliceSegment = extractLayerSliceSegment(normalizedCurrentFilePath);
 
-  const {
-    hasLayer,
-    hasNotLayer,
-    hasSlice,
-    hasNotSlice,
-    hasSegment,
-    hasNotSegment,
-    hasSegmentFiles,
-    hasNotSegmentFiles,
-    canLayerContainSlices: canImportLayerContainSlices,
-  } = validateLayerSliceSegment(importLayerSliceSegment);
-  const {
-    hasLayer: hasCurrentFileLayer,
-    hasNotLayer: hasNotCurrentFileLayer,
-    hasSlice: hasCurrentFileSlice,
-    hasNotSlice: hasNotCurrentFileSlice,
-    hasSegment: hasCurrentFileSegment,
-    hasNotSegment: hasNotCurrentFileSegment,
-    hasSegmentFiles: hasCurrentFileSegmentFiles,
-    hasNotSegmentFiles: hasNotCurrentFileSegmentFiles,
-    canLayerContainSlices: canCurrentFileLayerContainSlices,
-  } = validateLayerSliceSegment(currentFileLayerSliceSegment);
+  const fsdInfoOfImport = validateLayerSliceSegment(importLayerSliceSegment);
+  const fsdInfoOfCurrentFile = validateLayerSliceSegment(currentFileLayerSliceSegment);
 
-  const hasUnknownLayers = hasNotLayer || hasNotCurrentFileLayer;
+  const hasUnknownLayers = fsdInfoOfImport.hasNotLayer || fsdInfoOfCurrentFile.hasNotLayer;
 
   const isType = isNodeType(node);
   const isRelative = isPathRelative(normalizedImportPath);
   const isSameLayer = importLayerSliceSegment.layer === currentFileLayerSliceSegment.layer;
-  const isSameSlice = hasSlice && hasCurrentFileSlice && importLayerSliceSegment.slice === currentFileLayerSliceSegment.slice;
+  const isSameSlice = fsdInfoOfImport.hasSlice && fsdInfoOfCurrentFile.hasSlice
+    && importLayerSliceSegment.slice === currentFileLayerSliceSegment.slice;
   const isSameSegment = importLayerSliceSegment.segment === currentFileLayerSliceSegment.segment;
   /**
    * Whether the import/export file and the current file are inside the same layer that cannot contain slices
    */
   const isSameLayerWithoutSlices = isSameLayer
-    && !canImportLayerContainSlices
-    && !canCurrentFileLayerContainSlices;
+    && !fsdInfoOfImport.canLayerContainSlices
+    && !fsdInfoOfCurrentFile.canLayerContainSlices;
 
   return {
     importPath,
@@ -153,21 +134,23 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     isSameSlice,
     isSameSegment,
     isSameLayerWithoutSlices,
-    hasCurrentFileLayer,
-    hasLayer,
-    hasNotLayer,
-    hasNotSlice,
-    hasNotCurrentFileLayer,
-    hasNotCurrentFileSlice,
     hasUnknownLayers,
-    hasSegment,
-    hasNotSegment,
-    hasCurrentFileSegment,
-    hasNotCurrentFileSegment,
-    hasSegmentFiles,
-    hasNotSegmentFiles,
-    hasCurrentFileSegmentFiles,
-    hasNotCurrentFileSegmentFiles,
+
+    hasLayer: fsdInfoOfImport.hasLayer,
+    hasNotLayer: fsdInfoOfImport.hasNotLayer,
+    hasNotSlice: fsdInfoOfImport.hasNotSlice,
+    hasSegment: fsdInfoOfImport.hasSegment,
+    hasNotSegment: fsdInfoOfImport.hasNotSegment,
+    hasSegmentFiles: fsdInfoOfImport.hasSegmentFiles,
+    hasNotSegmentFiles: fsdInfoOfImport.hasNotSegmentFiles,
+
+    hasCurrentFileLayer: fsdInfoOfCurrentFile.hasLayer,
+    hasNotCurrentFileLayer: fsdInfoOfCurrentFile.hasNotLayer,
+    hasNotCurrentFileSlice: fsdInfoOfCurrentFile.hasNotSlice,
+    hasCurrentFileSegment: fsdInfoOfCurrentFile.hasSegment,
+    hasNotCurrentFileSegment: fsdInfoOfCurrentFile.hasNotSegment,
+    hasCurrentFileSegmentFiles: fsdInfoOfCurrentFile.hasSegmentFiles,
+    hasNotCurrentFileSegmentFiles: fsdInfoOfCurrentFile.hasNotSegmentFiles,
   };
 }
 
