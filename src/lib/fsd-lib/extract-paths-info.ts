@@ -59,7 +59,10 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     segment,
     segmentFiles,
   } = getFsdPartsFromPath(importAbsolutePath);
-  const { segment: currentFileSegment } = getFsdPartsFromPath(currentFilePath);
+  const {
+    segment: currentFileSegment,
+    segmentFiles: currentFileSegmentFiles,
+  } = getFsdPartsFromPath(currentFilePath);
   const isSameSegment = segment === currentFileSegment;
 
   return {
@@ -74,12 +77,14 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     segmentFiles,
     currentFileLayer,
     currentFileSlice,
+    currentFileSegmentFiles,
     isType,
     isRelative,
     isSameLayer,
     isSameSlice,
     isSameSegment,
     isSameLayerWithoutSlices,
+    hasCurrentFileLayer,
     hasNotLayer,
     hasNotSlice,
     hasNotCurrentFileLayer,
