@@ -9,9 +9,10 @@ import {
   isNodeType,
 } from '../rule-lib';
 import { isNull } from '../shared';
-import { extractLayer } from './extract-layer';
-import { extractSegment } from './extract-segment';
-import { extractSlice } from './extract-slice';
+import {
+  type ExtractedFeatureSlicedParts,
+  extractFeatureSlicedParts,
+} from './extract-feature-sliced-parts';
 import {
   canLayerContainSlices,
   isLayer,
@@ -33,21 +34,6 @@ function extractPaths(node: ImportExportNodesWithSourceValue, context: UnknownRu
     absoluteTargetPath,
   };
 }
-
-function extractFeatureSlicedParts(targetPath: string) {
-  const layer = extractLayer(targetPath);
-  const slice = extractSlice(targetPath);
-  const [segment, segmentFiles] = extractSegment(targetPath);
-
-  return {
-    layer,
-    slice,
-    segment,
-    segmentFiles,
-  };
-}
-
-type ExtractedFeatureSlicedParts = ReturnType<typeof extractFeatureSlicedParts>;
 
 function validateExtractedFeatureSlicedParts(extractedFeatureSlicedParts: ExtractedFeatureSlicedParts) {
   const {
