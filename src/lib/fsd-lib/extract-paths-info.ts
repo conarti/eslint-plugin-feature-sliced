@@ -128,13 +128,7 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     isSameLayerWithoutSlices,
     hasUnknownLayers,
 
-    hasLayer: validatedFeatureSlicedPartsOfTarget.hasLayer,
-    hasNotLayer: validatedFeatureSlicedPartsOfTarget.hasNotLayer,
-    hasNotSlice: validatedFeatureSlicedPartsOfTarget.hasNotSlice,
-    hasSegment: validatedFeatureSlicedPartsOfTarget.hasSegment,
-    hasNotSegment: validatedFeatureSlicedPartsOfTarget.hasNotSegment,
-    hasSegmentFiles: validatedFeatureSlicedPartsOfTarget.hasSegmentFiles,
-    hasNotSegmentFiles: validatedFeatureSlicedPartsOfTarget.hasNotSegmentFiles,
+    validatedFeatureSlicedPartsOfTarget,
 
     hasCurrentFileLayer: validatedFeatureSlicedPartsOfCurrentFile.hasLayer,
     hasNotCurrentFileLayer: validatedFeatureSlicedPartsOfCurrentFile.hasNotLayer,

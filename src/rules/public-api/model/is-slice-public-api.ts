@@ -1,5 +1,5 @@
 import { type PathsInfo } from '../../../lib/fsd-lib';
 
 export function isSlicePublicApi(pathsInfo: PathsInfo) {
-  return pathsInfo.hasNotSegment;
+  return pathsInfo.validatedFeatureSlicedPartsOfTarget.hasNotSegment;
 }

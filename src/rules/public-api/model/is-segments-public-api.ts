@@ -4,11 +4,11 @@ import { isIndexFile } from './is-index-file';
 export function isSegmentsPublicApi(pathsInfo: PathsInfo) {
   const {
     targetPathFeatureSlicedParts,
+    validatedFeatureSlicedPartsOfTarget,
     isSameSegment,
-    hasNotSegmentFiles,
   } = pathsInfo;
 
-  const isSegmentPublicApi = hasNotSegmentFiles
+  const isSegmentPublicApi = validatedFeatureSlicedPartsOfTarget.hasNotSegmentFiles
     || isIndexFile(targetPathFeatureSlicedParts.segmentFiles as string /* 'hasNotSegmentFiles' is already validate it, ts doesn't understand */);
 
   return isSameSegment || isSegmentPublicApi;
