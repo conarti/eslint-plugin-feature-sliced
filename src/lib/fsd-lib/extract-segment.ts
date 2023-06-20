@@ -1,10 +1,10 @@
 import {
-  layers,
+  layersWithSlices,
   segments,
   type Segment,
 } from '../../config';
 
-const layersUnion = layers.join('|');
+const layersUnion = layersWithSlices.join('|');
 const segmentsUnion = segments.join('|');
 const fsdPartsRegExp = new RegExp(
   `(?<=(?<layer>${layersUnion}))\\/(?<slice>([\\w-]*\\/)+?)(?<segment>(${segmentsUnion})(\\.\\w+)?)(\\/(?<segmentFiles>.*))?`,
