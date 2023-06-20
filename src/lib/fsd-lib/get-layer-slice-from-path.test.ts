@@ -1,4 +1,7 @@
+import { layersWithoutSlices } from '../../config';
 import { getLayerSliceFromPath } from './get-layer-slice-from-path';
+
+const FSD_LAYERS_WITHOUT_SLICES = layersWithoutSlices;
 
 const layerCases = [
   {
@@ -36,7 +39,14 @@ const layerCases = [
   },
 ];
 
+const shouldNotReturnSliceFromLayersWithoutSlices = FSD_LAYERS_WITHOUT_SLICES.map((layer) => ({
+  name: `should not return slice from layer that can not contain slices ("${layer}")`,
+  path: `src/${layer}/foo/index.ts`,
+  expected: null,
+}));
+
 const sliceCases = [
+  ...shouldNotReturnSliceFromLayersWithoutSlices,
   {
     path: 'src/entities/foo',
     expected: 'foo',
