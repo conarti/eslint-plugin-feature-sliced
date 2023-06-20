@@ -3,6 +3,7 @@ import type { TSESLint } from '@typescript-eslint/utils';
 export const enum MESSAGE_ID {
   SHOULD_BE_FROM_PUBLIC_API = 'should-be-from-public-api',
   REMOVE_SUGGESTION = 'remove-suggestion',
+  LAYERS_PUBLIC_API_NOT_ALLOWED = 'layers-public-api-not-allowed'
 }
 
 /* TODO probably @duplicate of 'isInsideShared'/'isInsideApp' in extractPathsInfo */

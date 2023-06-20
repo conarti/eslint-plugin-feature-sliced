@@ -336,5 +336,15 @@ ruleTester.run('public-api', rule, {
         ),
       ],
     },
+    {
+      name: 'import to layers public api is not allowed',
+      filename: 'src/features/index.ts',
+      code: "import { foo } from './foo'",
+      errors: [
+        {
+          messageId: MESSAGE_ID.LAYERS_PUBLIC_API_NOT_ALLOWED,
+        },
+      ],
+    },
   ],
 });
