@@ -1,18 +1,32 @@
-import type { PathsInfo } from '../../../lib/fsd-lib';
+import { type PathsInfo } from '../../../lib/fsd-lib';
+import { isNull } from '../../../lib/shared';
 
-const addSlashToStart = (targetPath: string) => (targetPath ? `/${targetPath}` : '');
+function addSlashToStart(targetPath: string | null): string {
+  if (isNull(targetPath)) {
+    return '';
+  }
 
-export function convertToPublicApi(pathsInfo: PathsInfo): [string, string] {
+  return `/${targetPath}`;
+}
+
+function extractValueToRemove(pathsInfo: PathsInfo): string | null {
   const {
-    normalizedImportPath,
     isSameSlice,
-    segmentFiles,
     segment,
+    segmentFiles,
   } = pathsInfo;
 
-  const valueToRemove = isSameSlice
-    ? segmentFiles
-    : `${segment}${addSlashToStart(segmentFiles)}`;
+  if (isSameSlice) {
+    return segmentFiles;
+  }
+
+  return `${segment}${addSlashToStart(segmentFiles)}`;
+}
+
+export function convertToPublicApi(pathsInfo: PathsInfo): [string, (string | null)] {
+  const { normalizedImportPath } = pathsInfo;
+
+  const valueToRemove = extractValueToRemove(pathsInfo);
 
   const publicApiPath = normalizedImportPath.replace(`/${valueToRemove}`, '');
 
