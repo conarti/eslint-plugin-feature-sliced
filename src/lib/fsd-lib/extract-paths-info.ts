@@ -34,7 +34,7 @@ function extractPaths(node: ImportExportNodesWithSourceValue, context: UnknownRu
   };
 }
 
-function extractLayerSliceSegment(targetPath: string) {
+function extractFeatureSlicedParts(targetPath: string) {
   const layer = extractLayer(targetPath);
   const slice = extractSlice(targetPath);
   const [segment, segmentFiles] = extractSegment(targetPath);
@@ -47,15 +47,15 @@ function extractLayerSliceSegment(targetPath: string) {
   };
 }
 
-type ExtractedLayerSliceSegment = ReturnType<typeof extractLayerSliceSegment>;
+type ExtractedFeatureSlicedParts = ReturnType<typeof extractFeatureSlicedParts>;
 
-function validateLayerSliceSegment(layerSliceSegment: ExtractedLayerSliceSegment) {
+function validateExtractedFeatureSlicedParts(extractedFeatureSlicedParts: ExtractedFeatureSlicedParts) {
   const {
     layer,
     slice,
     segment,
     segmentFiles,
-  } = layerSliceSegment;
+  } = extractedFeatureSlicedParts;
 
   const hasLayer = isLayer(layer);
   const hasNotLayer = !hasLayer;
@@ -91,14 +91,13 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     importAbsolutePath,
   } = extractPaths(node, context);
 
-  const importLayerSliceSegment = extractLayerSliceSegment(importAbsolutePath);
-  const currentFileLayerSliceSegment = extractLayerSliceSegment(normalizedCurrentFilePath);
+  const importLayerSliceSegment = extractFeatureSlicedParts(importAbsolutePath);
+  const currentFileLayerSliceSegment = extractFeatureSlicedParts(normalizedCurrentFilePath);
 
-  const fsdInfoOfImport = validateLayerSliceSegment(importLayerSliceSegment);
-  const fsdInfoOfCurrentFile = validateLayerSliceSegment(currentFileLayerSliceSegment);
+  const fsdInfoOfImport = validateExtractedFeatureSlicedParts(importLayerSliceSegment);
+  const fsdInfoOfCurrentFile = validateExtractedFeatureSlicedParts(currentFileLayerSliceSegment);
 
   const hasUnknownLayers = fsdInfoOfImport.hasNotLayer || fsdInfoOfCurrentFile.hasNotLayer;
-
   const isType = isNodeType(node);
   const isRelative = isPathRelative(normalizedImportPath);
   const isSameLayer = importLayerSliceSegment.layer === currentFileLayerSliceSegment.layer;
