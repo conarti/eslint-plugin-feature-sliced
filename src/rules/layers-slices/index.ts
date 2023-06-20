@@ -33,6 +33,12 @@ export default createRule<Options, MessageIds>({
               type: 'string',
             },
           },
+          ignoreInFilesPatterns: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
         },
       },
     ],
