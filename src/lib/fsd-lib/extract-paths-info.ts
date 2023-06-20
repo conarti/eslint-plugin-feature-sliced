@@ -89,19 +89,8 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     importAbsolutePath,
   } = extractPaths(node, context);
 
-  const {
-    layer: importLayer,
-    slice: importSlice,
-    segment,
-    segmentFiles,
-  } = extractLayerSliceSegment(importAbsolutePath);
-
-  const {
-    layer: currentFileLayer,
-    slice: currentFileSlice,
-    segment: currentFileSegment,
-    segmentFiles: currentFileSegmentFiles,
-  } = extractLayerSliceSegment(normalizedCurrentFilePath);
+  const importLayerSliceSegment = extractLayerSliceSegment(importAbsolutePath);
+  const currentFileLayerSliceSegment = extractLayerSliceSegment(normalizedCurrentFilePath);
 
   const {
     hasLayer,
@@ -112,13 +101,7 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     hasNotSegment,
     hasSegmentFiles,
     hasNotSegmentFiles,
-  } = validateLayerSliceSegment({
-    layer: importLayer,
-    slice: importSlice,
-    segment,
-    segmentFiles,
-  });
-
+  } = validateLayerSliceSegment(importLayerSliceSegment);
   const {
     hasLayer: hasCurrentFileLayer,
     hasNotLayer: hasNotCurrentFileLayer,
@@ -128,23 +111,18 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     hasNotSegment: hasNotCurrentFileSegment,
     hasSegmentFiles: hasCurrentFileSegmentFiles,
     hasNotSegmentFiles: hasNotCurrentFileSegmentFiles,
-  } = validateLayerSliceSegment({
-    layer: currentFileLayer,
-    slice: currentFileSlice,
-    segment: currentFileSegment,
-    segmentFiles: currentFileSegmentFiles,
-  });
+  } = validateLayerSliceSegment(currentFileLayerSliceSegment);
 
   const hasUnknownLayers = hasNotLayer || hasNotCurrentFileLayer;
 
   const isType = isNodeType(node);
   const isRelative = isPathRelative(normalizedImportPath);
-  const isSameLayer = importLayer === currentFileLayer;
-  const isSameSlice = hasSlice && hasCurrentFileSlice && importSlice === currentFileSlice;
-  const isSameSegment = segment === currentFileSegment;
+  const isSameLayer = importLayerSliceSegment.layer === currentFileLayerSliceSegment.layer;
+  const isSameSlice = hasSlice && hasCurrentFileSlice && importLayerSliceSegment.slice === currentFileLayerSliceSegment.slice;
+  const isSameSegment = importLayerSliceSegment.segment === currentFileLayerSliceSegment.segment;
 
-  const canImportLayerContainSlices = hasLayer && canLayerContainSlices(importLayer as Layer);
-  const canCurrentFileLayerContainSlices = hasCurrentFileLayer && canLayerContainSlices(currentFileLayer as Layer);
+  const canImportLayerContainSlices = hasLayer && canLayerContainSlices(importLayerSliceSegment.layer as Layer);
+  const canCurrentFileLayerContainSlices = hasCurrentFileLayer && canLayerContainSlices(currentFileLayerSliceSegment.layer as Layer);
 
   /**
    * Whether the import/export file and the current file are inside the same layer that cannot contain slices
@@ -159,13 +137,16 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     currentFilePath,
     normalizedImportPath,
     normalizedCurrentFilePath,
-    importLayer,
-    importSlice,
-    segment,
-    segmentFiles,
-    currentFileLayer,
-    currentFileSlice,
-    currentFileSegmentFiles,
+
+    importLayer: importLayerSliceSegment.layer,
+    importSlice: importLayerSliceSegment.slice,
+    segment: importLayerSliceSegment.segment,
+    segmentFiles: importLayerSliceSegment.segmentFiles,
+
+    currentFileLayer: currentFileLayerSliceSegment.layer,
+    currentFileSlice: currentFileLayerSliceSegment.slice,
+    currentFileSegmentFiles: currentFileLayerSliceSegment.segmentFiles,
+
     isType,
     isRelative,
     isSameLayer,
