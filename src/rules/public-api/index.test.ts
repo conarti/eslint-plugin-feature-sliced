@@ -1,9 +1,13 @@
 import { ESLintUtils } from '@typescript-eslint/utils';
+import { layers } from '../../config';
 import {
   MESSAGE_ID,
   VALIDATION_LEVEL,
+  type Options,
 } from './config';
 import rule from './index';
+
+const FSD_LAYERS = layers;
 
 const ruleTester = new ESLintUtils.RuleTester({
   parserOptions: {
@@ -38,6 +42,12 @@ const setValidationLevel = (level: VALIDATION_LEVEL): [{ level: VALIDATION_LEVEL
     level,
   },
 ];
+
+const makeIgnoreInFilesOptions = (patterns: string[]) => [
+  {
+    ignoreInFilesPatterns: patterns,
+  },
+] as Options;
 
 /**
  * TODO добавить проверки на импорты файлов не зарезервированных как сегменты fsd.
@@ -184,6 +194,12 @@ ruleTester.run('public-api', rule, {
       name: 'should allow segments without index files by default',
       filename: 'src/features/foo/index.ts',
       code: 'import { bar } from "./ui/bar";',
+    },
+    {
+      name: 'should work ignoreInFilesPatterns option',
+      filename: 'src/features/index.ts',
+      code: 'import { bar } from "./ui/bar";',
+      options: makeIgnoreInFilesOptions([`**/(${FSD_LAYERS.join('|')})/index.*`]),
     },
   ],
 
