@@ -9,8 +9,9 @@ import type {
 } from '../rule-lib';
 import { isNodeType } from '../rule-lib';
 import { isNull } from '../shared';
+import { extractLayer } from './extract-layer';
 import { extractSegment } from './extract-segment';
-import { getLayerSliceFromPath } from './get-layer-slice-from-path';
+import { extractSlice } from './extract-slice';
 import {
   canLayerContainSlices,
   isLayer,
@@ -23,11 +24,14 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
 
   const normalizedCurrentFilePath = normalizePath(currentFilePath);
   const normalizedImportPath = normalizePath(importPath);
-
   const importAbsolutePath = convertToAbsolute(normalizedCurrentFilePath, normalizedImportPath);
-  const [importLayer, importSlice] = getLayerSliceFromPath(importAbsolutePath);
-  const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(normalizedCurrentFilePath);
+
+  const importLayer = extractLayer(importAbsolutePath);
+  const importSlice = extractSlice(importAbsolutePath);
   const [segment, segmentFiles] = extractSegment(importAbsolutePath);
+
+  const currentFileLayer = extractLayer(normalizedCurrentFilePath);
+  const currentFileSlice = extractSlice(normalizedCurrentFilePath);
   const [currentFileSegment, currentFileSegmentFiles] = extractSegment(currentFilePath);
 
   const hasLayer = isLayer(importLayer);
