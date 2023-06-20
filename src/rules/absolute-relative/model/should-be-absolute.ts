@@ -3,8 +3,8 @@ import { type PathsInfo } from '../../../lib/fsd-lib';
 export function shouldBeAbsolute(pathsInfo: PathsInfo): boolean {
   const {
     targetPathFeatureSlicedParts,
+    currentFileFeatureSlicedParts,
     isRelative,
-    currentFileLayer,
     hasUnknownLayers,
   } = pathsInfo;
 
@@ -16,5 +16,5 @@ export function shouldBeAbsolute(pathsInfo: PathsInfo): boolean {
     return false;
   }
 
-  return currentFileLayer !== targetPathFeatureSlicedParts.layer;
+  return currentFileFeatureSlicedParts.layer !== targetPathFeatureSlicedParts.layer;
 }

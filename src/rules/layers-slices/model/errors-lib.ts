@@ -11,7 +11,7 @@ export function reportCanNotImportLayer(context: RuleContext, node: ImportExport
     messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
     data: {
       importLayer: pathsInfo.targetPathFeatureSlicedParts.layer,
-      currentFileLayer: pathsInfo.currentFileLayer,
+      currentFileLayer: pathsInfo.currentFileFeatureSlicedParts.layer,
     },
   });
 }

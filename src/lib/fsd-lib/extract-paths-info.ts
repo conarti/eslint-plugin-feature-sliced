@@ -118,10 +118,7 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     absoluteTargetPath,
 
     targetPathFeatureSlicedParts,
-
-    currentFileLayer: currentFileFeatureSlicedParts.layer,
-    currentFileSlice: currentFileFeatureSlicedParts.slice,
-    currentFileSegmentFiles: currentFileFeatureSlicedParts.segmentFiles,
+    currentFileFeatureSlicedParts,
 
     isType,
     isRelative,
