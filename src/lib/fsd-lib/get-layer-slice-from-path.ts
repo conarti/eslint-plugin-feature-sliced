@@ -37,6 +37,7 @@ function getSliceFromPath(targetPath: string): string | null {
 
 /**
  * Returns the layer and slice from the path
+ * TODO: split into two functions
  */
 export function getLayerSliceFromPath(filePath: string): [Layer | null, string | null] {
   const layer = getLayerFromPath(filePath);
