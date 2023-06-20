@@ -90,19 +90,19 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     absoluteTargetPath,
   } = extractPaths(node, context);
 
-  const targetPathFeatureSlicedParts = extractFeatureSlicedParts(absoluteTargetPath);
-  const currentFileFeatureSlicedParts = extractFeatureSlicedParts(normalizedCurrentFilePath);
+  const fsdPartsOfTarget = extractFeatureSlicedParts(absoluteTargetPath);
+  const fsdPartsOfCurrentFile = extractFeatureSlicedParts(normalizedCurrentFilePath);
 
-  const validatedFeatureSlicedPartsOfTarget = validateExtractedFeatureSlicedParts(targetPathFeatureSlicedParts);
-  const validatedFeatureSlicedPartsOfCurrentFile = validateExtractedFeatureSlicedParts(currentFileFeatureSlicedParts);
+  const validatedFeatureSlicedPartsOfTarget = validateExtractedFeatureSlicedParts(fsdPartsOfTarget);
+  const validatedFeatureSlicedPartsOfCurrentFile = validateExtractedFeatureSlicedParts(fsdPartsOfCurrentFile);
 
   const hasUnknownLayers = validatedFeatureSlicedPartsOfTarget.hasNotLayer || validatedFeatureSlicedPartsOfCurrentFile.hasNotLayer;
   const isType = isNodeType(node);
   const isRelative = isPathRelative(normalizedTargetPath);
-  const isSameLayer = targetPathFeatureSlicedParts.layer === currentFileFeatureSlicedParts.layer;
+  const isSameLayer = fsdPartsOfTarget.layer === fsdPartsOfCurrentFile.layer;
   const isSameSlice = validatedFeatureSlicedPartsOfTarget.hasSlice && validatedFeatureSlicedPartsOfCurrentFile.hasSlice
-    && targetPathFeatureSlicedParts.slice === currentFileFeatureSlicedParts.slice;
-  const isSameSegment = targetPathFeatureSlicedParts.segment === currentFileFeatureSlicedParts.segment;
+    && fsdPartsOfTarget.slice === fsdPartsOfCurrentFile.slice;
+  const isSameSegment = fsdPartsOfTarget.segment === fsdPartsOfCurrentFile.segment;
   /**
    * Whether the import/export file and the current file are inside the same layer that cannot contain slices
    */
@@ -117,8 +117,8 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     normalizedCurrentFilePath,
     absoluteTargetPath,
 
-    targetPathFeatureSlicedParts,
-    currentFileFeatureSlicedParts,
+    fsdPartsOfTarget,
+    fsdPartsOfCurrentFile,
 
     isType,
     isRelative,
