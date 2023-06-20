@@ -19,9 +19,7 @@ export function canImportLayer(pathsInfo: PathsInfo, ruleOptions: RuleOptions) {
   } = pathsInfo;
   const { allowTypeImports } = ruleOptions;
 
-  const isInvalidForValidate = hasUnknownLayers || isSameSlice;
-
-  if (isInvalidForValidate) {
+  if (hasUnknownLayers) {
     return true;
   }
 
@@ -31,7 +29,8 @@ export function canImportLayer(pathsInfo: PathsInfo, ruleOptions: RuleOptions) {
   const currentFileLayerOrder = getLayerWeight(currentFileLayer as Layer /* ts doesn't understand that the check was done on hasUnknownLayers */);
   const isImportLayerBelowCurrent = currentFileLayerOrder > importLayerOrder;
 
-  return isTypeAndAllowedToImport
+  return isSameSlice
+    || isTypeAndAllowedToImport
     || isSameLayerWithoutSlices
     || isImportLayerBelowCurrent;
 }
