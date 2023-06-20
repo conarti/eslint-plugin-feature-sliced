@@ -47,6 +47,8 @@ export type Segments = ReadonlyArray<
   | 'assets'
 >;
 
+export type Segment = Segments[number]
+
 /**
  * Slice segments regulated by feature-sliced methodologies
  */
