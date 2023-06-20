@@ -6,9 +6,11 @@ const validateSegments = (pathsInfo: PathsInfo) => {
   const {
     isSameSegment,
     segmentFiles,
+    hasNotSegmentFiles,
   } = pathsInfo;
 
-  const isSegmentPublicApi = isIndexFile(segmentFiles) || segmentFiles === '';
+  const isSegmentPublicApi = hasNotSegmentFiles
+    || isIndexFile(segmentFiles as string /* 'hasNotSegmentFiles' is already validate it, ts doesn't understand */);
 
   return isSameSegment || isSegmentPublicApi;
 };
@@ -19,7 +21,7 @@ export function isPublicApi(pathsInfo: PathsInfo, validateOptions: ValidateOptio
   const { level } = validateOptions;
 
   const isAnotherSlice = !pathsInfo.isSameSlice;
-  const isSlicePublicApi = pathsInfo.segment === '';
+  const isSlicePublicApi = pathsInfo.hasNotSegment;
 
   if (isAnotherSlice) {
     return isSlicePublicApi;
