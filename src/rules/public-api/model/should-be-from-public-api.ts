@@ -5,12 +5,16 @@ import { isSlicePublicApi } from './is-slice-public-api';
 
 type ValidateOptions = { level: VALIDATION_LEVEL }
 
-export function shouldBeFromPublicApi(pathsInfo: PathsInfo, validateOptions: ValidateOptions): boolean {
+function shouldBeFromSlicePublicApi(pathsInfo: PathsInfo) {
   const isFromAnotherSlice = !pathsInfo.isSameSlice;
-  const shouldBeFromSlicePublicApi = isFromAnotherSlice && !isSlicePublicApi(pathsInfo);
+  return isFromAnotherSlice && !isSlicePublicApi(pathsInfo);
+}
 
+function shouldBeFromSegmentsPublicApi(pathsInfo: PathsInfo, validateOptions: ValidateOptions) {
   const needValidateSegments = validateOptions.level === VALIDATION_LEVEL.SEGMENTS;
-  const shouldBeFromSegmentsPublicApi = needValidateSegments && !isSegmentsPublicApi(pathsInfo);
+  return needValidateSegments && !isSegmentsPublicApi(pathsInfo);
+}
 
-  return shouldBeFromSlicePublicApi || shouldBeFromSegmentsPublicApi;
+export function shouldBeFromPublicApi(pathsInfo: PathsInfo, validateOptions: ValidateOptions): boolean {
+  return shouldBeFromSlicePublicApi(pathsInfo) || shouldBeFromSegmentsPublicApi(pathsInfo, validateOptions);
 }
