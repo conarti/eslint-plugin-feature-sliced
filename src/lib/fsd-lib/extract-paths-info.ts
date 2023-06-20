@@ -9,7 +9,7 @@ import type {
 } from '../rule-lib';
 import { isNodeType } from '../rule-lib';
 import { isNull } from '../shared';
-import { getFsdPartsFromPath } from './get-fsd-parts-from-path';
+import { extractSegments } from './extract-segments';
 import { getLayerSliceFromPath } from './get-layer-slice-from-path';
 import {
   canLayerContainSlices,
@@ -54,15 +54,14 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     && !canImportLayerContainSlices
     && !canCurrentFileLayerContainSlices;
 
-  /** TODO: move getting 'segment', 'segmentFiles' logic to this func. Delete 'getFsdPartsFromPath'  */
   const {
     segment,
     segmentFiles,
-  } = getFsdPartsFromPath(importAbsolutePath);
+  } = extractSegments(importAbsolutePath);
   const {
     segment: currentFileSegment,
     segmentFiles: currentFileSegmentFiles,
-  } = getFsdPartsFromPath(currentFilePath);
+  } = extractSegments(currentFilePath);
   const isSameSegment = segment === currentFileSegment;
 
   return {
