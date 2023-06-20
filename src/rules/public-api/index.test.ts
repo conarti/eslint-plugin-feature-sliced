@@ -29,6 +29,10 @@ const makeErrorWithSuggestion = (suggestionSegments: string, suggestionOutput: s
   ],
 });
 
+const errorLayersPublicApiNotAllowed = {
+  messageId: MESSAGE_ID.LAYERS_PUBLIC_API_NOT_ALLOWED,
+};
+
 const setValidationLevel = (level: VALIDATION_LEVEL): [{ level: VALIDATION_LEVEL }] => [
   {
     level,
@@ -340,21 +344,13 @@ ruleTester.run('public-api', rule, {
       name: 'import to layers public api is not allowed',
       filename: 'src/features/index.ts',
       code: "import { foo } from './foo'",
-      errors: [
-        {
-          messageId: MESSAGE_ID.LAYERS_PUBLIC_API_NOT_ALLOWED,
-        },
-      ],
+      errors: [errorLayersPublicApiNotAllowed],
     },
     {
       name: 'export from layers public api is not allowed',
       filename: 'src/features/index.ts',
       code: "export { foo } from './foo'",
-      errors: [
-        {
-          messageId: MESSAGE_ID.LAYERS_PUBLIC_API_NOT_ALLOWED,
-        },
-      ],
+      errors: [errorLayersPublicApiNotAllowed],
     },
   ],
 });
