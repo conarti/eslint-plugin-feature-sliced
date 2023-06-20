@@ -22,6 +22,12 @@ const makeIgnoreOptions = (patterns: string[]): Options => [
   },
 ] as Options;
 
+const makeIgnoreInFilesOptions = (patterns: string[]): Options => [
+  {
+    ignoreInFilesPatterns: patterns,
+  },
+] as Options;
+
 const makeErrorMessage = (importLayer: string, currentFileLayer: string) => ({
   messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
   data: {
@@ -118,6 +124,13 @@ ruleTester.run('layers-slices', rule, {
       filename: 'src/features/foo/index.ts',
       code: "import { Bar } from 'src/entities/app-bar';",
     },
+    {
+      /* TODO: should works without ignore options? This is the scope of the 'public-api' rule */
+      name: 'import to layer public api, but only with ignore options',
+      filename: '/Users/test/Projects/frontend/src/features/index.ts',
+      code: "import { Bar } from 'src/features/bar';",
+      options: makeIgnoreInFilesOptions(['**/src/(shared|entities|features|widgets|pages|processes|app)/index.ts']),
+    },
   ],
 
   invalid: [
@@ -184,6 +197,13 @@ ruleTester.run('layers-slices', rule, {
       filename: '/Users/user/Documents/Files/projects/project/app/src/entities/Viewer/model/types.ts',
       code: "import { u } from '@/entities/User';",
       errors: [makeErrorMessage('entities', 'entities')],
+    },
+    {
+      /* TODO: should this be valid? This is the scope of the 'public-api' rule */
+      name: 'import to layer public api',
+      filename: '/Users/test/Projects/frontend/src/features/index.ts',
+      code: "import { Bar } from 'src/features/bar';",
+      errors: [makeErrorMessage('features', 'features')],
     },
   ],
 });
