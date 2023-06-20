@@ -1,32 +1,12 @@
-import {
-  normalizePath,
-  convertToAbsolute,
-  isPathRelative,
-} from '../path-lib';
+import { isPathRelative } from '../path-lib';
 import {
   type ImportExportNodesWithSourceValue,
   type UnknownRuleContext,
   isNodeType,
 } from '../rule-lib';
 import { extractFeatureSlicedParts } from './extract-feature-sliced-parts';
+import { extractPaths } from './extract-paths';
 import { validateExtractedFeatureSlicedParts } from './validate-extracted-feature-sliced-parts';
-
-function extractPaths(node: ImportExportNodesWithSourceValue, context: UnknownRuleContext) {
-  const targetPath = node.source.value;
-  const currentFilePath = context.getPhysicalFilename ? context.getPhysicalFilename() : context.getFilename(); /* FIXME: getFilename is deprecated */
-
-  const normalizedCurrentFilePath = normalizePath(currentFilePath);
-  const normalizedTargetPath = normalizePath(targetPath);
-  const absoluteTargetPath = convertToAbsolute(normalizedCurrentFilePath, normalizedTargetPath);
-
-  return {
-    targetPath,
-    currentFilePath,
-    normalizedTargetPath,
-    normalizedCurrentFilePath,
-    absoluteTargetPath,
-  };
-}
 
 export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context: UnknownRuleContext) {
   const {
