@@ -93,22 +93,22 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
   const targetPathFeatureSlicedPaths = extractFeatureSlicedParts(absoluteTargetPath);
   const currentFileFeatureSlicedParts = extractFeatureSlicedParts(normalizedCurrentFilePath);
 
-  const fsdInfoOfImport = validateExtractedFeatureSlicedParts(targetPathFeatureSlicedPaths);
-  const fsdInfoOfCurrentFile = validateExtractedFeatureSlicedParts(currentFileFeatureSlicedParts);
+  const validatedFeatureSlicedPartsOfTarget = validateExtractedFeatureSlicedParts(targetPathFeatureSlicedPaths);
+  const validatedFeatureSlicedPartsOfCurrentFile = validateExtractedFeatureSlicedParts(currentFileFeatureSlicedParts);
 
-  const hasUnknownLayers = fsdInfoOfImport.hasNotLayer || fsdInfoOfCurrentFile.hasNotLayer;
+  const hasUnknownLayers = validatedFeatureSlicedPartsOfTarget.hasNotLayer || validatedFeatureSlicedPartsOfCurrentFile.hasNotLayer;
   const isType = isNodeType(node);
   const isRelative = isPathRelative(normalizedTargetPath);
   const isSameLayer = targetPathFeatureSlicedPaths.layer === currentFileFeatureSlicedParts.layer;
-  const isSameSlice = fsdInfoOfImport.hasSlice && fsdInfoOfCurrentFile.hasSlice
+  const isSameSlice = validatedFeatureSlicedPartsOfTarget.hasSlice && validatedFeatureSlicedPartsOfCurrentFile.hasSlice
     && targetPathFeatureSlicedPaths.slice === currentFileFeatureSlicedParts.slice;
   const isSameSegment = targetPathFeatureSlicedPaths.segment === currentFileFeatureSlicedParts.segment;
   /**
    * Whether the import/export file and the current file are inside the same layer that cannot contain slices
    */
   const isSameLayerWithoutSlices = isSameLayer
-    && !fsdInfoOfImport.canLayerContainSlices
-    && !fsdInfoOfCurrentFile.canLayerContainSlices;
+    && !validatedFeatureSlicedPartsOfTarget.canLayerContainSlices
+    && !validatedFeatureSlicedPartsOfCurrentFile.canLayerContainSlices;
 
   return {
     targetPath,
@@ -134,21 +134,21 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     isSameLayerWithoutSlices,
     hasUnknownLayers,
 
-    hasLayer: fsdInfoOfImport.hasLayer,
-    hasNotLayer: fsdInfoOfImport.hasNotLayer,
-    hasNotSlice: fsdInfoOfImport.hasNotSlice,
-    hasSegment: fsdInfoOfImport.hasSegment,
-    hasNotSegment: fsdInfoOfImport.hasNotSegment,
-    hasSegmentFiles: fsdInfoOfImport.hasSegmentFiles,
-    hasNotSegmentFiles: fsdInfoOfImport.hasNotSegmentFiles,
+    hasLayer: validatedFeatureSlicedPartsOfTarget.hasLayer,
+    hasNotLayer: validatedFeatureSlicedPartsOfTarget.hasNotLayer,
+    hasNotSlice: validatedFeatureSlicedPartsOfTarget.hasNotSlice,
+    hasSegment: validatedFeatureSlicedPartsOfTarget.hasSegment,
+    hasNotSegment: validatedFeatureSlicedPartsOfTarget.hasNotSegment,
+    hasSegmentFiles: validatedFeatureSlicedPartsOfTarget.hasSegmentFiles,
+    hasNotSegmentFiles: validatedFeatureSlicedPartsOfTarget.hasNotSegmentFiles,
 
-    hasCurrentFileLayer: fsdInfoOfCurrentFile.hasLayer,
-    hasNotCurrentFileLayer: fsdInfoOfCurrentFile.hasNotLayer,
-    hasNotCurrentFileSlice: fsdInfoOfCurrentFile.hasNotSlice,
-    hasCurrentFileSegment: fsdInfoOfCurrentFile.hasSegment,
-    hasNotCurrentFileSegment: fsdInfoOfCurrentFile.hasNotSegment,
-    hasCurrentFileSegmentFiles: fsdInfoOfCurrentFile.hasSegmentFiles,
-    hasNotCurrentFileSegmentFiles: fsdInfoOfCurrentFile.hasNotSegmentFiles,
+    hasCurrentFileLayer: validatedFeatureSlicedPartsOfCurrentFile.hasLayer,
+    hasNotCurrentFileLayer: validatedFeatureSlicedPartsOfCurrentFile.hasNotLayer,
+    hasNotCurrentFileSlice: validatedFeatureSlicedPartsOfCurrentFile.hasNotSlice,
+    hasCurrentFileSegment: validatedFeatureSlicedPartsOfCurrentFile.hasSegment,
+    hasNotCurrentFileSegment: validatedFeatureSlicedPartsOfCurrentFile.hasNotSegment,
+    hasCurrentFileSegmentFiles: validatedFeatureSlicedPartsOfCurrentFile.hasSegmentFiles,
+    hasNotCurrentFileSegmentFiles: validatedFeatureSlicedPartsOfCurrentFile.hasNotSegmentFiles,
   };
 }
 
