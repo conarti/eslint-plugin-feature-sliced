@@ -344,6 +344,19 @@ ruleTester.run('public-api', rule, {
       ],
     },
     {
+      name: 'should correct validate slice public api if enabled segments validation level',
+      code: "import { foo } from '@/features/foo/ui';",
+      filename: 'src/pages/home/ui/index.vue',
+      options: setValidationLevel(VALIDATION_LEVEL.SEGMENTS),
+      errors: [
+        makeErrorWithSuggestion(
+          'ui',
+          "import { foo } from '@/features/foo';",
+          '@/features/foo',
+        ),
+      ],
+    },
+    {
       name: "shouldn't allow segments without index files if enabled segments validation level",
       code: "import { useFoo } from '../model/use-foo';",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
