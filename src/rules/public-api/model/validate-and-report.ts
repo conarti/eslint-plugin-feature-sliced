@@ -1,4 +1,3 @@
-import { type Layer } from '../../../config';
 import { extractPathsInfo } from '../../../lib/fsd-lib';
 import {
   canValidate,
@@ -7,7 +6,6 @@ import {
   type ImportExportNodes,
 } from '../../../lib/rule-lib';
 import {
-  IGNORED_LAYERS,
   type RuleContext,
 } from '../config';
 import {
@@ -15,7 +13,7 @@ import {
   reportShouldBeFromPublicApi,
 } from './errors-lib';
 import { isLayerPublicApi } from './is-layer-public-api';
-import { isPublicApi } from './is-public-api';
+import { shouldBeFromPublicApi } from './should-be-from-public-api';
 
 export function validateAndReport(node: ImportExportNodes, context: RuleContext) {
   if (!canValidate(node)) {
@@ -25,15 +23,13 @@ export function validateAndReport(node: ImportExportNodes, context: RuleContext)
   const ruleOptions = extractRuleOptions(context);
   const pathsInfo = extractPathsInfo(node, context);
 
-  const isIgnoredLayer = pathsInfo.hasLayer
-    && IGNORED_LAYERS.includes(pathsInfo.importLayer as Layer /* ts doesn't understand that 'hasLayer' is already validate it */);
   const isIgnoredCurrentFile = isIgnored(pathsInfo.normalizedCurrentFilePath, ruleOptions.ignoreInFilesPatterns);
 
-  if (pathsInfo.hasNotLayer || isIgnoredLayer || isIgnoredCurrentFile) {
+  if (isIgnoredCurrentFile) {
     return;
   }
 
-  if (!isPublicApi(pathsInfo, ruleOptions)) {
+  if (shouldBeFromPublicApi(pathsInfo, ruleOptions)) {
     reportShouldBeFromPublicApi(node, context, pathsInfo);
   }
 

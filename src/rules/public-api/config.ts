@@ -6,12 +6,6 @@ export const enum MESSAGE_ID {
   LAYERS_PUBLIC_API_NOT_ALLOWED = 'layers-public-api-not-allowed'
 }
 
-/* TODO probably @duplicate of 'isInsideShared'/'isInsideApp' in extractPathsInfo */
-export const IGNORED_LAYERS = [
-  'app',
-  'shared',
-];
-
 export const enum VALIDATION_LEVEL {
   SEGMENTS = 'segments',
   SLICES = 'slices',
