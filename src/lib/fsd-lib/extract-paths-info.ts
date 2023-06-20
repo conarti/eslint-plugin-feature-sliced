@@ -17,6 +17,19 @@ import {
   isLayer,
 } from './layers';
 
+function extractLayerSliceSegment(targetPath: string) {
+  const layer = extractLayer(targetPath);
+  const slice = extractSlice(targetPath);
+  const [segment, segmentFiles] = extractSegment(targetPath);
+
+  return {
+    layer,
+    slice,
+    segment,
+    segmentFiles,
+  };
+}
+
 /* TODO: remove 'import' prefix from all vars */
 export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context: UnknownRuleContext) {
   const currentFilePath = context.getPhysicalFilename ? context.getPhysicalFilename() : context.getFilename(); /* FIXME: getFilename is deprecated */
@@ -26,13 +39,19 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
   const normalizedImportPath = normalizePath(importPath);
   const importAbsolutePath = convertToAbsolute(normalizedCurrentFilePath, normalizedImportPath);
 
-  const importLayer = extractLayer(importAbsolutePath);
-  const importSlice = extractSlice(importAbsolutePath);
-  const [segment, segmentFiles] = extractSegment(importAbsolutePath);
+  const {
+    layer: importLayer,
+    slice: importSlice,
+    segment,
+    segmentFiles,
+  } = extractLayerSliceSegment(importAbsolutePath);
 
-  const currentFileLayer = extractLayer(normalizedCurrentFilePath);
-  const currentFileSlice = extractSlice(normalizedCurrentFilePath);
-  const [currentFileSegment, currentFileSegmentFiles] = extractSegment(currentFilePath);
+  const {
+    layer: currentFileLayer,
+    slice: currentFileSlice,
+    segment: currentFileSegment,
+    segmentFiles: currentFileSegmentFiles,
+  } = extractLayerSliceSegment(normalizedCurrentFilePath);
 
   const hasLayer = isLayer(importLayer);
   const hasCurrentFileLayer = isLayer(currentFileLayer);
