@@ -1,4 +1,3 @@
-import { type Layer } from '../../config';
 import {
   normalizePath,
   convertToAbsolute,
@@ -67,6 +66,8 @@ function validateLayerSliceSegment(layerSliceSegment: ExtractedLayerSliceSegment
   const hasSegmentFiles = !isNull(segmentFiles);
   const hasNotSegmentFiles = !hasSegmentFiles;
 
+  const canContainSlices = hasLayer && canLayerContainSlices(layer);
+
   return {
     hasLayer,
     hasNotLayer,
@@ -76,6 +77,7 @@ function validateLayerSliceSegment(layerSliceSegment: ExtractedLayerSliceSegment
     hasNotSegment,
     hasSegmentFiles,
     hasNotSegmentFiles,
+    canLayerContainSlices: canContainSlices,
   };
 }
 
@@ -101,6 +103,7 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     hasNotSegment,
     hasSegmentFiles,
     hasNotSegmentFiles,
+    canLayerContainSlices: canImportLayerContainSlices,
   } = validateLayerSliceSegment(importLayerSliceSegment);
   const {
     hasLayer: hasCurrentFileLayer,
@@ -111,6 +114,7 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     hasNotSegment: hasNotCurrentFileSegment,
     hasSegmentFiles: hasCurrentFileSegmentFiles,
     hasNotSegmentFiles: hasNotCurrentFileSegmentFiles,
+    canLayerContainSlices: canCurrentFileLayerContainSlices,
   } = validateLayerSliceSegment(currentFileLayerSliceSegment);
 
   const hasUnknownLayers = hasNotLayer || hasNotCurrentFileLayer;
@@ -120,10 +124,6 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
   const isSameLayer = importLayerSliceSegment.layer === currentFileLayerSliceSegment.layer;
   const isSameSlice = hasSlice && hasCurrentFileSlice && importLayerSliceSegment.slice === currentFileLayerSliceSegment.slice;
   const isSameSegment = importLayerSliceSegment.segment === currentFileLayerSliceSegment.segment;
-
-  const canImportLayerContainSlices = hasLayer && canLayerContainSlices(importLayerSliceSegment.layer as Layer);
-  const canCurrentFileLayerContainSlices = hasCurrentFileLayer && canLayerContainSlices(currentFileLayerSliceSegment.layer as Layer);
-
   /**
    * Whether the import/export file and the current file are inside the same layer that cannot contain slices
    */
