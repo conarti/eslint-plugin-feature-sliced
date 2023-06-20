@@ -9,23 +9,20 @@ const fsdPartsRegExp = new RegExp(
   `(?<=(?<layer>${layersUnion}))\\/(?<slice>([\\w-]*\\/)+?)(?<segment>(${segmentsUnion})(\\.\\w+)?)(\\/(?<segmentFiles>.*))?`,
 );
 
-export function extractSegments(targetPath: string) {
+type Segment = string | null;
+type SegmentFiles = string | null;
+
+export function extractSegments(targetPath: string): [Segment, SegmentFiles] {
   const fsdParts = targetPath.match(fsdPartsRegExp);
 
   if (fsdParts === null) {
-    return {
-      segment: '',
-      segmentFiles: '',
-    };
+    return [null, null];
   }
 
   const {
-    segment = '',
-    segmentFiles = '',
+    segment = null,
+    segmentFiles = null,
   } = fsdParts.groups || {};
 
-  return {
-    segment,
-    segmentFiles,
-  };
+  return [segment, segmentFiles];
 }

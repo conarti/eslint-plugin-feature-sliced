@@ -27,14 +27,8 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
   const importAbsolutePath = convertToAbsolute(normalizedCurrentFilePath, normalizedImportPath);
   const [importLayer, importSlice] = getLayerSliceFromPath(importAbsolutePath);
   const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(normalizedCurrentFilePath);
-  const {
-    segment,
-    segmentFiles,
-  } = extractSegments(importAbsolutePath);
-  const {
-    segment: currentFileSegment,
-    segmentFiles: currentFileSegmentFiles,
-  } = extractSegments(currentFilePath);
+  const [segment, segmentFiles] = extractSegments(importAbsolutePath);
+  const [currentFileSegment, currentFileSegmentFiles] = extractSegments(currentFilePath);
 
   const hasLayer = isLayer(importLayer);
   const hasCurrentFileLayer = isLayer(currentFileLayer);
@@ -43,6 +37,14 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
   const hasUnknownLayers = hasNotLayer || hasNotCurrentFileLayer;
   const hasSlice = !isNull(importSlice);
   const hasCurrentFileSlice = !isNull(currentFileSlice);
+  const hasSegment = !isNull(segment);
+  const hasCurrentFileSegment = !isNull(currentFileSegment);
+  const hasNotSegment = !hasSegment;
+  const hasNotCurrentFileSegment = !hasCurrentFileSegment;
+  const hasSegmentFiles = !isNull(segmentFiles);
+  const hasCurrentFileSegmentFiles = !isNull(currentFileSegmentFiles);
+  const hasNotSegmentFiles = !hasSegmentFiles;
+  const hasNotCurrentFileSegmentFiles = !hasCurrentFileSegmentFiles;
 
   const hasNotSlice = !hasSlice;
   const hasNotCurrentFileSlice = !hasCurrentFileLayer;
@@ -88,6 +90,14 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     hasNotCurrentFileLayer,
     hasNotCurrentFileSlice,
     hasUnknownLayers,
+    hasSegment,
+    hasNotSegment,
+    hasCurrentFileSegment,
+    hasNotCurrentFileSegment,
+    hasSegmentFiles,
+    hasNotSegmentFiles,
+    hasCurrentFileSegmentFiles,
+    hasNotCurrentFileSegmentFiles,
   };
 }
 
