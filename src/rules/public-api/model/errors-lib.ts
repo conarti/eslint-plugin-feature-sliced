@@ -29,3 +29,10 @@ export function reportShouldBeFromPublicApi(node: ImportExportNodesWithSourceVal
     ],
   });
 }
+
+export function reportLayersPublicApiNotAllowed(node: ImportExportNodesWithSourceValue, context: RuleContext) {
+  context.report({
+    node: node.source,
+    messageId: MESSAGE_ID.LAYERS_PUBLIC_API_NOT_ALLOWED,
+  });
+}

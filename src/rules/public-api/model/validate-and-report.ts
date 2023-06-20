@@ -11,7 +11,11 @@ import {
   IGNORED_LAYERS,
   type RuleContext,
 } from '../config';
-import { reportShouldBeFromPublicApi } from './errors-lib';
+import {
+  reportLayersPublicApiNotAllowed,
+  reportShouldBeFromPublicApi,
+} from './errors-lib';
+import { isLayerPublicApi } from './is-layer-public-api';
 import { isPublicApi } from './is-public-api';
 
 export function validateAndReport(node: ImportExportNodes, context: RuleContext) {
@@ -31,5 +35,9 @@ export function validateAndReport(node: ImportExportNodes, context: RuleContext)
 
   if (!isPublicApi(pathsInfo, ruleOptions)) {
     reportShouldBeFromPublicApi(node, context, pathsInfo);
+  }
+
+  if (isLayerPublicApi(pathsInfo)) {
+    reportLayersPublicApiNotAllowed(node, context);
   }
 }

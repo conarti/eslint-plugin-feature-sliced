@@ -24,6 +24,7 @@ export default createRule<Options, MessageIds>({
     messages: {
       [MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API]: 'Absolute imports are only allowed from public api ("{{ fixedPath }}")',
       [MESSAGE_ID.REMOVE_SUGGESTION]: 'Remove the "{{ valueToRemove }}"',
+      [MESSAGE_ID.LAYERS_PUBLIC_API_NOT_ALLOWED]: 'The layer public API is not allowed. It harms both architecturally and practically (code splitting)',
     },
     schema: [
       {
