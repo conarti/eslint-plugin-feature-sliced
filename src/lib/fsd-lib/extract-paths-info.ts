@@ -85,6 +85,7 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     isSameSegment,
     isSameLayerWithoutSlices,
     hasCurrentFileLayer,
+    hasLayer,
     hasNotLayer,
     hasNotSlice,
     hasNotCurrentFileLayer,

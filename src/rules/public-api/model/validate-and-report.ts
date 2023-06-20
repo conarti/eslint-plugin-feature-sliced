@@ -1,3 +1,4 @@
+import { type Layer } from '../../../config';
 import { extractPathsInfo } from '../../../lib/fsd-lib';
 import {
   canValidate,
@@ -24,7 +25,8 @@ export function validateAndReport(node: ImportExportNodes, context: RuleContext)
   const ruleOptions = extractRuleOptions(context);
   const pathsInfo = extractPathsInfo(node, context);
 
-  const isIgnoredLayer = pathsInfo.importLayer !== null && IGNORED_LAYERS.includes(pathsInfo.importLayer);
+  const isIgnoredLayer = pathsInfo.hasLayer
+    && IGNORED_LAYERS.includes(pathsInfo.importLayer as Layer /* ts doesn't understand that 'hasLayer' is already validate it */);
   const isIgnoredCurrentFile = isIgnored(pathsInfo.normalizedCurrentFilePath, ruleOptions.ignoreInFilesPatterns);
 
   if (pathsInfo.hasNotLayer || isIgnoredLayer || isIgnoredCurrentFile) {
