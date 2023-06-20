@@ -24,5 +24,8 @@ export function extractSegment(targetPath: string): [Segment | null, SegmentFile
     segmentFiles = null,
   } = fsdParts.groups || {};
 
-  return [segment as Segment | null, segmentFiles];
+  const fileExtensionRegExp = /\.[^/.]+$/;
+  const segmentWithoutFileExtension = segment?.replace(fileExtensionRegExp, '') || null;
+
+  return [segmentWithoutFileExtension as Segment | null, segmentFiles];
 }
