@@ -27,6 +27,14 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
   const importAbsolutePath = convertToAbsolute(normalizedCurrentFilePath, normalizedImportPath);
   const [importLayer, importSlice] = getLayerSliceFromPath(importAbsolutePath);
   const [currentFileLayer, currentFileSlice] = getLayerSliceFromPath(normalizedCurrentFilePath);
+  const {
+    segment,
+    segmentFiles,
+  } = extractSegments(importAbsolutePath);
+  const {
+    segment: currentFileSegment,
+    segmentFiles: currentFileSegmentFiles,
+  } = extractSegments(currentFilePath);
 
   const hasLayer = isLayer(importLayer);
   const hasCurrentFileLayer = isLayer(currentFileLayer);
@@ -43,6 +51,7 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
   const isRelative = isPathRelative(normalizedImportPath);
   const isSameLayer = importLayer === currentFileLayer;
   const isSameSlice = hasSlice && hasCurrentFileSlice && importSlice === currentFileSlice;
+  const isSameSegment = segment === currentFileSegment;
 
   const canImportLayerContainSlices = hasLayer && canLayerContainSlices(importLayer);
   const canCurrentFileLayerContainSlices = hasCurrentFileLayer && canLayerContainSlices(currentFileLayer);
@@ -53,16 +62,6 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
   const isSameLayerWithoutSlices = isSameLayer
     && !canImportLayerContainSlices
     && !canCurrentFileLayerContainSlices;
-
-  const {
-    segment,
-    segmentFiles,
-  } = extractSegments(importAbsolutePath);
-  const {
-    segment: currentFileSegment,
-    segmentFiles: currentFileSegmentFiles,
-  } = extractSegments(currentFilePath);
-  const isSameSegment = segment === currentFileSegment;
 
   return {
     importPath,
