@@ -18,19 +18,19 @@ import {
 } from './layers';
 
 function extractPaths(node: ImportExportNodesWithSourceValue, context: UnknownRuleContext) {
+  const targetPath = node.source.value;
   const currentFilePath = context.getPhysicalFilename ? context.getPhysicalFilename() : context.getFilename(); /* FIXME: getFilename is deprecated */
-  const importPath = node.source.value;
 
   const normalizedCurrentFilePath = normalizePath(currentFilePath);
-  const normalizedImportPath = normalizePath(importPath);
-  const importAbsolutePath = convertToAbsolute(normalizedCurrentFilePath, normalizedImportPath);
+  const normalizedTargetPath = normalizePath(targetPath);
+  const absoluteTargetPath = convertToAbsolute(normalizedCurrentFilePath, normalizedTargetPath);
 
   return {
+    targetPath,
     currentFilePath,
-    importPath,
+    normalizedTargetPath,
     normalizedCurrentFilePath,
-    normalizedImportPath,
-    importAbsolutePath,
+    absoluteTargetPath,
   };
 }
 
@@ -81,29 +81,28 @@ function validateExtractedFeatureSlicedParts(extractedFeatureSlicedParts: Extrac
   };
 }
 
-/* TODO: remove 'import' prefix from all vars */
 export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context: UnknownRuleContext) {
   const {
+    targetPath,
     currentFilePath,
-    importPath,
+    normalizedTargetPath,
     normalizedCurrentFilePath,
-    normalizedImportPath,
-    importAbsolutePath,
+    absoluteTargetPath,
   } = extractPaths(node, context);
 
-  const importLayerSliceSegment = extractFeatureSlicedParts(importAbsolutePath);
-  const currentFileLayerSliceSegment = extractFeatureSlicedParts(normalizedCurrentFilePath);
+  const targetPathFeatureSlicedPaths = extractFeatureSlicedParts(absoluteTargetPath);
+  const currentFileFeatureSlicedParts = extractFeatureSlicedParts(normalizedCurrentFilePath);
 
-  const fsdInfoOfImport = validateExtractedFeatureSlicedParts(importLayerSliceSegment);
-  const fsdInfoOfCurrentFile = validateExtractedFeatureSlicedParts(currentFileLayerSliceSegment);
+  const fsdInfoOfImport = validateExtractedFeatureSlicedParts(targetPathFeatureSlicedPaths);
+  const fsdInfoOfCurrentFile = validateExtractedFeatureSlicedParts(currentFileFeatureSlicedParts);
 
   const hasUnknownLayers = fsdInfoOfImport.hasNotLayer || fsdInfoOfCurrentFile.hasNotLayer;
   const isType = isNodeType(node);
-  const isRelative = isPathRelative(normalizedImportPath);
-  const isSameLayer = importLayerSliceSegment.layer === currentFileLayerSliceSegment.layer;
+  const isRelative = isPathRelative(normalizedTargetPath);
+  const isSameLayer = targetPathFeatureSlicedPaths.layer === currentFileFeatureSlicedParts.layer;
   const isSameSlice = fsdInfoOfImport.hasSlice && fsdInfoOfCurrentFile.hasSlice
-    && importLayerSliceSegment.slice === currentFileLayerSliceSegment.slice;
-  const isSameSegment = importLayerSliceSegment.segment === currentFileLayerSliceSegment.segment;
+    && targetPathFeatureSlicedPaths.slice === currentFileFeatureSlicedParts.slice;
+  const isSameSegment = targetPathFeatureSlicedPaths.segment === currentFileFeatureSlicedParts.segment;
   /**
    * Whether the import/export file and the current file are inside the same layer that cannot contain slices
    */
@@ -112,20 +111,20 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     && !fsdInfoOfCurrentFile.canLayerContainSlices;
 
   return {
-    importPath,
-    importAbsolutePath,
+    targetPath,
     currentFilePath,
-    normalizedImportPath,
+    normalizedTargetPath,
     normalizedCurrentFilePath,
+    absoluteTargetPath,
 
-    importLayer: importLayerSliceSegment.layer,
-    importSlice: importLayerSliceSegment.slice,
-    segment: importLayerSliceSegment.segment,
-    segmentFiles: importLayerSliceSegment.segmentFiles,
+    importLayer: targetPathFeatureSlicedPaths.layer,
+    importSlice: targetPathFeatureSlicedPaths.slice,
+    segment: targetPathFeatureSlicedPaths.segment,
+    segmentFiles: targetPathFeatureSlicedPaths.segmentFiles,
 
-    currentFileLayer: currentFileLayerSliceSegment.layer,
-    currentFileSlice: currentFileLayerSliceSegment.slice,
-    currentFileSegmentFiles: currentFileLayerSliceSegment.segmentFiles,
+    currentFileLayer: currentFileFeatureSlicedParts.layer,
+    currentFileSlice: currentFileFeatureSlicedParts.slice,
+    currentFileSegmentFiles: currentFileFeatureSlicedParts.segmentFiles,
 
     isType,
     isRelative,

@@ -24,11 +24,11 @@ function extractValueToRemove(pathsInfo: PathsInfo): string | null {
 }
 
 export function convertToPublicApi(pathsInfo: PathsInfo): [string, (string | null)] {
-  const { normalizedImportPath } = pathsInfo;
+  const { normalizedTargetPath } = pathsInfo;
 
   const valueToRemove = extractValueToRemove(pathsInfo);
 
-  const publicApiPath = normalizedImportPath.replace(`/${valueToRemove}`, '');
+  const publicApiPath = normalizedTargetPath.replace(`/${valueToRemove}`, '');
 
   return [publicApiPath, valueToRemove];
 }
