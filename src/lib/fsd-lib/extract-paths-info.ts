@@ -8,15 +8,8 @@ import {
   type UnknownRuleContext,
   isNodeType,
 } from '../rule-lib';
-import { isNull } from '../shared';
-import {
-  type ExtractedFeatureSlicedParts,
-  extractFeatureSlicedParts,
-} from './extract-feature-sliced-parts';
-import {
-  canLayerContainSlices,
-  isLayer,
-} from './layers';
+import { extractFeatureSlicedParts } from './extract-feature-sliced-parts';
+import { validateExtractedFeatureSlicedParts } from './validate-extracted-feature-sliced-parts';
 
 function extractPaths(node: ImportExportNodesWithSourceValue, context: UnknownRuleContext) {
   const targetPath = node.source.value;
@@ -32,38 +25,6 @@ function extractPaths(node: ImportExportNodesWithSourceValue, context: UnknownRu
     normalizedTargetPath,
     normalizedCurrentFilePath,
     absoluteTargetPath,
-  };
-}
-
-function validateExtractedFeatureSlicedParts(extractedFeatureSlicedParts: ExtractedFeatureSlicedParts) {
-  const {
-    layer,
-    slice,
-    segment,
-    segmentFiles,
-  } = extractedFeatureSlicedParts;
-
-  const hasLayer = isLayer(layer);
-  const hasNotLayer = !hasLayer;
-  const hasSlice = !isNull(slice);
-  const hasNotSlice = !hasSlice;
-  const hasSegment = !isNull(segment);
-  const hasNotSegment = !hasSegment;
-  const hasSegmentFiles = !isNull(segmentFiles);
-  const hasNotSegmentFiles = !hasSegmentFiles;
-
-  const canContainSlices = hasLayer && canLayerContainSlices(layer);
-
-  return {
-    hasLayer,
-    hasNotLayer,
-    hasSlice,
-    hasNotSlice,
-    hasSegment,
-    hasNotSegment,
-    hasSegmentFiles,
-    hasNotSegmentFiles,
-    canLayerContainSlices: canContainSlices,
   };
 }
 
