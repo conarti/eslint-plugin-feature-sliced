@@ -3,11 +3,11 @@ import {
   convertToAbsolute,
   isPathRelative,
 } from '../path-lib';
-import type {
-  ImportExportNodesWithSourceValue,
-  UnknownRuleContext,
+import {
+  type ImportExportNodesWithSourceValue,
+  type UnknownRuleContext,
+  isNodeType,
 } from '../rule-lib';
-import { isNodeType } from '../rule-lib';
 import { isNull } from '../shared';
 import { extractLayer } from './extract-layer';
 import { extractSegment } from './extract-segment';
