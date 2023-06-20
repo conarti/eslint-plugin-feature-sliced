@@ -90,19 +90,19 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     absoluteTargetPath,
   } = extractPaths(node, context);
 
-  const targetPathFeatureSlicedPaths = extractFeatureSlicedParts(absoluteTargetPath);
+  const targetPathFeatureSlicedParts = extractFeatureSlicedParts(absoluteTargetPath);
   const currentFileFeatureSlicedParts = extractFeatureSlicedParts(normalizedCurrentFilePath);
 
-  const validatedFeatureSlicedPartsOfTarget = validateExtractedFeatureSlicedParts(targetPathFeatureSlicedPaths);
+  const validatedFeatureSlicedPartsOfTarget = validateExtractedFeatureSlicedParts(targetPathFeatureSlicedParts);
   const validatedFeatureSlicedPartsOfCurrentFile = validateExtractedFeatureSlicedParts(currentFileFeatureSlicedParts);
 
   const hasUnknownLayers = validatedFeatureSlicedPartsOfTarget.hasNotLayer || validatedFeatureSlicedPartsOfCurrentFile.hasNotLayer;
   const isType = isNodeType(node);
   const isRelative = isPathRelative(normalizedTargetPath);
-  const isSameLayer = targetPathFeatureSlicedPaths.layer === currentFileFeatureSlicedParts.layer;
+  const isSameLayer = targetPathFeatureSlicedParts.layer === currentFileFeatureSlicedParts.layer;
   const isSameSlice = validatedFeatureSlicedPartsOfTarget.hasSlice && validatedFeatureSlicedPartsOfCurrentFile.hasSlice
-    && targetPathFeatureSlicedPaths.slice === currentFileFeatureSlicedParts.slice;
-  const isSameSegment = targetPathFeatureSlicedPaths.segment === currentFileFeatureSlicedParts.segment;
+    && targetPathFeatureSlicedParts.slice === currentFileFeatureSlicedParts.slice;
+  const isSameSegment = targetPathFeatureSlicedParts.segment === currentFileFeatureSlicedParts.segment;
   /**
    * Whether the import/export file and the current file are inside the same layer that cannot contain slices
    */
@@ -117,10 +117,10 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     normalizedCurrentFilePath,
     absoluteTargetPath,
 
-    importLayer: targetPathFeatureSlicedPaths.layer,
-    importSlice: targetPathFeatureSlicedPaths.slice,
-    segment: targetPathFeatureSlicedPaths.segment,
-    segmentFiles: targetPathFeatureSlicedPaths.segmentFiles,
+    importLayer: targetPathFeatureSlicedParts.layer,
+    importSlice: targetPathFeatureSlicedParts.slice,
+    segment: targetPathFeatureSlicedParts.segment,
+    segmentFiles: targetPathFeatureSlicedParts.segmentFiles,
 
     currentFileLayer: currentFileFeatureSlicedParts.layer,
     currentFileSlice: currentFileFeatureSlicedParts.slice,
