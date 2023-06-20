@@ -129,14 +129,7 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     hasUnknownLayers,
 
     validatedFeatureSlicedPartsOfTarget,
-
-    hasCurrentFileLayer: validatedFeatureSlicedPartsOfCurrentFile.hasLayer,
-    hasNotCurrentFileLayer: validatedFeatureSlicedPartsOfCurrentFile.hasNotLayer,
-    hasNotCurrentFileSlice: validatedFeatureSlicedPartsOfCurrentFile.hasNotSlice,
-    hasCurrentFileSegment: validatedFeatureSlicedPartsOfCurrentFile.hasSegment,
-    hasNotCurrentFileSegment: validatedFeatureSlicedPartsOfCurrentFile.hasNotSegment,
-    hasCurrentFileSegmentFiles: validatedFeatureSlicedPartsOfCurrentFile.hasSegmentFiles,
-    hasNotCurrentFileSegmentFiles: validatedFeatureSlicedPartsOfCurrentFile.hasNotSegmentFiles,
+    validatedFeatureSlicedPartsOfCurrentFile,
   };
 }
 
