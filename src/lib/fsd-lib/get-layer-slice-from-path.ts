@@ -1,31 +1,9 @@
 import {
-  layers,
   layersWithSlices,
   type Layer,
 } from '../../config';
 import { getByRegExp } from '../shared';
-import { isLayer } from './layers';
-
-const layersRegExpPattern = `(${layers.join('|')})(?![\\w\\.-])`;
-
-/**
- * Returns the layer from the path
- */
-function getLayerFromPath(targetPath: string): Layer | null {
-  const layer = getByRegExp<Layer>(targetPath, new RegExp(layersRegExpPattern, 'ig'), true);
-
-  if (typeof layer !== 'string') {
-    return null;
-  }
-
-  const lowercasedLayer = layer.toLowerCase();
-
-  if (!isLayer(lowercasedLayer)) {
-    return null;
-  }
-
-  return lowercasedLayer;
-}
+import { getLayerFromPath } from './get-layer-from-path';
 
 /**
  * Returns the slice from the path
