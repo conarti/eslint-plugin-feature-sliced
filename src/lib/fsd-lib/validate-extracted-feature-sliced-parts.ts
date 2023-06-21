@@ -36,3 +36,5 @@ export function validateExtractedFeatureSlicedParts(extractedFeatureSlicedParts:
     canLayerContainSlices: canContainSlices,
   };
 }
+
+export type ValidatedFeatureSlicedParts = ReturnType<typeof validateExtractedFeatureSlicedParts>;
