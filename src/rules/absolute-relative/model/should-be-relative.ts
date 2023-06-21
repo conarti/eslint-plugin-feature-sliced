@@ -1,13 +1,16 @@
 import { type PathsInfo } from '../../../lib/fsd-lib';
+import { isPathRelative } from '../../../lib/path-lib';
 
 export function shouldBeRelative(pathsInfo: PathsInfo): boolean {
   const {
     validatedFeatureSlicedPartsOfCurrentFile,
-    isRelative,
+    normalizedTargetPath,
     isSameLayerWithoutSlices,
     isSameLayer,
     isSameSlice,
   } = pathsInfo;
+
+  const isRelative = isPathRelative(normalizedTargetPath);
 
   if (isRelative) {
     return false;

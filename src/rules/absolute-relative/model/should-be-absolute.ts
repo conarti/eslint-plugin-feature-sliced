@@ -1,14 +1,17 @@
 import { type PathsInfo } from '../../../lib/fsd-lib';
+import { isPathRelative } from '../../../lib/path-lib';
 
 export function shouldBeAbsolute(pathsInfo: PathsInfo): boolean {
   const {
+    normalizedTargetPath,
     fsdPartsOfTarget,
     fsdPartsOfCurrentFile,
-    isRelative,
     hasUnknownLayers,
   } = pathsInfo;
 
-  if (!isRelative) {
+  const isAbsolute = !isPathRelative(normalizedTargetPath);
+
+  if (isAbsolute) {
     return false;
   }
 
