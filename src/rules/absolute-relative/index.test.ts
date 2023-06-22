@@ -159,5 +159,19 @@ ruleTester.run('absolute-relative', rule, {
       code: "import { Something } from '../../app';",
       errors: [errorMustBeAbsolute],
     },
+    {
+      /* TODO take layer from config constant */
+      name: 'should report relative if import to {layerWithSlices1} "{layerWithSlices1}/index.*" file',
+      filename: 'src/entities/index.ts',
+      code: "import { foo } from 'entities/foo';",
+      errors: [errorMustBeRelative],
+    },
+    {
+      /* TODO take layer from config constant */
+      name: 'should report relative if import to {layerWithoutSlices1} "{layerWithoutSlices1}/index.*" file',
+      filename: 'src/shared/index.ts',
+      code: "import { foo } from 'shared/foo';",
+      errors: [errorMustBeRelative],
+    },
   ],
 });
