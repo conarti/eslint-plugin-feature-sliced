@@ -65,11 +65,9 @@ ruleTester.run('absolute-relative', rule, {
       options: makeIgnoreInFilesOptions(['**/*/shared/foo/**/*']),
     },
     {
-      // FIXME: should works without extra options
       name: "should be valid if it has slice with 'layer' name",
       filename: '/Users/conarti/Projects/frontend/src/processes/shared/index.ts',
       code: 'import { BAR } from \'@/shared/constants\';',
-      options: makeIgnoreInFilesOptions(['**/*/processes/shared/**/*']),
     },
     {
       name: 'should be valid if the import is not from a layer (absolute import)',
