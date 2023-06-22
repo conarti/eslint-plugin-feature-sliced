@@ -14,7 +14,7 @@ import rule from './index';
 const FSD_LAYERS = layers;
 const FSD_LAYERS_WITHOUT_SLICES = layersWithoutSlices;
 
-const CWD_MOCK_PATH = '/Users/User/Projects/app';
+const CWD_MOCK_PATH = '\\Users\\User\\Projects\\app'; /* windows path because we need also normalize it to unix like others */
 
 const ruleTester = new RuleTester({
   parserOptions: {
