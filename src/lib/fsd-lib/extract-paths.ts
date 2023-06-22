@@ -7,16 +7,47 @@ import {
   type UnknownRuleContext,
 } from '../rule-lib';
 
-export function extractPaths(node: ImportExportNodesWithSourceValue, context: UnknownRuleContext) {
-  const targetPath = node.source.value;
+function extractCurrentFilePath(context: UnknownRuleContext) {
   const currentFilePath = context.getPhysicalFilename ? context.getPhysicalFilename() : context.getFilename(); /* FIXME: getFilename is deprecated */
-
   const normalizedCurrentFilePath = normalizePath(currentFilePath);
-  const normalizedTargetPath = normalizePath(targetPath);
-  const absoluteTargetPath = convertToAbsolute(normalizedCurrentFilePath, normalizedTargetPath);
 
+  return {
+    currentFilePath,
+    normalizedCurrentFilePath,
+  };
+}
+
+function extractNodePath(node: ImportExportNodesWithSourceValue) {
+  const targetPath = node.source.value;
+  const normalizedTargetPath = normalizePath(targetPath);
+
+  return {
+    targetPath,
+    normalizedTargetPath,
+  };
+}
+
+function extractCwd(context: UnknownRuleContext) {
   const cwd = context.getCwd?.();
   const normalizedCwd = typeof cwd === 'string' ? normalizePath(cwd) : undefined;
+
+  return normalizedCwd;
+}
+
+export function extractPaths(node: ImportExportNodesWithSourceValue, context: UnknownRuleContext) {
+  const {
+    currentFilePath,
+    normalizedCurrentFilePath,
+  } = extractCurrentFilePath(context);
+
+  const {
+    targetPath,
+    normalizedTargetPath,
+  } = extractNodePath(node);
+
+  const absoluteTargetPath = convertToAbsolute(normalizedCurrentFilePath, normalizedTargetPath);
+
+  const cwd = extractCwd(context);
 
   return {
     targetPath,
@@ -24,6 +55,6 @@ export function extractPaths(node: ImportExportNodesWithSourceValue, context: Un
     normalizedTargetPath,
     normalizedCurrentFilePath,
     absoluteTargetPath,
-    normalizedCwd,
+    normalizedCwd: cwd,
   };
 }
