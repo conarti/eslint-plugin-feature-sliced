@@ -3,6 +3,7 @@ import {
   normalizePath,
 } from '../path-lib';
 import {
+  extractNodePath,
   type ImportExportNodesWithSourceValue,
   type UnknownRuleContext,
 } from '../rule-lib';
@@ -14,16 +15,6 @@ function extractCurrentFilePath(context: UnknownRuleContext) {
   return {
     currentFilePath,
     normalizedCurrentFilePath,
-  };
-}
-
-function extractNodePath(node: ImportExportNodesWithSourceValue) {
-  const targetPath = node.source.value;
-  const normalizedTargetPath = normalizePath(targetPath);
-
-  return {
-    targetPath,
-    normalizedTargetPath,
   };
 }
 

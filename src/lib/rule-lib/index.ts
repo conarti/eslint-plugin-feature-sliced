@@ -10,3 +10,4 @@ export type {
   UnknownRuleContext,
 } from './models';
 export { isNodeType } from './is-node-type';
+export { extractNodePath } from './extract-node-path';
