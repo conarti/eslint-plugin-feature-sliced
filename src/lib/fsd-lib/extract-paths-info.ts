@@ -59,8 +59,9 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     absoluteTargetPath,
   } = extractPaths(node, context);
 
-  const fsdPartsOfTarget = extractFeatureSlicedParts(absoluteTargetPath);
-  const fsdPartsOfCurrentFile = extractFeatureSlicedParts(normalizedCurrentFilePath);
+  const cwd = context.getCwd?.();
+  const fsdPartsOfTarget = extractFeatureSlicedParts(absoluteTargetPath, cwd);
+  const fsdPartsOfCurrentFile = extractFeatureSlicedParts(normalizedCurrentFilePath, cwd);
 
   const validatedFeatureSlicedPartsOfTarget = validateExtractedFeatureSlicedParts(fsdPartsOfTarget);
   const validatedFeatureSlicedPartsOfCurrentFile = validateExtractedFeatureSlicedParts(fsdPartsOfCurrentFile);
