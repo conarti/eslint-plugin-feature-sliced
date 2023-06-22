@@ -1,3 +1,4 @@
+import { type Rule } from 'eslint';
 import { RuleTester } from '../../../tests/rule-tester';
 import { ERROR_MESSAGE_ID, type Options } from './config';
 import rule from './index';
@@ -40,7 +41,7 @@ const makeErrorMessage = (importLayer: string, currentFileLayer: string) => ({
 
 // TODO refactor tests
 
-ruleTester.run('layers-slices', rule, {
+ruleTester.run('layers-slices', rule as unknown as Rule.RuleModule, {
   valid: [
     {
       name: 'should valid if import from "shared" to "features"',
