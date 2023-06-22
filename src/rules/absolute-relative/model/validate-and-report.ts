@@ -5,7 +5,10 @@ import {
   isIgnored,
   type ImportExportNodes,
 } from '../../../lib/rule-lib';
-import { type RuleContext } from '../config';
+import {
+  type RuleContext,
+  type Options,
+} from '../config';
 import {
   reportShouldBeRelative,
   reportShouldBeAbsolute,
@@ -13,16 +16,21 @@ import {
 import { shouldBeAbsolute } from './should-be-absolute';
 import { shouldBeRelative } from './should-be-relative';
 
-type Options = {
+type ValidateOptions = {
   needCheckForAbsolute: boolean;
 }
 
-export function validateAndReport(node: ImportExportNodes, context: RuleContext, options: Options = { needCheckForAbsolute: true }) {
+export function validateAndReport(
+  node: ImportExportNodes,
+  context: RuleContext,
+  optionsWithDefault: Readonly<Options>,
+  options: ValidateOptions = { needCheckForAbsolute: true },
+) {
   if (!canValidate(node)) {
     return;
   }
 
-  const userDefinedRuleOptions = extractRuleOptions(context);
+  const userDefinedRuleOptions = extractRuleOptions(optionsWithDefault);
   const pathsInfo = extractPathsInfo(node, context);
 
   if (isIgnored(pathsInfo.currentFilePath, userDefinedRuleOptions.ignoreInFilesPatterns)) {
