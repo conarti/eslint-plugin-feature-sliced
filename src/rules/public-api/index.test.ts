@@ -44,6 +44,10 @@ const errorLayersPublicApiNotAllowed = {
   messageId: MESSAGE_ID.LAYERS_PUBLIC_API_NOT_ALLOWED,
 };
 
+const errorFromInvalidStructure = {
+  messageId: MESSAGE_ID.FROM_INVALID_STRUCTURE,
+};
+
 const setValidationLevel = (level: VALIDATION_LEVEL): [{ level: VALIDATION_LEVEL }] => [
   {
     level,
@@ -55,22 +59,6 @@ const makeIgnoreInFilesOptions = (patterns: string[]) => [
     ignoreInFilesPatterns: patterns,
   },
 ] as Options;
-
-/**
- * TODO добавить проверки на импорты файлов не зарезервированных как сегменты fsd.
- * Например (невалидный тест):
- *     {
- *       code: "import { Bar } from '@/features/group-folder/sub-group-folder/sub-sub-group/bar/test.js';",
- *       filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
- *       errors: [
- *         makeErrorWithSuggestion(
- *           'test.js',
- *           "import { Bar } from '@/features/group-folder/sub-group-folder/sub-sub-group/bar';",
- *           '@/features/group-folder/sub-group-folder/sub-sub-group/bar',
- *         ),
- *       ],
- *     },
- */
 
 const shouldNotValidateLayersWithoutSlices: Parameters<typeof ruleTester.run>[2]['valid'] = FSD_LAYERS_WITHOUT_SLICES.map((layer) => ({
   name: `should not validate public api with layers that can not contain slices ("${layer}")`,
@@ -414,6 +402,12 @@ ruleTester.run('public-api', rule as unknown as Rule.RuleModule, {
         import { baz } from './baz';
       `,
       errors: 1,
+    },
+    {
+      name: 'should report if import from invalid feature sliced structure (import from known layer and unknown slice)',
+      code: "import { Bar } from '@/features/group-folder/sub-group-folder/sub-sub-group/bar/bar.js';",
+      filename: `${CWD_MOCK_PATH}/src/pages/home/ui/index.vue`,
+      errors: [errorFromInvalidStructure],
     },
   ],
 });
