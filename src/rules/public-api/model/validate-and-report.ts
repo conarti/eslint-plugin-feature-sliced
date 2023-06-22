@@ -6,6 +6,7 @@ import {
   type ImportExportNodes,
 } from '../../../lib/rule-lib';
 import {
+  type Options,
   type RuleContext,
 } from '../config';
 import {
@@ -15,12 +16,12 @@ import {
 import { isLayerPublicApi } from './is-layer-public-api';
 import { shouldBeFromPublicApi } from './should-be-from-public-api';
 
-export function validateAndReport(node: ImportExportNodes, context: RuleContext) {
+export function validateAndReport(node: ImportExportNodes, context: RuleContext, optionsWithDefault: Readonly<Options>) {
   if (!canValidate(node)) {
     return;
   }
 
-  const ruleOptions = extractRuleOptions(context);
+  const ruleOptions = extractRuleOptions(optionsWithDefault);
   const pathsInfo = extractPathsInfo(node, context);
 
   const isIgnoredCurrentFile = isIgnored(pathsInfo.normalizedCurrentFilePath, ruleOptions.ignoreInFilesPatterns);
