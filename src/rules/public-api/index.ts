@@ -9,6 +9,7 @@ import {
   type Options,
 } from './config';
 import { validateAndReport } from './model';
+import { validateAndReportProgram } from './model/validate-and-report-program';
 
 export default createRule<Options, MessageIds>({
   name: 'public-api',
@@ -66,6 +67,9 @@ export default createRule<Options, MessageIds>({
       },
       ExportNamedDeclaration(node) {
         validateAndReport(node, context, optionsWithDefault);
+      },
+      Program(node) {
+        validateAndReportProgram(node, context, optionsWithDefault);
       },
     };
   },

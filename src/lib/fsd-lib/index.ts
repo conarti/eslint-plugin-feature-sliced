@@ -6,3 +6,4 @@ export {
   getLayerWeight,
   isLayer,
 } from './layers';
+export { extractLayer } from './extract-layer';

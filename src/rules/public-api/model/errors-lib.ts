@@ -1,4 +1,5 @@
-import { type PathsInfo } from '../../../lib/fsd-lib';
+import { type TSESTree } from '@typescript-eslint/utils';
+import { extractPathsInfo } from '../../../lib/fsd-lib';
 import {
   getSourceRangeWithoutQuotes,
   type ImportExportNodesWithSourceValue,
@@ -9,7 +10,8 @@ import {
 } from '../config';
 import { convertToPublicApi } from './convert-to-public-api';
 
-export function reportShouldBeFromPublicApi(node: ImportExportNodesWithSourceValue, context: RuleContext, pathsInfo: PathsInfo) {
+export function reportShouldBeFromPublicApi(node: ImportExportNodesWithSourceValue, context: RuleContext) {
+  const pathsInfo = extractPathsInfo(node, context);
   const [fixedPath, valueToRemove] = convertToPublicApi(pathsInfo);
 
   context.report({
@@ -30,9 +32,9 @@ export function reportShouldBeFromPublicApi(node: ImportExportNodesWithSourceVal
   });
 }
 
-export function reportLayersPublicApiNotAllowed(node: ImportExportNodesWithSourceValue, context: RuleContext) {
+export function reportLayersPublicApiNotAllowed(node: TSESTree.Program, context: RuleContext) {
   context.report({
-    node: node.source,
+    node,
     messageId: MESSAGE_ID.LAYERS_PUBLIC_API_NOT_ALLOWED,
   });
 }
