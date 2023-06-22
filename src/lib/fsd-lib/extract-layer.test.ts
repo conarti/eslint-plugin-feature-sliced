@@ -10,11 +10,17 @@ describe('extract-layer', () => {
       path: 'some/long/root/path/entities/foo',
       expected: 'entities',
     },
-    // {
-    //   name: 'should correct return layer if path contain multiple layer names',
-    //   path: 'src/processes/shared/index.ts',
-    //   expected: 'processes',
-    // },
+    {
+      name: 'should correct return layer if path contain multiple layer names (from content root without cwd)',
+      path: 'src/processes/shared/index.ts',
+      expected: 'processes',
+    },
+    {
+      name: 'should correct return layer if path contain multiple layer names (with cwd option)',
+      path: '/User/test/Projects/app/src/shared/index.ts',
+      cwd: '/User/test/Projects/app',
+      expected: 'shared',
+    },
     {
       path: 'entities/foo',
       expected: 'entities',
@@ -39,9 +45,10 @@ describe('extract-layer', () => {
 
   it.each(cases)('$path', ({
     path,
+    cwd,
     expected,
   }) => {
-    const actual = extractLayer(path);
+    const actual = extractLayer(path, cwd);
     expect(actual).toBe(expected);
   });
 });
