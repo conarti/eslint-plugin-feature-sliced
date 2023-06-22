@@ -30,7 +30,9 @@ function compareFeatureSlicedParts(fsPartsToCompare: FSPartsToCompare) {
   } = fsPartsToCompare;
 
   const hasUnknownLayers = target.validatedFeatureSlicedParts.hasNotLayer || currentFile.validatedFeatureSlicedParts.hasNotLayer;
-  const isSameLayer = target.fsdParts.layer === currentFile.fsdParts.layer;
+  const isSameLayer = target.validatedFeatureSlicedParts.hasLayer
+    && currentFile.validatedFeatureSlicedParts.hasLayer
+    && target.fsdParts.layer === currentFile.fsdParts.layer;
   const isSameSlice = target.validatedFeatureSlicedParts.hasSlice && currentFile.validatedFeatureSlicedParts.hasSlice
     && target.fsdParts.slice === currentFile.fsdParts.slice;
   const isSameSegment = target.fsdParts.segment === currentFile.fsdParts.segment;
