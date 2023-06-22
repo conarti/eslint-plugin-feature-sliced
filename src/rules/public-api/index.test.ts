@@ -209,6 +209,11 @@ ruleTester.run('public-api', rule, {
       code: 'import { bar } from "./ui/bar";',
       options: makeIgnoreInFilesOptions([`**/(${FSD_LAYERS.join('|')})/index.*`]),
     },
+    {
+      name: 'should work with multiple layer names in path (correct understand layer)',
+      filename: '/Users/User/Projects/frontend/src/processes/shared/index.js',
+      code: "import { foo } from 'shared/foo';",
+    },
   ],
 
   invalid: [
