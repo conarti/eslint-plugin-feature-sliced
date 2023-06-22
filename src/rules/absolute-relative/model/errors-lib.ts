@@ -12,6 +12,7 @@ export function reportShouldBeRelative(node: ImportExportNodesWithSourceValue, c
 }
 
 export function reportShouldBeAbsolute(node: ImportExportNodesWithSourceValue, context: RuleContext) {
+  /* TODO: add suggestion fix using cwd, tsconfig/vite/webpack alias */
   context.report({
     node: node.source,
     messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
