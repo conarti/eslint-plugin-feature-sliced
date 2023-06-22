@@ -1,14 +1,16 @@
-import { ESLintUtils } from '@typescript-eslint/utils';
+import { RuleTester } from '../../../tests/rule-tester';
 import { ERROR_MESSAGE_ID, type Options } from './config';
 import rule from './index';
 
-const ruleTester = new ESLintUtils.RuleTester({
+const CWD_MOCK_PATH = '/Users/user/projects/project/app';
+
+const ruleTester = new RuleTester({
   parserOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
   },
-  parser: '@typescript-eslint/parser',
-});
+  parser: require.resolve('@typescript-eslint/parser'),
+}, CWD_MOCK_PATH);
 
 const allowTypeImportsOptions: Options = [
   {
@@ -194,7 +196,7 @@ ruleTester.run('layers-slices', rule, {
     },
     {
       name: 'if there are layer names in the path',
-      filename: '/Users/user/Documents/Files/projects/project/app/src/entities/Viewer/model/types.ts',
+      filename: `${CWD_MOCK_PATH}/src/entities/Viewer/model/types.ts`,
       code: "import { u } from '@/entities/User';",
       errors: [makeErrorMessage('entities', 'entities')],
     },
