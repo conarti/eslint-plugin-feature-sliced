@@ -1,5 +1,9 @@
-import { ESLintUtils } from '@typescript-eslint/utils';
-import { layers, layersWithoutSlices } from '../../config';
+import { type Rule } from 'eslint';
+import { RuleTester } from '../../../tests/rule-tester';
+import {
+  layers,
+  layersWithoutSlices,
+} from '../../config';
 import {
   MESSAGE_ID,
   VALIDATION_LEVEL,
@@ -10,13 +14,15 @@ import rule from './index';
 const FSD_LAYERS = layers;
 const FSD_LAYERS_WITHOUT_SLICES = layersWithoutSlices;
 
-const ruleTester = new ESLintUtils.RuleTester({
+const CWD_MOCK_PATH = '/Users/User/Projects/app';
+
+const ruleTester = new RuleTester({
   parserOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
   },
-  parser: '@typescript-eslint/parser',
-});
+  parser: require.resolve('@typescript-eslint/parser'),
+}, CWD_MOCK_PATH);
 
 const makeErrorWithSuggestion = (suggestionSegments: string, suggestionOutput: string, fixedPath: string) => ({
   messageId: MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
@@ -72,7 +78,7 @@ const shouldNotValidateLayersWithoutSlices: Parameters<typeof ruleTester.run>[2]
   code: `import { baz } from "src/${layer}/foo/ui.ts";`,
 }));
 
-ruleTester.run('public-api', rule, {
+ruleTester.run('public-api', rule as unknown as Rule.RuleModule, {
   valid: [
     ...shouldNotValidateLayersWithoutSlices,
     {
@@ -212,6 +218,11 @@ ruleTester.run('public-api', rule, {
     {
       name: 'should work with multiple layer names in path (correct understand layer)',
       filename: '/Users/User/Projects/frontend/src/processes/shared/index.js',
+      code: "import { foo } from 'shared/foo';",
+    },
+    {
+      name: 'should work with multiple layer names in path (correct understand layer using "cwd")',
+      filename: '/Users/User/Projects/app/index.js',
       code: "import { foo } from 'shared/foo';",
     },
   ],
