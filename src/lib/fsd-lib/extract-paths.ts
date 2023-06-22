@@ -15,11 +15,15 @@ export function extractPaths(node: ImportExportNodesWithSourceValue, context: Un
   const normalizedTargetPath = normalizePath(targetPath);
   const absoluteTargetPath = convertToAbsolute(normalizedCurrentFilePath, normalizedTargetPath);
 
+  const cwd = context.getCwd?.();
+  const normalizedCwd = typeof cwd === 'string' ? normalizePath(cwd) : undefined;
+
   return {
     targetPath,
     currentFilePath,
     normalizedTargetPath,
     normalizedCurrentFilePath,
     absoluteTargetPath,
+    normalizedCwd,
   };
 }
