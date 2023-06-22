@@ -84,6 +84,11 @@ ruleTester.run('absolute-relative', rule, {
       filename: 'frontend/src/shared/foo/index.ts',
       code: "import { Something } from '@/app';",
     },
+    {
+      name: 'should correct understand node module imports',
+      filename: 'src/shims-vue.d.ts',
+      code: "import type Vue from 'vue';",
+    },
   ],
 
   invalid: [
