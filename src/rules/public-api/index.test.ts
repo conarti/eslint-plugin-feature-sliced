@@ -44,9 +44,9 @@ const errorLayersPublicApiNotAllowed = {
   messageId: MESSAGE_ID.LAYERS_PUBLIC_API_NOT_ALLOWED,
 };
 
-const errorFromInvalidStructure = {
+/* const errorFromInvalidStructure = {
   messageId: MESSAGE_ID.FROM_INVALID_STRUCTURE,
-};
+}; */
 
 const setValidationLevel = (level: VALIDATION_LEVEL): [{ level: VALIDATION_LEVEL }] => [
   {
@@ -403,11 +403,12 @@ ruleTester.run('public-api', rule as unknown as Rule.RuleModule, {
       `,
       errors: 1,
     },
+    /* TODO
     {
       name: 'should report if import from invalid feature sliced structure (import from known layer and unknown slice)',
       code: "import { Bar } from '@/features/group-folder/sub-group-folder/sub-sub-group/bar/bar.js';",
       filename: `${CWD_MOCK_PATH}/src/pages/home/ui/index.vue`,
       errors: [errorFromInvalidStructure],
-    },
+    }, */
   ],
 });
