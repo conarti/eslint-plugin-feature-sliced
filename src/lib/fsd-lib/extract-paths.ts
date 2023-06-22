@@ -1,20 +1,11 @@
-import {
-  convertToAbsolute,
-  normalizePath,
-} from '../path-lib';
+import { convertToAbsolute } from '../path-lib';
 import {
   extractCurrentFilePath,
   extractNodePath,
+  extractCwd,
   type ImportExportNodesWithSourceValue,
   type UnknownRuleContext,
 } from '../rule-lib';
-
-function extractCwd(context: UnknownRuleContext) {
-  const cwd = context.getCwd?.();
-  const normalizedCwd = typeof cwd === 'string' ? normalizePath(cwd) : undefined;
-
-  return normalizedCwd;
-}
 
 export function extractPaths(node: ImportExportNodesWithSourceValue, context: UnknownRuleContext) {
   const {

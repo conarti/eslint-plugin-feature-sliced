@@ -12,3 +12,4 @@ export type {
 export { isNodeType } from './is-node-type';
 export { extractNodePath } from './extract-node-path';
 export { extractCurrentFilePath } from './extract-current-file-path';
+export { extractCwd } from './extract-cwd';
