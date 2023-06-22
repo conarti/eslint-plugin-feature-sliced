@@ -88,6 +88,11 @@ ruleTester.run('layers-slices', rule as unknown as Rule.RuleModule, {
       options: allowTypeImportsOptions,
     },
     {
+      name: 'should allow type imports by default',
+      filename: 'src/shared/utils/index.ts',
+      code: "import type { Foo } from '@/widgets/foo';",
+    },
+    {
       filename: 'src/shared/ui/foo',
       code: "import { Bar } from '@/entities/bar';",
       options: makeIgnoreOptions(['@/entities/bar']),
