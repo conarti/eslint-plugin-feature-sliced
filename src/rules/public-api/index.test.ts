@@ -405,5 +405,15 @@ ruleTester.run('public-api', rule as unknown as Rule.RuleModule, {
       code: "export { foo } from './foo'",
       errors: [errorLayersPublicApiNotAllowed],
     },
+    {
+      name: 'import to layers public api is not allowed (should throw only 1 error per file)',
+      filename: 'src/features/index.ts',
+      code: `
+        import { foo } from './foo';
+        import { bar } from './bar';
+        import { baz } from './baz';
+      `,
+      errors: 1,
+    },
   ],
 });
