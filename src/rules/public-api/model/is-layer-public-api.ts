@@ -1,12 +1,14 @@
 import picomatch from 'picomatch';
-import { layers } from '../../../config';
 import { type PathsInfo } from '../../../lib/fsd-lib';
 
 export function isLayerPublicApi(pathsInfo: PathsInfo): boolean {
-  const { normalizedCurrentFilePath } = pathsInfo;
+  const {
+    normalizedCurrentFilePath,
+    fsdPartsOfCurrentFile,
+  } = pathsInfo;
 
   const matcher = picomatch([
-    `**/(${layers.join('|')})/index.*`,
+    `**/${fsdPartsOfCurrentFile.layer}/index.*`,
   ]);
 
   return matcher(normalizedCurrentFilePath);
