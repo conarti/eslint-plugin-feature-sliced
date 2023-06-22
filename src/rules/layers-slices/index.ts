@@ -51,13 +51,13 @@ export default createRule<Options, MessageIds>({
     },
   ],
 
-  create(context) {
+  create(context, optionsWithDefault) {
     return {
       ImportDeclaration(node) {
-        validateAndReport(node, context);
+        validateAndReport(node, context, optionsWithDefault);
       },
       ImportExpression(node) {
-        validateAndReport(node as ImportExpression /* TSESTree has invalid type for this node */, context);
+        validateAndReport(node as ImportExpression /* TSESTree has invalid type for this node */, context, optionsWithDefault);
       },
     };
   },
