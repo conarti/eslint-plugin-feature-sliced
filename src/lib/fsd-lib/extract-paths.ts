@@ -3,20 +3,11 @@ import {
   normalizePath,
 } from '../path-lib';
 import {
+  extractCurrentFilePath,
   extractNodePath,
   type ImportExportNodesWithSourceValue,
   type UnknownRuleContext,
 } from '../rule-lib';
-
-function extractCurrentFilePath(context: UnknownRuleContext) {
-  const currentFilePath = context.getPhysicalFilename ? context.getPhysicalFilename() : context.getFilename(); /* FIXME: getFilename is deprecated */
-  const normalizedCurrentFilePath = normalizePath(currentFilePath);
-
-  return {
-    currentFilePath,
-    normalizedCurrentFilePath,
-  };
-}
 
 function extractCwd(context: UnknownRuleContext) {
   const cwd = context.getCwd?.();
