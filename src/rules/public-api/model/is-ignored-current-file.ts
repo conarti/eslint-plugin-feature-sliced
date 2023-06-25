@@ -4,9 +4,10 @@ import {
   isIgnored,
   type UnknownRuleContext,
 } from '../../../lib/rule-lib';
-import { type Options } from '../config';
 
-export function isIgnoredCurrentFile(context: UnknownRuleContext, optionsWithDefault: Readonly<Options>) {
+export function isIgnoredCurrentFile<
+  OptionsWithPatterns extends Readonly<[{ ignoreInFilesPatterns?: string[] }]>
+>(context: UnknownRuleContext, optionsWithDefault: OptionsWithPatterns) {
   const ruleOptions = extractRuleOptions(optionsWithDefault);
   const normalizedCurrentFilePath = extractCurrentFilePath(context);
 
