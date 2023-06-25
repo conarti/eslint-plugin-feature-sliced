@@ -1,8 +1,7 @@
 import { extractPathsInfo } from '../../../lib/fsd-lib';
 import {
   canValidate,
-  extractRuleOptions,
-  isIgnored,
+  isIgnoredCurrentFile,
   type ImportExportNodes,
 } from '../../../lib/rule-lib';
 import {
@@ -30,13 +29,11 @@ export function validateAndReport(
     return;
   }
 
-  const userDefinedRuleOptions = extractRuleOptions(optionsWithDefault);
-  const pathsInfo = extractPathsInfo(node, context);
-
-  /* FIXME @duplicate of isIgnoreCurrentFile function in public-api rule */
-  if (isIgnored(pathsInfo.normalizedCurrentFilePath, userDefinedRuleOptions.ignoreInFilesPatterns)) {
+  if (isIgnoredCurrentFile(context, optionsWithDefault)) {
     return;
   }
+
+  const pathsInfo = extractPathsInfo(node, context);
 
   if (shouldBeRelative(pathsInfo)) {
     reportShouldBeRelative(node, context);

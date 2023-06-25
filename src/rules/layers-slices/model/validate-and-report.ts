@@ -3,6 +3,7 @@ import {
   extractRuleOptions,
   isIgnored,
   canValidate,
+  isIgnoredCurrentFile,
   type ImportExportNodes,
 } from '../../../lib/rule-lib';
 import {
@@ -20,11 +21,10 @@ export function validateAndReport(node: ImportExportNodes, context: RuleContext,
   const pathsInfo = extractPathsInfo(node, context);
   const userDefinedRuleOptions = extractRuleOptions(optionsWithDefault);
 
+  /* TODO extract to 'rule-lib' module */
   const isIgnoredTargetPath = isIgnored(pathsInfo.targetPath, userDefinedRuleOptions.ignorePatterns);
-  /* FIXME @duplicate of isIgnoreCurrentFile function in public-api rule */
-  const isIgnoredCurrentFile = isIgnored(pathsInfo.normalizedCurrentFilePath, userDefinedRuleOptions.ignoreInFilesPatterns);
 
-  if (isIgnoredTargetPath || isIgnoredCurrentFile) {
+  if (isIgnoredTargetPath || isIgnoredCurrentFile(context, optionsWithDefault)) {
     return;
   }
 
