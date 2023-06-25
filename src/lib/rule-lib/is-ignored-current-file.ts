@@ -3,7 +3,7 @@ import {
   extractRuleOptions,
   isIgnored,
   type UnknownRuleContext,
-} from '../../../lib/rule-lib';
+} from './index';
 
 export function isIgnoredCurrentFile<
   OptionsWithPatterns extends Readonly<[{ ignoreInFilesPatterns?: string[] }]>

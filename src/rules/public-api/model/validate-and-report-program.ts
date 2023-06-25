@@ -1,10 +1,10 @@
 import { type TSESTree } from '@typescript-eslint/utils';
+import { isIgnoredCurrentFile } from '../../../lib/rule-lib';
 import {
   type Options,
   type RuleContext,
 } from '../config';
 import { reportLayersPublicApiNotAllowed } from './errors-lib';
-import { isIgnoredCurrentFile } from './is-ignored-current-file';
 import { isLayerPublicApi } from './is-layer-public-api';
 
 export function validateAndReportProgram(node: TSESTree.Program, context: RuleContext, optionsWithDefault: Readonly<Options>) {
