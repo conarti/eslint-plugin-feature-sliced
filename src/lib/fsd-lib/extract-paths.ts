@@ -8,10 +8,7 @@ import {
 } from '../rule-lib';
 
 export function extractPaths(node: ImportExportNodesWithSourceValue, context: UnknownRuleContext) {
-  const {
-    currentFilePath,
-    normalizedCurrentFilePath,
-  } = extractCurrentFilePath(context);
+  const normalizedCurrentFilePath = extractCurrentFilePath(context);
 
   const {
     targetPath,
@@ -24,7 +21,6 @@ export function extractPaths(node: ImportExportNodesWithSourceValue, context: Un
 
   return {
     targetPath,
-    currentFilePath,
     normalizedTargetPath,
     normalizedCurrentFilePath,
     absoluteTargetPath,

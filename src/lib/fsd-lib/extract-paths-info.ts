@@ -55,7 +55,6 @@ function compareFeatureSlicedParts(fsPartsToCompare: FSPartsToCompare) {
 export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context: UnknownRuleContext) {
   const {
     targetPath,
-    currentFilePath,
     normalizedTargetPath,
     normalizedCurrentFilePath,
     absoluteTargetPath,
@@ -87,7 +86,6 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
 
   return {
     targetPath,
-    currentFilePath,
     normalizedTargetPath,
     normalizedCurrentFilePath,
     absoluteTargetPath,

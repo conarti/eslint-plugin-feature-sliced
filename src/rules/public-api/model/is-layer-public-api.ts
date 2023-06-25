@@ -8,7 +8,7 @@ import {
 import { isNull } from '../../../lib/shared';
 
 export function isLayerPublicApi(context: UnknownRuleContext): boolean {
-  const { normalizedCurrentFilePath } = extractCurrentFilePath(context);
+  const normalizedCurrentFilePath = extractCurrentFilePath(context);
   const cwd = extractCwd(context);
   const layer = extractLayer(normalizedCurrentFilePath, cwd);
 

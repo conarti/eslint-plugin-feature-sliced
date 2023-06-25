@@ -21,7 +21,8 @@ export function validateAndReport(node: ImportExportNodes, context: RuleContext,
   const userDefinedRuleOptions = extractRuleOptions(optionsWithDefault);
 
   const isIgnoredTargetPath = isIgnored(pathsInfo.targetPath, userDefinedRuleOptions.ignorePatterns);
-  const isIgnoredCurrentFile = isIgnored(pathsInfo.currentFilePath, userDefinedRuleOptions.ignoreInFilesPatterns);
+  /* FIXME @duplicate of isIgnoreCurrentFile function in public-api rule */
+  const isIgnoredCurrentFile = isIgnored(pathsInfo.normalizedCurrentFilePath, userDefinedRuleOptions.ignoreInFilesPatterns);
 
   if (isIgnoredTargetPath || isIgnoredCurrentFile) {
     return;

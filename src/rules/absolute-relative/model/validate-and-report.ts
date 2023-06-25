@@ -33,7 +33,8 @@ export function validateAndReport(
   const userDefinedRuleOptions = extractRuleOptions(optionsWithDefault);
   const pathsInfo = extractPathsInfo(node, context);
 
-  if (isIgnored(pathsInfo.currentFilePath, userDefinedRuleOptions.ignoreInFilesPatterns)) {
+  /* FIXME @duplicate of isIgnoreCurrentFile function in public-api rule */
+  if (isIgnored(pathsInfo.normalizedCurrentFilePath, userDefinedRuleOptions.ignoreInFilesPatterns)) {
     return;
   }
 
