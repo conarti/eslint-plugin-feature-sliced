@@ -3,9 +3,9 @@ import { extractRuleOptions } from './extract-rule-options';
 import { isIgnored } from './is-ignored';
 import { type UnknownRuleContext } from './models';
 
-export function isIgnoredCurrentFile<
-  OptionsWithPatterns extends Readonly<[{ ignoreInFilesPatterns?: string[] }]>
->(context: UnknownRuleContext, optionsWithDefault: OptionsWithPatterns) {
+type OptionsWithIgnorePatterns = Readonly<[{ ignoreInFilesPatterns?: string[] }]>
+
+export function isIgnoredCurrentFile<T extends OptionsWithIgnorePatterns>(context: UnknownRuleContext, optionsWithDefault: T) {
   const ruleOptions = extractRuleOptions(optionsWithDefault);
   const normalizedCurrentFilePath = extractCurrentFilePath(context);
 
