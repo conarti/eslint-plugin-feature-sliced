@@ -9,8 +9,8 @@ export type MessageIds = ERROR_MESSAGE_ID;
 export type Options = [
   {
     allowTypeImports: boolean;
-    ignorePatterns?: string[];
-    ignoreInFilesPatterns?: string[];
+    ignorePatterns: string[];
+    ignoreInFilesPatterns: string[];
   },
 ];
 
