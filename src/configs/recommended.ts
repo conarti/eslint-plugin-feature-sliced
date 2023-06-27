@@ -2,14 +2,14 @@ import path from 'path';
 
 export = {
   plugins: [
-    'conarti-fsd',
+    '@conarti/feature-sliced',
   ],
   extends: [
     path.resolve(__dirname, './import-order/recommended'),
   ],
   rules: {
-    'conarti-fsd/layers-slices': 'error',
-    'conarti-fsd/absolute-relative': 'error',
-    'conarti-fsd/public-api': 'error',
+    '@conarti/feature-sliced/layers-slices': 'error',
+    '@conarti/feature-sliced/absolute-relative': 'error',
+    '@conarti/feature-sliced/public-api': 'error',
   },
 };
