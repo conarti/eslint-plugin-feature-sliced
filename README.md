@@ -1,4 +1,4 @@
-# eslint-plugin-conarti-fsd
+# @conarti/eslint-plugin-feature-sliced
 
 Feature-sliced design methodology plugin.
 
