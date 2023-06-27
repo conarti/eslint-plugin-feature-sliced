@@ -1,3 +1,12 @@
+## [1.0.3](https://github.com/conarti/eslint-plugin-fsd/compare/v1.0.2...v1.0.3) (2023-06-27)
+
+
+### Bug Fixes
+
+* **configs:** add 'rules' config definition at main entry point ([a9eba73](https://github.com/conarti/eslint-plugin-fsd/commit/a9eba7319090177d284c9d846afb31f8f024d2d0))
+
+
+
 ## [1.0.2](https://github.com/conarti/eslint-plugin-fsd/compare/v1.0.1...v1.0.2) (2023-06-27)
 
 
