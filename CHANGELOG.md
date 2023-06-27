@@ -1,3 +1,32 @@
+# [1.0.0](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.39...v1.0.0) (2023-06-27)
+
+This version refactored to typescript and vitest, as well as fixed important bugs and redesigned the rules.
+Also, with the release of this version, the repository will be renamed to '@conarti/eslint-plugin-feature-sliced' and package with old name will be deprecated.
+
+### Bug Fixes
+
+* **absolute-relative:** correct use default options ([85283af](https://github.com/conarti/eslint-plugin-fsd/commit/85283af4ac13fe41217f624a426013b01e7ee966))
+* **absolute-relative:** should correct understand node module imports ([061e815](https://github.com/conarti/eslint-plugin-fsd/commit/061e815c8f43b5b7c3c4960d53919f4073e2ba6f))
+* **import-order:** change to correct global config import path ([a079822](https://github.com/conarti/eslint-plugin-fsd/commit/a079822fc697f52dbf07afddbef49460a3a3b0dd))
+* **layers-slices:** add schema for new 'ignoreInFilesPatterns' option ([e9aaffc](https://github.com/conarti/eslint-plugin-fsd/commit/e9aaffc2924139229be2faec2a024891209fa6ed))
+* **layers-slices:** correct use default options ([c66179e](https://github.com/conarti/eslint-plugin-fsd/commit/c66179e98287f8db0f30fbf7d9c0a3d62c09a445))
+* **layers-slices:** remove the incorrect check after correcting the logic for obtaining layer slices ([627c240](https://github.com/conarti/eslint-plugin-fsd/commit/627c2402f8957788f0071a28c2848a0d2bae44ac))
+* **public-api:** correct use default options ([c2f36b6](https://github.com/conarti/eslint-plugin-fsd/commit/c2f36b6cb81bae2a1f7f950768f9022e6a76c130))
+* **public-api:** report only 1 "import to layers public api is not allowed" error per file ([8672f55](https://github.com/conarti/eslint-plugin-fsd/commit/8672f554a079a0caa04fcef553c25fcf1819c917))
+* **public-api:** should work with multiple layer names in path (correct understand layer) ([c09bc09](https://github.com/conarti/eslint-plugin-fsd/commit/c09bc09b8d438d29e7dbb54e4c28cd135e3ea22f))
+
+
+### Features
+
+* use 'cwd' to understand paths ([3493d74](https://github.com/conarti/eslint-plugin-fsd/commit/3493d74def5df0bf066c0728df04a84405f36b7e))
+* **import-order:** add different variations of configurations ([05e87f0](https://github.com/conarti/eslint-plugin-fsd/commit/05e87f07dc56c800b6d512c13dfa894a190360b7))
+* **layers-slices:** 'allowTypeImports' option is set to 'true' by default ([7a3fc34](https://github.com/conarti/eslint-plugin-fsd/commit/7a3fc349de407642e2740926878a95461ad31de7))
+* **layers-slices:** add 'ignoreInFilesPatterns' option ([b6b6fe3](https://github.com/conarti/eslint-plugin-fsd/commit/b6b6fe3824281364c604913f7f814969d3e6cfd0))
+* **public-api:** add 'ignoreInFilesPatterns' option ([b2b3641](https://github.com/conarti/eslint-plugin-fsd/commit/b2b36417e5d626ccb38383dc569590d0685f417c))
+* **public-api:** don't allow layers public api ([755a07c](https://github.com/conarti/eslint-plugin-fsd/commit/755a07c12658c7cecdb75cb863b07621908b6704))
+
+
+
 ## [0.0.39](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.38...v0.0.39) (2023-05-28)
 
 
