@@ -68,63 +68,53 @@ You'll first need to install [ESLint](https://eslint.org/):
 npm i eslint --save-dev
 ```
 
-Next, install `eslint-plugin-conarti-fsd` and dependencies:
+Next, install `@conarti/eslint-plugin-feature-sliced` and dependencies:
 
 ```sh
-npm install -D eslint-plugin-conarti-fsd eslint-plugin-import
+npm install -D @conarti/eslint-plugin-feature-sliced eslint-plugin-import
 # or by yarn
-yarn add -D eslint-plugin-conarti-fsd eslint-plugin-import
+yarn add -D @conarti/eslint-plugin-feature-sliced eslint-plugin-import
 ```
 
-## Usage
+Note: 'eslint-plugin-import' is optional. You can skip installing this plugin if you don't need to sort imports in your code.
 
-Add `conarti-fsd` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-`
-prefix:
+## Quick Usage
 
-```json
-{
-  "plugins": [
-    "conarti-fsd"
-  ]
-}
-```
-
-Then enable rules:
+Add `@conarti/feature-sliced/recommended` to extends section of your `.eslintrc` configuration file. 
+It enables all rules and additional recommended configs of other eslint plugins, like `eslint-plugin-import`. 
 
 ```json
 {
   "extends": [
-    "plugin:conarti-fsd/recommended"
+    "plugin:@conarti/feature-sliced/recommended"
   ]
 }
 ```
 
-## Customization
+## Customisation
 
-You can use _warnings_ instead of _errors_ for specific rules. Or turn off certain rules:
+If you want to use only plugin rules, add `@conarti/feature-sliced/rules` instead.
 
 ```json
 {
-  "rules": {
-    "conarti-fsd/layers-slices": "warn",
-    "conarti-fsd/absolute-relative": "off",
-    "conarti-fsd/public-api": "warn",
-    "import/order": "warn"
-  }
+  "extends": [
+    "plugin:@conarti/feature-sliced/rules"
+  ]
 }
 ```
 
-If you don't want to use the 'import/order' rule, you can choose not to install the 'eslint-plugin-import' package.
-And also you will have to configure all the rules separately, without using the config.
-Recommended settings:
+If you only want to use certain rules, you can add them individually. To do this, you need to add `@conarti/feature-sliced` to the 'plugins'
+section of the configuration file and add the desired rules to the 'rules' section. Also now you don't need to use the 'extends' section like before
+
 ```json
 {
+  "plugins": [
+    "@conarti/feature-sliced"
+  ],
   "rules": {
-    "conarti-fsd/layers-slices": ["error", { 
-      "allowTypeImports": true
-    }],
-    "conarti-fsd/absolute-relative": "error",
-    "conarti-fsd/public-api": "error"
+    "@conarti/feature-sliced/layers-slices": "error",
+    "@conarti/feature-sliced/absolute-relative": "error",
+    "@conarti/feature-sliced/public-api": "error"
   }
 }
 ```
@@ -134,9 +124,9 @@ Recommended settings:
 🔧 Automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/user-guide/command-line-interface#--fix).
 💡 Suggestion fix (no automatic fix)
 
-| Name                                                               | Description                               | 🔧 |
-|:-------------------------------------------------------------------|:------------------------------------------|:---|
-| [conarti-fsd/layers-slices](rules/layers-slices/README.md)         | Checks layer imports                      |    |
-| [conarti-fsd/absolute-relative](rules/absolute-relative/README.md) | Checks for absolute and relative paths    |    |
-| [conarti-fsd/public-api](rules/public-api/README.md)               | Check for module imports from public api  | 💡 |
-| import/order                                                       | Sort imports using 'eslint-plugin-import' | 🔧 |
+| Name                                                                                | Description                               | 🔧 |
+|:------------------------------------------------------------------------------------|:------------------------------------------|:---|
+| [@conarti/feature-sliced/layers-slices](docs/rules/layers-slices/README.md)         | Checks layer imports                      |    |
+| [@conarti/feature-sliced/absolute-relative](docs/rules/absolute-relative/README.md) | Checks for absolute and relative paths    |    |
+| [@conarti/feature-sliced/public-api](docs/rules/public-api/README.md)               | Check for module imports from public api  | 💡 |
+| import/order                                                                        | Sort imports using 'eslint-plugin-import' | 🔧 |
