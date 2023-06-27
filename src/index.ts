@@ -1,4 +1,5 @@
 import recommended from './configs/recommended';
+import rules from './configs/rules';
 import absoluteRelative from './rules/absolute-relative';
 import layersSlices from './rules/layers-slices';
 import publicApi from './rules/public-api';
@@ -15,5 +16,6 @@ export = {
   },
   configs: {
     recommended,
+    rules,
   },
 };
