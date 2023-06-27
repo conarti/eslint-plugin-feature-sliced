@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/conarti/eslint-plugin-fsd/compare/v1.0.0...v1.0.1) (2023-06-27)
+
+### Bug Fixes
+
+* **configs:** update definitions using new plugin name ([6d9b4f1](https://github.com/conarti/eslint-plugin-fsd/commit/b76283a7ae98d2a5f16494ede9a5a0f6b6d9b4f1))
+
+
 # [1.0.0](https://github.com/conarti/eslint-plugin-fsd/compare/v0.0.39...v1.0.0) (2023-06-27)
 
 This version refactored to typescript and vitest, as well as fixed important bugs and redesigned the rules.
