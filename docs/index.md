@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: 'eslint-plugin-conarti-fsd'
+  name: '@conarti/eslint-plugin-feature-sliced'
   tagline: A simple and lightweight eslint plugin that provides custom rules and configurations to check code against the principles of the feature-sliced.design architectural methodology.
   actions:
     - theme: brand
@@ -13,6 +13,7 @@ hero:
       text: Rules
       link: /rules/index
 
+# TODO features
 features:
   - title: Feature A
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
