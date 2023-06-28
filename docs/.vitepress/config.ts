@@ -1,4 +1,8 @@
+import { createRequire } from 'module';
 import { defineConfig } from 'vitepress';
+
+const require = createRequire(import.meta.url)
+const packageJson = require('../../package.json')
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -8,13 +12,15 @@ export default defineConfig({
 		// https://vitepress.dev/reference/default-theme-config
 		nav: [
 			{
-				text: 'Home',
-				link: '/',
-			},
-			{
-				text: 'Examples',
-				link: '/markdown-examples',
-			},
+				text: packageJson.version,
+				items: [
+					{
+						text: 'Changelog',
+						link: 'https://github.com/conarti/eslint-plugin-feature-sliced/blob/master/CHANGELOG.md'
+					},
+					// TODO 'Contributing'
+				]
+			}
 		],
 
 		sidebar: [
