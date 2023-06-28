@@ -8,13 +8,13 @@
  * -------------------------------------------------------------------------- */
 
  :root {
-  --vp-c-brand: #646cff;
-  --vp-c-brand-light: #747bff;
-  --vp-c-brand-lighter: #9499ff;
-  --vp-c-brand-lightest: #bcc0ff;
-  --vp-c-brand-dark: #535bf2;
-  --vp-c-brand-darker: #454ce1;
-  --vp-c-brand-dimm: rgba(100, 108, 255, 0.08);
+  --vp-c-brand: #6499ff;
+  --vp-c-brand-light: #74a8ff;
+  --vp-c-brand-lighter: #94c6ff;
+  --vp-c-brand-lightest: #bcedff;
+  --vp-c-brand-dark: #5388f2;
+  --vp-c-brand-darker: #4579e1;
+  --vp-c-brand-dimm: rgba(100, 153, 255, 0.08);
 }
 
 /**
