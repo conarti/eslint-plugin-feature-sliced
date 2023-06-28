@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-	title: 'eslint-plugin-conarti-fsd',
+	title: 'Documentation',
 	description: 'feature-sliced.design Eslint Plugin Docs',
 	themeConfig: {
 		// https://vitepress.dev/reference/default-theme-config
