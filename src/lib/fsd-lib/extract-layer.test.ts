@@ -41,6 +41,11 @@ describe('extract-layer', () => {
       path: './entitiesInName.ts',
       expected: null,
     },
+    {
+      name: 'if slice contain layer name',
+      path: 'src/features/foo-pages/ui/foo.vue',
+      expected: 'features',
+    },
   ];
 
   it.each(cases)('$path', ({
