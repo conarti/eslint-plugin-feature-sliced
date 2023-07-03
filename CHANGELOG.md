@@ -1,3 +1,12 @@
+## [1.0.4](https://github.com/conarti/eslint-plugin-fsd/compare/v1.0.3...v1.0.4) (2023-07-03)
+
+
+### Bug Fixes
+
+* correct resolve slice if it contains layer name ([52c2bc7](https://github.com/conarti/eslint-plugin-fsd/commit/52c2bc7b02a16281cf7171dbfac8ee25de34030d))
+
+
+
 ## [1.0.3](https://github.com/conarti/eslint-plugin-fsd/compare/v1.0.2...v1.0.3) (2023-06-27)
 
 
