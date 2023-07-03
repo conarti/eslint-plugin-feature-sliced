@@ -24,6 +24,8 @@ const ruleTester = new RuleTester({
   parser: require.resolve('@typescript-eslint/parser'),
 }, CWD_MOCK_PATH);
 
+const makeFilename = (filename: string): string => `${CWD_MOCK_PATH}/${filename}`;
+
 const makeErrorWithSuggestion = (suggestionSegments: string, suggestionOutput: string, fixedPath: string) => ({
   messageId: MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
   data: {
@@ -212,6 +214,11 @@ ruleTester.run('public-api', rule as unknown as Rule.RuleModule, {
       name: 'should work with multiple layer names in path (correct understand layer using "cwd")',
       filename: '/Users/User/Projects/app/index.js',
       code: "import { foo } from 'shared/foo';",
+    },
+    {
+      name: 'should be valid if import from same slice and slice contain "layer" name',
+      filename: makeFilename('src/features/foo-pages/ui/foo.vue'),
+      code: "import { foo } from '../model'",
     },
   ],
 

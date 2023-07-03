@@ -46,11 +46,6 @@ const makeErrorMessage = (importLayer: string, currentFileLayer: string) => ({
 ruleTester.run('layers-slices', rule as unknown as Rule.RuleModule, {
   valid: [
     {
-      name: 'should be valid if import from same slice and slice contain "layer" name',
-      filename: makeFilename('src/features/foo-pages/ui/foo.vue'),
-      code: "import { foo } from '../model'",
-    },
-    {
       name: 'should valid if import from "shared" to "features"',
       filename: 'src/features/bar/ui.tsx',
       code: "import { foo } from '@/shared/foo.tsx'",
@@ -145,6 +140,11 @@ ruleTester.run('layers-slices', rule as unknown as Rule.RuleModule, {
       filename: '/Users/test/Projects/frontend/src/features/index.ts',
       code: "import { Bar } from 'src/features/bar';",
       options: makeIgnoreInFilesOptions(['**/src/(shared|entities|features|widgets|pages|processes|app)/index.ts']),
+    },
+    {
+      name: 'should be valid if import from same slice and slice contain "layer" name',
+      filename: makeFilename('src/features/foo-pages/ui/foo.vue'),
+      code: "import { foo } from '../model'",
     },
   ],
 
