@@ -22,18 +22,9 @@ or by yarn
 yarn add -D @conarti/eslint-plugin-feature-sliced eslint-plugin-import
 ```
 
-::: info
-`eslint-plugin-import` is optional.
-But this page provides a quick start guide
-and uses a ready-made recommended configuration that requires this plugin to be installed.
-You can skip installing this plugin if you don't need to sort imports in your code.
-See [Advanced configuration](/advanced-configuration) for more details.
-:::
-
 ## Usage
 
 Add `@conarti/feature-sliced/recommended` to `extends` section of your `.eslintrc` configuration file.
-It enables all rules and additional recommended configs of other eslint plugins, like `eslint-plugin-import`.
 
 ```json{3}
 {
@@ -42,3 +33,12 @@ It enables all rules and additional recommended configs of other eslint plugins,
   ]
 }
 ```
+
+## About `recommended` config
+
+The recommended config was created to quickly set up all the rules.
+It contains the settings recommended by the methodology and the author.
+With it, you only need to install the dependencies and add one line to the eslint configuration.
+
+However, if you need to customize the rules in more detail for the specifics of the project,
+then follow the [Advanced configuration](/advanced-configuration) steps.
