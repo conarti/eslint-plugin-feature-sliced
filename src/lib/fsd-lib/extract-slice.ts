@@ -6,5 +6,5 @@ import { getByRegExp } from '../shared';
  */
 export function extractSlice(targetPath: string): string | null {
   const targetPathWithoutCurrentFileName = targetPath.replace(/\/\w+\.\w+$/, '');
-  return getByRegExp(targetPathWithoutCurrentFileName, new RegExp(`(?<=(${layersWithSlices.join('|')})\\/)(\\w|-)+`, 'ig'), true);
+  return getByRegExp(targetPathWithoutCurrentFileName, new RegExp(`(?<=(${layersWithSlices.join('|')})\\/)(\\w|-)+`, 'ig'));
 }
