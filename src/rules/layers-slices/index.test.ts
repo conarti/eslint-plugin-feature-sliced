@@ -13,6 +13,8 @@ const ruleTester = new RuleTester({
   parser: require.resolve('@typescript-eslint/parser'),
 }, CWD_MOCK_PATH);
 
+const makeFilename = (filename: string): string => `${CWD_MOCK_PATH}/${filename}`;
+
 const allowTypeImportsOptions: Options = [
   {
     allowTypeImports: true,
@@ -43,6 +45,11 @@ const makeErrorMessage = (importLayer: string, currentFileLayer: string) => ({
 
 ruleTester.run('layers-slices', rule as unknown as Rule.RuleModule, {
   valid: [
+    {
+      name: 'should be valid if import from same slice and slice contain "layer" name',
+      filename: makeFilename('src/features/foo-pages/ui/foo.vue'),
+      code: "import { foo } from '../model'",
+    },
     {
       name: 'should valid if import from "shared" to "features"',
       filename: 'src/features/bar/ui.tsx',
