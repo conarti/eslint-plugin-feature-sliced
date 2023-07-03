@@ -44,6 +44,11 @@ describe('extract-slice', () => {
       path: '/Users/conarti/Projects/feature-sliced-frontend/src/entities/foo-bar-baz/ui/index.vue',
       expected: 'foo-bar-baz',
     },
+    {
+      name: 'if slice contain layer name',
+      path: 'src/features/foo-pages/ui/foo.vue',
+      expected: 'foo-pages',
+    },
   ];
 
   it.each(cases)('$path', ({
