@@ -1,4 +1,4 @@
-import { convertToAbsolute } from '../path-lib';
+import { convertToAbsolute } from '../path';
 import { extractCurrentFilePath } from './extract-current-file-path';
 import { extractCwd } from './extract-cwd';
 import { extractNodePath } from './extract-node-path';

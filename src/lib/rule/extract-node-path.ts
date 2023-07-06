@@ -1,4 +1,4 @@
-import { normalizePath } from '../path-lib';
+import { normalizePath } from '../path';
 import { type ImportExportNodesWithSourceValue } from './models';
 
 export function extractNodePath(node: ImportExportNodesWithSourceValue) {

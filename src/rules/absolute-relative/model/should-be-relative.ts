@@ -1,5 +1,5 @@
 import { type PathsInfo } from '../../../lib/fsd-lib';
-import { isPathRelative } from '../../../lib/path-lib';
+import { isPathRelative } from '../../../lib/path';
 
 export function shouldBeRelative(pathsInfo: PathsInfo): boolean {
   const {

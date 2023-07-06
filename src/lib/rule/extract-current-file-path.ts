@@ -1,4 +1,4 @@
-import { normalizePath } from '../path-lib';
+import { normalizePath } from '../path';
 import { type UnknownRuleContext } from './models';
 
 export function extractCurrentFilePath(context: UnknownRuleContext) {
