@@ -1,7 +1,7 @@
 import {
   extractPathsInfo,
   type PathsInfo,
-} from '../../../lib/fsd-lib';
+} from '../../../lib/feature-sliced';
 import {
   extractRuleOptions,
   type ImportExportNodesWithSourceValue,

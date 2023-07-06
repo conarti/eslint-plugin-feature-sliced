@@ -1,4 +1,4 @@
-import { extractPathsInfo } from '../../../lib/fsd-lib';
+import { extractPathsInfo } from '../../../lib/feature-sliced';
 import {
   canValidate,
   isIgnoredCurrentFile,

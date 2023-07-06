@@ -1,5 +1,5 @@
 import picomatch from 'picomatch';
-import { extractLayer } from '../../../lib/fsd-lib';
+import { extractLayer } from '../../../lib/feature-sliced';
 import {
   extractCurrentFilePath,
   extractCwd,

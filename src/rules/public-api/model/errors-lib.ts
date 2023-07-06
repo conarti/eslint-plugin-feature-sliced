@@ -1,5 +1,5 @@
 import { type TSESTree } from '@typescript-eslint/utils';
-import { extractPathsInfo } from '../../../lib/fsd-lib';
+import { extractPathsInfo } from '../../../lib/feature-sliced';
 import {
   getSourceRangeWithoutQuotes,
   type ImportExportNodesWithSourceValue,

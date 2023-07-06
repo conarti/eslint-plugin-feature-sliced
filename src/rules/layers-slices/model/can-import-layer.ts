@@ -2,7 +2,7 @@ import { type Layer } from '../../../config';
 import {
   getLayerWeight,
   type PathsInfo,
-} from '../../../lib/fsd-lib';
+} from '../../../lib/feature-sliced';
 import { type ImportExportNodesWithSourceValue, isNodeType } from '../../../lib/rule';
 
 type RuleOptions = {

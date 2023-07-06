@@ -1,4 +1,4 @@
-import { type PathsInfo } from '../../../lib/fsd-lib';
+import { type PathsInfo } from '../../../lib/feature-sliced';
 import { type ImportExportNodesWithSourceValue } from '../../../lib/rule';
 import {
   ERROR_MESSAGE_ID,
