@@ -1,9 +1,9 @@
 import { extractPathsInfo } from '../../../lib/feature-sliced';
 import {
   extractRuleOptions,
-  isIgnored,
   canValidate,
   isIgnoredCurrentFile,
+  isIgnoredTarget,
   type ImportExportNodes,
 } from '../../../lib/rule';
 import {
@@ -21,10 +21,7 @@ export function validateAndReport(node: ImportExportNodes, context: RuleContext,
   const pathsInfo = extractPathsInfo(node, context);
   const userDefinedRuleOptions = extractRuleOptions(optionsWithDefault);
 
-  /* TODO extract to 'rule-lib' module */
-  const isIgnoredTargetPath = isIgnored(pathsInfo.targetPath, userDefinedRuleOptions.ignorePatterns);
-
-  if (isIgnoredTargetPath || isIgnoredCurrentFile(context, optionsWithDefault)) {
+  if (isIgnoredTarget(node, optionsWithDefault) || isIgnoredCurrentFile(context, optionsWithDefault)) {
     return;
   }
 
