@@ -1,12 +1,12 @@
 import {
   type ImportExportNodesWithSourceValue,
   type UnknownRuleContext,
+  extractPaths,
 } from '../rule-lib';
 import {
   type ExtractedFeatureSlicedParts,
   extractFeatureSlicedParts,
 } from './extract-feature-sliced-parts';
-import { extractPaths } from './extract-paths';
 import {
   type ValidatedFeatureSlicedParts,
   validateExtractedFeatureSlicedParts,

@@ -1,11 +1,11 @@
 import { convertToAbsolute } from '../path-lib';
+import { extractCurrentFilePath } from './extract-current-file-path';
+import { extractCwd } from './extract-cwd';
+import { extractNodePath } from './extract-node-path';
 import {
-  extractCurrentFilePath,
-  extractNodePath,
-  extractCwd,
   type ImportExportNodesWithSourceValue,
   type UnknownRuleContext,
-} from '../rule-lib';
+} from './models';
 
 export function extractPaths(node: ImportExportNodesWithSourceValue, context: UnknownRuleContext) {
   const normalizedCurrentFilePath = extractCurrentFilePath(context);
