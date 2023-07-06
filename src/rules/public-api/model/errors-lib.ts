@@ -3,7 +3,7 @@ import { extractPathsInfo } from '../../../lib/fsd-lib';
 import {
   getSourceRangeWithoutQuotes,
   type ImportExportNodesWithSourceValue,
-} from '../../../lib/rule-lib';
+} from '../../../lib/rule';
 import {
   MESSAGE_ID,
   type RuleContext,

@@ -2,7 +2,7 @@ import {
   type ImportExportNodesWithSourceValue,
   type UnknownRuleContext,
   extractPaths,
-} from '../rule-lib';
+} from '../rule';
 import {
   type ExtractedFeatureSlicedParts,
   extractFeatureSlicedParts,

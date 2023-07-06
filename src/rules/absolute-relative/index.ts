@@ -1,7 +1,7 @@
 import {
   createRule,
   type ImportExpression,
-} from '../../lib/rule-lib';
+} from '../../lib/rule';
 import type {
   MessageIds,
   Options,

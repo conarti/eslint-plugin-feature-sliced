@@ -1,5 +1,5 @@
 import { type TSESTree } from '@typescript-eslint/utils';
-import { isIgnoredCurrentFile } from '../../../lib/rule-lib';
+import { isIgnoredCurrentFile } from '../../../lib/rule';
 import {
   type Options,
   type RuleContext,

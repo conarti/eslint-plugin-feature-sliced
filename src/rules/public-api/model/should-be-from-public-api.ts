@@ -5,7 +5,7 @@ import {
 import {
   extractRuleOptions,
   type ImportExportNodesWithSourceValue,
-} from '../../../lib/rule-lib';
+} from '../../../lib/rule';
 import {
   VALIDATION_LEVEL,
   type Options,

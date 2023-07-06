@@ -1,7 +1,7 @@
 import {
   createRule,
   type ImportExpression,
-} from '../../lib/rule-lib';
+} from '../../lib/rule';
 import {
   MESSAGE_ID,
   VALIDATION_LEVEL,

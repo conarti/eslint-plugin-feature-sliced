@@ -3,7 +3,7 @@ import {
   getLayerWeight,
   type PathsInfo,
 } from '../../../lib/fsd-lib';
-import { type ImportExportNodesWithSourceValue, isNodeType } from '../../../lib/rule-lib';
+import { type ImportExportNodesWithSourceValue, isNodeType } from '../../../lib/rule';
 
 type RuleOptions = {
   allowTypeImports: boolean

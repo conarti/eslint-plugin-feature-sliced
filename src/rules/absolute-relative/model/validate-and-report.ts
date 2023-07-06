@@ -3,7 +3,7 @@ import {
   canValidate,
   isIgnoredCurrentFile,
   type ImportExportNodes,
-} from '../../../lib/rule-lib';
+} from '../../../lib/rule';
 import {
   type RuleContext,
   type Options,

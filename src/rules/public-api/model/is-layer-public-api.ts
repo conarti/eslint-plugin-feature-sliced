@@ -4,7 +4,7 @@ import {
   extractCurrentFilePath,
   extractCwd,
   type UnknownRuleContext,
-} from '../../../lib/rule-lib';
+} from '../../../lib/rule';
 import { isNull } from '../../../lib/shared';
 
 export function isLayerPublicApi(context: UnknownRuleContext): boolean {
