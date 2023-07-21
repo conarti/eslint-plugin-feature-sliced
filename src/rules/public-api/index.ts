@@ -32,6 +32,7 @@ export default createRule<Options, MessageIds>({
         type: 'object',
         properties: {
           level: {
+            type: 'string',
             enum: [
               VALIDATION_LEVEL.SEGMENTS,
               VALIDATION_LEVEL.SLICES,
