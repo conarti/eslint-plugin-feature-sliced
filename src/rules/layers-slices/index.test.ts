@@ -228,5 +228,15 @@ ruleTester.run('layers-slices', rule as unknown as Rule.RuleModule, {
       code: "import { Bar } from 'src/features/bar';",
       errors: [makeErrorMessage('features', 'features')],
     },
+    {
+      name: 'should allow "import type" with enabled option, but throw errors for value imports',
+      filename: 'src/shared/ui/foo',
+      code: "import { type Bar, bar, baz } from '@/entities/bar';",
+      options: allowTypeImportsOptions,
+      errors: [
+        makeErrorMessage('entities', 'shared'),
+        makeErrorMessage('entities', 'shared'),
+      ],
+    },
   ],
 });
