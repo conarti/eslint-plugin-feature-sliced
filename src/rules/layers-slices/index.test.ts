@@ -1,6 +1,11 @@
-import { type Rule } from 'eslint';
+import { type TSESLint } from '@typescript-eslint/utils';
 import { RuleTester } from '../../../tests/rule-tester';
-import { ERROR_MESSAGE_ID, type Options } from './config';
+import { type Layer } from '../../config';
+import {
+  ERROR_MESSAGE_ID,
+  type MessageIds,
+  type Options,
+} from './config';
 import rule from './index';
 
 const CWD_MOCK_PATH = '/Users/user/projects/project/app';
@@ -33,17 +38,40 @@ const makeIgnoreInFilesOptions = (patterns: string[]): Options => [
   },
 ] as Options;
 
-const makeErrorMessage = (importLayer: string, currentFileLayer: string) => ({
-  messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
-  data: {
-    importLayer,
-    currentFileLayer,
-  },
-});
+function makeErrorMessage(importLayer: Layer, currentFileLayer: Layer): TSESLint.TestCaseError<MessageIds> {
+  return {
+    messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
+    data: {
+      importLayer,
+      currentFileLayer,
+    },
+  };
+}
+
+type ErrorPosition = {
+  column: number;
+  endColumn: number;
+  line: number;
+  endLine: number;
+}
+
+function makeErrorMessageAtSpecifier(importLayer: Layer, currentFileLayer: Layer, position: ErrorPosition): TSESLint.TestCaseError<MessageIds> {
+  return {
+    messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
+    data: {
+      importLayer,
+      currentFileLayer,
+    },
+    column: position.column,
+    endColumn: position.endColumn,
+    line: position.line,
+    endLine: position.endLine,
+  };
+}
 
 // TODO refactor tests
 
-ruleTester.run('layers-slices', rule as unknown as Rule.RuleModule, {
+ruleTester.run('layers-slices', rule, {
   valid: [
     {
       name: 'should valid if import from "shared" to "features"',
@@ -236,14 +264,45 @@ ruleTester.run('layers-slices', rule as unknown as Rule.RuleModule, {
       errors: [makeErrorMessage('entities', 'shared')],
     },
     {
-      name: 'should throw error for every specifier and should not for valid specifiers', // TODO check correct error position in future
+      name: 'should throw error for every specifier at correct positions and should not for valid specifiers',
       filename: 'src/shared/ui/foo',
-      code: "import { bar, type Bar, baz, type Boz, boz } from '@/entities/bar';",
+      code: `import { bar, type Bar, 
+        baz, 
+        type Boz,
+        boz,
+      } from '@/entities/bar';`,
       options: allowTypeImportsOptions,
       errors: [
-        makeErrorMessage('entities', 'shared'),
-        makeErrorMessage('entities', 'shared'),
-        makeErrorMessage('entities', 'shared'),
+        makeErrorMessageAtSpecifier(
+          'entities',
+          'shared',
+          { // "bar"
+            line: 1,
+            endLine: 1,
+            column: 10,
+            endColumn: 13,
+          },
+        ),
+        makeErrorMessageAtSpecifier(
+          'entities',
+          'shared',
+          { // "baz"
+            line: 2,
+            endLine: 2,
+            column: 9,
+            endColumn: 12,
+          },
+        ),
+        makeErrorMessageAtSpecifier(
+          'entities',
+          'shared',
+          { // "boz"
+            line: 4,
+            endLine: 4,
+            column: 9,
+            endColumn: 12,
+          },
+        ),
       ],
     },
     {
@@ -254,7 +313,7 @@ ruleTester.run('layers-slices', rule as unknown as Rule.RuleModule, {
         {
           allowTypeImports: false,
         },
-      ],
+      ] as Options,
       errors: [makeErrorMessage('entities', 'shared')],
     },
   ],
