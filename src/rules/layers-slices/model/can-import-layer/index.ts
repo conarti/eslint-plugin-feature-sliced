@@ -1,5 +1,5 @@
 import { type PathsInfo } from '../../../../lib/feature-sliced';
-import { type ImportExportNodesWithSourceValue } from '../../../../lib/rule';
+import { type ImportNodesWithSource } from '../../../../lib/rule/models';
 import { validByLayerOrder } from './valid-by-layer-order';
 import { validByTypeImport } from './valid-by-type-import';
 
@@ -7,7 +7,7 @@ type RuleOptions = {
   allowTypeImports: boolean
 };
 
-export function canImportLayer(pathsInfo: PathsInfo, node: ImportExportNodesWithSourceValue, ruleOptions: RuleOptions) {
+export function canImportLayer(pathsInfo: PathsInfo, node: ImportNodesWithSource, ruleOptions: RuleOptions) {
   const {
     fsdPartsOfTarget,
     fsdPartsOfCurrentFile,
