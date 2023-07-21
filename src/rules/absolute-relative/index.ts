@@ -15,7 +15,6 @@ export default createRule<Options, MessageIds>({
     type: 'problem',
     docs: {
       description: 'Checks for absolute and relative paths',
-      recommended: false,
     },
     messages: {
       [ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH]: 'There must be relative paths',
