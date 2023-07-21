@@ -1,5 +1,17 @@
 import { isObject } from '../shared';
-import type { ImportExportNodesWithSourceValue } from './models';
+import {
+  type ImportExportNodesWithSourceValue,
+  type ImportNodes,
+  type ImportNodesWithSource,
+  type ExportNodes,
+  type ExportNodesWithSource,
+} from './models';
+
+type ImportOrExportNodeWithSource<T> = T extends ImportNodes
+  ? ImportNodesWithSource
+  : T extends ExportNodes
+    ? ExportNodesWithSource
+    : ImportExportNodesWithSourceValue
 
 /**
  * Checks if a node has a path for validation.
@@ -13,7 +25,7 @@ import type { ImportExportNodesWithSourceValue } from './models';
  *  import foo from './foo'; // true
  * ```
  */
-export function hasPath(node: unknown): node is ImportExportNodesWithSourceValue {
+export function hasPath(node: unknown): node is ImportOrExportNodeWithSource<typeof node> {
   if (isObject(node) && 'source' in node) {
     return node.source !== null;
   }
