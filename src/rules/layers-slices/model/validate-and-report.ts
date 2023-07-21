@@ -1,7 +1,7 @@
 import { extractPathsInfo } from '../../../lib/feature-sliced';
 import {
   extractRuleOptions,
-  canValidate,
+  hasPath,
   isIgnoredCurrentFile,
   isIgnoredTarget,
   type ImportExportNodes,
@@ -14,7 +14,7 @@ import { canImportLayer } from './can-import-layer';
 import { reportCanNotImportLayer } from './errors-lib';
 
 export function validateAndReport(node: ImportExportNodes, context: RuleContext, optionsWithDefault: Readonly<Options>) {
-  if (!canValidate(node)) {
+  if (!hasPath(node)) {
     return;
   }
 

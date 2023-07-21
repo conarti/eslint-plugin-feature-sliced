@@ -13,7 +13,7 @@ import type { ImportExportNodesWithSourceValue } from './models';
  *  import foo from './foo'; // true
  * ```
  */
-export function canValidate(node: unknown): node is ImportExportNodesWithSourceValue {
+export function hasPath(node: unknown): node is ImportExportNodesWithSourceValue {
   if (isObject(node) && 'source' in node) {
     return node.source !== null;
   }

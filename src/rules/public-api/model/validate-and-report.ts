@@ -1,5 +1,5 @@
 import {
-  canValidate,
+  hasPath,
   isIgnoredCurrentFile,
   type ImportExportNodes,
 } from '../../../lib/rule';
@@ -11,7 +11,7 @@ import { reportShouldBeFromPublicApi } from './errors-lib';
 import { shouldBeFromPublicApi } from './should-be-from-public-api';
 
 export function validateAndReport(node: ImportExportNodes, context: RuleContext, optionsWithDefault: Readonly<Options>) {
-  if (!canValidate(node)) {
+  if (!hasPath(node)) {
     return;
   }
 

@@ -1,6 +1,6 @@
 import { extractPathsInfo } from '../../../lib/feature-sliced';
 import {
-  canValidate,
+  hasPath,
   isIgnoredCurrentFile,
   type ImportExportNodes,
 } from '../../../lib/rule';
@@ -25,7 +25,7 @@ export function validateAndReport(
   optionsWithDefault: Readonly<Options>,
   options: ValidateOptions = { needCheckForAbsolute: true },
 ) {
-  if (!canValidate(node)) {
+  if (!hasPath(node)) {
     return;
   }
 
