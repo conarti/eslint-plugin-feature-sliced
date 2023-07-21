@@ -1,4 +1,3 @@
-import { type Rule } from 'eslint';
 import { RuleTester } from '../../../tests/rule-tester';
 import {
   layers,
@@ -68,7 +67,7 @@ const shouldNotValidateLayersWithoutSlices: Parameters<typeof ruleTester.run>[2]
   code: `import { baz } from "src/${layer}/foo/ui.ts";`,
 }));
 
-ruleTester.run('public-api', rule as unknown as Rule.RuleModule, {
+ruleTester.run('public-api', rule, {
   valid: [
     ...shouldNotValidateLayersWithoutSlices,
     {
@@ -408,7 +407,7 @@ ruleTester.run('public-api', rule as unknown as Rule.RuleModule, {
         import { bar } from './bar';
         import { baz } from './baz';
       `,
-      errors: 1,
+      errors: [errorLayersPublicApiNotAllowed],
     },
     /* TODO
     {
