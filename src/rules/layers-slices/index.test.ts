@@ -80,13 +80,21 @@ ruleTester.run('layers-slices', rule as unknown as Rule.RuleModule, {
       code: "import { AppRouter } from 'app/providers/router';",
     },
     {
+      name: 'should allow "import type" with enabled option (separate import type style and same layer)',
       filename: 'src/entities/bar',
       code: "import type { Baz } from 'entities/baz';",
       options: allowTypeImportsOptions,
     },
     {
+      name: 'should allow "import type" with enabled option (separate import type style and to layer below)',
       filename: 'src/shared/ui/foo',
       code: "import type { Bar } from '@/entities/bar';",
+      options: allowTypeImportsOptions,
+    },
+    {
+      name: 'should allow "import type" with enabled option (inline import type style and to layer below)',
+      filename: 'src/shared/ui/foo',
+      code: "import { type Bar } from '@/entities/bar';",
       options: allowTypeImportsOptions,
     },
     {
