@@ -17,7 +17,6 @@ export default createRule<Options, MessageIds>({
     type: 'problem',
     docs: {
       description: 'Check for module imports from public api',
-      recommended: false,
     },
     /* it doesn't understand when context.report is not in this module */
     // eslint-disable-next-line eslint-plugin/require-meta-has-suggestions
