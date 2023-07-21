@@ -11,22 +11,7 @@ export function canImportLayer(pathsInfo: PathsInfo, node: ImportExportNodesWith
   const {
     fsdPartsOfTarget,
     fsdPartsOfCurrentFile,
-    isSameSlice,
-    isSameLayerWithoutSlices,
-    hasUnknownLayers,
   } = pathsInfo;
-
-  if (hasUnknownLayers) {
-    return true;
-  }
-
-  if (isSameSlice) {
-    return true;
-  }
-
-  if (isSameLayerWithoutSlices) {
-    return true;
-  }
 
   if (validByTypeImport(node, ruleOptions.allowTypeImports)) {
     return true;
