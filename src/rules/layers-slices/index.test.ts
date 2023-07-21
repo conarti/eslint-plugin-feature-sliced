@@ -16,7 +16,8 @@ const ruleTester = new RuleTester({
     sourceType: 'module',
   },
   parser: require.resolve('@typescript-eslint/parser'),
-}, CWD_MOCK_PATH);
+  cwd: CWD_MOCK_PATH,
+});
 
 const makeFilename = (filename: string): string => `${CWD_MOCK_PATH}/${filename}`;
 
