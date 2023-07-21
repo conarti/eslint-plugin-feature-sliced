@@ -4,22 +4,23 @@ import type {
 } from '@typescript-eslint/utils';
 
 /**
- *  TSESTree has invalid type for this node.
+ *  Maybe TSESTree has an invalid type for this node.
+ *  But maybe that's just my misunderstanding of how it works.
  *  https://astexplorer.net/#/gist/c72aaf4c7f7b4d57f554a4354f604d36/c416e580065f25d111fef37323e6001e2ea67ec1
  */
 export type ImportExpression = TSESTree.ImportExpression & { source: TSESTree.StringLiteral }
 
-/* TODO: mb rename to 'ValidationNodes' or something else */
-export type ImportExportNodes = TSESTree.ImportDeclaration
-  | ImportExpression
-  | TSESTree.ExportAllDeclaration
-  | TSESTree.ExportNamedDeclaration;
+export type ImportNodes = TSESTree.ImportDeclaration | ImportExpression;
 
-/* TODO: mb rename to 'ValidationNodesWithSourceValue' */
-export type ImportExportNodesWithSourceValue = TSESTree.ImportDeclaration
-  | ImportExpression
-  | TSESTree.ExportAllDeclaration
-  | TSESTree.ExportNamedDeclarationWithSource;
+export type ExportNodes = TSESTree.ExportAllDeclaration | TSESTree.ExportNamedDeclaration;
+
+export type ImportExportNodes = ImportNodes | ExportNodes;
+
+export type ImportNodesWithSource = ImportNodes;
+
+export type ExportNodesWithSource = TSESTree.ExportAllDeclaration | TSESTree.ExportNamedDeclarationWithSource;
+
+export type ImportExportNodesWithSourceValue = ImportNodesWithSource | ExportNodesWithSource;
 
 type ImportKindType = { importKind: 'type' }
 type ExportKindType = { exportKind: 'type' };
