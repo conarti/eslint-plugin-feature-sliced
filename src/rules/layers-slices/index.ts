@@ -15,7 +15,6 @@ export default createRule<Options, MessageIds>({
     type: 'problem',
     docs: {
       description: 'Checks layer imports',
-      recommended: false,
     },
     messages: {
       [ERROR_MESSAGE_ID.CAN_NOT_IMPORT]: 'You cannot import layer "{{ importLayer }}" into "{{ currentFileLayer }}" (shared -> entities -> features -> widgets -> pages -> processes -> app)',
