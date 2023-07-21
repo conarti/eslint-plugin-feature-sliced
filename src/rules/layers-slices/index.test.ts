@@ -231,12 +231,31 @@ ruleTester.run('layers-slices', rule as unknown as Rule.RuleModule, {
     {
       name: 'should allow "import type" with enabled option, but throw errors for value imports',
       filename: 'src/shared/ui/foo',
-      code: "import { type Bar, bar, baz } from '@/entities/bar';",
+      code: "import { type Bar, bar } from '@/entities/bar';",
+      options: allowTypeImportsOptions,
+      errors: [makeErrorMessage('entities', 'shared')],
+    },
+    {
+      name: 'should throw error for every specifier and should not for valid specifiers', // TODO check correct error position in future
+      filename: 'src/shared/ui/foo',
+      code: "import { bar, type Bar, baz, type Boz, boz } from '@/entities/bar';",
       options: allowTypeImportsOptions,
       errors: [
         makeErrorMessage('entities', 'shared'),
         makeErrorMessage('entities', 'shared'),
+        makeErrorMessage('entities', 'shared'),
       ],
+    },
+    {
+      name: 'should throw only one error if it has multiple specifiers',
+      filename: 'src/shared/ui/foo',
+      code: "import { bar, baz, boz, type Bar } from '@/entities/bar';",
+      options: [
+        {
+          allowTypeImports: false,
+        },
+      ],
+      errors: [makeErrorMessage('entities', 'shared')],
     },
   ],
 });
