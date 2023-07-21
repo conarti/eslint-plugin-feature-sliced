@@ -66,14 +66,14 @@ const moveToProject = async (destinationDir, buildDir) => {
 const getCompilationInfo = async () => {
   const packageName = packageJson.name;
   const packageVersion = packageJson.version;
-  const packedPackageFileName = `${packageName}-${packageVersion}.tgz`;
-  const buildDir = packageName;
+  const packedPackageFileName = `${packageName.replaceAll('@', '').replaceAll('/', '-')}-${packageVersion}.tgz`;
+  const buildDir = packedPackageFileName.replace('.tgz', '');
 
   const targetProjectRoot = (
     await prompts({
       type: 'text',
       name: 'root',
-      message: 'Input project root with node_modules',
+      message: 'Input project root with (that contain "node_modules" folder)',
     })
   ).root;
 
