@@ -1,16 +1,11 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { type RuleTesterConfig } from '@typescript-eslint/utils/dist/ts-eslint';
-import {
-  Linter,
-  RuleTester as EslintRuleTester,
-} from 'eslint';
+import * as BaseRuleTester from '@typescript-eslint/utils/dist/ts-eslint/RuleTester';
+import { Linter } from 'eslint';
 
-/* TODO fix types, use ESLintUtils.RuleTester */
-export class RuleTester extends EslintRuleTester {
+export class RuleTester extends BaseRuleTester.RuleTester {
   linter: Linter;
 
   constructor(baseOptions: RuleTesterConfig, cwd?: string) {
-    // @ts-ignore
     super(baseOptions);
 
     this.linter = new Linter({ cwd });
