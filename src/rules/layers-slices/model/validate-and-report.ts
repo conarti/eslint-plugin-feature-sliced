@@ -25,7 +25,7 @@ function extractImportSpecifiers(node: TSESTree.ImportDeclaration): TSESTree.Imp
   return node.specifiers.filter((specifier): specifier is TSESTree.ImportSpecifier => specifier.type === AST_NODE_TYPES.ImportSpecifier);
 }
 
-function validateNode(node: ImportNodes, context: RuleContext, pathsInfo: PathsInfo, userDefinedRuleOptions: any) {
+function validateNode<RuleOptions extends { allowTypeImports: boolean }>(node: ImportNodes, context: RuleContext, pathsInfo: PathsInfo, userDefinedRuleOptions: RuleOptions) {
   if (!canImportLayer(pathsInfo, node, userDefinedRuleOptions)) {
     reportCanNotImportLayer(context, node, pathsInfo);
   }
