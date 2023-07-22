@@ -76,6 +76,7 @@ module.exports = {
     'import/no-extraneous-dependencies': 'off',
     'prefer-destructuring': 'off',
     'linebreak-style': ['error', 'unix'],
+    complexity: ['error', 10],
   },
   ignorePatterns: [
     'dist',
