@@ -79,6 +79,7 @@ module.exports = {
     'prefer-destructuring': 'off',
     'linebreak-style': ['error', 'unix'],
     complexity: ['error', 10],
+    'import/no-unresolved': 'error',
   },
   ignorePatterns: [
     'dist',
