@@ -18,14 +18,19 @@ import {
 } from '../config';
 import { canImportLayer } from './can-import-layer';
 import { validByLayerOrder } from './can-import-layer/valid-by-layer-order';
-import { reportCanNotImportLayer, reportCanNotImportLayerAtSpecifier } from './errors-lib';
+import {
+  reportCanNotImportLayer,
+  reportCanNotImportLayerAtSpecifier,
+} from './errors-lib';
 import { isNotSuitableForValidation } from './is-not-suitable-for-validation';
 
 function extractImportSpecifiers(node: TSESTree.ImportDeclaration): TSESTree.ImportSpecifier[] {
   return node.specifiers.filter((specifier): specifier is TSESTree.ImportSpecifier => specifier.type === AST_NODE_TYPES.ImportSpecifier);
 }
 
-function validateNode<RuleOptions extends { allowTypeImports: boolean }>(node: ImportNodes, context: RuleContext, pathsInfo: PathsInfo, userDefinedRuleOptions: RuleOptions) {
+function validateNode<
+  RuleOptions extends { allowTypeImports: boolean }
+>(node: ImportNodes, context: RuleContext, pathsInfo: PathsInfo, userDefinedRuleOptions: RuleOptions) {
   if (!canImportLayer(pathsInfo, node, userDefinedRuleOptions)) {
     reportCanNotImportLayer(context, node, pathsInfo);
   }
