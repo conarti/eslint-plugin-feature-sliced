@@ -13,6 +13,7 @@ module.exports = {
     'filenames-simple',
     'unused-imports',
     'import',
+    'modules-newlines',
   ],
   env: {
     node: true,
@@ -28,7 +29,8 @@ module.exports = {
     'object-property-newline': 'error',
     'max-len': ['error', 150],
     'object-curly-spacing': ['error', 'always'],
-    /* TODO: update this configuration for ts imports */
+    'modules-newlines/import-declaration-newline': 'error',
+    'modules-newlines/export-declaration-newline': 'error',
     'object-curly-newline': ['error', {
       ObjectExpression: {
         multiline: true,
