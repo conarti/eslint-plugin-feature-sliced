@@ -59,6 +59,7 @@
     "eslint-plugin-eslint-plugin": "^5.1.1",
     "eslint-plugin-filenames-simple": "^0.8.0",
     "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-modules-newlines": "^0.0.7",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-unused-imports": "^3.0.0",
     "eslint-plugin-vitest": "^0.2.6",
