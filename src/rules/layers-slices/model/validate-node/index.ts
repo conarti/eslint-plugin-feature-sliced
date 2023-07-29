@@ -3,17 +3,13 @@ import { type ImportNodesWithSource } from '../../../../lib/rule/models';
 import { validByLayerOrder } from './valid-by-layer-order';
 import { validByTypeImport } from './valid-by-type-import';
 
-type RuleOptions = {
-  allowTypeImports: boolean
-};
-
-export function canImportLayer(pathsInfo: PathsInfo, node: ImportNodesWithSource, ruleOptions: RuleOptions) {
+export function validateNode(node: ImportNodesWithSource, pathsInfo: PathsInfo, allowTypeImports: boolean) {
   const {
     fsdPartsOfTarget,
     fsdPartsOfCurrentFile,
   } = pathsInfo;
 
-  if (validByTypeImport(node, ruleOptions.allowTypeImports)) {
+  if (validByTypeImport(node, allowTypeImports)) {
     return true;
   }
 

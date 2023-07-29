@@ -9,70 +9,84 @@ import {
   hasPath,
   isIgnoredCurrentFile,
   isIgnoredTarget,
-  isNodeType,
 } from '../../../lib/rule';
 import { type ImportNodes } from '../../../lib/rule/models';
 import {
-  type RuleContext,
   type Options,
+  type RuleContext,
 } from '../config';
-import { canImportLayer } from './can-import-layer';
-import { validByLayerOrder } from './can-import-layer/valid-by-layer-order';
 import {
   reportCanNotImportLayer,
   reportCanNotImportLayerAtSpecifier,
 } from './errors-lib';
 import { isNotSuitableForValidation } from './is-not-suitable-for-validation';
+import { validateNode } from './validate-node';
+import { validByTypeImport } from './validate-node/valid-by-type-import';
 
 function extractImportSpecifiers(node: TSESTree.ImportDeclaration): TSESTree.ImportSpecifier[] {
   return node.specifiers.filter((specifier): specifier is TSESTree.ImportSpecifier => specifier.type === AST_NODE_TYPES.ImportSpecifier);
 }
 
-function validateNode<
-  RuleOptions extends { allowTypeImports: boolean }
->(node: ImportNodes, context: RuleContext, pathsInfo: PathsInfo, userDefinedRuleOptions: RuleOptions) {
-  if (!canImportLayer(pathsInfo, node, userDefinedRuleOptions)) {
-    reportCanNotImportLayer(context, node, pathsInfo);
-  }
-}
-
-function validateSpecifiers(node: TSESTree.ImportDeclaration, context: RuleContext, pathsInfo: PathsInfo, allowTypeImports: boolean) {
-  const specifiers = extractImportSpecifiers(node);
-
-  const isValidImport = validByLayerOrder(pathsInfo.fsdPartsOfTarget, pathsInfo.fsdPartsOfCurrentFile);
-
-  if (isValidImport) {
-    return;
-  }
-
-  const invalidSpecifiers = specifiers.filter((specifier) => {
-    const isType = isNodeType(specifier);
-    const isValidByTypeImport = isType && allowTypeImports;
-    return !isValidByTypeImport;
-  });
-
+function hasErrorsAtAllSpecifiers(specifiers: TSESTree.ImportSpecifier[], invalidSpecifiers: TSESTree.ImportSpecifier[]) {
   const allSpecifiersCount = specifiers.length;
   const invalidSpecifiersCount = invalidSpecifiers.length;
-  const hasErrorsAtAllSpecifiers = invalidSpecifiersCount === allSpecifiersCount;
-
-  if (hasErrorsAtAllSpecifiers) {
-    reportCanNotImportLayer(context, node, pathsInfo);
-  } else {
-    invalidSpecifiers.forEach((specifier) => {
-      reportCanNotImportLayerAtSpecifier(context, specifier, pathsInfo);
-    });
-  }
+  return invalidSpecifiersCount === allSpecifiersCount;
 }
 
-// TODO refactor this
+function validateSpecifiers(specifiers: TSESTree.ImportSpecifier[], allowTypeImports: boolean) {
+  return specifiers.filter((specifier) => !validByTypeImport(specifier, allowTypeImports));
+}
+
+function validate(
+  node: ImportNodes,
+  pathsInfo: PathsInfo,
+  allowTypeImports: boolean,
+): ImportNodes[] | TSESTree.ImportSpecifier[] {
+  if (validateNode(node, pathsInfo, allowTypeImports)) {
+    return [];
+  }
+
+  const isImportExpression = node.type === AST_NODE_TYPES.ImportExpression;
+  if (isImportExpression) {
+    return [node];
+  }
+
+  const specifiers = extractImportSpecifiers(node);
+  const invalidSpecifiers = validateSpecifiers(specifiers, allowTypeImports);
+
+  if (hasErrorsAtAllSpecifiers(specifiers, invalidSpecifiers)) {
+    return [node];
+  }
+
+  return invalidSpecifiers;
+}
+
+function reportValidationErrors(nodes: TSESTree.ImportSpecifier[] | ImportNodes[], context: RuleContext, pathsInfo: PathsInfo) {
+  function reportAtNode(node: TSESTree.ImportSpecifier | ImportNodes) {
+    const reporters = {
+      [AST_NODE_TYPES.ImportSpecifier]: reportCanNotImportLayerAtSpecifier,
+      [AST_NODE_TYPES.ImportDeclaration]: reportCanNotImportLayer,
+      [AST_NODE_TYPES.ImportExpression]: reportCanNotImportLayer,
+    };
+
+    const report = reporters[node.type];
+
+    /* FIXME */
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    report(context, node, pathsInfo);
+  }
+
+  nodes.forEach(reportAtNode);
+}
+
 export function validateAndReport(node: ImportNodes, context: RuleContext, optionsWithDefault: Readonly<Options>) {
   if (!hasPath(node)) {
     return;
   }
 
-  const userDefinedRuleOptions = extractRuleOptions(optionsWithDefault);
-
-  if (isIgnoredTarget(node, optionsWithDefault) || isIgnoredCurrentFile(context, optionsWithDefault)) {
+  const isIgnoredForValidation = isIgnoredTarget(node, optionsWithDefault) || isIgnoredCurrentFile(context, optionsWithDefault);
+  if (isIgnoredForValidation) {
     return;
   }
 
@@ -82,11 +96,7 @@ export function validateAndReport(node: ImportNodes, context: RuleContext, optio
     return;
   }
 
-  // FIXME combine into one function + refactor this
-  const isValueNode = node.type === AST_NODE_TYPES.ImportDeclaration && node.importKind === 'value';
-  if (isValueNode) {
-    validateSpecifiers(node, context, pathsInfo, userDefinedRuleOptions.allowTypeImports);
-  } else {
-    validateNode(node, context, pathsInfo, userDefinedRuleOptions);
-  }
+  const { allowTypeImports } = extractRuleOptions(optionsWithDefault);
+  const nodesToReport = validate(node, pathsInfo, allowTypeImports);
+  reportValidationErrors(nodesToReport, context, pathsInfo);
 }
