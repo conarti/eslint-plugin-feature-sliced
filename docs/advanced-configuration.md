@@ -1,5 +1,6 @@
 ---
 title: Advanced configuration
+outline: deep
 ---
 
 # Advanced configuration
@@ -69,3 +70,4 @@ You can see the content of the recommended config on [GitHub](https://github.com
 
 ## Setup plugin rules
 
+// TODO
