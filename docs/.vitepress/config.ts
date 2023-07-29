@@ -35,6 +35,10 @@ export default defineConfig({
 						text: 'Advanced configuration',
 						link: '/advanced-configuration',
 					},
+					{
+						text: 'Migration from old plugin',
+						link: '/migration-from-old-plugin',
+					},
 				],
 			},
 			{
