@@ -38,6 +38,23 @@ export default defineConfig({
 				],
 			},
 			{
+				text: 'Configurations',
+				items: [
+					{
+						text: 'recommended',
+						link: '/configurations/recommended',
+					},
+					/*
+            TODO: add the 'base' configuration that contains only plugin rules settings.
+             Then create a doc page with link here.
+          */
+					{
+						text: 'import-order',
+						link: '/configurations/import-order',
+					},
+				],
+			},
+			{
 				text: 'Rules',
 				items: [
 					{
