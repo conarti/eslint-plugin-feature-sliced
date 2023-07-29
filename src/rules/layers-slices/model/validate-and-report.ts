@@ -20,22 +20,12 @@ import {
   reportCanNotImportLayerAtSpecifier,
 } from './errors-lib';
 import { isNotSuitableForValidation } from './is-not-suitable-for-validation';
+import {
+  hasErrorsAtAllSpecifiers,
+  validateSpecifiers,
+} from './specifiers';
+import { extractImportSpecifiers } from './specifiers/extract-import-specifiers';
 import { validateNode } from './validate-node';
-import { validByTypeImport } from './validate-node/valid-by-type-import';
-
-function extractImportSpecifiers(node: TSESTree.ImportDeclaration): TSESTree.ImportSpecifier[] {
-  return node.specifiers.filter((specifier): specifier is TSESTree.ImportSpecifier => specifier.type === AST_NODE_TYPES.ImportSpecifier);
-}
-
-function hasErrorsAtAllSpecifiers(specifiers: TSESTree.ImportSpecifier[], invalidSpecifiers: TSESTree.ImportSpecifier[]) {
-  const allSpecifiersCount = specifiers.length;
-  const invalidSpecifiersCount = invalidSpecifiers.length;
-  return invalidSpecifiersCount === allSpecifiersCount;
-}
-
-function validateSpecifiers(specifiers: TSESTree.ImportSpecifier[], allowTypeImports: boolean) {
-  return specifiers.filter((specifier) => !validByTypeImport(specifier, allowTypeImports));
-}
 
 function validate(
   node: ImportNodes,
