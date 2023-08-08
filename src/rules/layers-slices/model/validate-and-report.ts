@@ -1,5 +1,7 @@
-import { AST_NODE_TYPES } from '@typescript-eslint/types';
-import { type TSESTree } from '@typescript-eslint/utils';
+import {
+  type TSESTree,
+  AST_NODE_TYPES,
+} from '@typescript-eslint/utils';
 import {
   extractPathsInfo,
   type PathsInfo,
@@ -17,7 +19,6 @@ import {
 } from '../config';
 import {
   reportCanNotImportLayer,
-  reportCanNotImportLayerAtSpecifier,
 } from './errors-lib';
 import { isNotSuitableForValidation } from './is-not-suitable-for-validation';
 import {
@@ -52,22 +53,7 @@ function validate(
 }
 
 function reportValidationErrors(nodes: TSESTree.ImportSpecifier[] | ImportNodes[], context: RuleContext, pathsInfo: PathsInfo) {
-  function reportAtNode(node: TSESTree.ImportSpecifier | ImportNodes) {
-    const reporters = {
-      [AST_NODE_TYPES.ImportSpecifier]: reportCanNotImportLayerAtSpecifier,
-      [AST_NODE_TYPES.ImportDeclaration]: reportCanNotImportLayer,
-      [AST_NODE_TYPES.ImportExpression]: reportCanNotImportLayer,
-    };
-
-    const report = reporters[node.type];
-
-    /* FIXME */
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    report(context, node, pathsInfo);
-  }
-
-  nodes.forEach(reportAtNode);
+  nodes.forEach((node) => reportCanNotImportLayer(context, node, pathsInfo));
 }
 
 export function validateAndReport(node: ImportNodes, context: RuleContext, optionsWithDefault: Readonly<Options>) {
