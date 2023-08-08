@@ -17,9 +17,7 @@ import {
   type Options,
   type RuleContext,
 } from '../config';
-import {
-  reportCanNotImportLayer,
-} from './errors-lib';
+import { reportCanNotImportLayer } from './errors';
 import { isNotSuitableForValidation } from './is-not-suitable-for-validation';
 import {
   hasErrorsAtAllSpecifiers,
