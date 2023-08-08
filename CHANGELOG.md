@@ -1,3 +1,12 @@
+## [1.0.5](https://github.com/conarti/eslint-plugin-fsd/compare/v1.0.4...v1.0.5) (2023-08-08)
+
+
+### Bug Fixes
+
+* **layers-slices:** work with inline type imports ([247883e](https://github.com/conarti/eslint-plugin-fsd/commit/247883ec4154c229dadd540d22f04b9920763b3e))
+* **public-api:** add missed 'type' field at options validation schema ([54ec4e2](https://github.com/conarti/eslint-plugin-fsd/commit/54ec4e2b425d154e2118475fc7ba56699bcbd131))
+
+
 ## [1.0.4](https://github.com/conarti/eslint-plugin-fsd/compare/v1.0.3...v1.0.4) (2023-07-03)
 
 
