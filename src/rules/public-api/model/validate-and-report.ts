@@ -7,7 +7,7 @@ import {
   type Options,
   type RuleContext,
 } from '../config';
-import { reportShouldBeFromPublicApi } from './errors-lib';
+import { reportShouldBeFromPublicApi } from './errors';
 import { shouldBeFromPublicApi } from './should-be-from-public-api';
 
 export function validateAndReport(node: ImportExportNodes, context: RuleContext, optionsWithDefault: Readonly<Options>) {

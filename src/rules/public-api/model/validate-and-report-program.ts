@@ -4,7 +4,7 @@ import {
   type Options,
   type RuleContext,
 } from '../config';
-import { reportLayersPublicApiNotAllowed } from './errors-lib';
+import { reportLayersPublicApiNotAllowed } from './errors';
 import { isLayerPublicApi } from './is-layer-public-api';
 
 export function validateAndReportProgram(node: TSESTree.Program, context: RuleContext, optionsWithDefault: Readonly<Options>) {
