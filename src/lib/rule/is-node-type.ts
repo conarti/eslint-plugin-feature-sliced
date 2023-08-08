@@ -1,5 +1,8 @@
-import { AST_NODE_TYPES } from '@typescript-eslint/types';
-import { type TSESTree } from '@typescript-eslint/utils';
+import {
+  type TSESTree,
+  ASTUtils,
+  AST_NODE_TYPES,
+} from '@typescript-eslint/utils';
 import type {
   ExportAllDeclarationKindType,
   ExportNamedDeclarationKindType,
@@ -16,10 +19,8 @@ type ImportExportTypeNode = ImportDeclarationKindType
  * Checks if a node is an import or export of a type
  */
 export function isNodeType(node: ImportExportNodes | TSESTree.ImportSpecifier): node is ImportExportTypeNode {
-  const isImport = node.type === AST_NODE_TYPES.ImportDeclaration
-    || node.type === AST_NODE_TYPES.ImportSpecifier;
-  const isExport = node.type === AST_NODE_TYPES.ExportAllDeclaration
-    || node.type === AST_NODE_TYPES.ExportNamedDeclaration;
+  const isImport = ASTUtils.isNodeOfTypes([AST_NODE_TYPES.ImportSpecifier, AST_NODE_TYPES.ImportDeclaration])(node);
+  const isExport = ASTUtils.isNodeOfTypes([AST_NODE_TYPES.ExportAllDeclaration, AST_NODE_TYPES.ExportNamedDeclaration])(node);
 
   if (isImport) {
     return node.importKind === 'type';
