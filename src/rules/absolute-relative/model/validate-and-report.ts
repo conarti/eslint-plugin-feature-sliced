@@ -11,7 +11,7 @@ import {
 import {
   reportShouldBeRelative,
   reportShouldBeAbsolute,
-} from './errors-lib';
+} from './errors';
 import { shouldBeAbsolute } from './should-be-absolute';
 import { shouldBeRelative } from './should-be-relative';
 
