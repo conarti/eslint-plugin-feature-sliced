@@ -1,6 +1,7 @@
 import {
   type TSESTree,
   AST_NODE_TYPES,
+  ASTUtils,
 } from '@typescript-eslint/utils';
 import {
   extractPathsInfo,
@@ -35,7 +36,7 @@ function validate(
     return [];
   }
 
-  const isImportExpression = node.type === AST_NODE_TYPES.ImportExpression;
+  const isImportExpression = ASTUtils.isNodeOfType(AST_NODE_TYPES.ImportExpression)(node);
   if (isImportExpression) {
     return [node];
   }
