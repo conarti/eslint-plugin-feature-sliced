@@ -43,7 +43,7 @@ Example settings:
 
 ```json
 {
-  "conarti-fsd/layers-slices": ["error", {
+  "@conarti/feature-sliced/layers-slices": ["error", {
     "ignorePatterns": ["**/foo", "@/entities/bar"]
   }]
 }
