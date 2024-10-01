@@ -1,7 +1,7 @@
 import {
+  extractPaths,
   type ImportExportNodesWithSourceValue,
   type UnknownRuleContext,
-  extractPaths,
 } from '../rule';
 import {
   type ExtractedFeatureSlicedParts,
@@ -12,16 +12,16 @@ import {
   validateExtractedFeatureSlicedParts,
 } from './validate-extracted-feature-sliced-parts';
 
-type FSPartsToCompare = {
+interface FSPartsToCompare {
   target: {
-    validatedFeatureSlicedParts: ValidatedFeatureSlicedParts,
-    fsdParts: ExtractedFeatureSlicedParts,
-  },
+    validatedFeatureSlicedParts: ValidatedFeatureSlicedParts;
+    fsdParts: ExtractedFeatureSlicedParts;
+  };
   currentFile: {
-    validatedFeatureSlicedParts: ValidatedFeatureSlicedParts,
-    fsdParts: ExtractedFeatureSlicedParts,
-  }
-};
+    validatedFeatureSlicedParts: ValidatedFeatureSlicedParts;
+    fsdParts: ExtractedFeatureSlicedParts;
+  };
+}
 
 function compareFeatureSlicedParts(fsPartsToCompare: FSPartsToCompare) {
   const {
@@ -104,4 +104,4 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
   };
 }
 
-export type PathsInfo = ReturnType<typeof extractPathsInfo>
+export type PathsInfo = ReturnType<typeof extractPathsInfo>;

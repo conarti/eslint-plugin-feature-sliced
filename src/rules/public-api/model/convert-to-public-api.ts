@@ -1,4 +1,4 @@
-import { type PathsInfo } from '../../../lib/feature-sliced';
+import type { PathsInfo } from '../../../lib/feature-sliced';
 import { isNull } from '../../../lib/shared';
 
 function addSlashToStart(targetPath: string | null): string {

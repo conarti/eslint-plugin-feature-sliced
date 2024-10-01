@@ -1,12 +1,12 @@
 {
-  "include": [
-    "src"
-  ],
   "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
+    "types": [
+      "vitest/globals"
+    ],
     "strict": true,
-    "allowUnusedLabels": false,
     "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
     "exactOptionalPropertyTypes": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
@@ -16,14 +16,13 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
 
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-
     "outDir": "dist",
     "removeComments": true,
-    "types": [
-      "vitest/globals"
-    ]
-  }
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src"
+  ]
 }

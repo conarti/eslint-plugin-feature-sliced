@@ -1,6 +1,6 @@
-import { type TSESTree } from '@typescript-eslint/utils';
+import type { TSESTree } from '@typescript-eslint/utils';
+import type { ImportNodesWithSource } from '../../../../lib/rule/models';
 import { isNodeType } from '../../../../lib/rule';
-import { type ImportNodesWithSource } from '../../../../lib/rule/models';
 
 export function validByTypeImport(node: ImportNodesWithSource | TSESTree.ImportSpecifier, allowTypeImports: boolean) {
   const isType = isNodeType(node);

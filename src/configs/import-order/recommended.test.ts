@@ -7,11 +7,11 @@ const eslint = new ESLint({
   baseConfig: configLib.setParser(cfg),
 });
 
-type ConfigTestCase = {
+interface ConfigTestCase {
   name: string;
   code: string;
   expectedErrorCount: number;
-};
+}
 
 const cases: ConfigTestCase[] = [
   {

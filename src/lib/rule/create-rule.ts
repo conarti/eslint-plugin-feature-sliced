@@ -1,4 +1,4 @@
-import { URL } from 'url';
+import { URL } from 'node:url';
 import { ESLintUtils } from '@typescript-eslint/utils';
 import { RULE_DOCS_URL } from '../../config';
 

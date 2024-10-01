@@ -1,4 +1,4 @@
-import { type TSESLint } from '@typescript-eslint/utils';
+import type { TSESLint } from '@typescript-eslint/utils';
 
 export const enum ERROR_MESSAGE_ID {
   CAN_NOT_IMPORT = 'can-not-import',

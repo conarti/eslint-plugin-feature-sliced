@@ -10,21 +10,21 @@ export = {
     'import/order': [
       2,
       {
-        alphabetize: {
+        'alphabetize': {
           order: 'asc',
           caseInsensitive: true,
         },
         'newlines-between': 'never',
-        pathGroups: LAYERS_REVERSED.map(
+        'pathGroups': LAYERS_REVERSED.map(
           (layer) => ({
             pattern: `**/?(*)${layer}{,/**}`,
             group: 'internal',
             position: 'after',
           }),
         ),
-        distinctGroup: false,
-        pathGroupsExcludedImportTypes: ['builtin', 'type'],
-        groups: ['builtin', 'external', 'internal', 'type', 'parent', 'sibling', 'index'],
+        'distinctGroup': false,
+        'pathGroupsExcludedImportTypes': ['builtin', 'type'],
+        'groups': ['builtin', 'external', 'internal', 'type', 'parent', 'sibling', 'index'],
       },
     ],
   },

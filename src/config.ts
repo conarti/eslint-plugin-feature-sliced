@@ -8,7 +8,7 @@ export type Layers = ReadonlyArray<
   | 'app'
 >;
 
-export type Layer = Layers[number]
+export type Layer = Layers[number];
 
 /**
  * Layers arranged in order of their weight in the feature-sliced methodology
@@ -47,7 +47,7 @@ export type Segments = ReadonlyArray<
   | 'assets'
 >;
 
-export type Segment = Segments[number]
+export type Segment = Segments[number];
 
 /**
  * Slice segments regulated by feature-sliced methodologies

@@ -6,7 +6,7 @@ type BaseOptions = ConstructorParameters<typeof TSESLint.RuleTester>[0];
 function removeField<T extends Record<string, any>, K extends keyof T>(objectLike: T, key: K): Omit<T, K> {
   const entries = Object.entries(objectLike);
 
-  type ResultKeys = Exclude<keyof T, K>
+  type ResultKeys = Exclude<keyof T, K>;
 
   const entriesWithoutKey = entries.filter(
     (entryTuple: [keyof T, T[keyof T]]): entryTuple is [ResultKeys, T[ResultKeys]] => entryTuple[0] !== key,

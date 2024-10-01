@@ -1,7 +1,12 @@
+import type { ImportNodes } from '../../../lib/rule/models';
+import type {
+  Options,
+  RuleContext,
+} from '../config';
 import {
-  type TSESTree,
   AST_NODE_TYPES,
   ASTUtils,
+  type TSESTree,
 } from '@typescript-eslint/utils';
 import {
   extractPathsInfo,
@@ -13,11 +18,6 @@ import {
   isIgnoredCurrentFile,
   isIgnoredTarget,
 } from '../../../lib/rule';
-import { type ImportNodes } from '../../../lib/rule/models';
-import {
-  type Options,
-  type RuleContext,
-} from '../config';
 import { reportCanNotImportLayer } from './errors';
 import { isNotSuitableForValidation } from './is-not-suitable-for-validation';
 import {

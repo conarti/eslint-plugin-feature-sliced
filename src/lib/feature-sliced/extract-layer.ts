@@ -21,7 +21,7 @@ function prepareToExtract(targetPath: string, cwd?: string): string {
  */
 export function extractLayer(targetPath: string, cwd?: string): Layer | null {
   const layersRegExpPattern = `(${layers.join('|')})(?![\\w\\.-])`;
-  const layersRegExp = new RegExp(layersRegExpPattern, 'ig');
+  const layersRegExp = new RegExp(layersRegExpPattern, 'gi');
 
   const pathForExtract = prepareToExtract(targetPath, cwd);
 

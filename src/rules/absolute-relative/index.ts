@@ -1,11 +1,11 @@
-import {
-  createRule,
-  type ImportExpression,
-} from '../../lib/rule';
 import type {
   MessageIds,
   Options,
 } from './config';
+import {
+  createRule,
+  type ImportExpression,
+} from '../../lib/rule';
 import { ERROR_MESSAGE_ID } from './config';
 import { validateAndReport } from './model';
 

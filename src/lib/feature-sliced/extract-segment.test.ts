@@ -8,11 +8,11 @@ const FSD_SEGMENTS = segments;
 const FSD_LAYERS_WITHOUT_SLICES = layersWithoutSlices;
 
 describe('extract-segment', () => {
-  type TestCase = {
+  interface TestCase {
     name: string;
     path: string;
-    expected: ReturnType<typeof extractSegment>
-  }
+    expected: ReturnType<typeof extractSegment>;
+  };
 
   const shouldUnderstandAllFsdSegmentsTestCases: TestCase[] = FSD_SEGMENTS.map((segment) => ({
     name: `should return "${segment}" segment`,

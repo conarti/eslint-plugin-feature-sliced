@@ -1,7 +1,7 @@
 import {
   layersWithSlices,
-  segments,
   type Segment,
+  segments,
 } from '../../config';
 
 const layersUnion = layersWithSlices.join('|');

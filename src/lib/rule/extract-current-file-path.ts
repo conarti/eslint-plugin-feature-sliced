@@ -1,5 +1,5 @@
+import type { UnknownRuleContext } from './models';
 import { normalizePath } from '../path';
-import { type UnknownRuleContext } from './models';
 
 export function extractCurrentFilePath(context: UnknownRuleContext) {
   const currentFilePath = context.getPhysicalFilename

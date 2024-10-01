@@ -18,11 +18,13 @@ const errorMustBeRelative = {
   messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
 };
 
-const makeIgnoreInFilesOptions = (patterns: string[]): [{ ignoreInFilesPatterns: string[] }] => [
-  {
-    ignoreInFilesPatterns: patterns,
-  },
-];
+function makeIgnoreInFilesOptions(patterns: string[]): [{ ignoreInFilesPatterns: string[] }] {
+  return [
+    {
+      ignoreInFilesPatterns: patterns,
+    },
+  ];
+}
 
 ruleTester.run('absolute-relative', rule, {
   valid: [

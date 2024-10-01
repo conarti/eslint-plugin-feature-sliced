@@ -1,4 +1,4 @@
-import { type ImportExportNodesWithSourceValue } from '../../../lib/rule';
+import type { ImportExportNodesWithSourceValue } from '../../../lib/rule';
 import {
   ERROR_MESSAGE_ID,
   type RuleContext,

@@ -1,9 +1,9 @@
-import { type TSESTree } from '@typescript-eslint/utils';
-import { isIgnoredCurrentFile } from '../../../lib/rule';
-import {
-  type Options,
-  type RuleContext,
+import type { TSESTree } from '@typescript-eslint/utils';
+import type {
+  Options,
+  RuleContext,
 } from '../config';
+import { isIgnoredCurrentFile } from '../../../lib/rule';
 import { reportLayersPublicApiNotAllowed } from './errors';
 import { isLayerPublicApi } from './is-layer-public-api';
 

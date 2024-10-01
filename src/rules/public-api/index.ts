@@ -4,9 +4,9 @@ import {
 } from '../../lib/rule';
 import {
   MESSAGE_ID,
-  VALIDATION_LEVEL,
   type MessageIds,
   type Options,
+  VALIDATION_LEVEL,
 } from './config';
 import { validateAndReport } from './model';
 import { validateAndReportProgram } from './model/validate-and-report-program';

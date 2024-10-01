@@ -1,9 +1,9 @@
+import type { PathsInfo } from '../../../lib/feature-sliced';
+import type { ImportExportNodesWithSourceValue } from '../../../lib/rule';
 import {
-  type TSESTree,
   AST_NODE_TYPES,
+  type TSESTree,
 } from '@typescript-eslint/utils';
-import { type PathsInfo } from '../../../lib/feature-sliced';
-import { type ImportExportNodesWithSourceValue } from '../../../lib/rule';
 import {
   ERROR_MESSAGE_ID,
   type RuleContext,

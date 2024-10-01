@@ -1,8 +1,8 @@
 const {
   readFileSync,
   writeFileSync,
-} = require('fs');
-const { resolve } = require('path');
+} = require('node:fs');
+const { resolve } = require('node:path');
 const execa = require('execa');
 const c = require('picocolors');
 const prompts = require('prompts');
@@ -11,19 +11,22 @@ const packageJson = require('../package.json');
 
 const { version: currentVersion } = packageJson;
 const {
-  inc, valid,
+  inc,
+  valid,
 } = semver;
 
 const versionIncrements = ['patch', 'minor', 'major'];
 
 const incrementCurrentVersion = (versionType) => inc(currentVersion, versionType);
-const run = (bin, args, opts = {}) => execa(bin, args, {
-  stdio: 'inherit',
-  ...opts,
-});
+function run(bin, args, opts = {}) {
+  return execa(bin, args, {
+    stdio: 'inherit',
+    ...opts,
+  });
+}
 const step = (message) => console.log(c.cyan(`\n${message}`));
 
-const updatePackageVersion = (newVersion) => {
+function updatePackageVersion(newVersion) {
   step('Updating the package version...');
 
   const getJsonPath = (filename) => resolve(resolve(__dirname, '..'), filename);
@@ -43,9 +46,9 @@ const updatePackageVersion = (newVersion) => {
 
   writeJson('package.json', parsedPackageJson);
   writeJson('package-lock.json', parsedPackageLockJson);
-};
+}
 
-const generateChangelog = async () => {
+async function generateChangelog() {
   step('Generating the changelog...');
 
   await run('npm', ['run', 'changelog']);
@@ -57,30 +60,30 @@ const generateChangelog = async () => {
   });
 
   return isChangelogOk;
-};
+}
 
-const commit = async (targetVersion) => {
+async function commit(targetVersion) {
   step('Committing changes...');
 
   await run('git', ['add', 'CHANGELOG.md', 'package.json', 'package-lock.json']);
   await run('git', ['commit', '-m', targetVersion]);
   await run('git', ['tag', `v${targetVersion}`]);
-};
+}
 
-const publish = async () => {
+async function publish() {
   step('Publishing the package...');
 
   await run('npm', ['publish']);
-};
+}
 
-const push = async (targetVersion) => {
+async function push(targetVersion) {
   step('Pushing to GitHub...');
 
   await run('git', ['push', 'origin', `refs/tags/v${targetVersion}`]);
   await run('git', ['push']);
-};
+}
 
-const selectVersion = async () => {
+async function selectVersion() {
   let targetVersion;
 
   const versions = versionIncrements
@@ -107,7 +110,8 @@ const selectVersion = async () => {
         initial: currentVersion,
       })
     ).version;
-  } else {
+  }
+  else {
     targetVersion = versions[release].match(/\((.*)\)/)[1];
   }
 
@@ -116,12 +120,12 @@ const selectVersion = async () => {
   }
 
   return targetVersion;
-};
+}
 
-const build = async () => {
+async function build() {
   step('Building package...');
   await run('npm', ['run', 'build']);
-};
+}
 
 async function main() {
   const targetVersion = await selectVersion();

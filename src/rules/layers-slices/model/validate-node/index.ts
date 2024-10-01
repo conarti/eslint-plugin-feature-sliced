@@ -1,5 +1,5 @@
-import { type PathsInfo } from '../../../../lib/feature-sliced';
-import { type ImportNodesWithSource } from '../../../../lib/rule/models';
+import type { PathsInfo } from '../../../../lib/feature-sliced';
+import type { ImportNodesWithSource } from '../../../../lib/rule/models';
 import { validByLayerOrder } from './valid-by-layer-order';
 import { validByTypeImport } from './valid-by-type-import';
 

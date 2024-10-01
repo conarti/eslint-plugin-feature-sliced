@@ -1,6 +1,6 @@
-import { type Layer } from '../../../../config';
+import type { Layer } from '../../../../config';
+import type { ExtractedFeatureSlicedParts } from '../../../../lib/feature-sliced';
 import { getLayerWeight } from '../../../../lib/feature-sliced';
-import { type ExtractedFeatureSlicedParts } from '../../../../lib/feature-sliced';
 
 export function validByLayerOrder(fsdPartsOfTarget: ExtractedFeatureSlicedParts, fsdPartsOfCurrentFile: ExtractedFeatureSlicedParts) {
   const importLayerOrder = getLayerWeight(

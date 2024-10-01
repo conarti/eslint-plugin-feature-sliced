@@ -1,6 +1,6 @@
-import { type TSESLint } from '@typescript-eslint/utils';
+import type { TSESLint } from '@typescript-eslint/utils';
+import type { Layer } from '../../config';
 import { RuleTester } from '../../../tests/rule-tester';
-import { type Layer } from '../../config';
 import {
   ERROR_MESSAGE_ID,
   type MessageIds,
@@ -27,17 +27,21 @@ const allowTypeImportsOptions: Options = [
   },
 ] as Options;
 
-const makeIgnoreOptions = (patterns: string[]): Options => [
-  {
-    ignorePatterns: patterns,
-  },
-] as Options;
+function makeIgnoreOptions(patterns: string[]): Options {
+  return [
+    {
+      ignorePatterns: patterns,
+    },
+  ] as Options;
+}
 
-const makeIgnoreInFilesOptions = (patterns: string[]): Options => [
-  {
-    ignoreInFilesPatterns: patterns,
-  },
-] as Options;
+function makeIgnoreInFilesOptions(patterns: string[]): Options {
+  return [
+    {
+      ignoreInFilesPatterns: patterns,
+    },
+  ] as Options;
+}
 
 function makeErrorMessage(importLayer: Layer, currentFileLayer: Layer): TSESLint.TestCaseError<MessageIds> {
   return {
@@ -49,12 +53,12 @@ function makeErrorMessage(importLayer: Layer, currentFileLayer: Layer): TSESLint
   };
 }
 
-type ErrorPosition = {
+interface ErrorPosition {
   column: number;
   endColumn: number;
   line: number;
   endLine: number;
-}
+};
 
 function makeErrorMessageAtSpecifier(importLayer: Layer, currentFileLayer: Layer, position: ErrorPosition): TSESLint.TestCaseError<MessageIds> {
   return {

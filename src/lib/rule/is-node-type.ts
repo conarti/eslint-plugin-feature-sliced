@@ -1,19 +1,19 @@
-import {
-  type TSESTree,
-  ASTUtils,
-  AST_NODE_TYPES,
-} from '@typescript-eslint/utils';
 import type {
   ExportAllDeclarationKindType,
   ExportNamedDeclarationKindType,
   ImportDeclarationKindType,
   ImportExportNodes,
 } from './models';
+import {
+  AST_NODE_TYPES,
+  ASTUtils,
+  type TSESTree,
+} from '@typescript-eslint/utils';
 
 type ImportExportTypeNode = ImportDeclarationKindType
   | ExportAllDeclarationKindType
   | ExportNamedDeclarationKindType
-  | TSESTree.ImportSpecifier & { importKind: 'type' }
+  | TSESTree.ImportSpecifier & { importKind: 'type' };
 
 /**
  * Checks if a node is an import or export of a type

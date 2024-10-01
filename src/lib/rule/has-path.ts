@@ -1,17 +1,17 @@
-import { isObject } from '../shared';
-import {
-  type ImportExportNodesWithSourceValue,
-  type ImportNodes,
-  type ImportNodesWithSource,
-  type ExportNodes,
-  type ExportNodesWithSource,
+import type {
+  ExportNodes,
+  ExportNodesWithSource,
+  ImportExportNodesWithSourceValue,
+  ImportNodes,
+  ImportNodesWithSource,
 } from './models';
+import { isObject } from '../shared';
 
 type ImportOrExportNodeWithSource<T> = T extends ImportNodes
   ? ImportNodesWithSource
   : T extends ExportNodes
     ? ExportNodesWithSource
-    : ImportExportNodesWithSourceValue
+    : ImportExportNodesWithSourceValue;
 
 /**
  * Checks if a node has a path for validation.

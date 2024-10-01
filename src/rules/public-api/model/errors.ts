@@ -1,4 +1,4 @@
-import { type TSESTree } from '@typescript-eslint/utils';
+import type { TSESTree } from '@typescript-eslint/utils';
 import { extractPathsInfo } from '../../../lib/feature-sliced';
 import {
   getSourceRangeWithoutQuotes,

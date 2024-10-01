@@ -8,7 +8,7 @@ import {
  * Checks if layer is known
  */
 export function isLayer(layer: unknown): layer is Layer {
-  return layers.some((fsdLayer) => fsdLayer === layer);
+  return layers.includes(layer);
 }
 
 /**

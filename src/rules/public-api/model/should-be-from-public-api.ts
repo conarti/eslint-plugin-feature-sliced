@@ -7,14 +7,14 @@ import {
   type ImportExportNodesWithSourceValue,
 } from '../../../lib/rule';
 import {
-  VALIDATION_LEVEL,
   type Options,
   type RuleContext,
+  VALIDATION_LEVEL,
 } from '../config';
 import { isSegmentsPublicApi } from './is-segments-public-api';
 import { isSlicePublicApi } from './is-slice-public-api';
 
-type ValidateOptions = { level: VALIDATION_LEVEL }
+interface ValidateOptions { level: VALIDATION_LEVEL };
 
 function shouldBeFromSlicePublicApi(pathsInfo: PathsInfo) {
   const isFromAnotherSlice = !pathsInfo.isSameSlice;

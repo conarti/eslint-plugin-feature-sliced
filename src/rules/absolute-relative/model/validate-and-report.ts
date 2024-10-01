@@ -1,23 +1,23 @@
+import type {
+  Options,
+  RuleContext,
+} from '../config';
 import { extractPathsInfo } from '../../../lib/feature-sliced';
 import {
   hasPath,
-  isIgnoredCurrentFile,
   type ImportExportNodes,
+  isIgnoredCurrentFile,
 } from '../../../lib/rule';
 import {
-  type RuleContext,
-  type Options,
-} from '../config';
-import {
-  reportShouldBeRelative,
   reportShouldBeAbsolute,
+  reportShouldBeRelative,
 } from './errors';
 import { shouldBeAbsolute } from './should-be-absolute';
 import { shouldBeRelative } from './should-be-relative';
 
-type ValidateOptions = {
+interface ValidateOptions {
   needCheckForAbsolute: boolean;
-}
+};
 
 export function validateAndReport(
   node: ImportExportNodes,

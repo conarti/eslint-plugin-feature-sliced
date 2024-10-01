@@ -1,5 +1,5 @@
+import type { ExtractedFeatureSlicedParts } from './extract-feature-sliced-parts';
 import { isNull } from '../shared';
-import { type ExtractedFeatureSlicedParts } from './extract-feature-sliced-parts';
 import {
   canLayerContainSlices,
   isLayer,

@@ -5,8 +5,8 @@ import {
 } from '../../config';
 import {
   MESSAGE_ID,
-  VALIDATION_LEVEL,
   type Options,
+  VALIDATION_LEVEL,
 } from './config';
 import rule from './index';
 
@@ -26,21 +26,23 @@ const ruleTester = new RuleTester({
 
 const makeFilename = (filename: string): string => `${CWD_MOCK_PATH}/${filename}`;
 
-const makeErrorWithSuggestion = (suggestionSegments: string, suggestionOutput: string, fixedPath: string) => ({
-  messageId: MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
-  data: {
-    fixedPath,
-  },
-  suggestions: [
-    {
-      messageId: MESSAGE_ID.REMOVE_SUGGESTION,
-      data: {
-        valueToRemove: suggestionSegments,
-      },
-      output: suggestionOutput,
+function makeErrorWithSuggestion(suggestionSegments: string, suggestionOutput: string, fixedPath: string) {
+  return {
+    messageId: MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
+    data: {
+      fixedPath,
     },
-  ],
-});
+    suggestions: [
+      {
+        messageId: MESSAGE_ID.REMOVE_SUGGESTION,
+        data: {
+          valueToRemove: suggestionSegments,
+        },
+        output: suggestionOutput,
+      },
+    ],
+  };
+}
 
 const errorLayersPublicApiNotAllowed = {
   messageId: MESSAGE_ID.LAYERS_PUBLIC_API_NOT_ALLOWED,
@@ -50,17 +52,21 @@ const errorLayersPublicApiNotAllowed = {
   messageId: MESSAGE_ID.FROM_INVALID_STRUCTURE,
 }; */
 
-const setValidationLevel = (level: VALIDATION_LEVEL): [{ level: VALIDATION_LEVEL }] => [
-  {
-    level,
-  },
-];
+function setValidationLevel(level: VALIDATION_LEVEL): [{ level: VALIDATION_LEVEL }] {
+  return [
+    {
+      level,
+    },
+  ];
+}
 
-const makeIgnoreInFilesOptions = (patterns: string[]) => [
-  {
-    ignoreInFilesPatterns: patterns,
-  },
-] as Options;
+function makeIgnoreInFilesOptions(patterns: string[]) {
+  return [
+    {
+      ignoreInFilesPatterns: patterns,
+    },
+  ] as Options;
+}
 
 const shouldNotValidateLayersWithoutSlices: Parameters<typeof ruleTester.run>[2]['valid'] = FSD_LAYERS_WITHOUT_SLICES.map((layer) => ({
   name: `should not validate public api with layers that can not contain slices ("${layer}")`,

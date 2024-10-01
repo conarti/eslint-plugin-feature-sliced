@@ -1,4 +1,4 @@
-import { type PathsInfo } from '../../../lib/feature-sliced';
+import type { PathsInfo } from '../../../lib/feature-sliced';
 
 export function isNotSuitableForValidation(pathsInfo: PathsInfo) {
   const {

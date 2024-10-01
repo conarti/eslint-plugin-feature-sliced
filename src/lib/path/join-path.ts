@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { normalizePath } from './normalize-path';
 
 export function joinPath(from: string, to: string): string {

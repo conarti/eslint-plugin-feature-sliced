@@ -1,12 +1,12 @@
+import type {
+  Options,
+  RuleContext,
+} from '../config';
 import {
   hasPath,
-  isIgnoredCurrentFile,
   type ImportExportNodes,
+  isIgnoredCurrentFile,
 } from '../../../lib/rule';
-import {
-  type Options,
-  type RuleContext,
-} from '../config';
 import { reportShouldBeFromPublicApi } from './errors';
 import { shouldBeFromPublicApi } from './should-be-from-public-api';
 
