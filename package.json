@@ -45,7 +45,7 @@
     "docs:preview": "vitepress preview docs"
   },
   "peerDependencies": {
-    "eslint": ">=7"
+    "eslint": ">=9"
   },
   "dependencies": {
     "@typescript-eslint/utils": "^8.8.0",
