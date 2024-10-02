@@ -1,4 +1,4 @@
-export { createRule } from './create-rule';
+export { createEslintRule } from './create-rule';
 export { extractCurrentFilePath } from './extract-current-file-path';
 export { extractCwd } from './extract-cwd';
 export { extractNodePath } from './extract-node-path';

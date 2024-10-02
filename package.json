@@ -1,5 +1,6 @@
 {
   "name": "@conarti/eslint-plugin-feature-sliced",
+  "type": "module",
   "version": "1.0.5",
   "description": "Feature-sliced design methodology plugin",
   "author": "Aleksandr Belous <abelous2009@gmail.com>",
@@ -15,10 +16,13 @@
     "feature-based"
   ],
   "exports": {
-    ".": "./dist/index.js",
-    "./import-order": "./dist/configs/import-order/index.js"
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
   },
-  "main": "./dist/index.js",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
   "files": [
     "CHANGELOG.md",
     "dist"
@@ -28,7 +32,9 @@
   },
   "scripts": {
     "clean": "rimraf ./dist",
-    "build": "npm run clean && tsc -p tsconfig.build.json",
+    "build": "unbuild",
+    "dev": "unbuild --stub",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest",
     "test:ui": "vitest --ui --api 9527",
@@ -49,12 +55,12 @@
   },
   "dependencies": {
     "@typescript-eslint/utils": "^8.8.0",
+    "eslint-plugin-import-x": "^4.3.1",
     "picomatch": "^2.3.1"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.7.3",
     "@total-typescript/ts-reset": "^0.4.2",
-    "@tsconfig/node14": "^14.1.0",
     "@types/eslint": "^9.6.1",
     "@types/node": "^20.4.2",
     "@types/picomatch": "^2.3.0",
@@ -69,7 +75,8 @@
     "prompts": "^2.4.2",
     "rimraf": "^5.0.1",
     "semver": "^7.5.4",
-    "typescript": "^4.9.5",
+    "typescript": "^5.6.2",
+    "unbuild": "^2.0.0",
     "vitepress": "^1.0.0-alpha.64",
     "vitest": "^0.33.0"
   }

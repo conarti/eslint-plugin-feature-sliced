@@ -3,13 +3,13 @@ import type {
   Options,
 } from './config';
 import {
-  createRule,
+  createEslintRule,
   type ImportExpression,
 } from '../../lib/rule';
 import { ERROR_MESSAGE_ID } from './config';
 import { validateAndReport } from './model';
 
-export default createRule<Options, MessageIds>({
+export default createEslintRule<Options, MessageIds>({
   name: 'absolute-relative',
   meta: {
     type: 'problem',

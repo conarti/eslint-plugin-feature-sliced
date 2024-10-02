@@ -1,28 +1,23 @@
 {
-  "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
+    "target": "es2020",
+    "lib": ["esnext"],
+    "module": "esnext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
     "types": [
       "vitest/globals"
     ],
     "strict": true,
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
-    "exactOptionalPropertyTypes": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-
-    "outDir": "dist",
-    "removeComments": true,
+    "strictNullChecks": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
+    "skipDefaultLibCheck": true,
     "skipLibCheck": true
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "vendor"
   ]
 }

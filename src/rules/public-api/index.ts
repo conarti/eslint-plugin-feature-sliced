@@ -1,5 +1,5 @@
 import {
-  createRule,
+  createEslintRule,
   type ImportExpression,
 } from '../../lib/rule';
 import {
@@ -11,15 +11,13 @@ import {
 import { validateAndReport } from './model';
 import { validateAndReportProgram } from './model/validate-and-report-program';
 
-export default createRule<Options, MessageIds>({
+export default createEslintRule<Options, MessageIds>({
   name: 'public-api',
   meta: {
     type: 'problem',
     docs: {
       description: 'Check for module imports from public api',
     },
-    /* it doesn't understand when context.report is not in this module */
-    // eslint-disable-next-line eslint-plugin/require-meta-has-suggestions
     hasSuggestions: true,
     messages: {
       [MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API]: 'Absolute imports are only allowed from public api ("{{ fixedPath }}")',

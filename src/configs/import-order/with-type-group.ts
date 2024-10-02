@@ -1,11 +1,11 @@
+import type { TypedFlatConfigItem } from '../../config';
 import { layers } from '../../config';
+import { plugins } from './plugins';
 
 const LAYERS_REVERSED = [...layers].reverse();
 
-export = {
-  plugins: [
-    'import',
-  ],
+export const withTypeGroup = {
+  plugins,
   rules: {
     'import/order': [
       2,
@@ -28,4 +28,4 @@ export = {
       },
     ],
   },
-};
+} satisfies TypedFlatConfigItem;

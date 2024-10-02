@@ -1,10 +1,10 @@
 import { ESLint } from 'eslint';
 import { configLib } from '../../../tests/utils';
-import cfg from './recommended';
+import { recommended } from './recommended';
 
 const eslint = new ESLint({
   useEslintrc: false,
-  baseConfig: configLib.setParser(cfg),
+  baseConfig: configLib.setParser(recommended),
 });
 
 interface ConfigTestCase {
