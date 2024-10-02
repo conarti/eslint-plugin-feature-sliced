@@ -11,5 +11,6 @@ export default antfu({
   rules: {
     'style/quotes': ['error', 'single', { avoidEscape: true }],
     'style/arrow-parens': ['error', 'always'],
+    'ts/explicit-function-return-type': 'off',
   },
 });
