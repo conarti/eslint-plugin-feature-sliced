@@ -1,23 +1,17 @@
 {
   "compilerOptions": {
-    "target": "es2020",
-    "lib": ["esnext"],
-    "module": "esnext",
+    "target": "ESNext",
+    "baseUrl": ".",
+    "module": "ESNext",
     "moduleResolution": "Bundler",
-    "resolveJsonModule": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
     "types": [
       "vitest/globals"
-    ],
-    "strict": true,
-    "strictNullChecks": true,
-    "esModuleInterop": true,
-    "skipDefaultLibCheck": true,
-    "skipLibCheck": true
+    ]
   },
   "include": [
-    "src"
-  ],
-  "exclude": [
-    "vendor"
+    "**/*.ts"
   ]
 }
