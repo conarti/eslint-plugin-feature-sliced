@@ -1,8 +1,8 @@
 import type { TypedFlatConfigItem } from '../../config';
-import { layers } from '../../config';
-import { plugins } from './plugins';
-
-const LAYERS_REVERSED = [...layers].reverse();
+import {
+  LAYERS_REVERSED,
+  plugins,
+} from './shared';
 
 export const withTypeGroup = {
   plugins,
