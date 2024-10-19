@@ -78,3 +78,5 @@ export type TypedFlatConfigItem = Omit<Linter.Config<Linter.RulesRecord>, 'plugi
    */
   plugins?: Record<string, any>;
 };
+
+export type ImportOrderConfigName = 'recommended' | 'with-newlines' | 'with-newlines-and-type-group' | 'with-type-group';

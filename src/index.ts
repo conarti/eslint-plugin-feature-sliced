@@ -1,6 +1,3 @@
-import { configs } from './configs';
-import { plugin } from './plugin';
+import { createPlugin } from './create-plugin';
 
-plugin.configs = configs;
-
-export default plugin;
+export default createPlugin;
