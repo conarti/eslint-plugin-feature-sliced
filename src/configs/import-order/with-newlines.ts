@@ -5,6 +5,7 @@ import {
 } from './shared';
 
 export const withNewlines = {
+  name: '@conarti/sort-imports/with-newlines',
   plugins,
   rules: {
     'import/order': [

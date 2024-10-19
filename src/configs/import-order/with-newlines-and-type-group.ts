@@ -5,6 +5,7 @@ import {
 } from './shared';
 
 export const withNewlinesAndTypeGroup = {
+  name: '@conarti/sort-imports/with-newlines-and-type-group',
   plugins,
   rules: {
     'import/order': [

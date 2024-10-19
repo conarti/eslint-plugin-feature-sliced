@@ -5,7 +5,7 @@ import {
 } from './shared';
 
 export const recommended = {
-  name: 'import-order-recommended',
+  name: '@conarti/sort-imports/recommended',
   plugins,
   rules: {
     'import/order': [

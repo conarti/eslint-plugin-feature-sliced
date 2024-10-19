@@ -5,6 +5,7 @@ import {
 } from './shared';
 
 export const withTypeGroup = {
+  name: '@conarti/sort-imports/with-type-group',
   plugins,
   rules: {
     'import/order': [
