@@ -1,3 +1,4 @@
+import type { Linter } from 'eslint';
 import type { ImportOrderConfigName, TypedFlatConfigItem } from './config';
 import type { VALIDATION_LEVEL } from './rules/public-api/config';
 import { mergeConfigs } from 'eslint-flat-config-utils';
@@ -45,9 +46,9 @@ interface PublicApiOptions {
 
 interface ESLintPluginFeatureSlicedOptions {
   sortImports?: false | ImportOrderConfigName;
-  absoluteRelative?: AbsoluteRelativeOptions;
-  layersSlices?: LayersSlicesOptions;
-  publicApi?: PublicApiOptions;
+  absoluteRelative?: false | AbsoluteRelativeOptions;
+  layersSlices?: false | LayersSlicesOptions;
+  publicApi?: false | PublicApiOptions;
 }
 
 export function createPlugin(options: ESLintPluginFeatureSlicedOptions = {}): TypedFlatConfigItem {
@@ -59,21 +60,23 @@ export function createPlugin(options: ESLintPluginFeatureSlicedOptions = {}): Ty
   } = options;
 
   const createRuleName = (rule: string): string => `${PLUGIN_NAME}/${rule}`;
+  const createRuleEntry = <T>(ruleOptions: T | false): Linter.RuleEntry<T[]> => ruleOptions ? ['error', ruleOptions] : ['off'];
+
+  const rules = {
+    [createRuleName('layers-slices')]: createRuleEntry(layersSlices),
+    [createRuleName('absolute-relative')]: createRuleEntry(absoluteRelative),
+    [createRuleName('public-api')]: createRuleEntry(publicApi),
+  } satisfies Linter.RulesRecord;
 
   const config = {
     name: PLUGIN_NAME,
     plugins: {
       [PLUGIN_NAME]: plugin,
     },
-    rules: {
-      [createRuleName('layers-slices')]: ['error', layersSlices],
-      [createRuleName('absolute-relative')]: ['error', absoluteRelative],
-      [createRuleName('public-api')]: ['error', publicApi],
-    },
+    rules,
   } satisfies TypedFlatConfigItem;
 
-  const withSortImports = setupSortImports(config, sortImports);
-  return withSortImports;
+  return setupSortImports(config, sortImports);
 }
 
 function setupSortImports(
