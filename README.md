@@ -68,55 +68,60 @@ You'll first need to install [ESLint](https://eslint.org/):
 npm i eslint --save-dev
 ```
 
-Next, install `@conarti/eslint-plugin-feature-sliced` and dependencies:
+Next, install `@conarti/eslint-plugin-feature-sliced`:
 
 ```sh
-npm install -D @conarti/eslint-plugin-feature-sliced eslint-plugin-import
-# or by yarn
-yarn add -D @conarti/eslint-plugin-feature-sliced eslint-plugin-import
+npm i -D @conarti/eslint-plugin-feature-sliced
 ```
 
-Note: 'eslint-plugin-import' is optional. You can skip installing this plugin if you don't need to sort imports in your code.
+Note: the plugin may conflict with other import sorting plugins installed in your project. 
+If you do not want to use this plugin's sorting, disable it. More about this below
 
-## Quick Usage
+## Usage
 
-Add `@conarti/feature-sliced/recommended` to extends section of your `.eslintrc` configuration file. 
-It enables all rules and additional recommended configs of other eslint plugins, like `eslint-plugin-import`. 
+For simple use with loose settings, just call the function:
 
-```json
-{
-  "extends": [
-    "plugin:@conarti/feature-sliced/recommended"
-  ]
-}
+```js
+// eslint.config.js
+import featureSliced from '@conarti/eslint-plugin-feature-sliced';
+
+export default [
+    featureSliced(),
+]
 ```
 
 ## Customisation
 
-If you want to use only plugin rules, add `@conarti/feature-sliced/rules` instead.
+You can also manage any rule and disable them:
 
-```json
-{
-  "extends": [
-    "plugin:@conarti/feature-sliced/rules"
-  ]
-}
-```
+```js
+import featureSliced from '@conarti/eslint-plugin-feature-sliced';
 
-If you only want to use certain rules, you can add them individually. To do this, you need to add `@conarti/feature-sliced` to the 'plugins'
-section of the configuration file and add the desired rules to the 'rules' section. Also now you don't need to use the 'extends' section like before
-
-```json
-{
-  "plugins": [
-    "@conarti/feature-sliced"
-  ],
-  "rules": {
-    "@conarti/feature-sliced/layers-slices": "error",
-    "@conarti/feature-sliced/absolute-relative": "error",
-    "@conarti/feature-sliced/public-api": "error"
-  }
-}
+export default [
+    featureSliced({
+        /* Enables public api check in segments */
+        publicApi: { level: 'segments' },
+        /* Uses a different import sorter. You can disable it and use your own plugins and configurations */
+        sortImports: 'with-newlines',
+        /* This is how you can completely disable the rule */
+        absoluteRelative: false,
+        layersSlices: {
+            /* This is how you can disable the rule for imports in any files (ignore paths in code) */
+            ignorePatterns: [
+                /**
+                 * Please note that the plugin reads the entire file path from the root of your system, not the project.
+                 * That's why we added "**" to the beginning.
+                 */
+                "**/src/components/**/*"
+            ],
+            /* This is how you can disable the rule for files or folders (ignore all paths in files or folders) */
+            ignoreInFilesPatterns: [
+                /* Do not check imports like "import foo from '@/app/some-module/foo'" */
+                "@/app/some-module/*",
+            ],
+        },
+    }),
+]
 ```
 
 ## Rules
