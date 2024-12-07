@@ -72,7 +72,7 @@ export function createPlugin(options: ESLintPluginFeatureSlicedOptions = {}): Ty
     rules,
   } satisfies TypedFlatConfigItem;
 
-  return setupSortImports(config, sortImports);
+  return enhanceWithImportOrder(config, sortImports);
 }
 
 function defineRules(options: ESLintPluginFeatureSlicedRuleOptions): Linter.RulesRecord {
@@ -94,7 +94,7 @@ function defineRules(options: ESLintPluginFeatureSlicedRuleOptions): Linter.Rule
   return rules;
 }
 
-function setupSortImports(
+function enhanceWithImportOrder(
   config: TypedFlatConfigItem,
   importOrderConfigName?: ESLintPluginFeatureSlicedOptions['sortImports'],
 ): TypedFlatConfigItem {
