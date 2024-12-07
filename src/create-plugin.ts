@@ -44,16 +44,39 @@ interface PublicApiOptions {
   ignoreInFilesPatterns: string[];
 }
 
-interface ESLintPluginFeatureSlicedOptions {
-  sortImports?: false | ImportOrderConfigName;
+interface ESLintPluginFeatureSlicedRuleOptions {
   absoluteRelative?: false | AbsoluteRelativeOptions;
   layersSlices?: false | LayersSlicesOptions;
   publicApi?: false | PublicApiOptions;
 }
 
+interface ESLintPluginFeatureSlicedOptions extends ESLintPluginFeatureSlicedRuleOptions {
+  sortImports?: false | ImportOrderConfigName;
+}
+
 export function createPlugin(options: ESLintPluginFeatureSlicedOptions = {}): TypedFlatConfigItem {
   const {
     sortImports = 'recommended',
+    absoluteRelative,
+    layersSlices,
+    publicApi,
+  } = options;
+
+  const rules = defineRules({ absoluteRelative, layersSlices, publicApi });
+
+  const config = {
+    name: PLUGIN_NAME,
+    plugins: {
+      [PLUGIN_NAME]: plugin,
+    },
+    rules,
+  } satisfies TypedFlatConfigItem;
+
+  return setupSortImports(config, sortImports);
+}
+
+function defineRules(options: ESLintPluginFeatureSlicedRuleOptions): Linter.RulesRecord {
+  const {
     absoluteRelative = {},
     layersSlices = {},
     publicApi = {},
@@ -68,15 +91,7 @@ export function createPlugin(options: ESLintPluginFeatureSlicedOptions = {}): Ty
     [createRuleName('public-api')]: createRuleEntry(publicApi),
   } satisfies Linter.RulesRecord;
 
-  const config = {
-    name: PLUGIN_NAME,
-    plugins: {
-      [PLUGIN_NAME]: plugin,
-    },
-    rules,
-  } satisfies TypedFlatConfigItem;
-
-  return setupSortImports(config, sortImports);
+  return rules;
 }
 
 function setupSortImports(
