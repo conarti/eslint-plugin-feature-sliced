@@ -1,8 +1,7 @@
 import type { Linter } from 'eslint';
 import type { ImportOrderConfigName, TypedFlatConfigItem } from './config';
 import type { VALIDATION_LEVEL } from './rules/public-api/config';
-import { mergeConfigs } from 'eslint-flat-config-utils';
-import { PLUGIN_NAME } from './config';
+import { PLUGIN_NAME, RULE_NAMES } from './config';
 import { importOrder } from './configs/import-order';
 import { plugin } from './plugin';
 
@@ -44,13 +43,10 @@ interface PublicApiOptions {
   ignoreInFilesPatterns: string[];
 }
 
-interface ESLintPluginFeatureSlicedRuleOptions {
+interface ESLintPluginFeatureSlicedOptions {
   absoluteRelative?: false | AbsoluteRelativeOptions;
   layersSlices?: false | LayersSlicesOptions;
   publicApi?: false | PublicApiOptions;
-}
-
-interface ESLintPluginFeatureSlicedOptions extends ESLintPluginFeatureSlicedRuleOptions {
   sortImports?: false | ImportOrderConfigName;
 }
 
@@ -62,50 +58,41 @@ export function createPlugin(options: ESLintPluginFeatureSlicedOptions = {}): Ty
     publicApi,
   } = options;
 
-  const rules = defineRules({ absoluteRelative, layersSlices, publicApi });
+  const rules = defineRules({ absoluteRelative, layersSlices, publicApi, sortImports });
 
-  const config = {
+  return {
     name: PLUGIN_NAME,
     plugins: {
       [PLUGIN_NAME]: plugin,
     },
     rules,
   } satisfies TypedFlatConfigItem;
-
-  return enhanceWithImportOrder(config, sortImports);
 }
 
-function defineRules(options: ESLintPluginFeatureSlicedRuleOptions): Linter.RulesRecord {
+function defineRules(options: ESLintPluginFeatureSlicedOptions): Linter.RulesRecord {
   const {
     absoluteRelative = {},
     layersSlices = {},
     publicApi = {},
+    sortImports = 'recommended',
   } = options;
 
-  const createRuleName = (rule: string): string => `${PLUGIN_NAME}/${rule}`;
   const createRuleEntry = <T>(ruleOptions: T | false): Linter.RuleEntry<T[]> => ruleOptions ? ['error', ruleOptions] : ['off'];
 
-  const rules = {
-    [createRuleName('layers-slices')]: createRuleEntry(layersSlices),
-    [createRuleName('absolute-relative')]: createRuleEntry(absoluteRelative),
-    [createRuleName('public-api')]: createRuleEntry(publicApi),
-  } satisfies Linter.RulesRecord;
+  const rules: Linter.RulesRecord = {
+    [RULE_NAMES.LAYERS_SLICES]: createRuleEntry(layersSlices),
+    [RULE_NAMES.ABSOLUTE_RELATIVE]: createRuleEntry(absoluteRelative),
+    [RULE_NAMES.PUBLIC_API]: createRuleEntry(publicApi),
+  };
 
-  return rules;
-}
+  if (sortImports) {
+    const importOrderConfig = importOrder[sortImports];
+    const importOrderRuleName = RULE_NAMES.IMPORT_ORDER;
 
-function enhanceWithImportOrder(
-  config: TypedFlatConfigItem,
-  importOrderConfigName?: ESLintPluginFeatureSlicedOptions['sortImports'],
-): TypedFlatConfigItem {
-  if (!importOrderConfigName) {
-    return config;
+    if (importOrderConfig.rules && importOrderConfig.rules[importOrderRuleName]) {
+      rules[importOrderRuleName] = importOrderConfig.rules[importOrderRuleName];
+    }
   }
 
-  const importOrderConfig = importOrder[importOrderConfigName];
-
-  return mergeConfigs(
-    importOrderConfig,
-    config, // the last one is to set the configuration name as 'PLUGIN_NAME'
-  );
+  return rules;
 }

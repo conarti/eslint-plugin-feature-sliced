@@ -2,6 +2,16 @@ import type { Linter } from 'eslint';
 
 export const PLUGIN_NAME = '@conarti/feature-sliced' as const;
 
+/**
+ * Rule names for the feature-sliced plugin
+ */
+export const RULE_NAMES = {
+  LAYERS_SLICES: `${PLUGIN_NAME}/layers-slices`,
+  ABSOLUTE_RELATIVE: `${PLUGIN_NAME}/absolute-relative`,
+  PUBLIC_API: `${PLUGIN_NAME}/public-api`,
+  IMPORT_ORDER: `${PLUGIN_NAME}/import-order`,
+} as const;
+
 export type Layers = ReadonlyArray<
   'shared'
   | 'entities'

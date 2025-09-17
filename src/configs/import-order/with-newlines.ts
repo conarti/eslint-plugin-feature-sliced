@@ -1,14 +1,15 @@
 import type { TypedFlatConfigItem } from '../../config';
-import {
-  LAYERS_REVERSED,
-  plugins,
-} from './shared';
+import { PLUGIN_NAME, RULE_NAMES } from '../../config';
+import { plugin } from '../../plugin';
+import { LAYERS_REVERSED } from './shared';
 
 export const withNewlines = {
   name: '@conarti/sort-imports/with-newlines',
-  plugins,
+  plugins: {
+    [PLUGIN_NAME]: plugin,
+  },
   rules: {
-    'import/order': [
+    [RULE_NAMES.IMPORT_ORDER]: [
       2,
       {
         'alphabetize': {
