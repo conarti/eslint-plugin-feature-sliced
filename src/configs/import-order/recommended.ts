@@ -4,7 +4,7 @@ import { plugin } from '../../plugin';
 import { importOrderRuleConfigs } from '../../rules/import-order/configs';
 
 export const recommended = {
-  name: '@conarti/sort-imports/recommended',
+  name: '@conarti/feature-sliced/import-order/recommended',
   plugins: {
     [PLUGIN_NAME]: plugin,
   },

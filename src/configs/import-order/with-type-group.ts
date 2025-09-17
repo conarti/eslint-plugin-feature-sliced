@@ -4,7 +4,7 @@ import { plugin } from '../../plugin';
 import { importOrderRuleConfigs } from '../../rules/import-order/configs';
 
 export const withTypeGroup = {
-  name: '@conarti/sort-imports/with-type-group',
+  name: '@conarti/feature-sliced/import-order/with-type-group',
   plugins: {
     [PLUGIN_NAME]: plugin,
   },

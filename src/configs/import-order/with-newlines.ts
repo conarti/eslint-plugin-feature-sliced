@@ -4,7 +4,7 @@ import { plugin } from '../../plugin';
 import { importOrderRuleConfigs } from '../../rules/import-order/configs';
 
 export const withNewlines = {
-  name: '@conarti/sort-imports/with-newlines',
+  name: '@conarti/feature-sliced/import-order/with-newlines',
   plugins: {
     [PLUGIN_NAME]: plugin,
   },
