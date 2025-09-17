@@ -2,8 +2,8 @@ import type { Linter } from 'eslint';
 import type { ImportOrderConfigName, TypedFlatConfigItem } from './config';
 import type { VALIDATION_LEVEL } from './rules/public-api/config';
 import { PLUGIN_NAME, RULE_NAMES } from './config';
-import { importOrder } from './configs/import-order';
 import { plugin } from './plugin';
+import { importOrderRuleConfigs } from './rules/import-order/configs';
 
 interface AbsoluteRelativeOptions {
   /**
@@ -86,12 +86,7 @@ function defineRules(options: ESLintPluginFeatureSlicedOptions): Linter.RulesRec
   };
 
   if (sortImports) {
-    const importOrderConfig = importOrder[sortImports];
-    const importOrderRuleName = RULE_NAMES.IMPORT_ORDER;
-
-    if (importOrderConfig.rules && importOrderConfig.rules[importOrderRuleName]) {
-      rules[importOrderRuleName] = importOrderConfig.rules[importOrderRuleName];
-    }
+    rules[RULE_NAMES.IMPORT_ORDER] = importOrderRuleConfigs[sortImports];
   }
 
   return rules;
