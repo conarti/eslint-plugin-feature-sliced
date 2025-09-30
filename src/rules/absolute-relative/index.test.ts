@@ -26,7 +26,7 @@ function makeIgnoreInFilesOptions(patterns: string[]): [{ ignoreInFilesPatterns:
   ];
 }
 
-ruleTester.run('absolute-relative', rule as any, {
+ruleTester.run('absolute-relative', rule, {
   valid: [
     {
       filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',

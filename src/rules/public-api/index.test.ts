@@ -68,13 +68,13 @@ function makeIgnoreInFilesOptions(patterns: string[]) {
   ] as Options;
 }
 
-const shouldNotValidateLayersWithoutSlices: Parameters<typeof ruleTester.run>[2]['valid'] = FSD_LAYERS_WITHOUT_SLICES.map((layer) => ({
+const shouldNotValidateLayersWithoutSlices = FSD_LAYERS_WITHOUT_SLICES.map((layer) => ({
   name: `should not validate public api with layers that can not contain slices ("${layer}")`,
   filename: 'src/features/foo/index.ts',
   code: `import { baz } from "src/${layer}/foo/ui.ts";`,
 }));
 
-ruleTester.run('public-api', rule as any, {
+ruleTester.run('public-api', rule, {
   valid: [
     ...shouldNotValidateLayersWithoutSlices,
     {

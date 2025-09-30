@@ -76,7 +76,7 @@ function makeErrorMessageAtSpecifier(importLayer: Layer, currentFileLayer: Layer
 
 // TODO refactor tests
 
-ruleTester.run('layers-slices', rule as any, {
+ruleTester.run('layers-slices', rule, {
   valid: [
     {
       name: 'should valid if import from "shared" to "features"',
