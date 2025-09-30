@@ -36,7 +36,7 @@
     "stub": "tsup --format esm",
     "dev": "npx @eslint/config-inspector --config eslint.config.ts",
     "watch": "tsup --format esm,cjs --watch",
-    "typecheck": "tsc --noEmit",
+    "type-check": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest",
     "test:ui": "vitest --ui --api 9527",
