@@ -336,7 +336,7 @@ ruleTester.run('layers-slices', rule, {
 });
 
 // TODO: These tests are skipped because @typescript-eslint/rule-tester doesn't properly support custom cwd
-// See: https://github.com/typescript-eslint/typescript-eslint/issues/XXXXX
+// See: https://github.com/typescript-eslint/typescript-eslint/issues/11668
 describe.skip('layers-slices with custom cwd', () => {
   const ruleTesterWithCwd = new RuleTester({
     languageOptions: {
