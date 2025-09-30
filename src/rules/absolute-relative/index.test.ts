@@ -3,11 +3,11 @@ import { ERROR_MESSAGE_ID } from './config';
 import rule from './index';
 
 const ruleTester = new TSESLint.RuleTester({
-  parserOptions: {
+  languageOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
+    parser: require('@typescript-eslint/parser'),
   },
-  parser: require.resolve('@typescript-eslint/parser'),
 });
 
 const errorMustBeAbsolute = {

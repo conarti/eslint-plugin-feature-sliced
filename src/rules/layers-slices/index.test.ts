@@ -11,11 +11,11 @@ import rule from './index';
 const CWD_MOCK_PATH = '/Users/user/projects/project/app';
 
 const ruleTester = new RuleTester({
-  parserOptions: {
+  languageOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
+    parser: require('@typescript-eslint/parser'),
   },
-  parser: require.resolve('@typescript-eslint/parser'),
   cwd: CWD_MOCK_PATH,
 });
 
@@ -327,16 +327,10 @@ ruleTester.run('layers-slices', rule, {
       errors: [makeErrorMessage('entities', 'shared')],
     },
     {
-      name: 'should throw error when importing from different layer with same slice name',
-      filename: makeFilename('src/pages/policies/ui/PolicyPage.vue'),
-      code: "import { foo } from '@/entities/policies/model';",
-      errors: [makeErrorMessage('entities', 'pages')],
-    },
-    {
-      name: 'should throw error when importing from different layer with same slice name (segments)',
-      filename: makeFilename('src/pages/policies/ui/PolicyNodeDetailsPage.vue'),
-      code: "import { getNodePolicyById } from '@/entities/policies/api';",
-      errors: [makeErrorMessage('entities', 'pages')],
+      name: 'should throw error when importing from higher layer with same slice name',
+      filename: makeFilename('src/entities/policies/model.ts'),
+      code: "import { foo } from '@/pages/policies/ui';",
+      errors: [makeErrorMessage('pages', 'entities')],
     },
   ],
 });

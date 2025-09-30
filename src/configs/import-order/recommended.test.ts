@@ -3,8 +3,8 @@ import { configLib } from '../../../tests/utils';
 import { recommended } from './recommended';
 
 const eslint = new ESLint({
-  useEslintrc: false,
-  baseConfig: configLib.setParser(recommended),
+  overrideConfigFile: true,
+  overrideConfig: configLib.setParser(recommended),
 });
 
 interface ConfigTestCase {

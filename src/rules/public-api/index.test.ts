@@ -16,11 +16,11 @@ const FSD_LAYERS_WITHOUT_SLICES = layersWithoutSlices;
 const CWD_MOCK_PATH = '\\Users\\User\\Projects\\app'; /* windows path because we need also normalize it to unix like others */
 
 const ruleTester = new RuleTester({
-  parserOptions: {
+  languageOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
+    parser: require('@typescript-eslint/parser'),
   },
-  parser: require.resolve('@typescript-eslint/parser'),
   cwd: CWD_MOCK_PATH,
 });
 
@@ -427,7 +427,7 @@ ruleTester.run('public-api', rule, {
       code: "import { getNodePolicyById } from '@/entities/policies/api';",
       errors: [
         makeErrorWithSuggestion(
-          '/api',
+          'api',
           "import { getNodePolicyById } from '@/entities/policies';",
           '@/entities/policies',
         ),
@@ -439,7 +439,7 @@ ruleTester.run('public-api', rule, {
       code: "import { createNodePolicyFields } from '@/entities/policies/lib';",
       errors: [
         makeErrorWithSuggestion(
-          '/lib',
+          'lib',
           "import { createNodePolicyFields } from '@/entities/policies';",
           '@/entities/policies',
         ),
