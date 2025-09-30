@@ -226,6 +226,11 @@ ruleTester.run('public-api', rule, {
       filename: makeFilename('src/features/foo-pages/ui/foo.vue'),
       code: "import { foo } from '../model'",
     },
+    {
+      name: 'should be valid if import within same layer and same slice',
+      filename: makeFilename('src/pages/policies/ui/PolicyPage.vue'),
+      code: "import { foo } from '../model'",
+    },
   ],
 
   invalid: [
@@ -415,6 +420,30 @@ ruleTester.run('public-api', rule, {
         import { baz } from './baz';
       `,
       errors: [errorLayersPublicApiNotAllowed],
+    },
+    {
+      name: 'should throw error when importing from different layer with same slice name (api segment)',
+      filename: makeFilename('src/pages/policies/ui/PolicyNodeDetailsPage.vue'),
+      code: "import { getNodePolicyById } from '@/entities/policies/api';",
+      errors: [
+        makeErrorWithSuggestion(
+          '/api',
+          "import { getNodePolicyById } from '@/entities/policies';",
+          '@/entities/policies',
+        ),
+      ],
+    },
+    {
+      name: 'should throw error when importing from different layer with same slice name (lib segment)',
+      filename: makeFilename('src/pages/policies/ui/PolicyNodeDetailsPage.vue'),
+      code: "import { createNodePolicyFields } from '@/entities/policies/lib';",
+      errors: [
+        makeErrorWithSuggestion(
+          '/lib',
+          "import { createNodePolicyFields } from '@/entities/policies';",
+          '@/entities/policies',
+        ),
+      ],
     },
     /* TODO
     {

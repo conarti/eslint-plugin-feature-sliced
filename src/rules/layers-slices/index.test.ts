@@ -187,6 +187,11 @@ ruleTester.run('layers-slices', rule, {
       filename: makeFilename('src/features/foo-pages/ui/foo.vue'),
       code: "import { foo } from '../model'",
     },
+    {
+      name: 'should be valid if import within same layer and same slice',
+      filename: makeFilename('src/pages/policies/ui/PolicyPage.vue'),
+      code: "import { foo } from '../model'",
+    },
   ],
 
   invalid: [
@@ -320,6 +325,18 @@ ruleTester.run('layers-slices', rule, {
         },
       ] as Options,
       errors: [makeErrorMessage('entities', 'shared')],
+    },
+    {
+      name: 'should throw error when importing from different layer with same slice name',
+      filename: makeFilename('src/pages/policies/ui/PolicyPage.vue'),
+      code: "import { foo } from '@/entities/policies/model';",
+      errors: [makeErrorMessage('entities', 'pages')],
+    },
+    {
+      name: 'should throw error when importing from different layer with same slice name (segments)',
+      filename: makeFilename('src/pages/policies/ui/PolicyNodeDetailsPage.vue'),
+      code: "import { getNodePolicyById } from '@/entities/policies/api';",
+      errors: [makeErrorMessage('entities', 'pages')],
     },
   ],
 });
