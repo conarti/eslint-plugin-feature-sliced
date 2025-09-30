@@ -8,5 +8,5 @@ export const plugin: ESLint.Plugin = {
     name: PLUGIN_NAME,
     version,
   },
-  rules,
+  rules: rules as any,
 };

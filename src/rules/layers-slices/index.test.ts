@@ -76,7 +76,7 @@ function makeErrorMessageAtSpecifier(importLayer: Layer, currentFileLayer: Layer
 
 // TODO refactor tests
 
-ruleTester.run('layers-slices', rule, {
+ruleTester.run('layers-slices', rule as any, {
   valid: [
     {
       name: 'should valid if import from "shared" to "features"',
@@ -329,7 +329,7 @@ ruleTester.run('layers-slices', rule, {
     {
       name: 'should throw error when importing from higher layer with same slice name',
       filename: makeFilename('src/entities/policies/model.ts'),
-      code: "import { foo } from '@/pages/policies/ui';",
+      code: "import { foo } from '../../../pages/policies/ui';",
       errors: [makeErrorMessage('pages', 'entities')],
     },
   ],

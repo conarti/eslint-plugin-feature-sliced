@@ -74,7 +74,7 @@ const shouldNotValidateLayersWithoutSlices: Parameters<typeof ruleTester.run>[2]
   code: `import { baz } from "src/${layer}/foo/ui.ts";`,
 }));
 
-ruleTester.run('public-api', rule, {
+ruleTester.run('public-api', rule as any, {
   valid: [
     ...shouldNotValidateLayersWithoutSlices,
     {

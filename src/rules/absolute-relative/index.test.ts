@@ -1,8 +1,8 @@
-import { TSESLint } from '@typescript-eslint/utils';
+import { RuleTester } from '@typescript-eslint/rule-tester';
 import { ERROR_MESSAGE_ID } from './config';
 import rule from './index';
 
-const ruleTester = new TSESLint.RuleTester({
+const ruleTester = new RuleTester({
   languageOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
@@ -26,7 +26,7 @@ function makeIgnoreInFilesOptions(patterns: string[]): [{ ignoreInFilesPatterns:
   ];
 }
 
-ruleTester.run('absolute-relative', rule, {
+ruleTester.run('absolute-relative', rule as any, {
   valid: [
     {
       filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
