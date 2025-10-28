@@ -27,7 +27,11 @@ export function convertToPublicApi(pathsInfo: PathsInfo): [string, (string | nul
 
   const valueToRemove = extractValueToRemove(pathsInfo);
 
-  const publicApiPath = normalizedTargetPath.replace(`/${valueToRemove}`, '');
+  let publicApiPath = normalizedTargetPath.replace(`/${valueToRemove}`, '');
+
+  // Remove file extensions from directory references (e.g., "@/entities/node.ts" -> "@/entities/node")
+  // This handles cases where the remaining path incorrectly includes a file extension
+  publicApiPath = publicApiPath.replace(/\.(ts|js|tsx|jsx|mts|cts|mjs|cjs|vue)$/, '');
 
   return [publicApiPath, valueToRemove];
 }

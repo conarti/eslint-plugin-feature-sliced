@@ -436,6 +436,18 @@ ruleTester.run('public-api', rule, {
         ),
       ],
     },
+    {
+      name: 'should remove file extension from directory import suggestion (issue #17)',
+      filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
+      code: "import { unblockNode, unblockNodesBulk } from '@/entities/node/api.ts';",
+      errors: [
+        makeErrorWithSuggestion(
+          'api',
+          "import { unblockNode, unblockNodesBulk } from '@/entities/node';",
+          '@/entities/node',
+        ),
+      ],
+    },
     /* TODO
     {
       name: 'should report if import from invalid feature sliced structure (import from known layer and unknown slice)',
