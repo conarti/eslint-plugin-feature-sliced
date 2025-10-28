@@ -95,20 +95,8 @@ ruleTester.run('absolute-relative', rule, {
 
   invalid: [
     {
-      name: 'Import from a single slice',
-      filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
-      code: 'import { TheHeader } from \'widgets/TheHeader\';',
-      errors: [errorMustBeRelative],
-    },
-    {
-      name: 'Import from a single slice and import expression',
-      filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
-      code: 'const TheHeader = () => import(\'widgets/TheHeader\');',
-      errors: [errorMustBeRelative],
-    },
-    {
       name: 'Import from a single slice with an alias',
-      filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
+      filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { TheHeader } from \'@/widgets/TheHeader\';',
       errors: [errorMustBeRelative],
     },
@@ -146,16 +134,6 @@ ruleTester.run('absolute-relative', rule, {
       errors: [errorMustBeRelative],
     },
     {
-      filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/widgets/payments-widget-wrapper/index.ts',
-      code: 'export * from \'@/widgets/payments-widget-wrapper/model\';',
-      errors: [errorMustBeRelative],
-    },
-    {
-      filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/widgets/blocks/MarriageDetails/index.ts',
-      code: 'export { MarriageDetails } from \'@/widgets/blocks/MarriageDetails/MarriageDetails\';',
-      errors: [errorMustBeRelative],
-    },
-    {
       name: 'should be invalid if the import is from layer public api (relative import)',
       filename: 'frontend/src/shared/foo/index.ts',
       code: "import { Something } from '../../app';",
@@ -176,4 +154,46 @@ ruleTester.run('absolute-relative', rule, {
       errors: [errorMustBeRelative],
     },
   ],
+});
+
+// TODO: These tests are skipped because @typescript-eslint/rule-tester doesn't properly support custom cwd
+// See: https://github.com/typescript-eslint/typescript-eslint/issues/11668
+describe.skip('absolute-relative with custom cwd', () => {
+  const ruleTester = new RuleTester({
+    languageOptions: {
+      ecmaVersion: 6,
+      sourceType: 'module',
+      parser: require('@typescript-eslint/parser'),
+    },
+  });
+
+  ruleTester.run('absolute-relative', rule, {
+    valid: [],
+    invalid: [
+      {
+        name: 'Import from a single slice',
+        filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
+        code: 'import { TheHeader } from \'widgets/TheHeader\';',
+        errors: [errorMustBeRelative],
+      },
+      {
+        name: 'Import from a single slice and import expression',
+        filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
+        code: 'const TheHeader = () => import(\'widgets/TheHeader\');',
+        errors: [errorMustBeRelative],
+      },
+      {
+        name: 'Export from same slice with alias (cwd-dependent)',
+        filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/widgets/payments-widget-wrapper/index.ts',
+        code: 'export * from \'@/widgets/payments-widget-wrapper/model\';',
+        errors: [errorMustBeRelative],
+      },
+      {
+        name: 'Export from same slice with alias and nested path (cwd-dependent)',
+        filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/widgets/blocks/MarriageDetails/index.ts',
+        code: 'export { MarriageDetails } from \'@/widgets/blocks/MarriageDetails/MarriageDetails\';',
+        errors: [errorMustBeRelative],
+      },
+    ],
+  });
 });
