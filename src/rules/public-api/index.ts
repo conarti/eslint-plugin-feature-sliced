@@ -35,6 +35,12 @@ export default createEslintRule<Options, MessageIds>({
               VALIDATION_LEVEL.SLICES,
             ],
           },
+          ignorePatterns: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
           ignoreInFilesPatterns: {
             type: 'array',
             items: {
@@ -48,6 +54,7 @@ export default createEslintRule<Options, MessageIds>({
   defaultOptions: [
     {
       level: VALIDATION_LEVEL.SLICES,
+      ignorePatterns: [],
       ignoreInFilesPatterns: [],
     },
   ],

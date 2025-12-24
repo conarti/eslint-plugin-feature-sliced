@@ -6,6 +6,7 @@ import {
   hasPath,
   type ImportExportNodes,
   isIgnoredCurrentFile,
+  isIgnoredTarget,
 } from '../../../lib/rule';
 import { reportShouldBeFromPublicApi } from './errors';
 import { shouldBeFromPublicApi } from './should-be-from-public-api';
@@ -15,7 +16,8 @@ export function validateAndReport(node: ImportExportNodes, context: RuleContext,
     return;
   }
 
-  if (isIgnoredCurrentFile(context, optionsWithDefault)) {
+  const isIgnoredForValidation = isIgnoredTarget(node, optionsWithDefault) || isIgnoredCurrentFile(context, optionsWithDefault);
+  if (isIgnoredForValidation) {
     return;
   }
 

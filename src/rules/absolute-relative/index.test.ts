@@ -18,10 +18,11 @@ const errorMustBeRelative = {
   messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
 };
 
-function makeIgnoreInFilesOptions(patterns: string[]): [{ ignoreInFilesPatterns: string[] }] {
+function makeOptions({ ignorePatterns = [], ignoreInFilesPatterns = [] }: { ignorePatterns?: string[]; ignoreInFilesPatterns?: string[] } = {}): [{ ignorePatterns: string[]; ignoreInFilesPatterns: string[] }] {
   return [
     {
-      ignoreInFilesPatterns: patterns,
+      ignorePatterns,
+      ignoreInFilesPatterns,
     },
   ];
 }
@@ -64,7 +65,7 @@ ruleTester.run('absolute-relative', rule, {
       name: 'should be valid if it has ignored in files options',
       filename: '/Users/conarti/Projects/frontend/src/shared/foo/index.ts',
       code: "import { BAR } from '@/shared/bar';",
-      options: makeIgnoreInFilesOptions(['**/*/shared/foo/**/*']),
+      options: makeOptions({ ignoreInFilesPatterns: ['**/*/shared/foo/**/*'] }),
     },
     {
       name: "should be valid if it has slice with 'layer' name",

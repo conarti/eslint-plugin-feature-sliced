@@ -7,6 +7,7 @@ import {
   hasPath,
   type ImportExportNodes,
   isIgnoredCurrentFile,
+  isIgnoredTarget,
 } from '../../../lib/rule';
 import {
   reportShouldBeAbsolute,
@@ -29,7 +30,8 @@ export function validateAndReport(
     return;
   }
 
-  if (isIgnoredCurrentFile(context, optionsWithDefault)) {
+  const isIgnoredForValidation = isIgnoredTarget(node, optionsWithDefault) || isIgnoredCurrentFile(context, optionsWithDefault);
+  if (isIgnoredForValidation) {
     return;
   }
 

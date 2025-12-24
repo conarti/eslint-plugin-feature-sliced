@@ -7,6 +7,10 @@ import { importOrderRuleConfigs } from './rules/import-order/configs';
 
 interface AbsoluteRelativeOptions {
   /**
+   * Ignore certain import paths (import foo from '<path-to-ignore>')
+   */
+  ignorePatterns: string[];
+  /**
    * Disable the rule in certain files
    */
   ignoreInFilesPatterns: string[];
@@ -37,6 +41,10 @@ interface PublicApiOptions {
    * @default 'slices'
    */
   level: VALIDATION_LEVEL;
+  /**
+   * Ignore certain import paths (import foo from '<path-to-ignore>')
+   */
+  ignorePatterns: string[];
   /**
    * Disable the rule in certain files
    */

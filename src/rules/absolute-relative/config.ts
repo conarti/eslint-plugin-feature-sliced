@@ -9,6 +9,7 @@ export type MessageIds = ERROR_MESSAGE_ID;
 
 export type Options = [
   {
+    ignorePatterns: string[];
     ignoreInFilesPatterns: string[];
   },
 ];

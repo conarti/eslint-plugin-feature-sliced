@@ -17,6 +17,7 @@ export type MessageIds = MESSAGE_ID;
 export type Options = [
   {
     level: VALIDATION_LEVEL;
+    ignorePatterns: string[];
     ignoreInFilesPatterns: string[];
   },
 ];

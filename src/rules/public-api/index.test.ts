@@ -52,21 +52,14 @@ const errorLayersPublicApiNotAllowed = {
   messageId: MESSAGE_ID.FROM_INVALID_STRUCTURE,
 }; */
 
-function setValidationLevel(level: VALIDATION_LEVEL): Options {
+function makeOptions({ level = VALIDATION_LEVEL.SLICES, ignorePatterns = [], ignoreInFilesPatterns = [] }: { level?: VALIDATION_LEVEL; ignorePatterns?: string[]; ignoreInFilesPatterns?: string[] } = {}): Options {
   return [
     {
       level,
-      ignoreInFilesPatterns: [],
+      ignorePatterns,
+      ignoreInFilesPatterns,
     },
   ];
-}
-
-function makeIgnoreInFilesOptions(patterns: string[]) {
-  return [
-    {
-      ignoreInFilesPatterns: patterns,
-    },
-  ] as Options;
 }
 
 const shouldNotValidateLayersWithoutSlices = FSD_LAYERS_WITHOUT_SLICES.map((layer) => ({
@@ -210,7 +203,7 @@ ruleTester.run('public-api', rule, {
       name: 'should work ignoreInFilesPatterns option',
       filename: 'src/features/index.ts',
       code: 'import { bar } from "./ui/bar";',
-      options: makeIgnoreInFilesOptions([`**/(${FSD_LAYERS.join('|')})/index.*`]),
+      options: makeOptions({ ignoreInFilesPatterns: [`**/(${FSD_LAYERS.join('|')})/index.*`] }),
     },
     {
       name: 'should be valid if import from same slice and slice contain "layer" name',
@@ -368,7 +361,7 @@ ruleTester.run('public-api', rule, {
       name: 'should correct validate slice public api if enabled segments validation level',
       code: "import { foo } from '@/features/foo/ui';",
       filename: 'src/pages/home/ui/index.vue',
-      options: setValidationLevel(VALIDATION_LEVEL.SEGMENTS),
+      options: makeOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
       errors: [
         makeErrorWithSuggestion(
           'ui',
@@ -381,7 +374,7 @@ ruleTester.run('public-api', rule, {
       name: "shouldn't allow segments without index files if enabled segments validation level",
       code: "import { useFoo } from '../model/use-foo';",
       filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
-      options: setValidationLevel(VALIDATION_LEVEL.SEGMENTS),
+      options: makeOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
       errors: [
         makeErrorWithSuggestion(
           'use-foo',
