@@ -5,7 +5,7 @@
   "description": "Feature-sliced design methodology plugin",
   "author": "Aleksandr Belous <abelous2009@gmail.com>",
   "license": "ISC",
-  "repository": "https://github.com/conarti/eslint-plugin-fsd.git",
+  "repository": "https://github.com/conarti/eslint-plugin-feature-sliced",
   "keywords": [
     "eslint",
     "eslintplugin",
