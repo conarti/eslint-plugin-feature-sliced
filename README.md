@@ -2,10 +2,7 @@
 
 Feature-sliced design methodology plugin.
 
-_Attention: the plugin is being actively developed and is in **beta**.
-The names of rules and configurations may change in new versions.
-If you find a bug, please open an issue or pull request.
-Feel free to contribute_
+_If you find a bug, please open an issue or pull request. Feel free to contribute!_
 
 ## Features
 
