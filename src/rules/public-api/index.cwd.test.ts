@@ -1,8 +1,9 @@
+import * as tseslintParser from '@typescript-eslint/parser';
 import { vi } from 'vitest';
 import { RuleTester } from '../../../tests/rule-tester';
 import {
-  TEST_CWD,
   makePublicApiErrorWithSuggestion,
+  TEST_CWD,
 } from '../../../tests/utils';
 
 vi.mock('../../lib/rule/extract-cwd', () => ({
@@ -15,7 +16,7 @@ const ruleTester = new RuleTester({
   languageOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
-    parser: require('@typescript-eslint/parser'),
+    parser: tseslintParser,
   },
 });
 

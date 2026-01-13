@@ -1,4 +1,10 @@
+import * as tseslintParser from '@typescript-eslint/parser';
 import { RuleTester } from '../../../tests/rule-tester';
+import {
+  makePublicApiErrorWithSuggestion,
+  makePublicApiOptions,
+  publicApiLayersNotAllowedError,
+} from '../../../tests/utils';
 import {
   layers,
   layersWithoutSlices,
@@ -6,17 +12,12 @@ import {
 } from '../../config';
 import { VALIDATION_LEVEL } from './config';
 import rule from './index';
-import {
-  makePublicApiErrorWithSuggestion,
-  publicApiLayersNotAllowedError,
-  makePublicApiOptions,
-} from '../../../tests/utils';
 
 const ruleTester = new RuleTester({
   languageOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
-    parser: require('@typescript-eslint/parser'),
+    parser: tseslintParser,
   },
 });
 

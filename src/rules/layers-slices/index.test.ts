@@ -1,19 +1,20 @@
 import type { Options } from './config';
+import * as tseslintParser from '@typescript-eslint/parser';
 import { RuleTester } from '../../../tests/rule-tester';
-import rule from './index';
 import {
+  layersSlicesAllowTypeImportsOptions,
   makeLayersSlicesError,
   makeLayersSlicesErrorAtSpecifier,
-  layersSlicesAllowTypeImportsOptions,
-  makeLayersSlicesIgnoreOptions,
   makeLayersSlicesIgnoreInFilesOptions,
+  makeLayersSlicesIgnoreOptions,
 } from '../../../tests/utils';
+import rule from './index';
 
 const ruleTester = new RuleTester({
   languageOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
-    parser: require('@typescript-eslint/parser'),
+    parser: tseslintParser,
   },
 });
 

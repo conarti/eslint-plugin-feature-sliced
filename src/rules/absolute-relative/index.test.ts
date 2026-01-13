@@ -1,15 +1,16 @@
+import * as tseslintParser from '@typescript-eslint/parser';
 import { RuleTester } from '../../../tests/rule-tester';
-import rule from './index';
 import {
   absoluteRelativeErrors,
   makeAbsoluteRelativeOptions,
 } from '../../../tests/utils';
+import rule from './index';
 
 const ruleTester = new RuleTester({
   languageOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
-    parser: require('@typescript-eslint/parser'),
+    parser: tseslintParser,
   },
 });
 
