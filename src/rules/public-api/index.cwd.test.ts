@@ -42,6 +42,11 @@ ruleTester.run('public-api', rule, {
       filename: 'src/pages/policies/ui/PolicyPage.vue',
       code: "import { foo } from '../model'",
     },
+    {
+      name: '@x cross-import is valid public API (cwd-dependent)',
+      filename: 'src/entities/Session/model/index.ts',
+      code: "import { User } from '@/entities/User/@x/Session';",
+    },
   ],
   invalid: [
     {
