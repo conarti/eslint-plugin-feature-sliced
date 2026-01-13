@@ -4,10 +4,10 @@
 
 | Правило | Описание | Фикс |
 |---------|----------|------|
-| [layers-slices](./layers-slices) | Проверяет импорты между слоями согласно иерархии FSD | |
-| [absolute-relative](./absolute-relative) | Проверяет тип пути (относительный/абсолютный) | |
-| [public-api](./public-api) | Требует импорты только из public API | 💡 |
-| [import-order](./import-order) | Сортирует импорты по слоям FSD | 🔧 |
+| [layers-slices](/en/rules/layers-slices) | Проверяет импорты между слоями согласно иерархии FSD | |
+| [absolute-relative](/en/rules/absolute-relative) | Проверяет тип пути (относительный/абсолютный) | |
+| [public-api](/en/rules/public-api) | Требует импорты только из public API | 💡 |
+| [import-order](/en/rules/import-order) | Сортирует импорты по слоям FSD | 🔧 |
 
 **Легенда:**
 - 🔧 Автоматически исправляется с `--fix`

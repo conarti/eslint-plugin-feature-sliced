@@ -6,6 +6,16 @@ export default defineConfig({
   title: 'eslint-plugin-feature-sliced',
   description: 'ESLint plugin for Feature-Sliced Design methodology',
 
+  srcDir: '../',
+  srcExclude: ['**/node_modules/**', '**/dist/**', '**/coverage/**', '**/tests/**'],
+
+  rewrites: {
+    'docs/index.md': 'index.md',
+    'docs/en/:path*': 'en/:path*',
+    'docs/ru/:path*': 'ru/:path*',
+    'src/rules/:rule/README.md': 'en/rules/:rule.md',
+  },
+
   locales: {
     en: {
       label: 'English',
@@ -69,10 +79,10 @@ export default defineConfig({
               text: 'Правила',
               items: [
                 { text: 'Обзор', link: '/ru/rules/' },
-                { text: 'layers-slices', link: '/ru/rules/layers-slices' },
-                { text: 'absolute-relative', link: '/ru/rules/absolute-relative' },
-                { text: 'public-api', link: '/ru/rules/public-api' },
-                { text: 'import-order', link: '/ru/rules/import-order' },
+                { text: 'layers-slices', link: '/en/rules/layers-slices' },
+                { text: 'absolute-relative', link: '/en/rules/absolute-relative' },
+                { text: 'public-api', link: '/en/rules/public-api' },
+                { text: 'import-order', link: '/en/rules/import-order' },
               ],
             },
             {
@@ -100,7 +110,7 @@ export default defineConfig({
     },
 
     editLink: {
-      pattern: `${GITHUB_REPO}/edit/master/docs/:path`,
+      pattern: `${GITHUB_REPO}/edit/master/:path`,
     },
 
     search: {
