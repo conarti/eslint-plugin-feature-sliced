@@ -1,3 +1,7 @@
+export {
+  type CrossImportInfo,
+  extractCrossImportInfo,
+} from './extract-cross-import';
 export { type ExtractedFeatureSlicedParts } from './extract-feature-sliced-parts';
 export { extractLayer } from './extract-layer';
 export {
