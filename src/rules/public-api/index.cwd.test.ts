@@ -1,11 +1,12 @@
 import { vi } from 'vitest';
 import { RuleTester } from '../../../tests/rule-tester';
-import { MESSAGE_ID } from './config';
-
-const CWD_MOCK_PATH = '/Users/User/Projects/app';
+import {
+  TEST_CWD,
+  makePublicApiErrorWithSuggestion,
+} from '../../../tests/utils';
 
 vi.mock('../../lib/rule/extract-cwd', () => ({
-  extractCwd: () => CWD_MOCK_PATH,
+  extractCwd: () => TEST_CWD,
 }));
 
 const { default: rule } = await import('./index');
@@ -17,24 +18,6 @@ const ruleTester = new RuleTester({
     parser: require('@typescript-eslint/parser'),
   },
 });
-
-function makeErrorWithSuggestion(suggestionSegments: string, suggestionOutput: string, fixedPath: string) {
-  return {
-    messageId: MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
-    data: {
-      fixedPath,
-    },
-    suggestions: [
-      {
-        messageId: MESSAGE_ID.REMOVE_SUGGESTION,
-        data: {
-          valueToRemove: suggestionSegments,
-        },
-        output: suggestionOutput,
-      },
-    ],
-  };
-}
 
 ruleTester.run('public-api', rule, {
   valid: [
@@ -65,7 +48,7 @@ ruleTester.run('public-api', rule, {
       filename: 'src/pages/policies/ui/PolicyNodeDetailsPage.vue',
       code: "import { getNodePolicyById } from '@/entities/policies/api';",
       errors: [
-        makeErrorWithSuggestion(
+        makePublicApiErrorWithSuggestion(
           'api',
           "import { getNodePolicyById } from '@/entities/policies';",
           '@/entities/policies',
@@ -77,7 +60,7 @@ ruleTester.run('public-api', rule, {
       filename: 'src/pages/policies/ui/PolicyNodeDetailsPage.vue',
       code: "import { createNodePolicyFields } from '@/entities/policies/lib';",
       errors: [
-        makeErrorWithSuggestion(
+        makePublicApiErrorWithSuggestion(
           'lib',
           "import { createNodePolicyFields } from '@/entities/policies';",
           '@/entities/policies',

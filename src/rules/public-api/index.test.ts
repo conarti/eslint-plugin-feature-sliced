@@ -2,18 +2,15 @@ import { RuleTester } from '../../../tests/rule-tester';
 import {
   layers,
   layersWithoutSlices,
+  segments,
 } from '../../config';
-import {
-  MESSAGE_ID,
-  type Options,
-  VALIDATION_LEVEL,
-} from './config';
+import { VALIDATION_LEVEL } from './config';
 import rule from './index';
-
-const FSD_LAYERS = layers;
-const FSD_LAYERS_WITHOUT_SLICES = layersWithoutSlices;
-
-const CWD_MOCK_PATH = '/Users/User/Projects/app';
+import {
+  makePublicApiErrorWithSuggestion,
+  publicApiLayersNotAllowedError,
+  makePublicApiOptions,
+} from '../../../tests/utils';
 
 const ruleTester = new RuleTester({
   languageOptions: {
@@ -23,48 +20,23 @@ const ruleTester = new RuleTester({
   },
 });
 
-const makeFilename = (filename: string): string => `${CWD_MOCK_PATH}/${filename}`;
-
-function makeErrorWithSuggestion(suggestionSegments: string, suggestionOutput: string, fixedPath: string) {
-  return {
-    messageId: MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API,
-    data: {
-      fixedPath,
-    },
-    suggestions: [
-      {
-        messageId: MESSAGE_ID.REMOVE_SUGGESTION,
-        data: {
-          valueToRemove: suggestionSegments,
-        },
-        output: suggestionOutput,
-      },
-    ],
-  };
-}
-
-const errorLayersPublicApiNotAllowed = {
-  messageId: MESSAGE_ID.LAYERS_PUBLIC_API_NOT_ALLOWED,
-};
-
-/* const errorFromInvalidStructure = {
-  messageId: MESSAGE_ID.FROM_INVALID_STRUCTURE,
-}; */
-
-function makeOptions({ level = VALIDATION_LEVEL.SLICES, ignorePatterns = [], ignoreInFilesPatterns = [] }: { level?: VALIDATION_LEVEL; ignorePatterns?: string[]; ignoreInFilesPatterns?: string[] } = {}): Options {
-  return [
-    {
-      level,
-      ignorePatterns,
-      ignoreInFilesPatterns,
-    },
-  ];
-}
-
-const shouldNotValidateLayersWithoutSlices = FSD_LAYERS_WITHOUT_SLICES.map((layer) => ({
+const shouldNotValidateLayersWithoutSlices = layersWithoutSlices.map((layer) => ({
   name: `should not validate public api with layers that can not contain slices ("${layer}")`,
   filename: 'src/features/foo/index.ts',
   code: `import { baz } from "src/${layer}/foo/ui.ts";`,
+}));
+
+const segmentNotGroupFolderTests = segments.map((segment) => ({
+  name: `should not validate "${segment}" as group folder`,
+  code: `import { Bar } from '@/features/bar/${segment}';`,
+  filename: 'src/pages/home/ui/index.vue',
+  errors: [
+    makePublicApiErrorWithSuggestion(
+      segment,
+      `import { Bar } from '@/features/bar';`,
+      '@/features/bar',
+    ),
+  ],
 }));
 
 ruleTester.run('public-api', rule, {
@@ -73,97 +45,97 @@ ruleTester.run('public-api', rule, {
     {
       name: 'should work with slice public api',
       code: "import { addCommentFormActions, addCommentFormReducer } from 'src/entities/Article'",
-      filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
+      filename: 'src/features/foo/ui/index.vue',
     },
     {
       name: 'should work with slice public api and alias in path',
       code: "import { addCommentFormActions, addCommentFormReducer } from '@/entities/Article'",
-      filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
+      filename: 'src/features/foo/ui/index.vue',
     },
     {
       name: 'should work with long paths',
       code: "import { addCommentFormActions, addCommentFormReducer } from 'some/root/path/entities/Article'",
-      filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
+      filename: 'src/features/foo/ui/index.vue',
     },
     {
       name: "should not validate public api relative paths in 'app'",
       code: "import { setStylesForTheme } from 'app/providers/ThemeProvider'",
-      filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
+      filename: 'src/features/foo/ui/index.vue',
     },
     {
-      name: 'it should work with fsd segments',
+      name: 'should work with fsd segments',
       code: "import { formConfig } from 'src/features/form/config'",
       filename: 'src/features/form/ui/index.js',
     },
     {
-      name: 'it should work with fsd segments with file extension',
+      name: 'should work with fsd segments with file extension',
       code: "import { formConfig } from 'src/features/form/config.ts'",
       filename: 'src/features/form/ui/index.js',
     },
     {
-      name: 'it should work with fsd segments with relative path style',
+      name: 'should work with fsd segments with relative path style',
       code: "import { formConfig } from '../config'",
       filename: 'src/features/form/ui/index.js',
     },
     {
-      name: "should not validate public api paths in 'shared' and fsd methodology segments (assets/api/model/lib/ui/config)",
+      name: "should not validate public api paths in 'shared' (ui segment)",
       code: "import { ThemeSwitcher } from 'shared/ui/ThemeSwitcher';",
       filename: 'src/features/form/ui/index.js',
     },
     {
-      name: "should not validate public api paths in 'shared' and fsd methodology segments (assets/api/model/lib/ui/config)",
+      name: "should not validate public api paths in 'shared' (lib segment)",
       code: "import { foo } from 'shared/lib/foo';",
       filename: 'src/features/form/ui/index.js',
     },
     {
       name: 'should work with group folders',
       code: "import { Bar } from '@/features/group-folder/bar';",
-      filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
+      filename: 'src/pages/home/ui/index.vue',
     },
     {
       name: 'should work with subgroup folders',
       code: "import { Bar } from '@/features/group-folder/sub-group-folder/sub-sub-group/bar';",
-      filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
+      filename: 'src/pages/home/ui/index.vue',
     },
     {
       name: "should not validate public api relative paths in 'shared'",
       code: "import { Bar } from '../../../constants/bar';",
-      filename: '/Users/test-user/repository/src/shared/ui/foo/index.vue',
+      filename: 'src/shared/ui/foo/index.vue',
     },
     {
       name: 'should only swear at fsd methodology segments (assets/api/model/lib/ui/config)',
       code: "import { useFoo } from '../foo/use-foo';",
-      filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
+      filename: 'src/features/foo/ui/index.vue',
     },
     {
       name: 'should not validate imports inside segment',
       code: "import { Foo } from './types';",
-      filename: '/Users/test-user/repository/src/features/foo/model/index.ts',
+      filename: 'src/features/foo/model/index.ts',
     },
     {
       name: "should understand 'index' files with extensions",
       code: "import { FooComponent } from './ui/index.ts';",
-      filename: '/Users/test-user/repository/src/features/foo/index.ts',
+      filename: 'src/features/foo/index.ts',
     },
     {
       name: "should understand 'index' files with different extensions",
       code: "import FooComponent from './ui/index.vue';",
-      filename: '/Users/test-user/repository/src/features/foo/index.ts',
+      filename: 'src/features/foo/index.ts',
     },
     {
       name: "should understand 'index' files with extensions and different layers",
       code: "import { Bar } from 'src/entities/bar/index.ts';",
-      filename: '/Users/test-user/repository/src/features/foo/ui/index.ts',
+      filename: 'src/features/foo/ui/index.ts',
     },
     {
       name: "should understand 'index' files without extensions and with different layers",
       code: "import { Bar } from 'src/entities/bar/index';",
-      filename: '/Users/test-user/repository/src/features/foo/ui/index.ts',
+      filename: 'src/features/foo/ui/index.ts',
     },
     {
       name: 'should correct read slices from paths',
       code: "import { Foo } from '../models';",
-      filename: '/Users/test-user/repository/src/features/foo/ui/index.ts',
+      filename: 'src/features/foo/ui/index.ts',
     },
     {
       name: 'allow imports inside segment with no extra sub dirs',
@@ -181,11 +153,13 @@ ruleTester.run('public-api', rule, {
       code: "import { Foo } from '../foo.tsx';",
     },
     {
-      filename: '/Users/macbook/Projects/the-rooms/src/entities/room/lib/index.ts',
+      name: 'should allow re-export from segment (named export)',
+      filename: 'src/entities/room/lib/index.ts',
       code: "export { useRoom } from './useRoom';",
     },
     {
-      filename: '/Users/macbook/Projects/the-rooms/src/entities/room/lib/index.ts',
+      name: 'should allow re-export from segment (star export)',
+      filename: 'src/entities/room/lib/index.ts',
       code: "export * from './useRoom';",
     },
     {
@@ -202,15 +176,16 @@ ruleTester.run('public-api', rule, {
       name: 'should work ignoreInFilesPatterns option',
       filename: 'src/features/index.ts',
       code: 'import { bar } from "./ui/bar";',
-      options: makeOptions({ ignoreInFilesPatterns: [`**/(${FSD_LAYERS.join('|')})/index.*`] }),
+      options: makePublicApiOptions({ ignoreInFilesPatterns: [`**/(${layers.join('|')})/index.*`] }),
     },
   ],
 
   invalid: [
     {
+      name: 'should report import from internal segment (model)',
       code: "import { addCommentFormActions, addCommentFormReducer } from 'entities/Article/model/file.ts'",
       errors: [
-        makeErrorWithSuggestion(
+        makePublicApiErrorWithSuggestion(
           'model/file.ts',
           "import { addCommentFormActions, addCommentFormReducer } from 'entities/Article'",
           'entities/Article',
@@ -221,7 +196,7 @@ ruleTester.run('public-api', rule, {
       name: 'should work with import expressions',
       code: "const foo = () => import('entities/Article/model/file.ts')",
       errors: [
-        makeErrorWithSuggestion(
+        makePublicApiErrorWithSuggestion(
           'model/file.ts',
           "const foo = () => import('entities/Article')",
           'entities/Article',
@@ -229,9 +204,10 @@ ruleTester.run('public-api', rule, {
       ],
     },
     {
+      name: 'should report import with alias from internal segment',
       code: "import { addCommentFormActions, addCommentFormReducer } from '@/entities/Article/model/file.ts'",
       errors: [
-        makeErrorWithSuggestion(
+        makePublicApiErrorWithSuggestion(
           'model/file.ts',
           "import { addCommentFormActions, addCommentFormReducer } from '@/entities/Article'",
           '@/entities/Article',
@@ -239,9 +215,10 @@ ruleTester.run('public-api', rule, {
       ],
     },
     {
+      name: 'should report import with src prefix from internal segment',
       code: "import { addCommentFormActions, addCommentFormReducer } from 'src/entities/Article/model/file.ts'",
       errors: [
-        makeErrorWithSuggestion(
+        makePublicApiErrorWithSuggestion(
           'model/file.ts',
           "import { addCommentFormActions, addCommentFormReducer } from 'src/entities/Article'",
           'src/entities/Article',
@@ -249,9 +226,10 @@ ruleTester.run('public-api', rule, {
       ],
     },
     {
+      name: 'should report import with long root path from internal segment',
       code: "import { addCommentFormActions, addCommentFormReducer } from 'some/root/path/entities/Article/model/file.ts'",
       errors: [
-        makeErrorWithSuggestion(
+        makePublicApiErrorWithSuggestion(
           'model/file.ts',
           "import { addCommentFormActions, addCommentFormReducer } from 'some/root/path/entities/Article'",
           'some/root/path/entities/Article',
@@ -259,87 +237,23 @@ ruleTester.run('public-api', rule, {
       ],
     },
     {
+      name: 'should report import with .vue extension from internal segment',
       code: "import PassportIssuanceSearchRegistryParams from '@/entities/passport-issuance/ui/search-registry-params.vue';",
       errors: [
-        makeErrorWithSuggestion(
+        makePublicApiErrorWithSuggestion(
           'ui/search-registry-params.vue',
           "import PassportIssuanceSearchRegistryParams from '@/entities/passport-issuance';",
           '@/entities/passport-issuance',
         ),
       ],
     },
+    ...segmentNotGroupFolderTests,
     {
-      name: 'should not validate "ui", "model", "lib", "api", "config", "assets" as group folders',
-      code: "import { Bar } from '@/features/bar/ui';",
-      filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
-      errors: [
-        makeErrorWithSuggestion(
-          'ui',
-          "import { Bar } from '@/features/bar';",
-          '@/features/bar',
-        ),
-      ],
-    },
-    {
-      code: "import { Bar } from '@/features/bar/model';",
-      filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
-      errors: [
-        makeErrorWithSuggestion(
-          'model',
-          "import { Bar } from '@/features/bar';",
-          '@/features/bar',
-        ),
-      ],
-    },
-    {
-      code: "import { Bar } from '@/features/bar/lib';",
-      filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
-      errors: [
-        makeErrorWithSuggestion(
-          'lib',
-          "import { Bar } from '@/features/bar';",
-          '@/features/bar',
-        ),
-      ],
-    },
-    {
-      code: "import { Bar } from '@/features/bar/api';",
-      filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
-      errors: [
-        makeErrorWithSuggestion(
-          'api',
-          "import { Bar } from '@/features/bar';",
-          '@/features/bar',
-        ),
-      ],
-    },
-    {
-      code: "import { Bar } from '@/features/bar/config';",
-      filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
-      errors: [
-        makeErrorWithSuggestion(
-          'config',
-          "import { Bar } from '@/features/bar';",
-          '@/features/bar',
-        ),
-      ],
-    },
-    {
-      code: "import { Bar } from '@/features/bar/assets';",
-      filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
-      errors: [
-        makeErrorWithSuggestion(
-          'assets',
-          "import { Bar } from '@/features/bar';",
-          '@/features/bar',
-        ),
-      ],
-    },
-    {
+      name: 'should report import from group folder with segment',
       code: "import { Bar } from '@/features/group-folder/sub-group-folder/sub-sub-group/bar/assets';",
-      filename: '/Users/conarti/Projects/foo-frontend/src/pages/home/ui/index.vue',
+      filename: 'src/pages/home/ui/index.vue',
       errors: [
-        makeErrorWithSuggestion(
+        makePublicApiErrorWithSuggestion(
           'assets',
           "import { Bar } from '@/features/group-folder/sub-group-folder/sub-sub-group/bar';",
           '@/features/group-folder/sub-group-folder/sub-sub-group/bar',
@@ -350,9 +264,9 @@ ruleTester.run('public-api', rule, {
       name: 'should correct validate slice public api if enabled segments validation level',
       code: "import { foo } from '@/features/foo/ui';",
       filename: 'src/pages/home/ui/index.vue',
-      options: makeOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
       errors: [
-        makeErrorWithSuggestion(
+        makePublicApiErrorWithSuggestion(
           'ui',
           "import { foo } from '@/features/foo';",
           '@/features/foo',
@@ -362,10 +276,10 @@ ruleTester.run('public-api', rule, {
     {
       name: "shouldn't allow segments without index files if enabled segments validation level",
       code: "import { useFoo } from '../model/use-foo';",
-      filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
-      options: makeOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+      filename: 'src/features/foo/ui/index.vue',
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
       errors: [
-        makeErrorWithSuggestion(
+        makePublicApiErrorWithSuggestion(
           'use-foo',
           "import { useFoo } from '../model';",
           '../model',
@@ -376,13 +290,13 @@ ruleTester.run('public-api', rule, {
       name: 'import to layers public api is not allowed',
       filename: 'src/features/index.ts',
       code: "import { foo } from './foo'",
-      errors: [errorLayersPublicApiNotAllowed],
+      errors: [publicApiLayersNotAllowedError],
     },
     {
       name: 'export from layers public api is not allowed',
       filename: 'src/features/index.ts',
       code: "export { foo } from './foo'",
-      errors: [errorLayersPublicApiNotAllowed],
+      errors: [publicApiLayersNotAllowedError],
     },
     {
       name: 'import to layers public api is not allowed (should throw only 1 error per file)',
@@ -392,26 +306,19 @@ ruleTester.run('public-api', rule, {
         import { bar } from './bar';
         import { baz } from './baz';
       `,
-      errors: [errorLayersPublicApiNotAllowed],
+      errors: [publicApiLayersNotAllowedError],
     },
     {
       name: 'should remove file extension from directory import suggestion (issue #17)',
-      filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
+      filename: 'src/features/foo/ui/index.vue',
       code: "import { unblockNode, unblockNodesBulk } from '@/entities/node/api.ts';",
       errors: [
-        makeErrorWithSuggestion(
+        makePublicApiErrorWithSuggestion(
           'api',
           "import { unblockNode, unblockNodesBulk } from '@/entities/node';",
           '@/entities/node',
         ),
       ],
     },
-    /* TODO
-    {
-      name: 'should report if import from invalid feature sliced structure (import from known layer and unknown slice)',
-      code: "import { Bar } from '@/features/group-folder/sub-group-folder/sub-sub-group/bar/bar.js';",
-      filename: `${CWD_MOCK_PATH}/src/pages/home/ui/index.vue`,
-      errors: [errorFromInvalidStructure],
-    }, */
   ],
 });

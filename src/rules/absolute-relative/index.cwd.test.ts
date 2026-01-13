@@ -1,11 +1,12 @@
 import { vi } from 'vitest';
 import { RuleTester } from '../../../tests/rule-tester';
-import { ERROR_MESSAGE_ID } from './config';
-
-const CWD_MOCK_PATH = '/Users/conarti/Projects/react-course';
+import {
+  TEST_CWD,
+  absoluteRelativeErrors,
+} from '../../../tests/utils';
 
 vi.mock('../../lib/rule/extract-cwd', () => ({
-  extractCwd: () => CWD_MOCK_PATH,
+  extractCwd: () => TEST_CWD,
 }));
 
 const { default: rule } = await import('./index');
@@ -18,36 +19,32 @@ const ruleTester = new RuleTester({
   },
 });
 
-const errorMustBeRelative = {
-  messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
-};
-
 ruleTester.run('absolute-relative', rule, {
   valid: [],
   invalid: [
     {
-      name: 'Import from a single slice',
+      name: 'should report relative if import from same slice without alias',
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: "import { TheHeader } from 'widgets/TheHeader';",
-      errors: [errorMustBeRelative],
+      errors: [absoluteRelativeErrors.mustBeRelative],
     },
     {
-      name: 'Import from a single slice and import expression',
+      name: 'should report relative if import expression from same slice',
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: "const TheHeader = () => import('widgets/TheHeader');",
-      errors: [errorMustBeRelative],
+      errors: [absoluteRelativeErrors.mustBeRelative],
     },
     {
-      name: 'Export from same slice with alias (cwd-dependent)',
+      name: 'should report relative if export from same slice with alias (cwd-dependent)',
       filename: 'src/widgets/payments-widget-wrapper/index.ts',
       code: "export * from '@/widgets/payments-widget-wrapper/model';",
-      errors: [errorMustBeRelative],
+      errors: [absoluteRelativeErrors.mustBeRelative],
     },
     {
-      name: 'Export from same slice with alias and nested path (cwd-dependent)',
+      name: 'should report relative if export from same slice with nested path (cwd-dependent)',
       filename: 'src/widgets/blocks/MarriageDetails/index.ts',
       code: "export { MarriageDetails } from '@/widgets/blocks/MarriageDetails/MarriageDetails';",
-      errors: [errorMustBeRelative],
+      errors: [absoluteRelativeErrors.mustBeRelative],
     },
   ],
 });
