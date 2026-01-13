@@ -9,11 +9,30 @@ function addSlashToStart(targetPath: string | null): string {
   return `/${targetPath}`;
 }
 
+/**
+ * Извлекает вложенный путь после @x/TargetSlice.
+ * Для "@x/Session/types" возвращает "types".
+ * Для "@x/Session" возвращает null.
+ */
+function extractCrossImportNestedPath(targetPath: string): string | null {
+  const match = targetPath.match(/@x\/[\w-]+\/(.+)$/);
+  return match ? match[1] : null;
+}
+
 function extractValueToRemove(pathsInfo: PathsInfo): string | null {
   const {
     isSameSlice,
+    normalizedTargetPath,
     fsdPartsOfTarget,
   } = pathsInfo;
+
+  /*
+   * Для @x путей с вложенностью — вернуть вложенную часть
+   */
+  const crossImportNestedPath = extractCrossImportNestedPath(normalizedTargetPath);
+  if (crossImportNestedPath) {
+    return crossImportNestedPath;
+  }
 
   if (isSameSlice) {
     return fsdPartsOfTarget.segmentFiles;
@@ -29,8 +48,7 @@ export function convertToPublicApi(pathsInfo: PathsInfo): [string, (string | nul
 
   let publicApiPath = normalizedTargetPath.replace(`/${valueToRemove}`, '');
 
-  // Remove any file extension from directory references (e.g., "@/entities/node.ts" -> "@/entities/node")
-  // This handles cases where the remaining path incorrectly includes a file extension
+  /* Remove any file extension from directory references (e.g., "@/entities/node.ts" -> "@/entities/node") */
   publicApiPath = publicApiPath.replace(/\.\w+$/, '');
 
   return [publicApiPath, valueToRemove];

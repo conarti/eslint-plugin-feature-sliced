@@ -321,5 +321,40 @@ ruleTester.run('public-api', rule, {
         ),
       ],
     },
+    {
+      name: 'should report error for nested @x path',
+      filename: 'src/entities/Session/model.ts',
+      code: "import { User } from '@/entities/User/@x/Session/types';",
+      errors: [
+        makePublicApiErrorWithSuggestion(
+          'types',
+          "import { User } from '@/entities/User/@x/Session';",
+          '@/entities/User/@x/Session',
+        ),
+      ],
+    },
   ],
+});
+
+/* === @x cross-import tests === */
+
+ruleTester.run('public-api (@x cross-imports)', rule, {
+  valid: [
+    {
+      name: '@x file is valid public API',
+      filename: 'src/entities/Session/model.ts',
+      code: "import { User } from '@/entities/User/@x/Session';",
+    },
+    {
+      name: '@x file with .ts extension is valid public API',
+      filename: 'src/entities/Session/ui/Card.tsx',
+      code: "import { User } from 'entities/User/@x/Session.ts';",
+    },
+    {
+      name: '@x file with hyphenated names is valid public API',
+      filename: 'src/entities/user-session/model.ts',
+      code: "import { UserProfile } from '@/entities/user-profile/@x/user-session';",
+    },
+  ],
+  invalid: [],
 });
