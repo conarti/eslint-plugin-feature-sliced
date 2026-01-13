@@ -1,6 +1,8 @@
-# Check layers and slices imports (`@conarti/feature-sliced/layers-slices`)
+# layers-slices
 
 Validates imports between layers and slices according to Feature-Sliced Design methodology.
+
+**Rule name:** `@conarti/feature-sliced/layers-slices`
 
 ## Rule Details
 
@@ -23,13 +25,18 @@ A layer can only import from layers below it.
 
 Within layers that have slices (`entities`, `features`, `widgets`, `pages`, `processes`), one slice cannot import from another slice in the same layer.
 
+## Examples
+
 ### ❌ Incorrect
 
 ```js
 // file: src/entities/user/model.ts
 import { Article } from 'entities/article';
 // Error: Cannot import from another slice in the same layer
+```
 
+```js
+// file: src/entities/user/model.ts
 import { LoginForm } from 'features/login';
 // Error: Cannot import from a higher layer
 ```
@@ -46,7 +53,10 @@ import { User } from 'entities/user';
 // file: src/features/login/ui.tsx
 import { User } from 'entities/user';
 // OK: features can import from entities
+```
 
+```js
+// file: src/features/login/ui.tsx
 import { Button } from 'shared/ui';
 // OK: features can import from shared
 ```
@@ -85,7 +95,14 @@ Allows type-only imports from any layer. Recommended for TypeScript projects.
 import type { User } from 'entities/user'; // OK in shared layer
 ```
 
-**Note:** Only works with explicit `type` keyword. Regular imports of types are still checked.
+::: warning
+Only works with explicit `type` keyword. Regular imports of types are still checked.
+:::
+
+```ts
+// Still an error even if User is only a type
+import { User } from 'entities/user';
+```
 
 ### ignorePatterns
 
@@ -97,7 +114,10 @@ Glob patterns for import paths to ignore.
 ```js
 featureSliced({
   layersSlices: {
-    ignorePatterns: ['**/legacy/**/*', '@/shared/deprecated/*'],
+    ignorePatterns: [
+      '**/legacy/**/*',
+      '@/shared/deprecated/*',
+    ],
   },
 });
 ```
@@ -112,7 +132,11 @@ Glob patterns for files where the rule is disabled.
 ```js
 featureSliced({
   layersSlices: {
-    ignoreInFilesPatterns: ['**/tests/**/*', '**/*.test.ts', '**/*.stories.tsx'],
+    ignoreInFilesPatterns: [
+      '**/tests/**/*',
+      '**/*.test.ts',
+      '**/*.stories.tsx',
+    ],
   },
 });
 ```

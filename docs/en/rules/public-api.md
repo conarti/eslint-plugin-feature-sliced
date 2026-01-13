@@ -1,8 +1,10 @@
-# Check for module imports from public api (`@conarti/feature-sliced/public-api`)
-
-💡 This rule provides suggestions for fixing violations.
+# public-api
 
 Enforces that absolute imports come from the public API (index files) only, not from internal module files.
+
+**Rule name:** `@conarti/feature-sliced/public-api`
+
+💡 This rule provides suggestions for fixing violations.
 
 ## Rule Details
 
@@ -12,6 +14,8 @@ In Feature-Sliced Design, each slice should expose a public API through its `ind
 2. Layer-level public API is not used (e.g., `import from 'shared'`)
 
 This maintains proper encapsulation and makes refactoring internal structure safer.
+
+## Examples
 
 ### ❌ Incorrect
 
@@ -71,8 +75,30 @@ Default: `'slices'`
 
 Defines the depth of public API validation:
 
-- `'slices'` - Public API at slice level (`layer/slice`)
-- `'segments'` - Public API at segment level (`layer/slice/segment`)
+#### `'slices'` (default)
+
+Public API at slice level. Imports must be from `layer/slice`.
+
+```js
+// Valid imports with level: 'slices'
+import { User } from 'entities/user';
+import { Button } from 'shared/ui';
+```
+
+#### `'segments'`
+
+Public API at segment level. Imports must be from `layer/slice/segment`.
+
+```js
+// Valid imports with level: 'segments'
+import { User } from 'entities/user/model';
+import { Button } from 'shared/ui';
+import { userApi } from 'entities/user/api';
+```
+
+::: tip When to use segments
+Use `level: 'segments'` for larger projects where you want more granular control over what's exposed from each slice.
+:::
 
 ### ignorePatterns
 
@@ -81,12 +107,34 @@ Default: `[]`
 
 Glob patterns for import paths to ignore.
 
+```js
+featureSliced({
+  publicApi: {
+    ignorePatterns: [
+      '**/types/**/*',
+      '*.d.ts',
+    ],
+  },
+});
+```
+
 ### ignoreInFilesPatterns
 
 Type: `string[]`
 Default: `[]`
 
 Glob patterns for files where the rule is disabled.
+
+```js
+featureSliced({
+  publicApi: {
+    ignoreInFilesPatterns: [
+      '**/tests/**/*',
+      '**/*.test.ts',
+    ],
+  },
+});
+```
 
 ## Configuration Example
 
@@ -103,6 +151,18 @@ export default [
     },
   }),
 ];
+```
+
+## Suggestions
+
+When this rule finds a violation, it provides a suggestion to fix the import path:
+
+```js
+// Before
+import { User } from 'entities/user/model/user';
+
+// After applying suggestion
+import { User } from 'entities/user';
 ```
 
 ## When Not To Use

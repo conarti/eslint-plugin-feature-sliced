@@ -10,10 +10,7 @@ hero:
       text: Get Started
       link: /en/getting-started
     - theme: alt
-      text: Начать (RU)
-      link: /ru/getting-started
-    - theme: alt
-      text: GitHub
+      text: View on GitHub
       link: https://github.com/conarti/eslint-plugin-feature-sliced
 
 features:

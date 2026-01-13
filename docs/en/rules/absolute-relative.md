@@ -1,6 +1,8 @@
-# Checks for absolute and relative paths (`@conarti/feature-sliced/absolute-relative`)
+# absolute-relative
 
 Validates that imports use the correct path type (absolute or relative) based on FSD principles.
+
+**Rule name:** `@conarti/feature-sliced/absolute-relative`
 
 ## Rule Details
 
@@ -10,6 +12,8 @@ This rule enforces path conventions in Feature-Sliced Design:
 - **Between different slices/layers** → use absolute paths
 
 This ensures clear boundaries between modules and makes refactoring easier.
+
+## Examples
 
 ### ❌ Incorrect
 
@@ -53,6 +57,19 @@ import { User } from 'entities/user';
 // Relative paths within shared layer (no slices)
 import { Icon } from '../icon';
 import { theme } from '../../lib/theme';
+```
+
+## Path Resolution
+
+The rule understands various alias formats:
+
+```js
+// All these are treated as absolute paths
+import { Button } from '@/shared/ui';
+import { Button } from '~/shared/ui';
+import { Button } from '$shared/ui';
+import { Button } from 'shared/ui';
+import { Button } from 'src/shared/ui';
 ```
 
 ## Options
