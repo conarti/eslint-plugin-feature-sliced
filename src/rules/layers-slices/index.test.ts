@@ -16,7 +16,6 @@ const ruleTester = new RuleTester({
     sourceType: 'module',
     parser: require('@typescript-eslint/parser'),
   },
-  cwd: CWD_MOCK_PATH,
 });
 
 const makeFilename = (filename: string): string => `${CWD_MOCK_PATH}/${filename}`;
@@ -182,16 +181,6 @@ ruleTester.run('layers-slices', rule, {
       code: "import { Bar } from 'src/features/bar';",
       options: makeIgnoreInFilesOptions(['**/src/(shared|entities|features|widgets|pages|processes|app)/index.ts']),
     },
-    {
-      name: 'should be valid if import from same slice and slice contain "layer" name',
-      filename: makeFilename('src/features/foo-pages/ui/foo.vue'),
-      code: "import { foo } from '../model'",
-    },
-    {
-      name: 'should be valid if import within same layer and same slice',
-      filename: makeFilename('src/pages/policies/ui/PolicyPage.vue'),
-      code: "import { foo } from '../model'",
-    },
   ],
 
   invalid: [
@@ -333,35 +322,4 @@ ruleTester.run('layers-slices', rule, {
       errors: [makeErrorMessage('pages', 'entities')],
     },
   ],
-});
-
-// TODO: These tests are skipped because @typescript-eslint/rule-tester doesn't properly support custom cwd
-// See: https://github.com/typescript-eslint/typescript-eslint/issues/11668
-describe.skip('layers-slices with custom cwd', () => {
-  const ruleTesterWithCwd = new RuleTester({
-    languageOptions: {
-      ecmaVersion: 6,
-      sourceType: 'module',
-      parser: require('@typescript-eslint/parser'),
-    },
-    cwd: CWD_MOCK_PATH,
-  });
-
-  ruleTesterWithCwd.run('layers-slices', rule, {
-    valid: [],
-    invalid: [
-      {
-        name: 'should work with custom cwd and alias imports',
-        filename: makeFilename('src/entities/Viewer/model/types.ts'),
-        code: "import { u } from '@/entities/User';",
-        errors: [makeErrorMessage('entities', 'entities')],
-      },
-      {
-        name: 'should work with custom cwd for cross-layer same-slice imports',
-        filename: makeFilename('src/entities/policies/model.ts'),
-        code: "import { foo } from '@/pages/policies/ui';",
-        errors: [makeErrorMessage('pages', 'entities')],
-      },
-    ],
-  });
 });

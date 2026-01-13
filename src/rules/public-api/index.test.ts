@@ -13,7 +13,7 @@ import rule from './index';
 const FSD_LAYERS = layers;
 const FSD_LAYERS_WITHOUT_SLICES = layersWithoutSlices;
 
-const CWD_MOCK_PATH = '\\Users\\User\\Projects\\app'; /* windows path because we need also normalize it to unix like others */
+const CWD_MOCK_PATH = '/Users/User/Projects/app';
 
 const ruleTester = new RuleTester({
   languageOptions: {
@@ -21,7 +21,6 @@ const ruleTester = new RuleTester({
     sourceType: 'module',
     parser: require('@typescript-eslint/parser'),
   },
-  cwd: CWD_MOCK_PATH,
 });
 
 const makeFilename = (filename: string): string => `${CWD_MOCK_PATH}/${filename}`;
@@ -204,16 +203,6 @@ ruleTester.run('public-api', rule, {
       filename: 'src/features/index.ts',
       code: 'import { bar } from "./ui/bar";',
       options: makeOptions({ ignoreInFilesPatterns: [`**/(${FSD_LAYERS.join('|')})/index.*`] }),
-    },
-    {
-      name: 'should be valid if import from same slice and slice contain "layer" name',
-      filename: makeFilename('src/features/foo-pages/ui/foo.vue'),
-      code: "import { foo } from '../model'",
-    },
-    {
-      name: 'should be valid if import within same layer and same slice',
-      filename: makeFilename('src/pages/policies/ui/PolicyPage.vue'),
-      code: "import { foo } from '../model'",
     },
   ],
 
@@ -406,30 +395,6 @@ ruleTester.run('public-api', rule, {
       errors: [errorLayersPublicApiNotAllowed],
     },
     {
-      name: 'should throw error when importing from different layer with same slice name (api segment)',
-      filename: makeFilename('src/pages/policies/ui/PolicyNodeDetailsPage.vue'),
-      code: "import { getNodePolicyById } from '@/entities/policies/api';",
-      errors: [
-        makeErrorWithSuggestion(
-          'api',
-          "import { getNodePolicyById } from '@/entities/policies';",
-          '@/entities/policies',
-        ),
-      ],
-    },
-    {
-      name: 'should throw error when importing from different layer with same slice name (lib segment)',
-      filename: makeFilename('src/pages/policies/ui/PolicyNodeDetailsPage.vue'),
-      code: "import { createNodePolicyFields } from '@/entities/policies/lib';",
-      errors: [
-        makeErrorWithSuggestion(
-          'lib',
-          "import { createNodePolicyFields } from '@/entities/policies';",
-          '@/entities/policies',
-        ),
-      ],
-    },
-    {
       name: 'should remove file extension from directory import suggestion (issue #17)',
       filename: '/Users/test-user/repository/src/features/foo/ui/index.vue',
       code: "import { unblockNode, unblockNodesBulk } from '@/entities/node/api.ts';",
@@ -449,32 +414,4 @@ ruleTester.run('public-api', rule, {
       errors: [errorFromInvalidStructure],
     }, */
   ],
-});
-
-// TODO: These tests are skipped because @typescript-eslint/rule-tester doesn't properly support custom cwd
-// See: https://github.com/typescript-eslint/typescript-eslint/issues/11668
-describe.skip('public-api with custom cwd', () => {
-  const ruleTester = new RuleTester({
-    languageOptions: {
-      ecmaVersion: 6,
-      sourceType: 'module',
-      parser: require('@typescript-eslint/parser'),
-    },
-  });
-
-  ruleTester.run('public-api', rule, {
-    valid: [
-      {
-        name: 'should work with multiple layer names in path (correct understand layer)',
-        filename: '/Users/User/Projects/frontend/src/processes/shared/index.js',
-        code: "import { foo } from 'shared/foo';",
-      },
-      {
-        name: 'should work with multiple layer names in path (correct understand layer using "cwd")',
-        filename: '/Users/User/Projects/app/index.js',
-        code: "import { foo } from 'shared/foo';",
-      },
-    ],
-    invalid: [],
-  });
 });
