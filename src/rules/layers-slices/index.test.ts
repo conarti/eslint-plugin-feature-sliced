@@ -3,6 +3,7 @@ import * as tseslintParser from '@typescript-eslint/parser';
 import { RuleTester } from '../../../tests/rule-tester';
 import {
   layersSlicesAllowTypeImportsOptions,
+  makeInvalidCrossImportError,
   makeLayersSlicesError,
   makeLayersSlicesErrorAtSpecifier,
   makeLayersSlicesIgnoreInFilesOptions,
@@ -283,5 +284,49 @@ ruleTester.run('layers-slices', rule, {
       code: "import { foo } from '../../../pages/policies/ui';",
       errors: [makeLayersSlicesError('pages', 'entities')],
     },
+    {
+      name: 'should throw error for @x import from wrong slice',
+      filename: 'src/entities/Order/model.ts',
+      code: "import { User } from '@/entities/User/@x/Session';",
+      errors: [makeInvalidCrossImportError('User', 'Session')],
+    },
+    {
+      name: 'should throw error for @x import from wrong slice (different slice)',
+      filename: 'src/entities/Product/ui/Card.tsx',
+      code: "import { User } from 'entities/User/@x/Session';",
+      errors: [makeInvalidCrossImportError('User', 'Session')],
+    },
   ],
+});
+
+/* === @x cross-import tests === */
+
+ruleTester.run('layers-slices (@x cross-imports)', rule, {
+  valid: [
+    {
+      name: 'should allow @x cross-import from correct target slice',
+      filename: 'src/entities/Session/model.ts',
+      code: "import { User } from '@/entities/User/@x/Session';",
+    },
+    {
+      name: 'should allow @x cross-import with .ts extension',
+      filename: 'src/entities/Session/model.ts',
+      code: "import { User } from '@/entities/User/@x/Session.ts';",
+    },
+    {
+      name: 'should allow @x cross-import from nested file in target slice',
+      filename: 'src/entities/Session/ui/Card.tsx',
+      code: "import { User } from 'entities/User/@x/Session';",
+    },
+    /*
+     * Group folders не поддерживаются полностью в extractSlice.
+     * TODO: добавить поддержку group folders.
+     */
+    {
+      name: 'should allow @x cross-import with hyphenated slice names',
+      filename: 'src/entities/user-session/model.ts',
+      code: "import { UserProfile } from '@/entities/user-profile/@x/user-session';",
+    },
+  ],
+  invalid: [],
 });

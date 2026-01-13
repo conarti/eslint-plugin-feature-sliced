@@ -2,6 +2,7 @@ import type { TSESLint } from '@typescript-eslint/utils';
 
 export enum ERROR_MESSAGE_ID {
   CAN_NOT_IMPORT = 'can-not-import',
+  INVALID_CROSS_IMPORT = 'invalid-cross-import',
 }
 
 export type MessageIds = ERROR_MESSAGE_ID;

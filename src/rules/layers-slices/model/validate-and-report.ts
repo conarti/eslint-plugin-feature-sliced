@@ -9,6 +9,7 @@ import {
   type TSESTree,
 } from '@typescript-eslint/utils';
 import {
+  extractCrossImportInfo,
   extractPathsInfo,
   type PathsInfo,
 } from '../../../lib/feature-sliced';
@@ -18,7 +19,10 @@ import {
   isIgnoredCurrentFile,
   isIgnoredTarget,
 } from '../../../lib/rule';
-import { reportCanNotImportLayer } from './errors';
+import {
+  reportCanNotImportLayer,
+  reportInvalidCrossImport,
+} from './errors';
 import { isNotSuitableForValidation } from './is-not-suitable-for-validation';
 import {
   hasErrorsAtAllSpecifiers,
@@ -66,6 +70,23 @@ export function validateAndReport(node: ImportNodes, context: RuleContext, optio
   }
 
   const pathsInfo = extractPathsInfo(node, context);
+
+  /*
+   * Проверка @x cross-import паттерна.
+   * @x разрешён только для слоя entities.
+   */
+  const crossImportInfo = extractCrossImportInfo(pathsInfo.normalizedTargetPath);
+  if (crossImportInfo.isCrossImport) {
+    const currentFileSlice = pathsInfo.fsdPartsOfCurrentFile.slice;
+    const isValidCrossImport = crossImportInfo.targetSlice === currentFileSlice;
+
+    if (isValidCrossImport) {
+      return;
+    }
+
+    reportInvalidCrossImport(context, node, crossImportInfo);
+    return;
+  }
 
   if (isNotSuitableForValidation(pathsInfo)) {
     return;

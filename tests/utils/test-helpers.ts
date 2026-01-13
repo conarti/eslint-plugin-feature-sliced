@@ -168,6 +168,22 @@ export function makeLayersSlicesIgnoreInFilesOptions(patterns: string[]): Layers
   ];
 }
 
+/**
+ * Создает ошибку для неверного @x cross-import
+ */
+export function makeInvalidCrossImportError(
+  sourceSlice: string,
+  targetSlice: string,
+): TSESLint.TestCaseError<LayersSlicesMessageIds> {
+  return {
+    messageId: LAYERS_SLICES_MESSAGE_ID.INVALID_CROSS_IMPORT,
+    data: {
+      sourceSlice,
+      targetSlice,
+    },
+  };
+}
+
 /* === absolute-relative helpers === */
 
 /**
