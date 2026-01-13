@@ -1,19 +1,19 @@
 import type { TSESLint } from '@typescript-eslint/utils';
 import type { Layer } from '../../src/config';
 import {
-  MESSAGE_ID as PUBLIC_API_MESSAGE_ID,
-  VALIDATION_LEVEL,
-  type Options as PublicApiOptions,
-} from '../../src/rules/public-api/config';
+  ERROR_MESSAGE_ID as ABSOLUTE_RELATIVE_MESSAGE_ID,
+  type Options as AbsoluteRelativeOptions,
+} from '../../src/rules/absolute-relative/config';
 import {
   ERROR_MESSAGE_ID as LAYERS_SLICES_MESSAGE_ID,
   type MessageIds as LayersSlicesMessageIds,
   type Options as LayersSlicesOptions,
 } from '../../src/rules/layers-slices/config';
 import {
-  ERROR_MESSAGE_ID as ABSOLUTE_RELATIVE_MESSAGE_ID,
-  type Options as AbsoluteRelativeOptions,
-} from '../../src/rules/absolute-relative/config';
+  MESSAGE_ID as PUBLIC_API_MESSAGE_ID,
+  type Options as PublicApiOptions,
+  VALIDATION_LEVEL,
+} from '../../src/rules/public-api/config';
 
 /**
  * Стандартный CWD для всех тестов
