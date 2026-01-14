@@ -89,6 +89,11 @@ export function makePublicApiOptions({
 /* === layers-slices helpers === */
 
 /**
+ * Default layers order string for error messages
+ */
+const DEFAULT_LAYERS_ORDER = 'shared -> entities -> features -> widgets -> pages -> processes -> app';
+
+/**
  * Creates layers-slices error
  */
 export function makeLayersSlicesError(
@@ -100,6 +105,7 @@ export function makeLayersSlicesError(
     data: {
       importLayer,
       currentFileLayer,
+      layersOrder: DEFAULT_LAYERS_ORDER,
     },
   };
 }
@@ -127,6 +133,7 @@ export function makeLayersSlicesErrorAtSpecifier(
     data: {
       importLayer,
       currentFileLayer,
+      layersOrder: DEFAULT_LAYERS_ORDER,
     },
     column: position.column,
     endColumn: position.endColumn,
@@ -246,12 +253,14 @@ export function makeNormalizedLayersSettings(layers: NormalizedLayerConfig[]): L
 export function makeCustomLayersSlicesError(
   importLayer: string,
   currentFileLayer: string,
+  layersOrder: string,
 ): TSESLint.TestCaseError<LayersSlicesMessageIds> {
   return {
     messageId: LAYERS_SLICES_MESSAGE_ID.CAN_NOT_IMPORT,
     data: {
       importLayer,
       currentFileLayer,
+      layersOrder,
     },
   };
 }

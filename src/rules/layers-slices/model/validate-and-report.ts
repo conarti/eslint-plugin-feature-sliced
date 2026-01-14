@@ -14,6 +14,7 @@ import {
   extractPathsInfo,
   type PathsInfo,
 } from '../../../lib/feature-sliced';
+import { normalizeLayersConfig } from '../../../lib/feature-sliced/layers-config';
 import {
   extractRuleOptions,
   hasPath,
@@ -57,8 +58,13 @@ function validate(
   return invalidSpecifiers;
 }
 
-function reportValidationErrors(nodes: TSESTree.ImportSpecifier[] | ImportNodes[], context: RuleContext, pathsInfo: PathsInfo) {
-  nodes.forEach((node) => reportCanNotImportLayer(context, node, pathsInfo));
+function reportValidationErrors(
+  nodes: TSESTree.ImportSpecifier[] | ImportNodes[],
+  context: RuleContext,
+  pathsInfo: PathsInfo,
+  config: NormalizedLayerConfig[],
+) {
+  nodes.forEach((node) => reportCanNotImportLayer(context, node, pathsInfo, config));
 }
 
 export function validateAndReport(
@@ -100,6 +106,7 @@ export function validateAndReport(
   }
 
   const { allowTypeImports } = extractRuleOptions(optionsWithDefault);
-  const nodesToReport = validate(node, pathsInfo, allowTypeImports, config);
-  reportValidationErrors(nodesToReport, context, pathsInfo);
+  const layersConfig = config ?? normalizeLayersConfig();
+  const nodesToReport = validate(node, pathsInfo, allowTypeImports, layersConfig);
+  reportValidationErrors(nodesToReport, context, pathsInfo, layersConfig);
 }

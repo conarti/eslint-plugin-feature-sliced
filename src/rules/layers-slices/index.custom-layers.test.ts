@@ -19,6 +19,7 @@ const customLayers = [
 ];
 
 const customLayersSettings = makeCustomLayersSettings(customLayers);
+const customLayersOrder = 'core -> domain -> features -> pages -> app';
 
 const ruleTester = new RuleTester({
   languageOptions: {
@@ -80,35 +81,35 @@ ruleTester.run('layers-slices (custom layers)', rule, {
       filename: 'src/domain/user/model.ts',
       code: "import { Button } from '@/features/auth/ui'",
       settings: customLayersSettings,
-      errors: [makeCustomLayersSlicesError('features', 'domain')],
+      errors: [makeCustomLayersSlicesError('features', 'domain', customLayersOrder)],
     },
     {
       name: 'should error when importing from higher custom layer (domain -> core)',
       filename: 'src/core/utils.ts',
       code: "import { User } from '@/domain/user'",
       settings: customLayersSettings,
-      errors: [makeCustomLayersSlicesError('domain', 'core')],
+      errors: [makeCustomLayersSlicesError('domain', 'core', customLayersOrder)],
     },
     {
       name: 'should error when importing from higher custom layer (core -> features)',
       filename: 'src/core/config.ts',
       code: "import { AuthButton } from '@/features/auth'",
       settings: customLayersSettings,
-      errors: [makeCustomLayersSlicesError('features', 'core')],
+      errors: [makeCustomLayersSlicesError('features', 'core', customLayersOrder)],
     },
     {
       name: 'should error when importing pages from features',
       filename: 'src/features/auth/ui.tsx',
       code: "import { HomePage } from '@/pages/home'",
       settings: customLayersSettings,
-      errors: [makeCustomLayersSlicesError('pages', 'features')],
+      errors: [makeCustomLayersSlicesError('pages', 'features', customLayersOrder)],
     },
     {
       name: 'should error when importing app from features',
       filename: 'src/features/auth/ui.tsx',
       code: "import { config } from '@/app/config'",
       settings: customLayersSettings,
-      errors: [makeCustomLayersSlicesError('app', 'features')],
+      errors: [makeCustomLayersSlicesError('app', 'features', customLayersOrder)],
     },
   ],
 });
@@ -123,6 +124,7 @@ const minimalLayers = [
 ];
 
 const minimalLayersSettings = makeCustomLayersSettings(minimalLayers);
+const minimalLayersOrder = 'shared -> features -> app';
 
 ruleTester.run('layers-slices (minimal layers)', rule, {
   valid: [
@@ -146,7 +148,7 @@ ruleTester.run('layers-slices (minimal layers)', rule, {
       filename: 'src/shared/ui/button.tsx',
       code: "import { AuthForm } from '@/features/auth'",
       settings: minimalLayersSettings,
-      errors: [makeCustomLayersSlicesError('features', 'shared')],
+      errors: [makeCustomLayersSlicesError('features', 'shared', minimalLayersOrder)],
     },
   ],
 });
@@ -165,6 +167,7 @@ const extraLayers = [
 ];
 
 const extraLayersSettings = makeCustomLayersSettings(extraLayers);
+const extraLayersOrder = 'shared -> entities -> features -> widgets -> pages -> flows -> app';
 
 ruleTester.run('layers-slices (extra layers)', rule, {
   valid: [
@@ -188,14 +191,14 @@ ruleTester.run('layers-slices (extra layers)', rule, {
       filename: 'src/pages/cart/ui.tsx',
       code: "import { CheckoutFlow } from '@/flows/checkout'",
       settings: extraLayersSettings,
-      errors: [makeCustomLayersSlicesError('flows', 'pages')],
+      errors: [makeCustomLayersSlicesError('flows', 'pages', extraLayersOrder)],
     },
     {
       name: 'should error when importing flows from features',
       filename: 'src/features/cart/ui.tsx',
       code: "import { CheckoutFlow } from '@/flows/checkout'",
       settings: extraLayersSettings,
-      errors: [makeCustomLayersSlicesError('flows', 'features')],
+      errors: [makeCustomLayersSlicesError('flows', 'features', extraLayersOrder)],
     },
   ],
 });
