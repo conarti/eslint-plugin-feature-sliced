@@ -27,13 +27,13 @@ export default createEslintRule<Options, MessageIds>({
           allowTypeImports: {
             type: 'boolean',
           },
-          ignorePatterns: {
+          ignoreImports: {
             type: 'array',
             items: {
               type: 'string',
             },
           },
-          ignoreInFilesPatterns: {
+          ignoreFiles: {
             type: 'array',
             items: {
               type: 'string',
@@ -46,8 +46,8 @@ export default createEslintRule<Options, MessageIds>({
   defaultOptions: [
     {
       allowTypeImports: true,
-      ignorePatterns: [],
-      ignoreInFilesPatterns: [],
+      ignoreImports: [],
+      ignoreFiles: [],
     },
   ],
 

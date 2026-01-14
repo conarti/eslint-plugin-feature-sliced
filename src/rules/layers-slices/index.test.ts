@@ -85,13 +85,13 @@ ruleTester.run('layers-slices', rule, {
       code: "import type { Foo } from '@/widgets/foo';",
     },
     {
-      name: 'should work with ignorePatterns (exact match)',
+      name: 'should work with ignoreImports (exact match)',
       filename: 'src/shared/ui/foo',
       code: "import { Bar } from '@/entities/bar';",
       options: makeLayersSlicesIgnoreOptions(['@/entities/bar']),
     },
     {
-      name: 'should work with ignorePatterns (wildcard)',
+      name: 'should work with ignoreImports (wildcard)',
       filename: 'src/shared/ui/foo',
       code: "import { Bar } from '@/entities/bar';",
       options: makeLayersSlicesIgnoreOptions(['**/bar']),
@@ -132,7 +132,7 @@ ruleTester.run('layers-slices', rule, {
       code: "import { Bar } from 'src/entities/app-bar';",
     },
     {
-      name: 'should work with ignoreInFilesPatterns',
+      name: 'should work with ignoreFiles',
       filename: 'src/features/index.ts',
       code: "import { Bar } from 'src/features/bar';",
       options: makeLayersSlicesIgnoreInFilesOptions(['**/src/(shared|entities|features|widgets|pages|processes|app)/index.ts']),

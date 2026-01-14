@@ -174,10 +174,10 @@ ruleTester.run('public-api', rule, {
       code: 'import { bar } from "./ui/bar";',
     },
     {
-      name: 'should work ignoreInFilesPatterns option',
+      name: 'should work ignoreFiles option',
       filename: 'src/features/index.ts',
       code: 'import { bar } from "./ui/bar";',
-      options: makePublicApiOptions({ ignoreInFilesPatterns: [`**/(${layers.join('|')})/index.*`] }),
+      options: makePublicApiOptions({ ignoreFiles: [`**/(${layers.join('|')})/index.*`] }),
     },
   ],
 

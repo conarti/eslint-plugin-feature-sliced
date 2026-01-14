@@ -57,10 +57,10 @@ ruleTester.run('absolute-relative', rule, {
       code: "export { MarriageDetails } from './MarriageDetails';",
     },
     {
-      name: 'should be valid if it has ignored in files options',
+      name: 'should be valid if it has ignoreFiles option',
       filename: 'src/shared/foo/index.ts',
       code: "import { BAR } from '@/shared/bar';",
-      options: makeAbsoluteRelativeOptions({ ignoreInFilesPatterns: ['**/*/shared/foo/**/*'] }),
+      options: makeAbsoluteRelativeOptions({ ignoreFiles: ['**/*/shared/foo/**/*'] }),
     },
     {
       name: "should be valid if it has slice with 'layer' name",

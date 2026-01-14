@@ -67,18 +67,18 @@ export const publicApiLayersNotAllowedError = {
  */
 export function makePublicApiOptions({
   level = VALIDATION_LEVEL.SLICES,
-  ignorePatterns = [],
-  ignoreInFilesPatterns = [],
+  ignoreImports = [],
+  ignoreFiles = [],
 }: {
   level?: ValidationLevel;
-  ignorePatterns?: string[];
-  ignoreInFilesPatterns?: string[];
+  ignoreImports?: string[];
+  ignoreFiles?: string[];
 } = {}): PublicApiOptions {
   return [
     {
       level,
-      ignorePatterns,
-      ignoreInFilesPatterns,
+      ignoreImports,
+      ignoreFiles,
     },
   ];
 }
@@ -138,33 +138,33 @@ export function makeLayersSlicesErrorAtSpecifier(
 export const layersSlicesAllowTypeImportsOptions: LayersSlicesOptions = [
   {
     allowTypeImports: true,
-    ignorePatterns: [],
-    ignoreInFilesPatterns: [],
+    ignoreImports: [],
+    ignoreFiles: [],
   },
 ];
 
 /**
- * Creates layers-slices options with ignorePatterns
+ * Creates layers-slices options with ignoreImports
  */
 export function makeLayersSlicesIgnoreOptions(patterns: string[]): LayersSlicesOptions {
   return [
     {
       allowTypeImports: true,
-      ignorePatterns: patterns,
-      ignoreInFilesPatterns: [],
+      ignoreImports: patterns,
+      ignoreFiles: [],
     },
   ];
 }
 
 /**
- * Creates layers-slices options with ignoreInFilesPatterns
+ * Creates layers-slices options with ignoreFiles
  */
 export function makeLayersSlicesIgnoreInFilesOptions(patterns: string[]): LayersSlicesOptions {
   return [
     {
       allowTypeImports: true,
-      ignorePatterns: [],
-      ignoreInFilesPatterns: patterns,
+      ignoreImports: [],
+      ignoreFiles: patterns,
     },
   ];
 }
@@ -196,19 +196,19 @@ export const absoluteRelativeErrors = {
 };
 
 /**
- * Creates absolute-relative options with ignorePatterns and ignoreInFilesPatterns
+ * Creates absolute-relative options with ignoreImports and ignoreFiles
  */
 export function makeAbsoluteRelativeOptions({
-  ignorePatterns = [],
-  ignoreInFilesPatterns = [],
+  ignoreImports = [],
+  ignoreFiles = [],
 }: {
-  ignorePatterns?: string[];
-  ignoreInFilesPatterns?: string[];
+  ignoreImports?: string[];
+  ignoreFiles?: string[];
 } = {}): AbsoluteRelativeOptions {
   return [
     {
-      ignorePatterns,
-      ignoreInFilesPatterns,
+      ignoreImports,
+      ignoreFiles,
     },
   ];
 }

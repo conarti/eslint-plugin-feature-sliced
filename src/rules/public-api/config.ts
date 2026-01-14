@@ -18,8 +18,8 @@ export type ValidationLevel = typeof VALIDATION_LEVEL[keyof typeof VALIDATION_LE
 export type Options = [
   {
     level: ValidationLevel;
-    ignorePatterns: string[];
-    ignoreInFilesPatterns: string[];
+    ignoreImports: string[];
+    ignoreFiles: string[];
   },
 ];
 

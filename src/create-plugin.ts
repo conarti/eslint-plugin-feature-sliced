@@ -9,11 +9,11 @@ interface AbsoluteRelativeOptions {
   /**
    * Ignore certain import paths (import foo from '<path-to-ignore>')
    */
-  ignorePatterns: string[];
+  ignoreImports: string[];
   /**
    * Disable the rule in certain files
    */
-  ignoreInFilesPatterns: string[];
+  ignoreFiles: string[];
 }
 
 interface LayersSlicesOptions {
@@ -25,11 +25,11 @@ interface LayersSlicesOptions {
   /**
    * Ignore certain import paths (import foo from '<path-to-ignore>')
    */
-  ignorePatterns: string[];
+  ignoreImports: string[];
   /**
    * Disable the rule in certain files
    */
-  ignoreInFilesPatterns: string[];
+  ignoreFiles: string[];
 }
 
 interface PublicApiOptions {
@@ -44,11 +44,11 @@ interface PublicApiOptions {
   /**
    * Ignore certain import paths (import foo from '<path-to-ignore>')
    */
-  ignorePatterns: string[];
+  ignoreImports: string[];
   /**
    * Disable the rule in certain files
    */
-  ignoreInFilesPatterns: string[];
+  ignoreFiles: string[];
 }
 
 interface ESLintPluginFeatureSlicedOptions {

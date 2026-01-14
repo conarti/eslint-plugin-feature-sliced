@@ -24,13 +24,13 @@ export default createEslintRule<Options, MessageIds>({
       {
         type: 'object',
         properties: {
-          ignorePatterns: {
+          ignoreImports: {
             type: 'array',
             items: {
               type: 'string',
             },
           },
-          ignoreInFilesPatterns: {
+          ignoreFiles: {
             type: 'array',
             items: {
               type: 'string',
@@ -42,8 +42,8 @@ export default createEslintRule<Options, MessageIds>({
   },
   defaultOptions: [
     {
-      ignorePatterns: [],
-      ignoreInFilesPatterns: [],
+      ignoreImports: [],
+      ignoreFiles: [],
     },
   ],
 

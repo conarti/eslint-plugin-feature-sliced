@@ -9,8 +9,8 @@ export type MessageIds = typeof ERROR_MESSAGE_ID[keyof typeof ERROR_MESSAGE_ID];
 
 export type Options = [
   {
-    ignorePatterns: string[];
-    ignoreInFilesPatterns: string[];
+    ignoreImports: string[];
+    ignoreFiles: string[];
   },
 ];
 
