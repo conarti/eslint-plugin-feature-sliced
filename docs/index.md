@@ -1,25 +1,32 @@
 ---
-# https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
 hero:
-  name: "Feature Sliced Eslint Plugin"
-  text: "Feature Sliced Design Eslint Plugin Docs"
-  tagline: My great project tagline
+  name: eslint-plugin-feature-sliced
+  text: ESLint plugin for Feature-Sliced Design
+  tagline: Enforce FSD architecture rules in your codebase
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: Get Started
+      link: /getting-started
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: Начать (RU)
+      link: /ru/getting-started
+    - theme: alt
+      text: GitHub
+      link: https://github.com/conarti/eslint-plugin-feature-sliced
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - icon: 🏗️
+    title: Layer Imports
+    details: Validates imports between layers according to FSD hierarchy. Prevents importing from higher layers into lower ones.
+  - icon: 📁
+    title: Absolute & Relative Paths
+    details: Ensures correct path types - relative within slices, absolute between layers.
+  - icon: 📦
+    title: Public API
+    details: Enforces imports only from public API (index files), not from internal module files.
+  - icon: 📊
+    title: Import Sorting
+    details: Sorts imports by FSD layers using eslint-plugin-import-x integration.
 ---
-

@@ -1,134 +1,153 @@
 # @conarti/eslint-plugin-feature-sliced
 
-Feature-sliced design methodology plugin.
+ESLint plugin for [Feature-Sliced Design](https://feature-sliced.design/) methodology.
 
-_If you find a bug, please open an issue or pull request. Feel free to contribute!_
+[📖 Documentation](https://conarti.github.io/eslint-plugin-feature-sliced/) | [🇷🇺 Русская версия](./README.ru.md)
+
+## What is Feature-Sliced Design?
+
+Feature-Sliced Design (FSD) is an architectural methodology for frontend projects. It provides rules for organizing code in a scalable and maintainable way through layers, slices, and segments.
+
+Learn more at [feature-sliced.design](https://feature-sliced.design/).
 
 ## Features
 
-- Works with any framework
-
-- Support for **any aliases** out of the box
-
-```javascript
-import { AppButton } from "~/shared/ui/app-button";
-import { AppButton } from "@/shared/ui/app-button";
-import { AppButton } from "@shared/ui/app-button";
-import { AppButton } from "$shared/ui/app-button";
-import { AppButton } from "$@#$%%shared/ui/app-button";
-```
-
-- Checks for absolute and relative paths
-
-```javascript
-// file: src/widgets/TheHeader/ui/TheHeader.stories.tsx
-
-import { TheHeader } from './TheHeader'; // valid
-import { TheHeader } from 'src/widgets/TheHeader'; // error: should relative
-import { TheHeader } from 'widgets/TheHeader'; // error: should relative
-import { useBar } from '../../../shared/hooks'; // error: should absolute
-```
-
-- Checks for imports from public api and fix them
-
-```javascript
-// file: src/features/search-articles/...
-
-import { addCommentFormActions, addCommentFormReducer } from 'entities/Article/model/file.ts'; // error
-// fix: import { addCommentFormActions, addCommentFormReducer } from 'entities/Article';
-```
-
-- Sort imports
-
-```javascript
-import axios from "axios";                           // 1) external libs
-import { Header } from "widgets/header";             // 2.1) Layers: widgets
-import { Zero } from "widgets/zero";                 // 2.1) Layers: widget 
-import { LoginForm } from "features/login-form";     // 2.2) Layers: features
-import { globalEntities } from "entities";           // 2.4) Layers: entities
-import { authModel } from "entities/auth";           // 2.4) Layers: entities
-import { Cart } from "entities/cart";                // 2.4) Layers: entities 
-import { One } from "entities/one";                  // 2.4) Layers: entities 
-import { Two } from "entities/two";                  // 2.4) Layers: entities
-import { debounce } from "shared/lib/fp";            // 2.5) Layers: shared
-import { Button } from "shared/ui";                  // 2.5) Layers: shared
-import { Input } from "shared/ui";                   // 2.5) Layers: shared
-import { data } from "../fixtures";                  // 3) parent
-import { getSmth } from "./lib";                     // 4) sibling
-```
+- Works with **any framework** (React, Vue, Angular, etc.)
+- Supports **any path aliases** out of the box
+- **4 rules** covering all FSD import conventions
+- Full **ESLint 9 Flat Config** support
+- **TypeScript** friendly
 
 ## Installation
 
-You'll first need to install [ESLint](https://eslint.org/):
-
 ```sh
-npm i eslint --save-dev
+npm install -D @conarti/eslint-plugin-feature-sliced eslint
 ```
 
-Next, install `@conarti/eslint-plugin-feature-sliced`:
+**Requirements:**
+- Node.js >= 18.0.0
+- ESLint >= 9.0.0
 
-```sh
-npm i -D @conarti/eslint-plugin-feature-sliced
-```
-
-Note: the plugin may conflict with other import sorting plugins installed in your project. 
-If you do not want to use this plugin's sorting, disable it. More about this below
-
-## Usage
-
-For simple use with loose settings, just call the function:
+## Quick Start
 
 ```js
 // eslint.config.js
 import featureSliced from '@conarti/eslint-plugin-feature-sliced';
 
 export default [
-    featureSliced(),
-]
+  featureSliced(),
+];
 ```
 
-## Customisation
+## What's Included
 
-You can also manage any rule and disable them:
+### Layer Import Validation
 
 ```js
-import featureSliced from '@conarti/eslint-plugin-feature-sliced';
+// ❌ Error: Cannot import from higher layer
+import { LoginForm } from 'features/login'; // in entities/user
 
-export default [
-    featureSliced({
-        /* Enables public api check in segments */
-        publicApi: { level: 'segments' },
-        /* Uses a different import sorter. You can disable it and use your own plugins and configurations */
-        sortImports: 'with-newlines',
-        /* This is how you can completely disable the rule */
-        absoluteRelative: false,
-        layersSlices: {
-            /* This is how you can disable the rule for imports in any files (ignore paths in code) */
-            ignorePatterns: [
-                /**
-                 * Please note that the plugin reads the entire file path from the root of your system, not the project.
-                 * That's why we added "**" to the beginning.
-                 */
-                "**/src/components/**/*"
-            ],
-            /* This is how you can disable the rule for files or folders (ignore all paths in files or folders) */
-            ignoreInFilesPatterns: [
-                /* Do not check imports like "import foo from '@/app/some-module/foo'" */
-                "@/app/some-module/*",
-            ],
-        },
-    }),
-]
+// ✅ Correct
+import { User } from 'entities/user'; // in features/login
+```
+
+### Path Type Validation
+
+```js
+// ❌ Error: Should be relative within same slice
+import { useLogin } from 'features/login/model'; // in features/login/ui
+
+// ✅ Correct
+import { useLogin } from '../model';
+```
+
+### Public API Enforcement
+
+```js
+// ❌ Error: Import from internal file
+import { userModel } from 'entities/user/model/user';
+
+// ✅ Correct
+import { userModel } from 'entities/user';
+```
+
+### Import Sorting
+
+```js
+// Sorted by: external → layers (app→shared) → relative
+import React from 'react';
+import axios from 'axios';
+import { Header } from 'widgets/header';
+import { LoginForm } from 'features/login';
+import { User } from 'entities/user';
+import { Button } from 'shared/ui';
+import { something } from './lib';
 ```
 
 ## Rules
 
-🔧 Automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/user-guide/command-line-interface#--fix).
-💡 Suggestion fix (no automatic fix)
+| Rule | Description | Fix |
+|------|-------------|-----|
+| [layers-slices](src/rules/layers-slices/README.md) | Validates imports between layers | |
+| [absolute-relative](src/rules/absolute-relative/README.md) | Validates path types | |
+| [public-api](src/rules/public-api/README.md) | Enforces public API imports | 💡 |
+| [import-order](src/rules/import-order/README.md) | Sorts imports by FSD layers | 🔧 |
 
-| Name                                                                                | Description                               | 🔧 |
-|:------------------------------------------------------------------------------------|:------------------------------------------|:---|
-| [@conarti/feature-sliced/layers-slices](docs/rules/layers-slices/README.md)         | Checks layer imports                      |    |
-| [@conarti/feature-sliced/absolute-relative](docs/rules/absolute-relative/README.md) | Checks for absolute and relative paths    |    |
-| [@conarti/feature-sliced/public-api](docs/rules/public-api/README.md)               | Check for module imports from public api  | 💡 |
-| import/order                                                                        | Sort imports using 'eslint-plugin-import' | 🔧 |
+## Configuration
+
+```js
+// eslint.config.js
+import featureSliced from '@conarti/eslint-plugin-feature-sliced';
+
+export default [
+  featureSliced({
+    layersSlices: {
+      allowTypeImports: true,
+      ignoreImports: ['**/legacy/**/*'],
+      ignoreFiles: ['**/*.test.ts'],
+    },
+
+    absoluteRelative: {
+      ignoreImports: ['*.css'],
+    },
+
+    publicApi: {
+      level: 'segments', // or 'slices' (default)
+    },
+
+    sortImports: 'with-newlines', // or 'recommended', 'with-type-group', false
+  }),
+];
+```
+
+### Disabling Rules
+
+```js
+featureSliced({
+  absoluteRelative: false,
+  sortImports: false,
+});
+```
+
+## Alias Support
+
+The plugin recognizes any alias format:
+
+```js
+import { Button } from '@/shared/ui';
+import { Button } from '~/shared/ui';
+import { Button } from '$shared/ui';
+import { Button } from 'shared/ui';
+```
+
+## Migration from v1
+
+See the [Migration Guide](https://conarti.github.io/eslint-plugin-feature-sliced/en/migration-v2) for upgrading from v1.x.
+
+## Contributing
+
+Contributions are welcome! Please open an issue or pull request.
+
+## License
+
+ISC

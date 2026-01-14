@@ -1,37 +1,128 @@
-# Checks for absolute and relative paths (`conarti-fsd/absolute-relative`)
+# Checks for absolute and relative paths (`@conarti/feature-sliced/absolute-relative`)
 
-<!-- end auto-generated rule header -->
-
-Please describe the origin of the rule here.
+Validates that imports use the correct path type (absolute or relative) based on FSD principles.
 
 ## Rule Details
 
-This rule aims to...
+This rule enforces path conventions in Feature-Sliced Design:
 
-Examples of **incorrect** code for this rule:
+- **Within the same slice** → use relative paths (`./`, `../`)
+- **Between different slices/layers** → use absolute paths
 
-```js
+This ensures clear boundaries between modules and makes refactoring easier.
 
-// fill me in
-
-```
-
-Examples of **correct** code for this rule:
+### ❌ Incorrect
 
 ```js
+// file: src/features/login/ui/LoginForm.tsx
 
-// fill me in
+// Using absolute path for same slice - should be relative
+import { useLogin } from 'features/login/model';
+// Error: There must be relative paths
 
+// Using relative path for different layer - should be absolute
+import { Button } from '../../../shared/ui';
+// Error: There must be absolute paths
 ```
 
-### Options
+```js
+// file: src/shared/ui/button/Button.tsx
 
-If there are any options, describe them here. Otherwise, delete this section.
+// Using absolute path within shared layer - should be relative
+import { Icon } from 'shared/ui/icon';
+// Error: There must be relative paths
+```
 
-## When Not To Use It
+### ✅ Correct
 
-Give a short description of when it would be appropriate to turn off this rule.
+```js
+// file: src/features/login/ui/LoginForm.tsx
+
+// Relative path within the same slice
+import { useLogin } from '../model';
+import { LoginButton } from './LoginButton';
+
+// Absolute path for different layers
+import { Button } from '@/shared/ui';
+import { User } from 'entities/user';
+```
+
+```js
+// file: src/shared/ui/button/Button.tsx
+
+// Relative paths within shared layer (no slices)
+import { Icon } from '../icon';
+import { theme } from '../../lib/theme';
+```
+
+## Options
+
+```ts
+interface Options {
+  ignoreImports?: string[];
+  ignoreFiles?: string[];
+}
+```
+
+### ignoreImports
+
+Type: `string[]`
+Default: `[]`
+
+Glob patterns for import paths to ignore.
+
+```js
+featureSliced({
+  absoluteRelative: {
+    ignoreImports: [
+      '**/assets/**/*',
+      '*.css',
+      '*.scss',
+    ],
+  },
+});
+```
+
+### ignoreFiles
+
+Type: `string[]`
+Default: `[]`
+
+Glob patterns for files where the rule is disabled.
+
+```js
+featureSliced({
+  absoluteRelative: {
+    ignoreFiles: [
+      '**/tests/**/*',
+      '**/*.test.ts',
+    ],
+  },
+});
+```
+
+## Configuration Example
+
+```js
+// eslint.config.js
+import featureSliced from '@conarti/eslint-plugin-feature-sliced';
+
+export default [
+  featureSliced({
+    absoluteRelative: {
+      ignoreImports: ['*.css'],
+      ignoreFiles: ['**/*.test.ts'],
+    },
+  }),
+];
+```
+
+## When Not To Use
+
+- If your project doesn't follow FSD path conventions
+- For style imports that don't follow module boundaries
+- In configuration files that need specific import styles
 
 ## Further Reading
 
-If there are other links that describe the issue this rule addresses, please include them here in a bulleted list.
+- [FSD Public API](https://feature-sliced.design/docs/reference/public-api)
