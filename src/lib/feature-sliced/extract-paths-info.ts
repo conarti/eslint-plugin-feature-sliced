@@ -1,3 +1,4 @@
+import type { NormalizedLayerConfig } from '../../config';
 import {
   extractPaths,
   type ImportExportNodesWithSourceValue,
@@ -53,7 +54,15 @@ function compareFeatureSlicedParts(fsPartsToCompare: FSPartsToCompare) {
   };
 }
 
-export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context: UnknownRuleContext) {
+/**
+ * Extracts paths info including FSD parts.
+ * If config is not provided, uses default FSD layers.
+ */
+export function extractPathsInfo(
+  node: ImportExportNodesWithSourceValue,
+  context: UnknownRuleContext,
+  config?: NormalizedLayerConfig[],
+) {
   const {
     targetPath,
     normalizedTargetPath,
@@ -62,11 +71,11 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     normalizedCwd,
   } = extractPaths(node, context);
 
-  const fsdPartsOfTarget = extractFeatureSlicedParts(absoluteTargetPath, normalizedCwd);
-  const fsdPartsOfCurrentFile = extractFeatureSlicedParts(normalizedCurrentFilePath, normalizedCwd);
+  const fsdPartsOfTarget = extractFeatureSlicedParts(absoluteTargetPath, normalizedCwd, config);
+  const fsdPartsOfCurrentFile = extractFeatureSlicedParts(normalizedCurrentFilePath, normalizedCwd, config);
 
-  const validatedFeatureSlicedPartsOfTarget = validateExtractedFeatureSlicedParts(fsdPartsOfTarget);
-  const validatedFeatureSlicedPartsOfCurrentFile = validateExtractedFeatureSlicedParts(fsdPartsOfCurrentFile);
+  const validatedFeatureSlicedPartsOfTarget = validateExtractedFeatureSlicedParts(fsdPartsOfTarget, config);
+  const validatedFeatureSlicedPartsOfCurrentFile = validateExtractedFeatureSlicedParts(fsdPartsOfCurrentFile, config);
 
   const {
     hasUnknownLayers,

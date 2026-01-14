@@ -1,4 +1,5 @@
 import type { TSESTree } from '@typescript-eslint/utils';
+import type { NormalizedLayerConfig } from '../../../config';
 import { extractPathsInfo } from '../../../lib/feature-sliced';
 import {
   getSourceRangeWithoutQuotes,
@@ -10,8 +11,12 @@ import {
 } from '../config';
 import { convertToPublicApi } from './convert-to-public-api';
 
-export function reportShouldBeFromPublicApi(node: ImportExportNodesWithSourceValue, context: RuleContext) {
-  const pathsInfo = extractPathsInfo(node, context);
+export function reportShouldBeFromPublicApi(
+  node: ImportExportNodesWithSourceValue,
+  context: RuleContext,
+  layersConfig?: NormalizedLayerConfig[],
+) {
+  const pathsInfo = extractPathsInfo(node, context, layersConfig);
   const [fixedPath, valueToRemove] = convertToPublicApi(pathsInfo);
 
   context.report({

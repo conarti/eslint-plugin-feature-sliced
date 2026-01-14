@@ -1,3 +1,4 @@
+import type { NormalizedLayerConfig } from '../../config';
 import type { ExtractedFeatureSlicedParts } from './extract-feature-sliced-parts';
 import { isNull } from '../shared';
 import {
@@ -5,7 +6,14 @@ import {
   isLayer,
 } from './layers';
 
-export function validateExtractedFeatureSlicedParts(extractedFeatureSlicedParts: ExtractedFeatureSlicedParts) {
+/**
+ * Validates extracted FSD parts.
+ * If config is not provided, uses default FSD layers.
+ */
+export function validateExtractedFeatureSlicedParts(
+  extractedFeatureSlicedParts: ExtractedFeatureSlicedParts,
+  config?: NormalizedLayerConfig[],
+) {
   const {
     layer,
     slice,
@@ -13,7 +21,7 @@ export function validateExtractedFeatureSlicedParts(extractedFeatureSlicedParts:
     segmentFiles,
   } = extractedFeatureSlicedParts;
 
-  const hasLayer = isLayer(layer);
+  const hasLayer = isLayer(layer, config);
   const hasNotLayer = !hasLayer;
   const hasSlice = !isNull(slice);
   const hasNotSlice = !hasSlice;
@@ -22,7 +30,7 @@ export function validateExtractedFeatureSlicedParts(extractedFeatureSlicedParts:
   const hasSegmentFiles = !isNull(segmentFiles);
   const hasNotSegmentFiles = !hasSegmentFiles;
 
-  const canContainSlices = hasLayer && canLayerContainSlices(layer);
+  const canContainSlices = hasLayer && canLayerContainSlices(layer, config);
 
   return {
     hasLayer,

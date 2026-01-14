@@ -1,7 +1,9 @@
+import type { NormalizedLayerConfig } from '../../config';
+import { segments } from '../../config';
 import {
-  layersWithSlices,
-  segments,
-} from '../../config';
+  getLayersWithSlices,
+  normalizeLayersConfig,
+} from './layers-config';
 
 /**
  * Extracts slice from the path.
@@ -11,12 +13,20 @@ import {
  *
  * Fallback: if no FSD-segment found, take the last segment after layer.
  *
+ * If config is not provided, uses default FSD layers.
+ *
  * @example
  * 'entities/User/model' -> 'User'
  * 'entities/group/User/model' -> 'User' (group folder)
  * 'entities/group/User' -> 'User' (fallback)
  */
-export function extractSlice(targetPath: string): string | null {
+export function extractSlice(
+  targetPath: string,
+  config?: NormalizedLayerConfig[],
+): string | null {
+  const layersConfig = config ?? normalizeLayersConfig();
+  const layersWithSlices = getLayersWithSlices(layersConfig);
+
   /* Remove filename (e.g., /index.ts or /model.ts) */
   const pathWithoutFile = targetPath.replace(/\/[\w-]+\.\w+$/, '');
 

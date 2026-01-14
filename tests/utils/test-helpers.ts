@@ -1,5 +1,8 @@
 import type { TSESLint } from '@typescript-eslint/utils';
-import type { Layer } from '../../src/config';
+import type { Linter } from 'eslint';
+import type { Layer, LayersConfig, NormalizedLayerConfig } from '../../src/config';
+import { PLUGIN_NAME } from '../../src/config';
+import { normalizeLayersConfig } from '../../src/lib/feature-sliced/layers-config';
 import {
   ERROR_MESSAGE_ID as ABSOLUTE_RELATIVE_MESSAGE_ID,
   type Options as AbsoluteRelativeOptions,
@@ -211,4 +214,44 @@ export function makeAbsoluteRelativeOptions({
       ignoreFiles,
     },
   ];
+}
+
+/* === Custom layers helpers === */
+
+/**
+ * Creates ESLint settings with custom layers configuration
+ */
+export function makeCustomLayersSettings(layers: LayersConfig): Linter.Settings {
+  return {
+    [PLUGIN_NAME]: {
+      layers: normalizeLayersConfig(layers),
+    },
+  };
+}
+
+/**
+ * Creates ESLint settings with normalized layers configuration
+ */
+export function makeNormalizedLayersSettings(layers: NormalizedLayerConfig[]): Linter.Settings {
+  return {
+    [PLUGIN_NAME]: {
+      layers,
+    },
+  };
+}
+
+/**
+ * Creates layers-slices error with custom layer names (string instead of Layer type)
+ */
+export function makeCustomLayersSlicesError(
+  importLayer: string,
+  currentFileLayer: string,
+): TSESLint.TestCaseError<LayersSlicesMessageIds> {
+  return {
+    messageId: LAYERS_SLICES_MESSAGE_ID.CAN_NOT_IMPORT,
+    data: {
+      importLayer,
+      currentFileLayer,
+    },
+  };
 }

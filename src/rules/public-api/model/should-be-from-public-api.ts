@@ -1,3 +1,4 @@
+import type { NormalizedLayerConfig } from '../../../config';
 import {
   extractCrossImportInfo,
   extractPathsInfo,
@@ -47,8 +48,13 @@ function shouldBeFromSegmentsPublicApi(pathsInfo: PathsInfo, validateOptions: Va
   return needValidateSegments && !isSegmentsPublicApi(pathsInfo);
 }
 
-export function shouldBeFromPublicApi(node: ImportExportNodesWithSourceValue, context: RuleContext, optionsWithDefault: Readonly<Options>): boolean {
-  const pathsInfo = extractPathsInfo(node, context);
+export function shouldBeFromPublicApi(
+  node: ImportExportNodesWithSourceValue,
+  context: RuleContext,
+  optionsWithDefault: Readonly<Options>,
+  layersConfig?: NormalizedLayerConfig[],
+): boolean {
+  const pathsInfo = extractPathsInfo(node, context, layersConfig);
   const ruleOptions = extractRuleOptions(optionsWithDefault);
 
   /*

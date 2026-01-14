@@ -1,5 +1,6 @@
 import {
   createEslintRule,
+  extractLayersConfig,
   type ImportExpression,
 } from '../../lib/rule';
 import {
@@ -60,18 +61,20 @@ export default createEslintRule<Options, MessageIds>({
   ],
 
   create(context, optionsWithDefault) {
+    const layersConfig = extractLayersConfig(context);
+
     return {
       ImportDeclaration(node) {
-        validateAndReport(node, context, optionsWithDefault);
+        validateAndReport(node, context, optionsWithDefault, layersConfig);
       },
       ImportExpression(node) {
-        validateAndReport(node as ImportExpression /* TSESTree has invalid type for this node */, context, optionsWithDefault);
+        validateAndReport(node as ImportExpression /* TSESTree has invalid type for this node */, context, optionsWithDefault, layersConfig);
       },
       ExportAllDeclaration(node) {
-        validateAndReport(node, context, optionsWithDefault);
+        validateAndReport(node, context, optionsWithDefault, layersConfig);
       },
       ExportNamedDeclaration(node) {
-        validateAndReport(node, context, optionsWithDefault);
+        validateAndReport(node, context, optionsWithDefault, layersConfig);
       },
       Program(node) {
         validateAndReportProgram(node, context, optionsWithDefault);

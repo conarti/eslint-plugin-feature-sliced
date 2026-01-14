@@ -12,3 +12,11 @@ export {
   getLayerWeight,
   isLayer,
 } from './layers';
+export {
+  canLayerContainSlices,
+  getLayerNames,
+  getLayersWithoutSlices,
+  getLayersWithSlices,
+  isKnownLayer,
+  normalizeLayersConfig,
+} from './layers-config';

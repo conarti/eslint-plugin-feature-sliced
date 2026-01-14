@@ -1,23 +1,34 @@
+import type { NormalizedLayerConfig } from '../../config';
 import {
-  type Layer,
-  layers,
-  layersWithoutSlices,
-} from '../../config';
+  canLayerContainSlices as canContainSlicesWithConfig,
+  getLayerWeight as getWeightWithConfig,
+  isKnownLayer,
+  normalizeLayersConfig,
+} from './layers-config';
 
 /**
- * Checks if layer is known
+ * Checks if layer is known.
+ * If config is not provided, uses default FSD layers.
  */
-export function isLayer(layer: unknown): layer is Layer {
-  return typeof layer === 'string' && layers.includes(layer);
+export function isLayer(layer: unknown, config?: NormalizedLayerConfig[]): boolean {
+  const layersConfig = config ?? normalizeLayersConfig();
+  return isKnownLayer(layer, layersConfig);
 }
 
 /**
- * Returns layer fsd weight
+ * Returns layer fsd weight.
+ * If config is not provided, uses default FSD layers.
  */
-export function getLayerWeight(layer: Layer): number {
-  return layers.indexOf(layer);
+export function getLayerWeight(layer: string, config?: NormalizedLayerConfig[]): number {
+  const layersConfig = config ?? normalizeLayersConfig();
+  return getWeightWithConfig(layer, layersConfig);
 }
 
-export function canLayerContainSlices(layer: Layer): boolean {
-  return !layersWithoutSlices.includes(layer);
+/**
+ * Checks if layer can contain slices.
+ * If config is not provided, uses default FSD layers.
+ */
+export function canLayerContainSlices(layer: string, config?: NormalizedLayerConfig[]): boolean {
+  const layersConfig = config ?? normalizeLayersConfig();
+  return canContainSlicesWithConfig(layer, layersConfig);
 }

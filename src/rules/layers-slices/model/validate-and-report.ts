@@ -1,3 +1,4 @@
+import type { NormalizedLayerConfig } from '../../../config';
 import type { ImportNodes } from '../../../lib/rule/models';
 import type {
   Options,
@@ -35,8 +36,9 @@ function validate(
   node: ImportNodes,
   pathsInfo: PathsInfo,
   allowTypeImports: boolean,
+  config?: NormalizedLayerConfig[],
 ): ImportNodes[] | TSESTree.ImportSpecifier[] {
-  if (validateNode(node, pathsInfo, allowTypeImports)) {
+  if (validateNode(node, pathsInfo, allowTypeImports, config)) {
     return [];
   }
 
@@ -59,7 +61,12 @@ function reportValidationErrors(nodes: TSESTree.ImportSpecifier[] | ImportNodes[
   nodes.forEach((node) => reportCanNotImportLayer(context, node, pathsInfo));
 }
 
-export function validateAndReport(node: ImportNodes, context: RuleContext, optionsWithDefault: Readonly<Options>) {
+export function validateAndReport(
+  node: ImportNodes,
+  context: RuleContext,
+  optionsWithDefault: Readonly<Options>,
+  config?: NormalizedLayerConfig[],
+) {
   if (!hasPath(node)) {
     return;
   }
@@ -69,7 +76,7 @@ export function validateAndReport(node: ImportNodes, context: RuleContext, optio
     return;
   }
 
-  const pathsInfo = extractPathsInfo(node, context);
+  const pathsInfo = extractPathsInfo(node, context, config);
 
   /*
    * Check @x cross-import pattern.
@@ -93,6 +100,6 @@ export function validateAndReport(node: ImportNodes, context: RuleContext, optio
   }
 
   const { allowTypeImports } = extractRuleOptions(optionsWithDefault);
-  const nodesToReport = validate(node, pathsInfo, allowTypeImports);
+  const nodesToReport = validate(node, pathsInfo, allowTypeImports, config);
   reportValidationErrors(nodesToReport, context, pathsInfo);
 }
