@@ -318,15 +318,41 @@ ruleTester.run('layers-slices (@x cross-imports)', rule, {
       filename: 'src/entities/Session/ui/Card.tsx',
       code: "import { User } from 'entities/User/@x/Session';",
     },
-    /*
-     * Group folders не поддерживаются полностью в extractSlice.
-     * TODO: добавить поддержку group folders.
-     */
     {
       name: 'should allow @x cross-import with hyphenated slice names',
       filename: 'src/entities/user-session/model.ts',
       code: "import { UserProfile } from '@/entities/user-profile/@x/user-session';",
     },
+    {
+      name: 'should allow @x cross-import with group folders',
+      filename: 'src/entities/users/Session/model.ts',
+      code: "import { User } from '@/entities/users/User/@x/Session';",
+    },
   ],
   invalid: [],
+});
+
+/* === Group folders smoke tests === */
+
+ruleTester.run('layers-slices (group folders)', rule, {
+  valid: [
+    {
+      name: 'should allow import within same slice with group folder',
+      filename: 'src/entities/group/User/ui/index.ts',
+      code: "import { userModel } from '../model';",
+    },
+    {
+      name: 'should allow relative import within same slice with nested group folders',
+      filename: 'src/features/auth/forms/LoginForm/ui/index.ts',
+      code: "import { useLogin } from '../model';",
+    },
+  ],
+  invalid: [
+    {
+      name: 'should report cross-slice import with group folders',
+      filename: 'src/entities/users/User/model/index.ts',
+      code: "import { foo } from '@/entities/products/Product/model';",
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+  ],
 });

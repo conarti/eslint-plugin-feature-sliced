@@ -152,3 +152,28 @@ ruleTester.run('absolute-relative', rule, {
     },
   ],
 });
+
+/* === Group folders smoke tests === */
+
+ruleTester.run('absolute-relative (group folders)', rule, {
+  valid: [
+    {
+      name: 'should allow relative import within same slice with group folder',
+      filename: 'src/entities/group/User/ui/index.ts',
+      code: "import { userModel } from '../model';",
+    },
+    {
+      name: 'should allow absolute import from another slice with group folder',
+      filename: 'src/features/auth/Feature/ui/index.ts',
+      code: "import { User } from '@/entities/users/User';",
+    },
+  ],
+  invalid: [
+    {
+      name: 'should report relative if absolute import within same slice with group folder',
+      filename: 'src/entities/group/User/ui/index.ts',
+      code: "import { userModel } from '@/entities/group/User/model';",
+      errors: [absoluteRelativeErrors.mustBeRelative],
+    },
+  ],
+});
