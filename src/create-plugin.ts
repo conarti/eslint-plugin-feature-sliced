@@ -1,6 +1,6 @@
 import type { Linter } from 'eslint';
 import type { ImportOrderConfigName, TypedFlatConfigItem } from './config';
-import type { VALIDATION_LEVEL } from './rules/public-api/config';
+import type { ValidationLevel } from './rules/public-api/config';
 import { PLUGIN_NAME, RULE_NAMES } from './config';
 import { plugin } from './plugin';
 import { importOrderRuleConfigs } from './rules/import-order/configs';
@@ -40,7 +40,7 @@ interface PublicApiOptions {
    * Default is 'slices', but 'segments' is recommended
    * @default 'slices'
    */
-  level: VALIDATION_LEVEL;
+  level: ValidationLevel;
   /**
    * Ignore certain import paths (import foo from '<path-to-ignore>')
    */

@@ -13,6 +13,7 @@ import {
   MESSAGE_ID as PUBLIC_API_MESSAGE_ID,
   type Options as PublicApiOptions,
   VALIDATION_LEVEL,
+  type ValidationLevel,
 } from '../../src/rules/public-api/config';
 
 /**
@@ -69,7 +70,7 @@ export function makePublicApiOptions({
   ignorePatterns = [],
   ignoreInFilesPatterns = [],
 }: {
-  level?: VALIDATION_LEVEL;
+  level?: ValidationLevel;
   ignorePatterns?: string[];
   ignoreInFilesPatterns?: string[];
 } = {}): PublicApiOptions {

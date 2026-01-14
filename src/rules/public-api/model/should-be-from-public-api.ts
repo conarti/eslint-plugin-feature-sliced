@@ -11,11 +11,12 @@ import {
   type Options,
   type RuleContext,
   VALIDATION_LEVEL,
+  type ValidationLevel,
 } from '../config';
 import { isSegmentsPublicApi } from './is-segments-public-api';
 import { isSlicePublicApi } from './is-slice-public-api';
 
-interface ValidateOptions { level: VALIDATION_LEVEL };
+interface ValidateOptions { level: ValidationLevel };
 
 /**
  * Проверяет, является ли @x путь вложенным (невалидным).
