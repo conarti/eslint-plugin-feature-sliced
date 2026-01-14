@@ -17,12 +17,12 @@ import {
 } from '../../src/rules/public-api/config';
 
 /**
- * Стандартный CWD для всех тестов
+ * Standard CWD for all tests
  */
 export const TEST_CWD = '/test/project';
 
 /**
- * Создает путь к файлу относительно TEST_CWD
+ * Creates a file path relative to TEST_CWD
  */
 export function makeFilename(relativePath: string): string {
   return `${TEST_CWD}/${relativePath}`;
@@ -31,7 +31,7 @@ export function makeFilename(relativePath: string): string {
 /* === public-api helpers === */
 
 /**
- * Создает ошибку public-api с suggestion для автофикса
+ * Creates public-api error with autofix suggestion
  */
 export function makePublicApiErrorWithSuggestion(
   suggestionSegments: string,
@@ -56,14 +56,14 @@ export function makePublicApiErrorWithSuggestion(
 }
 
 /**
- * Ошибка для импорта в public API слоя
+ * Error for import in layer public API
  */
 export const publicApiLayersNotAllowedError = {
   messageId: PUBLIC_API_MESSAGE_ID.LAYERS_PUBLIC_API_NOT_ALLOWED,
 };
 
 /**
- * Создает опции для public-api правила
+ * Creates options for public-api rule
  */
 export function makePublicApiOptions({
   level = VALIDATION_LEVEL.SLICES,
@@ -86,7 +86,7 @@ export function makePublicApiOptions({
 /* === layers-slices helpers === */
 
 /**
- * Создает ошибку layers-slices
+ * Creates layers-slices error
  */
 export function makeLayersSlicesError(
   importLayer: Layer,
@@ -102,7 +102,7 @@ export function makeLayersSlicesError(
 }
 
 /**
- * Позиция ошибки в коде
+ * Error position in code
  */
 export interface ErrorPosition {
   column: number;
@@ -112,7 +112,7 @@ export interface ErrorPosition {
 }
 
 /**
- * Создает ошибку layers-slices с точной позицией
+ * Creates layers-slices error with exact position
  */
 export function makeLayersSlicesErrorAtSpecifier(
   importLayer: Layer,
@@ -133,7 +133,7 @@ export function makeLayersSlicesErrorAtSpecifier(
 }
 
 /**
- * Опции для разрешения type imports
+ * Options for allowing type imports
  */
 export const layersSlicesAllowTypeImportsOptions: LayersSlicesOptions = [
   {
@@ -144,7 +144,7 @@ export const layersSlicesAllowTypeImportsOptions: LayersSlicesOptions = [
 ];
 
 /**
- * Создает опции layers-slices с ignorePatterns
+ * Creates layers-slices options with ignorePatterns
  */
 export function makeLayersSlicesIgnoreOptions(patterns: string[]): LayersSlicesOptions {
   return [
@@ -157,7 +157,7 @@ export function makeLayersSlicesIgnoreOptions(patterns: string[]): LayersSlicesO
 }
 
 /**
- * Создает опции layers-slices с ignoreInFilesPatterns
+ * Creates layers-slices options with ignoreInFilesPatterns
  */
 export function makeLayersSlicesIgnoreInFilesOptions(patterns: string[]): LayersSlicesOptions {
   return [
@@ -170,7 +170,7 @@ export function makeLayersSlicesIgnoreInFilesOptions(patterns: string[]): Layers
 }
 
 /**
- * Создает ошибку для неверного @x cross-import
+ * Creates error for invalid @x cross-import
  */
 export function makeInvalidCrossImportError(
   sourceSlice: string,
@@ -188,7 +188,7 @@ export function makeInvalidCrossImportError(
 /* === absolute-relative helpers === */
 
 /**
- * Ошибки для absolute-relative правила
+ * Errors for absolute-relative rule
  */
 export const absoluteRelativeErrors = {
   mustBeAbsolute: { messageId: ABSOLUTE_RELATIVE_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH },
@@ -196,7 +196,7 @@ export const absoluteRelativeErrors = {
 };
 
 /**
- * Создает опции absolute-relative с ignorePatterns и ignoreInFilesPatterns
+ * Creates absolute-relative options with ignorePatterns and ignoreInFilesPatterns
  */
 export function makeAbsoluteRelativeOptions({
   ignorePatterns = [],

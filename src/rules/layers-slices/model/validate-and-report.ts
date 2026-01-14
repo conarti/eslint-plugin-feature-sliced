@@ -72,8 +72,8 @@ export function validateAndReport(node: ImportNodes, context: RuleContext, optio
   const pathsInfo = extractPathsInfo(node, context);
 
   /*
-   * Проверка @x cross-import паттерна.
-   * @x разрешён только для слоя entities.
+   * Check @x cross-import pattern.
+   * @x is only allowed for entities layer.
    */
   const crossImportInfo = extractCrossImportInfo(pathsInfo.normalizedTargetPath);
   if (crossImportInfo.isCrossImport) {

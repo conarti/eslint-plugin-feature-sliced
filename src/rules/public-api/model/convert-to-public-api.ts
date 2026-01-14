@@ -10,9 +10,9 @@ function addSlashToStart(targetPath: string | null): string {
 }
 
 /**
- * Извлекает вложенный путь после @x/TargetSlice.
- * Для "@x/Session/types" возвращает "types".
- * Для "@x/Session" возвращает null.
+ * Extracts nested path after @x/TargetSlice.
+ * For "@x/Session/types" returns "types".
+ * For "@x/Session" returns null.
  */
 function extractCrossImportNestedPath(targetPath: string): string | null {
   const match = targetPath.match(/@x\/[\w-]+\/(.+)$/);
@@ -27,7 +27,7 @@ function extractValueToRemove(pathsInfo: PathsInfo): string | null {
   } = pathsInfo;
 
   /*
-   * Для @x путей с вложенностью — вернуть вложенную часть
+   * For nested @x paths, return the nested part
    */
   const crossImportNestedPath = extractCrossImportNestedPath(normalizedTargetPath);
   if (crossImportNestedPath) {

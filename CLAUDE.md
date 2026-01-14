@@ -4,7 +4,7 @@
 
 - **Commits**: English only
 - **Pull requests**: English only (title and description)
-- **Code comments**: Russian (JSDoc) or English
+- **Code comments**: English only (JSDoc and inline comments)
 
 ## Git Workflow
 

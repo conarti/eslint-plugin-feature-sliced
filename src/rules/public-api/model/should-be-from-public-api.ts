@@ -19,9 +19,9 @@ import { isSlicePublicApi } from './is-slice-public-api';
 interface ValidateOptions { level: ValidationLevel };
 
 /**
- * Проверяет, является ли @x путь вложенным (невалидным).
- * Валидные: @x/Session, @x/Session.ts
- * Невалидные: @x/Session/types, @x/Session/model/hooks
+ * Checks if @x path is nested (invalid).
+ * Valid: @x/Session, @x/Session.ts
+ * Invalid: @x/Session/types, @x/Session/model/hooks
  */
 function hasNestedCrossImportPath(targetPath: string): boolean {
   const crossImportInfo = extractCrossImportInfo(targetPath);
@@ -31,8 +31,8 @@ function hasNestedCrossImportPath(targetPath: string): boolean {
   }
 
   /*
-   * Если путь содержит /@x/ но не распознан как валидный @x import,
-   * значит это вложенный путь
+   * If path contains /@x/ but not recognized as valid @x import,
+   * it means this is a nested path
    */
   return /@x\/[\w-]+\//.test(targetPath);
 }
@@ -52,8 +52,8 @@ export function shouldBeFromPublicApi(node: ImportExportNodesWithSourceValue, co
   const ruleOptions = extractRuleOptions(optionsWithDefault);
 
   /*
-   * Проверка вложенных @x путей (например @x/Session/types).
-   * Такие пути должны быть исправлены на @x/Session.
+   * Check for nested @x paths (e.g., @x/Session/types).
+   * Such paths should be fixed to @x/Session.
    */
   if (hasNestedCrossImportPath(pathsInfo.normalizedTargetPath)) {
     return true;

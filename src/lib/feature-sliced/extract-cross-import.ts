@@ -13,29 +13,29 @@ const EMPTY_RESULT: CrossImportInfo = {
 };
 
 /**
- * Проверяет что путь содержит entities слой
+ * Checks if path contains entities layer
  */
 function hasEntitiesLayer(path: string): boolean {
   return /(?:^|\/|\\)entities(?:\/|\\)/i.test(path);
 }
 
 /**
- * Извлекает информацию о @x cross-import из пути импорта.
+ * Extracts @x cross-import info from import path.
  *
- * @x — паттерн FSD для контролируемых cross-imports между слайсами.
- * Разрешён только для слоя entities.
+ * @x is an FSD pattern for controlled cross-imports between slices.
+ * Only allowed for the entities layer.
  *
- * Валидные паттерны:
+ * Valid patterns:
  * - entities/User/@x/Session
  * - entities/User/@x/Session.ts
  * - @/entities/group/User/@x/Session
  *
- * Невалидные паттерны:
- * - entities/User/@x/Session/types (вложенный путь)
- * - features/Auth/@x/User (не entities слой)
+ * Invalid patterns:
+ * - entities/User/@x/Session/types (nested path)
+ * - features/Auth/@x/User (not entities layer)
  *
- * @param path - путь импорта
- * @returns информация о cross-import
+ * @param path - import path
+ * @returns cross-import info
  */
 export function extractCrossImportInfo(path: string): CrossImportInfo {
   const normalizedPath = normalizePath(path);
@@ -45,11 +45,11 @@ export function extractCrossImportInfo(path: string): CrossImportInfo {
   }
 
   /*
-   * Regex для извлечения @x паттерна:
-   * - (?<sourceSlice>[\w-]+) — слайс-источник (User, user-profile)
-   * - \/@x\/ — маркер cross-import
-   * - (?<targetSlice>[\w-]+) — слайс-получатель (Session)
-   * - (?:\.[\w]+)?$ — опциональное расширение файла в конце
+   * Regex for extracting @x pattern:
+   * - (?<sourceSlice>[\w-]+) - source slice (User, user-profile)
+   * - \/@x\/ - cross-import marker
+   * - (?<targetSlice>[\w-]+) - target slice (Session)
+   * - (?:\.[\w]+)?$ - optional file extension at the end
    */
   const crossImportRegex = /(?<sourceSlice>[\w-]+)\/@x\/(?<targetSlice>[\w-]+)(?:\.\w+)?$/;
   const match = normalizedPath.match(crossImportRegex);
