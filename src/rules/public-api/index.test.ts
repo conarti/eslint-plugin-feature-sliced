@@ -135,7 +135,7 @@ ruleTester.run('public-api', rule, {
     },
     {
       name: 'should correct read slices from paths',
-      code: "import { Foo } from '../models';",
+      code: "import { Foo } from '../model';",
       filename: 'src/features/foo/ui/index.ts',
     },
     {
