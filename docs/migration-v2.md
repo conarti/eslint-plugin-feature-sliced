@@ -79,6 +79,35 @@ The import sorting now uses `eslint-plugin-import-x` (an ESLint 9 compatible for
 
 If you have custom `import/order` configurations, you may need to adjust them for `import-x/order`.
 
+### 5. Option Names Changed
+
+All rule options have been renamed for consistency:
+
+| Old Name | New Name |
+|----------|----------|
+| `ignorePatterns` | `ignoreImports` |
+| `ignoreInFilesPatterns` | `ignoreFiles` |
+
+Update your configuration accordingly:
+
+```js
+// Before (v1.x)
+featureSliced({
+  layersSlices: {
+    ignorePatterns: ['**/legacy/**/*'],
+    ignoreInFilesPatterns: ['**/*.test.ts'],
+  },
+});
+
+// After (v2.0)
+featureSliced({
+  layersSlices: {
+    ignoreImports: ['**/legacy/**/*'],
+    ignoreFiles: ['**/*.test.ts'],
+  },
+});
+```
+
 ## Step-by-Step Migration
 
 ### Step 1: Upgrade Dependencies
@@ -169,15 +198,15 @@ featureSliced({
 });
 ```
 
-### New ignorePatterns Options
+### Ignore Patterns
 
-All rules now support `ignorePatterns` and `ignoreInFilesPatterns`:
+All rules now support `ignoreImports` and `ignoreFiles`:
 
 ```js
 featureSliced({
   layersSlices: {
-    ignorePatterns: ['**/legacy/**/*'],
-    ignoreInFilesPatterns: ['**/*.test.ts'],
+    ignoreImports: ['**/legacy/**/*'],
+    ignoreFiles: ['**/*.test.ts'],
   },
 });
 ```
@@ -195,6 +224,37 @@ featureSliced({
   sortImports: 'with-newlines-and-type-group',
 });
 ```
+
+### Custom Layers
+
+You can now define custom layers to match your project structure:
+
+```js
+featureSliced({
+  layers: [
+    { name: 'shared', hasSlices: false },
+    'entities',
+    'features',
+    'widgets',
+    'pages',
+    { name: 'app', hasSlices: false },
+  ],
+});
+```
+
+See [Configuration - Custom Layers](/configuration#custom-layers) for details.
+
+### @x Cross-Import Pattern
+
+Support for the FSD `@x` pattern allows controlled cross-imports between entity slices:
+
+```js
+// file: src/entities/session/model.ts
+import { User } from 'entities/user/@x/session';
+// OK: session can import from user's cross-import API
+```
+
+See [layers-slices rule](/rules/layers-slices#x-cross-import-pattern) for details.
 
 ## Troubleshooting
 

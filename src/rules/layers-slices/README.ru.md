@@ -23,6 +23,59 @@ shared → entities → features → widgets → pages → processes → app
 
 В слоях со слайсами (`entities`, `features`, `widgets`, `pages`, `processes`) один слайс не может импортировать из другого слайса того же слоя.
 
+### Паттерн @x для кросс-импортов
+
+Паттерн `@x` позволяет контролируемые кросс-импорты между слайсами в слое `entities`. Это полезно, когда сущности имеют легитимные зависимости друг от друга.
+
+#### Синтаксис
+
+```
+entities/<исходный-слайс>/@x/<целевой-слайс>
+```
+
+Исходный слайс экспортирует определённые модули для целевого слайса через специальную директорию `@x`.
+
+#### ✅ Правильные @x импорты
+
+```js
+// файл: src/entities/session/model.ts
+import { User } from 'entities/user/@x/session';
+// OK: session может импортировать из cross-import API пользователя
+
+import { userApi } from '@/entities/user/@x/session';
+// OK: alias пути поддерживаются
+```
+
+#### ❌ Неправильные @x импорты
+
+```js
+// файл: src/features/auth/model.ts
+import { User } from 'entities/user/@x/auth';
+// Ошибка: @x только для кросс-импортов между entities, не из других слоёв
+
+// файл: src/entities/session/model.ts
+import { userModel } from 'entities/user/@x/session/model';
+// Ошибка: Вложенные пути после @x не разрешены
+```
+
+#### Как использовать @x
+
+1. Создайте директорию `@x` в исходном слайсе
+2. Создайте файл с именем целевого слайса (например, `session.ts`)
+3. Экспортируйте только то, что нужно целевому слайсу
+
+```
+entities/
+├── user/
+│   ├── @x/
+│   │   └── session.ts    # Экспорты для слайса session
+│   ├── model/
+│   └── index.ts
+└── session/
+    ├── model.ts          # Может импортировать из entities/user/@x/session
+    └── index.ts
+```
+
 ### Неправильно
 
 ```js
@@ -68,8 +121,8 @@ import type { User } from 'entities/user';
 ```ts
 interface Options {
   allowTypeImports?: boolean;
-  ignorePatterns?: string[];
-  ignoreInFilesPatterns?: string[];
+  ignoreImports?: string[];
+  ignoreFiles?: string[];
 }
 ```
 
@@ -87,7 +140,7 @@ import type { User } from 'entities/user'; // OK в слое shared
 
 **Примечание:** Работает только с явным ключевым словом `type`. Обычные импорты типов всё равно проверяются.
 
-### ignorePatterns
+### ignoreImports
 
 Тип: `string[]`
 По умолчанию: `[]`
@@ -97,12 +150,12 @@ Glob-паттерны для путей импортов, которые нуж�
 ```js
 featureSliced({
   layersSlices: {
-    ignorePatterns: ['**/legacy/**/*', '@/shared/deprecated/*'],
+    ignoreImports: ['**/legacy/**/*', '@/shared/deprecated/*'],
   },
 });
 ```
 
-### ignoreInFilesPatterns
+### ignoreFiles
 
 Тип: `string[]`
 По умолчанию: `[]`
@@ -112,7 +165,7 @@ Glob-паттерны для файлов, в которых правило от
 ```js
 featureSliced({
   layersSlices: {
-    ignoreInFilesPatterns: ['**/tests/**/*', '**/*.test.ts', '**/*.stories.tsx'],
+    ignoreFiles: ['**/tests/**/*', '**/*.test.ts', '**/*.stories.tsx'],
   },
 });
 ```
@@ -127,8 +180,8 @@ export default [
   featureSliced({
     layersSlices: {
       allowTypeImports: true,
-      ignorePatterns: ['**/mocks/**/*'],
-      ignoreInFilesPatterns: ['**/*.test.ts'],
+      ignoreImports: ['**/mocks/**/*'],
+      ignoreFiles: ['**/*.test.ts'],
     },
   }),
 ];
@@ -136,9 +189,9 @@ export default [
 
 ## Когда не использовать
 
-- При миграции на FSD — используйте `ignorePatterns`
-- В тестовых файлах, которым нужны кросс-слойные импорты — используйте `ignoreInFilesPatterns`
-- В Storybook stories — используйте `ignoreInFilesPatterns`
+- При миграции на FSD — используйте `ignoreImports`
+- В тестовых файлах, которым нужны кросс-слойные импорты — используйте `ignoreFiles`
+- В Storybook stories — используйте `ignoreFiles`
 
 ## Дополнительная информация
 

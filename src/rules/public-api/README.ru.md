@@ -59,8 +59,8 @@ import { userApi } from 'entities/user/api';
 ```ts
 interface Options {
   level?: 'slices' | 'segments';
-  ignorePatterns?: string[];
-  ignoreInFilesPatterns?: string[];
+  ignoreImports?: string[];
+  ignoreFiles?: string[];
 }
 ```
 
@@ -74,14 +74,14 @@ interface Options {
 - `'slices'` — Public API на уровне слайса (`layer/slice`)
 - `'segments'` — Public API на уровне сегмента (`layer/slice/segment`)
 
-### ignorePatterns
+### ignoreImports
 
 Тип: `string[]`
 По умолчанию: `[]`
 
 Glob-паттерны для путей импортов, которые нужно игнорировать.
 
-### ignoreInFilesPatterns
+### ignoreFiles
 
 Тип: `string[]`
 По умолчанию: `[]`
@@ -98,8 +98,8 @@ export default [
   featureSliced({
     publicApi: {
       level: 'segments',
-      ignorePatterns: ['**/types/**/*'],
-      ignoreInFilesPatterns: ['**/*.test.ts'],
+      ignoreImports: ['**/types/**/*'],
+      ignoreFiles: ['**/*.test.ts'],
     },
   }),
 ];

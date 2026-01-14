@@ -59,12 +59,12 @@ import { theme } from '../../lib/theme';
 
 ```ts
 interface Options {
-  ignorePatterns?: string[];
-  ignoreInFilesPatterns?: string[];
+  ignoreImports?: string[];
+  ignoreFiles?: string[];
 }
 ```
 
-### ignorePatterns
+### ignoreImports
 
 Type: `string[]`
 Default: `[]`
@@ -74,7 +74,7 @@ Glob patterns for import paths to ignore.
 ```js
 featureSliced({
   absoluteRelative: {
-    ignorePatterns: [
+    ignoreImports: [
       '**/assets/**/*',
       '*.css',
       '*.scss',
@@ -83,7 +83,7 @@ featureSliced({
 });
 ```
 
-### ignoreInFilesPatterns
+### ignoreFiles
 
 Type: `string[]`
 Default: `[]`
@@ -93,7 +93,7 @@ Glob patterns for files where the rule is disabled.
 ```js
 featureSliced({
   absoluteRelative: {
-    ignoreInFilesPatterns: [
+    ignoreFiles: [
       '**/tests/**/*',
       '**/*.test.ts',
     ],
@@ -110,8 +110,8 @@ import featureSliced from '@conarti/eslint-plugin-feature-sliced';
 export default [
   featureSliced({
     absoluteRelative: {
-      ignorePatterns: ['*.css'],
-      ignoreInFilesPatterns: ['**/*.test.ts'],
+      ignoreImports: ['*.css'],
+      ignoreFiles: ['**/*.test.ts'],
     },
   }),
 ];

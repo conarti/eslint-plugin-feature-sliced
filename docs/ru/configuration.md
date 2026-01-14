@@ -25,19 +25,19 @@ export default [
   featureSliced({
     layersSlices: {
       allowTypeImports: true,
-      ignorePatterns: ['**/src/legacy/**/*'],
-      ignoreInFilesPatterns: ['**/tests/**/*'],
+      ignoreImports: ['**/src/legacy/**/*'],
+      ignoreFiles: ['**/tests/**/*'],
     },
 
     absoluteRelative: {
-      ignorePatterns: ['**/mocks/**/*'],
-      ignoreInFilesPatterns: [],
+      ignoreImports: ['**/mocks/**/*'],
+      ignoreFiles: [],
     },
 
     publicApi: {
       level: 'segments',
-      ignorePatterns: [],
-      ignoreInFilesPatterns: [],
+      ignoreImports: [],
+      ignoreFiles: [],
     },
 
     sortImports: 'with-newlines',
@@ -61,6 +61,99 @@ export default [
 ];
 ```
 
+## Кастомные слои
+
+Вы можете определить кастомные слои для соответствия структуре вашего проекта. Это полезно, когда:
+- Вы используете нестандартные FSD слои
+- У вас есть дополнительные кастомные слои
+- Нужно изменить, какие слои могут содержать слайсы
+
+### Конфигурация
+
+Опция `layers` принимает массив конфигураций слоёв:
+
+```js
+// eslint.config.js
+import featureSliced from '@conarti/eslint-plugin-feature-sliced';
+
+export default [
+  featureSliced({
+    layers: [
+      { name: 'shared', hasSlices: false },
+      'entities',
+      'features',
+      'widgets',
+      'pages',
+      { name: 'app', hasSlices: false },
+    ],
+  }),
+];
+```
+
+### Типы конфигурации слоёв
+
+Каждый слой может быть настроен как:
+
+- **Строка** — имя слоя с `hasSlices: true` (по умолчанию)
+- **Объект** — слой с явной настройкой `hasSlices`
+
+```ts
+type LayerConfigItem =
+  | string
+  | { name: string; hasSlices?: boolean };
+```
+
+### Свойство `hasSlices`
+
+Свойство `hasSlices` определяет, может ли слой содержать слайсы:
+
+- `true` (по умолчанию) — слой может содержать слайсы (например, `entities`, `features`)
+- `false` — слой не может содержать слайсы (например, `shared`, `app`)
+
+Это влияет на поведение правил:
+- **layers-slices**: Слои без слайсов не проверяют изоляцию слайсов
+- **absolute-relative**: Импорты внутри слоёв без слайсов должны быть относительными
+- **import-order**: Группы сортировки генерируются на основе конфигурации слоёв
+
+### Примеры
+
+**Стандартный FSD без слоя processes:**
+
+```js
+featureSliced({
+  layers: [
+    { name: 'shared', hasSlices: false },
+    'entities',
+    'features',
+    'widgets',
+    'pages',
+    { name: 'app', hasSlices: false },
+  ],
+});
+```
+
+**Кастомные слои:**
+
+```js
+featureSliced({
+  layers: [
+    { name: 'core', hasSlices: false },
+    'domain',
+    'features',
+    'pages',
+    { name: 'app', hasSlices: false },
+  ],
+});
+```
+
+**Все слои со слайсами:**
+
+```js
+featureSliced({
+  layers: ['shared', 'entities', 'features', 'widgets', 'pages', 'app'],
+});
+```
+
 ## Справочник опций
 
 ### layersSlices
@@ -68,23 +161,23 @@ export default [
 | Опция | Тип | По умолчанию | Описание |
 |-------|-----|--------------|----------|
 | `allowTypeImports` | `boolean` | `true` | Разрешить type-only импорты из любого слоя |
-| `ignorePatterns` | `string[]` | `[]` | Glob-паттерны путей импорта для игнорирования |
-| `ignoreInFilesPatterns` | `string[]` | `[]` | Glob-паттерны файлов, где правило отключено |
+| `ignoreImports` | `string[]` | `[]` | Glob-паттерны путей импорта для игнорирования |
+| `ignoreFiles` | `string[]` | `[]` | Glob-паттерны файлов, где правило отключено |
 
 ### absoluteRelative
 
 | Опция | Тип | По умолчанию | Описание |
 |-------|-----|--------------|----------|
-| `ignorePatterns` | `string[]` | `[]` | Glob-паттерны путей импорта для игнорирования |
-| `ignoreInFilesPatterns` | `string[]` | `[]` | Glob-паттерны файлов, где правило отключено |
+| `ignoreImports` | `string[]` | `[]` | Glob-паттерны путей импорта для игнорирования |
+| `ignoreFiles` | `string[]` | `[]` | Glob-паттерны файлов, где правило отключено |
 
 ### publicApi
 
 | Опция | Тип | По умолчанию | Описание |
 |-------|-----|--------------|----------|
 | `level` | `'slices'` \| `'segments'` | `'slices'` | Глубина валидации |
-| `ignorePatterns` | `string[]` | `[]` | Glob-паттерны путей импорта для игнорирования |
-| `ignoreInFilesPatterns` | `string[]` | `[]` | Glob-паттерны файлов, где правило отключено |
+| `ignoreImports` | `string[]` | `[]` | Glob-паттерны путей импорта для игнорирования |
+| `ignoreFiles` | `string[]` | `[]` | Glob-паттерны файлов, где правило отключено |
 
 ### sortImports
 
@@ -98,7 +191,7 @@ export default [
 
 ## Сопоставление паттернов
 
-Все опции `ignorePatterns` и `ignoreInFilesPatterns` используют glob-паттерны на базе [picomatch](https://github.com/micromatch/picomatch).
+Все опции `ignoreImports` и `ignoreFiles` используют glob-паттерны на базе [picomatch](https://github.com/micromatch/picomatch).
 
 ::: warning Обратите внимание
 Плагин читает полный путь файла от корня системы. Всегда начинайте паттерны с `**` для корректного сопоставления.
@@ -107,11 +200,11 @@ export default [
 ```js
 featureSliced({
   layersSlices: {
-    ignorePatterns: [
+    ignoreImports: [
       '**/src/legacy/**/*',
       '@/shared/deprecated/*',
     ],
-    ignoreInFilesPatterns: [
+    ignoreFiles: [
       '**/tests/**/*',
       '**/*.test.ts',
       '**/*.spec.ts',

@@ -103,12 +103,12 @@ export default [
   featureSliced({
     layersSlices: {
       allowTypeImports: true,
-      ignorePatterns: ['**/legacy/**/*'],
-      ignoreInFilesPatterns: ['**/*.test.ts'],
+      ignoreImports: ['**/legacy/**/*'],
+      ignoreFiles: ['**/*.test.ts'],
     },
 
     absoluteRelative: {
-      ignorePatterns: ['*.css'],
+      ignoreImports: ['*.css'],
     },
 
     publicApi: {

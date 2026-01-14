@@ -79,6 +79,35 @@ export default [
 
 Если у вас есть кастомные конфигурации `import/order`, возможно, потребуется адаптировать их для `import-x/order`.
 
+### 5. Переименованы опции
+
+Все опции правил были переименованы для согласованности:
+
+| Старое имя | Новое имя |
+|------------|-----------|
+| `ignorePatterns` | `ignoreImports` |
+| `ignoreInFilesPatterns` | `ignoreFiles` |
+
+Обновите конфигурацию соответственно:
+
+```js
+// До (v1.x)
+featureSliced({
+  layersSlices: {
+    ignorePatterns: ['**/legacy/**/*'],
+    ignoreInFilesPatterns: ['**/*.test.ts'],
+  },
+});
+
+// После (v2.0)
+featureSliced({
+  layersSlices: {
+    ignoreImports: ['**/legacy/**/*'],
+    ignoreFiles: ['**/*.test.ts'],
+  },
+});
+```
+
 ## Пошаговая миграция
 
 ### Шаг 1: Обновите зависимости
@@ -169,15 +198,15 @@ featureSliced({
 });
 ```
 
-### Новые опции ignorePatterns
+### Паттерны игнорирования
 
-Все правила теперь поддерживают `ignorePatterns` и `ignoreInFilesPatterns`:
+Все правила теперь поддерживают `ignoreImports` и `ignoreFiles`:
 
 ```js
 featureSliced({
   layersSlices: {
-    ignorePatterns: ['**/legacy/**/*'],
-    ignoreInFilesPatterns: ['**/*.test.ts'],
+    ignoreImports: ['**/legacy/**/*'],
+    ignoreFiles: ['**/*.test.ts'],
   },
 });
 ```
@@ -195,6 +224,37 @@ featureSliced({
   sortImports: 'with-newlines-and-type-group',
 });
 ```
+
+### Кастомные слои
+
+Теперь можно определять кастомные слои для соответствия структуре вашего проекта:
+
+```js
+featureSliced({
+  layers: [
+    { name: 'shared', hasSlices: false },
+    'entities',
+    'features',
+    'widgets',
+    'pages',
+    { name: 'app', hasSlices: false },
+  ],
+});
+```
+
+Подробнее см. [Конфигурация — Кастомные слои](/ru/configuration#кастомные-слои).
+
+### Паттерн @x для кросс-импортов
+
+Поддержка FSD паттерна `@x` позволяет контролируемые кросс-импорты между слайсами entities:
+
+```js
+// файл: src/entities/session/model.ts
+import { User } from 'entities/user/@x/session';
+// OK: session может импортировать из cross-import API пользователя
+```
+
+Подробнее см. [правило layers-slices](/ru/rules/layers-slices#паттерн-x-для-кросс-импортов).
 
 ## Решение проблем
 

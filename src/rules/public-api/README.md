@@ -59,8 +59,8 @@ import { userApi } from 'entities/user/api';
 ```ts
 interface Options {
   level?: 'slices' | 'segments';
-  ignorePatterns?: string[];
-  ignoreInFilesPatterns?: string[];
+  ignoreImports?: string[];
+  ignoreFiles?: string[];
 }
 ```
 
@@ -74,14 +74,14 @@ Defines the depth of public API validation:
 - `'slices'` - Public API at slice level (`layer/slice`)
 - `'segments'` - Public API at segment level (`layer/slice/segment`)
 
-### ignorePatterns
+### ignoreImports
 
 Type: `string[]`
 Default: `[]`
 
 Glob patterns for import paths to ignore.
 
-### ignoreInFilesPatterns
+### ignoreFiles
 
 Type: `string[]`
 Default: `[]`
@@ -98,8 +98,8 @@ export default [
   featureSliced({
     publicApi: {
       level: 'segments',
-      ignorePatterns: ['**/types/**/*'],
-      ignoreInFilesPatterns: ['**/*.test.ts'],
+      ignoreImports: ['**/types/**/*'],
+      ignoreFiles: ['**/*.test.ts'],
     },
   }),
 ];
