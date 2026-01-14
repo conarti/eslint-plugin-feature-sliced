@@ -57,10 +57,10 @@ export default [
 
 | Правило | Описание |
 |---------|----------|
-| [layers-slices](/en/rules/layers-slices) | Проверяет импорты между слоями согласно иерархии FSD |
-| [absolute-relative](/en/rules/absolute-relative) | Проверяет тип пути (относительный/абсолютный) |
-| [public-api](/en/rules/public-api) | Требует импорты только из public API |
-| [import-order](/en/rules/import-order) | Сортирует импорты по слоям FSD |
+| [layers-slices](/ru/rules/layers-slices) | Проверяет импорты между слоями согласно иерархии FSD |
+| [absolute-relative](/ru/rules/absolute-relative) | Проверяет тип пути (относительный/абсолютный) |
+| [public-api](/ru/rules/public-api) | Требует импорты только из public API |
+| [import-order](/ru/rules/import-order) | Сортирует импорты по слоям FSD |
 
 ## Следующие шаги
 

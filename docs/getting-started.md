@@ -57,13 +57,13 @@ The plugin provides 4 rules:
 
 | Rule | Description |
 |------|-------------|
-| [layers-slices](/en/rules/layers-slices) | Validates imports between layers according to FSD hierarchy |
-| [absolute-relative](/en/rules/absolute-relative) | Ensures correct path types (relative/absolute) |
-| [public-api](/en/rules/public-api) | Enforces imports from public API only |
-| [import-order](/en/rules/import-order) | Sorts imports by FSD layers |
+| [layers-slices](/rules/layers-slices) | Validates imports between layers according to FSD hierarchy |
+| [absolute-relative](/rules/absolute-relative) | Ensures correct path types (relative/absolute) |
+| [public-api](/rules/public-api) | Enforces imports from public API only |
+| [import-order](/rules/import-order) | Sorts imports by FSD layers |
 
 ## Next Steps
 
-- [Configuration](/en/configuration) - customize the plugin
-- [Rules](/en/rules/) - learn about each rule
-- [Migration Guide](/en/migration-v2) - upgrade from v1 to v2
+- [Configuration](/configuration) - customize the plugin
+- [Rules](/rules/) - learn about each rule
+- [Migration Guide](/migration-v2) - upgrade from v1 to v2

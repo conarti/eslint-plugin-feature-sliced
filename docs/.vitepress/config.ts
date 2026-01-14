@@ -11,45 +11,48 @@ export default defineConfig({
 
   rewrites: {
     'docs/index.md': 'index.md',
-    'docs/en/:path*': 'en/:path*',
+    'docs/getting-started.md': 'getting-started.md',
+    'docs/configuration.md': 'configuration.md',
+    'docs/migration-v2.md': 'migration-v2.md',
+    'docs/rules/index.md': 'rules/index.md',
     'docs/ru/:path*': 'ru/:path*',
-    'src/rules/:rule/README.md': 'en/rules/:rule.md',
+    'src/rules/:rule/README.md': 'rules/:rule.md',
+    'src/rules/:rule/README.ru.md': 'ru/rules/:rule.md',
   },
 
   locales: {
-    en: {
+    root: {
       label: 'English',
       lang: 'en',
-      link: '/en/',
       themeConfig: {
         nav: [
-          { text: 'Guide', link: '/en/getting-started' },
-          { text: 'Rules', link: '/en/rules/' },
-          { text: 'Migration', link: '/en/migration-v2' },
+          { text: 'Guide', link: '/getting-started' },
+          { text: 'Rules', link: '/rules/' },
+          { text: 'Migration', link: '/migration-v2' },
         ],
         sidebar: {
-          '/en/': [
+          '/': [
             {
               text: 'Introduction',
               items: [
-                { text: 'Getting Started', link: '/en/getting-started' },
-                { text: 'Configuration', link: '/en/configuration' },
+                { text: 'Getting Started', link: '/getting-started' },
+                { text: 'Configuration', link: '/configuration' },
               ],
             },
             {
               text: 'Rules',
               items: [
-                { text: 'Overview', link: '/en/rules/' },
-                { text: 'layers-slices', link: '/en/rules/layers-slices' },
-                { text: 'absolute-relative', link: '/en/rules/absolute-relative' },
-                { text: 'public-api', link: '/en/rules/public-api' },
-                { text: 'import-order', link: '/en/rules/import-order' },
+                { text: 'Overview', link: '/rules/' },
+                { text: 'layers-slices', link: '/rules/layers-slices' },
+                { text: 'absolute-relative', link: '/rules/absolute-relative' },
+                { text: 'public-api', link: '/rules/public-api' },
+                { text: 'import-order', link: '/rules/import-order' },
               ],
             },
             {
               text: 'Migration',
               items: [
-                { text: 'v1 to v2', link: '/en/migration-v2' },
+                { text: 'v1 to v2', link: '/migration-v2' },
               ],
             },
           ],
@@ -79,10 +82,10 @@ export default defineConfig({
               text: 'Правила',
               items: [
                 { text: 'Обзор', link: '/ru/rules/' },
-                { text: 'layers-slices', link: '/en/rules/layers-slices' },
-                { text: 'absolute-relative', link: '/en/rules/absolute-relative' },
-                { text: 'public-api', link: '/en/rules/public-api' },
-                { text: 'import-order', link: '/en/rules/import-order' },
+                { text: 'layers-slices', link: '/ru/rules/layers-slices' },
+                { text: 'absolute-relative', link: '/ru/rules/absolute-relative' },
+                { text: 'public-api', link: '/ru/rules/public-api' },
+                { text: 'import-order', link: '/ru/rules/import-order' },
               ],
             },
             {
