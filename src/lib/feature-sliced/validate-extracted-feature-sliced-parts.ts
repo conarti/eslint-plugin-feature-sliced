@@ -30,7 +30,7 @@ export function validateExtractedFeatureSlicedParts(
   const hasSegmentFiles = !isNull(segmentFiles);
   const hasNotSegmentFiles = !hasSegmentFiles;
 
-  const canContainSlices = hasLayer && canLayerContainSlices(layer, config);
+  const canContainSlices = hasLayer && layer !== null && canLayerContainSlices(layer, config);
 
   return {
     hasLayer,
