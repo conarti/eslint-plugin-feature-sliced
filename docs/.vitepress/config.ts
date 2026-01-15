@@ -14,6 +14,7 @@ export default defineConfig({
     'docs/getting-started.md': 'getting-started.md',
     'docs/configuration.md': 'configuration.md',
     'docs/migration-v2.md': 'migration-v2.md',
+    'docs/v1.md': 'v1.md',
     'docs/rules/index.md': 'rules/index.md',
     'docs/ru/:path*': 'ru/:path*',
     'src/rules/:rule/README.md': 'rules/:rule.md',
@@ -53,6 +54,7 @@ export default defineConfig({
               text: 'Migration',
               items: [
                 { text: 'v1 to v2', link: '/migration-v2' },
+                { text: 'v1.x Docs', link: '/v1' },
               ],
             },
           ],
@@ -92,6 +94,7 @@ export default defineConfig({
               text: 'Миграция',
               items: [
                 { text: 'v1 на v2', link: '/ru/migration-v2' },
+                { text: 'Документация v1.x', link: '/ru/v1' },
               ],
             },
           ],
