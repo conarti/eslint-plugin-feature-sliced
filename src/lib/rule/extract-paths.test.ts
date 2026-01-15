@@ -1,5 +1,5 @@
-import { extractPaths } from './extract-paths';
 import type { ImportExportNodesWithSourceValue, UnknownRuleContext } from './models';
+import { extractPaths } from './extract-paths';
 
 function createMockNode(sourcePath: string): ImportExportNodesWithSourceValue {
   return {

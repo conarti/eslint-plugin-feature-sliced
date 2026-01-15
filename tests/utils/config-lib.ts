@@ -1,4 +1,5 @@
 import type { TSESLint } from '@typescript-eslint/utils';
+import * as tseslintParser from '@typescript-eslint/parser';
 
 function setParser(config: any, version: TSESLint.EcmaVersion = 2015): any {
   return {
@@ -6,7 +7,7 @@ function setParser(config: any, version: TSESLint.EcmaVersion = 2015): any {
     languageOptions: {
       ecmaVersion: version,
       sourceType: 'module',
-      parser: require('@typescript-eslint/parser'),
+      parser: tseslintParser,
     },
   };
 }

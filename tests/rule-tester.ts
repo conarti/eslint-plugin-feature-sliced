@@ -17,7 +17,8 @@ export class RuleTester extends BaseRuleTester {
           },
         },
       });
-    } else {
+    }
+    else {
       super(restOptions);
     }
   }

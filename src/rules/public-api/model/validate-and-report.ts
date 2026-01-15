@@ -1,3 +1,4 @@
+import type { NormalizedLayerConfig } from '../../../config';
 import type {
   Options,
   RuleContext,
@@ -11,7 +12,12 @@ import {
 import { reportShouldBeFromPublicApi } from './errors';
 import { shouldBeFromPublicApi } from './should-be-from-public-api';
 
-export function validateAndReport(node: ImportExportNodes, context: RuleContext, optionsWithDefault: Readonly<Options>) {
+export function validateAndReport(
+  node: ImportExportNodes,
+  context: RuleContext,
+  optionsWithDefault: Readonly<Options>,
+  layersConfig?: NormalizedLayerConfig[],
+) {
   if (!hasPath(node)) {
     return;
   }
@@ -21,7 +27,7 @@ export function validateAndReport(node: ImportExportNodes, context: RuleContext,
     return;
   }
 
-  if (shouldBeFromPublicApi(node, context, optionsWithDefault)) {
-    reportShouldBeFromPublicApi(node, context);
+  if (shouldBeFromPublicApi(node, context, optionsWithDefault, layersConfig)) {
+    reportShouldBeFromPublicApi(node, context, layersConfig);
   }
 }

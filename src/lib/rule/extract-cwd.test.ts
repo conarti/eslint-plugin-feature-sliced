@@ -1,5 +1,5 @@
-import { extractCwd } from './extract-cwd';
 import type { UnknownRuleContext } from './models';
+import { extractCwd } from './extract-cwd';
 
 function createMockContext(cwd?: string): UnknownRuleContext {
   return {

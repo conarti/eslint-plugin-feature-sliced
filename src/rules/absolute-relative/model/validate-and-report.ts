@@ -1,3 +1,4 @@
+import type { NormalizedLayerConfig } from '../../../config';
 import type {
   Options,
   RuleContext,
@@ -25,6 +26,7 @@ export function validateAndReport(
   context: RuleContext,
   optionsWithDefault: Readonly<Options>,
   options: ValidateOptions = { needCheckForAbsolute: true },
+  layersConfig?: NormalizedLayerConfig[],
 ) {
   if (!hasPath(node)) {
     return;
@@ -35,7 +37,7 @@ export function validateAndReport(
     return;
   }
 
-  const pathsInfo = extractPathsInfo(node, context);
+  const pathsInfo = extractPathsInfo(node, context, layersConfig);
 
   if (shouldBeRelative(pathsInfo)) {
     reportShouldBeRelative(node, context);

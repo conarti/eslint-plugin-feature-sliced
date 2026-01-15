@@ -1,4 +1,10 @@
+import * as tseslintParser from '@typescript-eslint/parser';
 import { RuleTester } from '../../../tests/rule-tester';
+import {
+  makePublicApiErrorWithSuggestion,
+  makePublicApiOptions,
+  publicApiLayersNotAllowedError,
+} from '../../../tests/utils';
 import {
   layers,
   layersWithoutSlices,
@@ -6,17 +12,12 @@ import {
 } from '../../config';
 import { VALIDATION_LEVEL } from './config';
 import rule from './index';
-import {
-  makePublicApiErrorWithSuggestion,
-  publicApiLayersNotAllowedError,
-  makePublicApiOptions,
-} from '../../../tests/utils';
 
 const ruleTester = new RuleTester({
   languageOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
-    parser: require('@typescript-eslint/parser'),
+    parser: tseslintParser,
   },
 });
 
@@ -134,7 +135,7 @@ ruleTester.run('public-api', rule, {
     },
     {
       name: 'should correct read slices from paths',
-      code: "import { Foo } from '../models';",
+      code: "import { Foo } from '../model';",
       filename: 'src/features/foo/ui/index.ts',
     },
     {
@@ -173,10 +174,10 @@ ruleTester.run('public-api', rule, {
       code: 'import { bar } from "./ui/bar";',
     },
     {
-      name: 'should work ignoreInFilesPatterns option',
+      name: 'should work ignoreFiles option',
       filename: 'src/features/index.ts',
       code: 'import { bar } from "./ui/bar";',
-      options: makePublicApiOptions({ ignoreInFilesPatterns: [`**/(${layers.join('|')})/index.*`] }),
+      options: makePublicApiOptions({ ignoreFiles: [`**/(${layers.join('|')})/index.*`] }),
     },
   ],
 
@@ -320,5 +321,40 @@ ruleTester.run('public-api', rule, {
         ),
       ],
     },
+    {
+      name: 'should report error for nested @x path',
+      filename: 'src/entities/Session/model.ts',
+      code: "import { User } from '@/entities/User/@x/Session/types';",
+      errors: [
+        makePublicApiErrorWithSuggestion(
+          'types',
+          "import { User } from '@/entities/User/@x/Session';",
+          '@/entities/User/@x/Session',
+        ),
+      ],
+    },
   ],
+});
+
+/* === @x cross-import tests === */
+
+ruleTester.run('public-api (@x cross-imports)', rule, {
+  valid: [
+    {
+      name: '@x file is valid public API',
+      filename: 'src/entities/Session/model.ts',
+      code: "import { User } from '@/entities/User/@x/Session';",
+    },
+    {
+      name: '@x file with .ts extension is valid public API',
+      filename: 'src/entities/Session/ui/Card.tsx',
+      code: "import { User } from 'entities/User/@x/Session.ts';",
+    },
+    {
+      name: '@x file with hyphenated names is valid public API',
+      filename: 'src/entities/user-session/model.ts',
+      code: "import { UserProfile } from '@/entities/user-profile/@x/user-session';",
+    },
+  ],
+  invalid: [],
 });

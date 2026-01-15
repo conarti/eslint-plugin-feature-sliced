@@ -1,5 +1,6 @@
 import {
   createEslintRule,
+  extractLayersConfig,
   type ImportExpression,
 } from '../../lib/rule';
 import {
@@ -35,13 +36,13 @@ export default createEslintRule<Options, MessageIds>({
               VALIDATION_LEVEL.SLICES,
             ],
           },
-          ignorePatterns: {
+          ignoreImports: {
             type: 'array',
             items: {
               type: 'string',
             },
           },
-          ignoreInFilesPatterns: {
+          ignoreFiles: {
             type: 'array',
             items: {
               type: 'string',
@@ -54,24 +55,26 @@ export default createEslintRule<Options, MessageIds>({
   defaultOptions: [
     {
       level: VALIDATION_LEVEL.SLICES,
-      ignorePatterns: [],
-      ignoreInFilesPatterns: [],
+      ignoreImports: [],
+      ignoreFiles: [],
     },
   ],
 
   create(context, optionsWithDefault) {
+    const layersConfig = extractLayersConfig(context);
+
     return {
       ImportDeclaration(node) {
-        validateAndReport(node, context, optionsWithDefault);
+        validateAndReport(node, context, optionsWithDefault, layersConfig);
       },
       ImportExpression(node) {
-        validateAndReport(node as ImportExpression /* TSESTree has invalid type for this node */, context, optionsWithDefault);
+        validateAndReport(node as ImportExpression /* TSESTree has invalid type for this node */, context, optionsWithDefault, layersConfig);
       },
       ExportAllDeclaration(node) {
-        validateAndReport(node, context, optionsWithDefault);
+        validateAndReport(node, context, optionsWithDefault, layersConfig);
       },
       ExportNamedDeclaration(node) {
-        validateAndReport(node, context, optionsWithDefault);
+        validateAndReport(node, context, optionsWithDefault, layersConfig);
       },
       Program(node) {
         validateAndReportProgram(node, context, optionsWithDefault);

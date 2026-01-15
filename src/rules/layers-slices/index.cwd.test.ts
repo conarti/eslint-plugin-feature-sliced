@@ -1,8 +1,10 @@
+import * as tseslintParser from '@typescript-eslint/parser';
 import { vi } from 'vitest';
 import { RuleTester } from '../../../tests/rule-tester';
 import {
-  TEST_CWD,
+  makeInvalidCrossImportError,
   makeLayersSlicesError,
+  TEST_CWD,
 } from '../../../tests/utils';
 
 vi.mock('../../lib/rule/extract-cwd', () => ({
@@ -15,7 +17,7 @@ const ruleTester = new RuleTester({
   languageOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
-    parser: require('@typescript-eslint/parser'),
+    parser: tseslintParser,
   },
 });
 
@@ -31,6 +33,11 @@ ruleTester.run('layers-slices', rule, {
       filename: 'src/pages/policies/ui/PolicyPage.vue',
       code: "import { foo } from '../model'",
     },
+    {
+      name: 'should allow @x cross-import with cwd (cwd-dependent)',
+      filename: 'src/entities/Session/model/index.ts',
+      code: "import { User } from '@/entities/User/@x/Session';",
+    },
   ],
   invalid: [
     {
@@ -44,6 +51,12 @@ ruleTester.run('layers-slices', rule, {
       filename: 'src/entities/policies/model.ts',
       code: "import { foo } from '@/pages/policies/ui';",
       errors: [makeLayersSlicesError('pages', 'entities')],
+    },
+    {
+      name: 'should report error for @x import from wrong slice (cwd-dependent)',
+      filename: 'src/entities/Order/model/index.ts',
+      code: "import { User } from '@/entities/User/@x/Session';",
+      errors: [makeInvalidCrossImportError('User', 'Session')],
     },
   ],
 });

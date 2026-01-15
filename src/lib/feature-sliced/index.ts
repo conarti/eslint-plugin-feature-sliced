@@ -1,3 +1,7 @@
+export {
+  type CrossImportInfo,
+  extractCrossImportInfo,
+} from './extract-cross-import';
 export { type ExtractedFeatureSlicedParts } from './extract-feature-sliced-parts';
 export { extractLayer } from './extract-layer';
 export {
@@ -8,3 +12,11 @@ export {
   getLayerWeight,
   isLayer,
 } from './layers';
+export {
+  canLayerContainSlices,
+  getLayerNames,
+  getLayersWithoutSlices,
+  getLayersWithSlices,
+  isKnownLayer,
+  normalizeLayersConfig,
+} from './layers-config';

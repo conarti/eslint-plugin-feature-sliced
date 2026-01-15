@@ -1,19 +1,25 @@
 import type { Linter } from 'eslint';
-import type { ImportOrderConfigName, TypedFlatConfigItem } from './config';
-import type { VALIDATION_LEVEL } from './rules/public-api/config';
+import type {
+  ImportOrderConfigName,
+  LayersConfig,
+  NormalizedLayerConfig,
+  TypedFlatConfigItem,
+} from './config';
+import type { ValidationLevel } from './rules/public-api/config';
 import { PLUGIN_NAME, RULE_NAMES } from './config';
+import { normalizeLayersConfig } from './lib/feature-sliced/layers-config';
 import { plugin } from './plugin';
-import { importOrderRuleConfigs } from './rules/import-order/configs';
+import { createImportOrderRuleConfigs } from './rules/import-order/configs';
 
 interface AbsoluteRelativeOptions {
   /**
    * Ignore certain import paths (import foo from '<path-to-ignore>')
    */
-  ignorePatterns: string[];
+  ignoreImports: string[];
   /**
    * Disable the rule in certain files
    */
-  ignoreInFilesPatterns: string[];
+  ignoreFiles: string[];
 }
 
 interface LayersSlicesOptions {
@@ -25,11 +31,11 @@ interface LayersSlicesOptions {
   /**
    * Ignore certain import paths (import foo from '<path-to-ignore>')
    */
-  ignorePatterns: string[];
+  ignoreImports: string[];
   /**
    * Disable the rule in certain files
    */
-  ignoreInFilesPatterns: string[];
+  ignoreFiles: string[];
 }
 
 interface PublicApiOptions {
@@ -40,18 +46,32 @@ interface PublicApiOptions {
    * Default is 'slices', but 'segments' is recommended
    * @default 'slices'
    */
-  level: VALIDATION_LEVEL;
+  level: ValidationLevel;
   /**
    * Ignore certain import paths (import foo from '<path-to-ignore>')
    */
-  ignorePatterns: string[];
+  ignoreImports: string[];
   /**
    * Disable the rule in certain files
    */
-  ignoreInFilesPatterns: string[];
+  ignoreFiles: string[];
 }
 
 interface ESLintPluginFeatureSlicedOptions {
+  /**
+   * Custom layers configuration.
+   * Supports mixed syntax: strings for layers with slices, objects for customization.
+   * @example
+   * layers: [
+   *   { name: 'shared', hasSlices: false },
+   *   'entities',
+   *   'features',
+   *   'widgets',
+   *   'pages',
+   *   { name: 'app', hasSlices: false },
+   * ]
+   */
+  layers?: LayersConfig;
   absoluteRelative?: false | AbsoluteRelativeOptions;
   layersSlices?: false | LayersSlicesOptions;
   publicApi?: false | PublicApiOptions;
@@ -60,24 +80,34 @@ interface ESLintPluginFeatureSlicedOptions {
 
 export function createPlugin(options: ESLintPluginFeatureSlicedOptions = {}): TypedFlatConfigItem {
   const {
+    layers,
     sortImports = 'recommended',
     absoluteRelative,
     layersSlices,
     publicApi,
   } = options;
 
-  const rules = defineRules({ absoluteRelative, layersSlices, publicApi, sortImports });
+  const normalizedLayers = normalizeLayersConfig(layers);
+  const rules = defineRules({ absoluteRelative, layersSlices, publicApi, sortImports }, normalizedLayers);
 
   return {
     name: PLUGIN_NAME,
     plugins: {
       [PLUGIN_NAME]: plugin,
     },
+    settings: {
+      [PLUGIN_NAME]: {
+        layers: normalizedLayers,
+      },
+    },
     rules,
   } satisfies TypedFlatConfigItem;
 }
 
-function defineRules(options: ESLintPluginFeatureSlicedOptions): Linter.RulesRecord {
+function defineRules(
+  options: ESLintPluginFeatureSlicedOptions,
+  layersConfig: NormalizedLayerConfig[],
+): Linter.RulesRecord {
   const {
     absoluteRelative = {},
     layersSlices = {},
@@ -94,7 +124,8 @@ function defineRules(options: ESLintPluginFeatureSlicedOptions): Linter.RulesRec
   };
 
   if (sortImports) {
-    rules[RULE_NAMES.IMPORT_ORDER] = importOrderRuleConfigs[sortImports];
+    const importOrderConfigs = createImportOrderRuleConfigs(layersConfig);
+    rules[RULE_NAMES.IMPORT_ORDER] = importOrderConfigs[sortImports];
   }
 
   return rules;

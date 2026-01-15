@@ -26,6 +26,7 @@ export type Layer = Layers[number];
 
 /**
  * Layers arranged in order of their weight in the feature-sliced methodology
+ * @deprecated Use normalizeLayersConfig() from layers-config.ts for custom layers support
  */
 export const layers: Layers = [
   'shared',
@@ -41,6 +42,7 @@ export const layers: Layers = [
  * Layers where no slices exist. This affects the behavior of some rules.
  * For example, if there are no slices in a layer, then imports should always be relative between the modules of this layer,
  * and the layers-slices rule will ignore the cross-import rule for layers with slices ("you cannot import a slice into a slice")
+ * @deprecated Use getLayersWithoutSlices() from layers-config.ts for custom layers support
  */
 export const layersWithoutSlices: Layer[] = [
   'shared',
@@ -49,8 +51,52 @@ export const layersWithoutSlices: Layer[] = [
 
 /**
  * Layers that can contain slices by feature-sliced methodology
+ * @deprecated Use getLayersWithSlices() from layers-config.ts for custom layers support
  */
 export const layersWithSlices: Layer[] = layers.filter((layer) => !layersWithoutSlices.includes(layer));
+
+/* === Layer Customization Types === */
+
+/**
+ * Object configuration for a layer
+ */
+export interface LayerObjectConfig {
+  /** Layer name */
+  name: string;
+  /** Whether the layer can contain slices. Default: true */
+  hasSlices?: boolean;
+}
+
+/**
+ * Layer configuration item: string (hasSlices: true) or object for customization
+ */
+export type LayerConfigItem = string | LayerObjectConfig;
+
+/**
+ * Array of layer configurations
+ */
+export type LayersConfig = LayerConfigItem[];
+
+/**
+ * Normalized layer configuration (after processing defaults)
+ */
+export interface NormalizedLayerConfig {
+  name: string;
+  hasSlices: boolean;
+}
+
+/**
+ * Default FSD layers configuration
+ */
+export const DEFAULT_LAYERS_CONFIG: LayersConfig = [
+  { name: 'shared', hasSlices: false },
+  'entities',
+  'features',
+  'widgets',
+  'pages',
+  'processes',
+  { name: 'app', hasSlices: false },
+];
 
 export type Segments = ReadonlyArray<
   'ui'

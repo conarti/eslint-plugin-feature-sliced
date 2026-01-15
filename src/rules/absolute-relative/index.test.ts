@@ -1,15 +1,16 @@
+import * as tseslintParser from '@typescript-eslint/parser';
 import { RuleTester } from '../../../tests/rule-tester';
-import rule from './index';
 import {
   absoluteRelativeErrors,
   makeAbsoluteRelativeOptions,
 } from '../../../tests/utils';
+import rule from './index';
 
 const ruleTester = new RuleTester({
   languageOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
-    parser: require('@typescript-eslint/parser'),
+    parser: tseslintParser,
   },
 });
 
@@ -56,10 +57,10 @@ ruleTester.run('absolute-relative', rule, {
       code: "export { MarriageDetails } from './MarriageDetails';",
     },
     {
-      name: 'should be valid if it has ignored in files options',
+      name: 'should be valid if it has ignoreFiles option',
       filename: 'src/shared/foo/index.ts',
       code: "import { BAR } from '@/shared/bar';",
-      options: makeAbsoluteRelativeOptions({ ignoreInFilesPatterns: ['**/*/shared/foo/**/*'] }),
+      options: makeAbsoluteRelativeOptions({ ignoreFiles: ['**/*/shared/foo/**/*'] }),
     },
     {
       name: "should be valid if it has slice with 'layer' name",
@@ -147,6 +148,31 @@ ruleTester.run('absolute-relative', rule, {
       name: 'should report relative if import to shared layer public api file',
       filename: 'src/shared/index.ts',
       code: "import { foo } from 'shared/foo';",
+      errors: [absoluteRelativeErrors.mustBeRelative],
+    },
+  ],
+});
+
+/* === Group folders smoke tests === */
+
+ruleTester.run('absolute-relative (group folders)', rule, {
+  valid: [
+    {
+      name: 'should allow relative import within same slice with group folder',
+      filename: 'src/entities/group/User/ui/index.ts',
+      code: "import { userModel } from '../model';",
+    },
+    {
+      name: 'should allow absolute import from another slice with group folder',
+      filename: 'src/features/auth/Feature/ui/index.ts',
+      code: "import { User } from '@/entities/users/User';",
+    },
+  ],
+  invalid: [
+    {
+      name: 'should report relative if absolute import within same slice with group folder',
+      filename: 'src/entities/group/User/ui/index.ts',
+      code: "import { userModel } from '@/entities/group/User/model';",
       errors: [absoluteRelativeErrors.mustBeRelative],
     },
   ],

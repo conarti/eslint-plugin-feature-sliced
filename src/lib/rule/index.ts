@@ -1,6 +1,7 @@
 export { createEslintRule } from './create-rule';
 export { extractCurrentFilePath } from './extract-current-file-path';
 export { extractCwd } from './extract-cwd';
+export { extractLayersConfig } from './extract-layers-config';
 export { extractNodePath } from './extract-node-path';
 export { extractPaths } from './extract-paths';
 export { extractRuleOptions } from './extract-rule-options';

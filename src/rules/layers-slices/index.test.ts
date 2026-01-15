@@ -1,19 +1,21 @@
 import type { Options } from './config';
+import * as tseslintParser from '@typescript-eslint/parser';
 import { RuleTester } from '../../../tests/rule-tester';
-import rule from './index';
 import {
+  layersSlicesAllowTypeImportsOptions,
+  makeInvalidCrossImportError,
   makeLayersSlicesError,
   makeLayersSlicesErrorAtSpecifier,
-  layersSlicesAllowTypeImportsOptions,
-  makeLayersSlicesIgnoreOptions,
   makeLayersSlicesIgnoreInFilesOptions,
+  makeLayersSlicesIgnoreOptions,
 } from '../../../tests/utils';
+import rule from './index';
 
 const ruleTester = new RuleTester({
   languageOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
-    parser: require('@typescript-eslint/parser'),
+    parser: tseslintParser,
   },
 });
 
@@ -83,13 +85,13 @@ ruleTester.run('layers-slices', rule, {
       code: "import type { Foo } from '@/widgets/foo';",
     },
     {
-      name: 'should work with ignorePatterns (exact match)',
+      name: 'should work with ignoreImports (exact match)',
       filename: 'src/shared/ui/foo',
       code: "import { Bar } from '@/entities/bar';",
       options: makeLayersSlicesIgnoreOptions(['@/entities/bar']),
     },
     {
-      name: 'should work with ignorePatterns (wildcard)',
+      name: 'should work with ignoreImports (wildcard)',
       filename: 'src/shared/ui/foo',
       code: "import { Bar } from '@/entities/bar';",
       options: makeLayersSlicesIgnoreOptions(['**/bar']),
@@ -130,7 +132,7 @@ ruleTester.run('layers-slices', rule, {
       code: "import { Bar } from 'src/entities/app-bar';",
     },
     {
-      name: 'should work with ignoreInFilesPatterns',
+      name: 'should work with ignoreFiles',
       filename: 'src/features/index.ts',
       code: "import { Bar } from 'src/features/bar';",
       options: makeLayersSlicesIgnoreInFilesOptions(['**/src/(shared|entities|features|widgets|pages|processes|app)/index.ts']),
@@ -281,6 +283,76 @@ ruleTester.run('layers-slices', rule, {
       filename: 'src/entities/policies/model.ts',
       code: "import { foo } from '../../../pages/policies/ui';",
       errors: [makeLayersSlicesError('pages', 'entities')],
+    },
+    {
+      name: 'should throw error for @x import from wrong slice',
+      filename: 'src/entities/Order/model.ts',
+      code: "import { User } from '@/entities/User/@x/Session';",
+      errors: [makeInvalidCrossImportError('User', 'Session')],
+    },
+    {
+      name: 'should throw error for @x import from wrong slice (different slice)',
+      filename: 'src/entities/Product/ui/Card.tsx',
+      code: "import { User } from 'entities/User/@x/Session';",
+      errors: [makeInvalidCrossImportError('User', 'Session')],
+    },
+  ],
+});
+
+/* === @x cross-import tests === */
+
+ruleTester.run('layers-slices (@x cross-imports)', rule, {
+  valid: [
+    {
+      name: 'should allow @x cross-import from correct target slice',
+      filename: 'src/entities/Session/model.ts',
+      code: "import { User } from '@/entities/User/@x/Session';",
+    },
+    {
+      name: 'should allow @x cross-import with .ts extension',
+      filename: 'src/entities/Session/model.ts',
+      code: "import { User } from '@/entities/User/@x/Session.ts';",
+    },
+    {
+      name: 'should allow @x cross-import from nested file in target slice',
+      filename: 'src/entities/Session/ui/Card.tsx',
+      code: "import { User } from 'entities/User/@x/Session';",
+    },
+    {
+      name: 'should allow @x cross-import with hyphenated slice names',
+      filename: 'src/entities/user-session/model.ts',
+      code: "import { UserProfile } from '@/entities/user-profile/@x/user-session';",
+    },
+    {
+      name: 'should allow @x cross-import with group folders',
+      filename: 'src/entities/users/Session/model.ts',
+      code: "import { User } from '@/entities/users/User/@x/Session';",
+    },
+  ],
+  invalid: [],
+});
+
+/* === Group folders smoke tests === */
+
+ruleTester.run('layers-slices (group folders)', rule, {
+  valid: [
+    {
+      name: 'should allow import within same slice with group folder',
+      filename: 'src/entities/group/User/ui/index.ts',
+      code: "import { userModel } from '../model';",
+    },
+    {
+      name: 'should allow relative import within same slice with nested group folders',
+      filename: 'src/features/auth/forms/LoginForm/ui/index.ts',
+      code: "import { useLogin } from '../model';",
+    },
+  ],
+  invalid: [
+    {
+      name: 'should report cross-slice import with group folders',
+      filename: 'src/entities/users/User/model/index.ts',
+      code: "import { foo } from '@/entities/products/Product/model';",
+      errors: [makeLayersSlicesError('entities', 'entities')],
     },
   ],
 });

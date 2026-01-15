@@ -4,6 +4,7 @@ import type {
 } from './config';
 import {
   createEslintRule,
+  extractLayersConfig,
   type ImportExpression,
 } from '../../lib/rule';
 import { ERROR_MESSAGE_ID } from './config';
@@ -17,7 +18,8 @@ export default createEslintRule<Options, MessageIds>({
       description: 'Checks layer imports',
     },
     messages: {
-      [ERROR_MESSAGE_ID.CAN_NOT_IMPORT]: 'You cannot import layer "{{ importLayer }}" into "{{ currentFileLayer }}" (shared -> entities -> features -> widgets -> pages -> processes -> app)',
+      [ERROR_MESSAGE_ID.CAN_NOT_IMPORT]: 'You cannot import layer "{{ importLayer }}" into "{{ currentFileLayer }}" ({{ layersOrder }})',
+      [ERROR_MESSAGE_ID.INVALID_CROSS_IMPORT]: 'Cross-import "{{ sourceSlice }}/@x/{{ targetSlice }}" is only allowed from slice "{{ targetSlice }}"',
     },
     schema: [
       {
@@ -26,13 +28,13 @@ export default createEslintRule<Options, MessageIds>({
           allowTypeImports: {
             type: 'boolean',
           },
-          ignorePatterns: {
+          ignoreImports: {
             type: 'array',
             items: {
               type: 'string',
             },
           },
-          ignoreInFilesPatterns: {
+          ignoreFiles: {
             type: 'array',
             items: {
               type: 'string',
@@ -45,18 +47,20 @@ export default createEslintRule<Options, MessageIds>({
   defaultOptions: [
     {
       allowTypeImports: true,
-      ignorePatterns: [],
-      ignoreInFilesPatterns: [],
+      ignoreImports: [],
+      ignoreFiles: [],
     },
   ],
 
   create(context, optionsWithDefault) {
+    const layersConfig = extractLayersConfig(context);
+
     return {
       ImportDeclaration(node) {
-        validateAndReport(node, context, optionsWithDefault);
+        validateAndReport(node, context, optionsWithDefault, layersConfig);
       },
       ImportExpression(node) {
-        validateAndReport(node as ImportExpression /* TSESTree has invalid type for this node */, context, optionsWithDefault);
+        validateAndReport(node as ImportExpression /* TSESTree has invalid type for this node */, context, optionsWithDefault, layersConfig);
       },
     };
   },

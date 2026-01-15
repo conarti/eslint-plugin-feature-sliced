@@ -1,4 +1,5 @@
 const path = require('node:path');
+const process = require('node:process');
 const execa = require('execa');
 const c = require('picocolors');
 const prompts = require('prompts');
