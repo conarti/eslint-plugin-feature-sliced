@@ -1,5 +1,4 @@
 import type { TSESLint } from '@typescript-eslint/utils';
-import type { Linter } from 'eslint';
 import type { Layer, LayersConfig, NormalizedLayerConfig } from '../../src/config';
 import { PLUGIN_NAME } from '../../src/config';
 import { normalizeLayersConfig } from '../../src/lib/feature-sliced/layers-config';
@@ -228,7 +227,7 @@ export function makeAbsoluteRelativeOptions({
 /**
  * Creates ESLint settings with custom layers configuration
  */
-export function makeCustomLayersSettings(layers: LayersConfig): Linter.Settings {
+export function makeCustomLayersSettings(layers: LayersConfig): Record<string, unknown> {
   return {
     [PLUGIN_NAME]: {
       layers: normalizeLayersConfig(layers),
@@ -239,7 +238,7 @@ export function makeCustomLayersSettings(layers: LayersConfig): Linter.Settings 
 /**
  * Creates ESLint settings with normalized layers configuration
  */
-export function makeNormalizedLayersSettings(layers: NormalizedLayerConfig[]): Linter.Settings {
+export function makeNormalizedLayersSettings(layers: NormalizedLayerConfig[]): Record<string, unknown> {
   return {
     [PLUGIN_NAME]: {
       layers,
