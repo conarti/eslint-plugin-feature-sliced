@@ -1,7 +1,7 @@
 import type { NormalizedLayerConfig } from '../../config';
+import type { UnknownRuleContext } from './models';
 import { PLUGIN_NAME } from '../../config';
 import { normalizeLayersConfig } from '../feature-sliced/layers-config';
-import type { UnknownRuleContext } from './models';
 
 interface PluginSettings {
   layers?: NormalizedLayerConfig[];

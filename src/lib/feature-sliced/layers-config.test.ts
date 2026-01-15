@@ -3,9 +3,9 @@ import { DEFAULT_LAYERS_CONFIG } from '../../config';
 import {
   canLayerContainSlices,
   getLayerNames,
-  getLayerWeight,
   getLayersWithoutSlices,
   getLayersWithSlices,
+  getLayerWeight,
   isKnownLayer,
   normalizeLayersConfig,
 } from './layers-config';
@@ -241,7 +241,7 @@ describe('layers-config', () => {
     });
   });
 
-  describe('DEFAULT_LAYERS_CONFIG', () => {
+  describe('dEFAULT_LAYERS_CONFIG', () => {
     it('should have correct default FSD layers', () => {
       const normalized = normalizeLayersConfig(DEFAULT_LAYERS_CONFIG);
       const names = getLayerNames(normalized);

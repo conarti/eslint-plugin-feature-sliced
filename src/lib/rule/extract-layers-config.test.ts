@@ -1,6 +1,6 @@
 import type { NormalizedLayerConfig } from '../../config';
-import { PLUGIN_NAME } from '../../config';
 import type { UnknownRuleContext } from './models';
+import { PLUGIN_NAME } from '../../config';
 import { extractLayersConfig } from './extract-layers-config';
 
 function createMockContext(settings?: Record<string, unknown>): UnknownRuleContext {
