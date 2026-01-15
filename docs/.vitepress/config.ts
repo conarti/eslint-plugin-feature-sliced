@@ -19,6 +19,7 @@ export default defineConfig({
     'docs/ru/:path*': 'ru/:path*',
     'src/rules/:rule/README.md': 'rules/:rule.md',
     'src/rules/:rule/README.ru.md': 'ru/rules/:rule.md',
+    'CHANGELOG.md': 'changelog.md',
   },
 
   locales: {
@@ -30,6 +31,7 @@ export default defineConfig({
           { text: 'Guide', link: '/getting-started' },
           { text: 'Rules', link: '/rules/' },
           { text: 'Migration', link: '/migration-v2' },
+          { text: 'Changelog', link: '/changelog' },
         ],
         sidebar: {
           '/': [
@@ -70,6 +72,7 @@ export default defineConfig({
           { text: 'Руководство', link: '/ru/getting-started' },
           { text: 'Правила', link: '/ru/rules/' },
           { text: 'Миграция', link: '/ru/migration-v2' },
+          { text: 'Changelog', link: '/changelog' },
         ],
         sidebar: {
           '/ru/': [
