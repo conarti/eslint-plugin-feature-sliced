@@ -53,8 +53,9 @@ export function shouldBeFromPublicApi(
   context: RuleContext,
   optionsWithDefault: Readonly<Options>,
   layersConfig?: NormalizedLayerConfig[],
+  segmentsConfig?: string[],
 ): boolean {
-  const pathsInfo = extractPathsInfo(node, context, { layersConfig });
+  const pathsInfo = extractPathsInfo(node, context, { layersConfig, segmentsConfig });
   const ruleOptions = extractRuleOptions(optionsWithDefault);
 
   /*

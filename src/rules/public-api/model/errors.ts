@@ -15,8 +15,9 @@ export function reportShouldBeFromPublicApi(
   node: ImportExportNodesWithSourceValue,
   context: RuleContext,
   layersConfig?: NormalizedLayerConfig[],
+  segmentsConfig?: string[],
 ) {
-  const pathsInfo = extractPathsInfo(node, context, { layersConfig });
+  const pathsInfo = extractPathsInfo(node, context, { layersConfig, segmentsConfig });
   const [fixedPath, valueToRemove] = convertToPublicApi(pathsInfo);
 
   context.report({
@@ -34,6 +35,20 @@ export function reportShouldBeFromPublicApi(
         fix: (fixer) => fixer.replaceTextRange(getSourceRangeWithoutQuotes(node.source.range), fixedPath),
       },
     ],
+  });
+}
+
+export function reportUnknownSegment(
+  node: ImportExportNodesWithSourceValue,
+  context: RuleContext,
+  segment: string,
+) {
+  context.report({
+    node: node.source,
+    messageId: MESSAGE_ID.UNKNOWN_SEGMENT,
+    data: {
+      segment,
+    },
   });
 }
 

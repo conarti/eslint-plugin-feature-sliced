@@ -1,5 +1,5 @@
 import type { TSESLint } from '@typescript-eslint/utils';
-import type { Layer, LayersConfig, NormalizedLayerConfig } from '../../src/config';
+import type { Layer, LayersConfig, NormalizedLayerConfig, SegmentsConfig } from '../../src/config';
 import { PLUGIN_NAME } from '../../src/config';
 import { normalizeLayersConfig } from '../../src/lib/feature-sliced/layers-config';
 import {
@@ -13,6 +13,7 @@ import {
 } from '../../src/rules/layers-slices/config';
 import {
   MESSAGE_ID as PUBLIC_API_MESSAGE_ID,
+  type MessageIds as PublicApiMessageIds,
   type Options as PublicApiOptions,
   VALIDATION_LEVEL,
   type ValidationLevel,
@@ -260,6 +261,48 @@ export function makeCustomLayersSlicesError(
       importLayer,
       currentFileLayer,
       layersOrder,
+    },
+  };
+}
+
+/* === Custom segments helpers === */
+
+/**
+ * Creates ESLint settings with custom segments configuration
+ */
+export function makeCustomSegmentsSettings(segments: SegmentsConfig): Record<string, unknown> {
+  return {
+    [PLUGIN_NAME]: {
+      segments,
+    },
+  };
+}
+
+/**
+ * Creates ESLint settings with both custom layers and custom segments
+ */
+export function makeCustomLayersAndSegmentsSettings(
+  layers: LayersConfig,
+  segments: SegmentsConfig,
+): Record<string, unknown> {
+  return {
+    [PLUGIN_NAME]: {
+      layers: normalizeLayersConfig(layers),
+      segments,
+    },
+  };
+}
+
+/**
+ * Creates error for unknown segment
+ */
+export function makeUnknownSegmentError(
+  segment: string,
+): TSESLint.TestCaseError<PublicApiMessageIds> {
+  return {
+    messageId: PUBLIC_API_MESSAGE_ID.UNKNOWN_SEGMENT,
+    data: {
+      segment,
     },
   };
 }
