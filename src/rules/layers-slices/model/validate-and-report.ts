@@ -82,7 +82,7 @@ export function validateAndReport(
     return;
   }
 
-  const pathsInfo = extractPathsInfo(node, context, config);
+  const pathsInfo = extractPathsInfo(node, context, { layersConfig: config });
 
   /*
    * Check @x cross-import pattern.

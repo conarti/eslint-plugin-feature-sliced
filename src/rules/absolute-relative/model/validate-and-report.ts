@@ -37,7 +37,7 @@ export function validateAndReport(
     return;
   }
 
-  const pathsInfo = extractPathsInfo(node, context, layersConfig);
+  const pathsInfo = extractPathsInfo(node, context, { layersConfig });
 
   if (shouldBeRelative(pathsInfo)) {
     reportShouldBeRelative(node, context);

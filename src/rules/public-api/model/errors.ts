@@ -16,7 +16,7 @@ export function reportShouldBeFromPublicApi(
   context: RuleContext,
   layersConfig?: NormalizedLayerConfig[],
 ) {
-  const pathsInfo = extractPathsInfo(node, context, layersConfig);
+  const pathsInfo = extractPathsInfo(node, context, { layersConfig });
   const [fixedPath, valueToRemove] = convertToPublicApi(pathsInfo);
 
   context.report({

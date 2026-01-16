@@ -54,7 +54,7 @@ export function shouldBeFromPublicApi(
   optionsWithDefault: Readonly<Options>,
   layersConfig?: NormalizedLayerConfig[],
 ): boolean {
-  const pathsInfo = extractPathsInfo(node, context, layersConfig);
+  const pathsInfo = extractPathsInfo(node, context, { layersConfig });
   const ruleOptions = extractRuleOptions(optionsWithDefault);
 
   /*
