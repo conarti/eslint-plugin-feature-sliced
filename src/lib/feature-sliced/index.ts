@@ -13,6 +13,7 @@ export {
   isLayer,
 } from './layers';
 export {
+  canLayerAllowSliceCrossImports,
   canLayerContainSlices,
   getLayerNames,
   getLayersWithoutSlices,

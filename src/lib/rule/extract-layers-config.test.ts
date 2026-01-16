@@ -15,8 +15,8 @@ describe('extractLayersConfig', () => {
     const result = extractLayersConfig(context);
 
     expect(result).toHaveLength(7);
-    expect(result[0]).toEqual({ name: 'shared', hasSlices: false });
-    expect(result[6]).toEqual({ name: 'app', hasSlices: false });
+    expect(result[0]).toEqual({ name: 'shared', hasSlices: false, allowSliceCrossImports: false });
+    expect(result[6]).toEqual({ name: 'app', hasSlices: false, allowSliceCrossImports: false });
   });
 
   it('should return default config when plugin settings are empty', () => {
@@ -30,9 +30,9 @@ describe('extractLayersConfig', () => {
 
   it('should return custom layers from settings', () => {
     const customLayers: NormalizedLayerConfig[] = [
-      { name: 'shared', hasSlices: false },
-      { name: 'entities', hasSlices: true },
-      { name: 'app', hasSlices: false },
+      { name: 'shared', hasSlices: false, allowSliceCrossImports: false },
+      { name: 'entities', hasSlices: true, allowSliceCrossImports: false },
+      { name: 'app', hasSlices: false, allowSliceCrossImports: false },
     ];
 
     const context = createMockContext({

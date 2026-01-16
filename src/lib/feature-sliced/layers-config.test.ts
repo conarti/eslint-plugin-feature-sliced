@@ -1,6 +1,7 @@
 import type { LayersConfig, NormalizedLayerConfig } from '../../config';
 import { DEFAULT_LAYERS_CONFIG } from '../../config';
 import {
+  canLayerAllowSliceCrossImports,
   canLayerContainSlices,
   getLayerNames,
   getLayersWithoutSlices,
@@ -15,8 +16,8 @@ describe('layers-config', () => {
     it('should return default config when no config provided', () => {
       const result = normalizeLayersConfig();
       expect(result).toHaveLength(7);
-      expect(result[0]).toEqual({ name: 'shared', hasSlices: false });
-      expect(result[6]).toEqual({ name: 'app', hasSlices: false });
+      expect(result[0]).toEqual({ name: 'shared', hasSlices: false, allowSliceCrossImports: false });
+      expect(result[6]).toEqual({ name: 'app', hasSlices: false, allowSliceCrossImports: false });
     });
 
     it('should normalize string items to objects with hasSlices: true', () => {
@@ -24,8 +25,8 @@ describe('layers-config', () => {
       const result = normalizeLayersConfig(config);
 
       expect(result).toEqual([
-        { name: 'entities', hasSlices: true },
-        { name: 'features', hasSlices: true },
+        { name: 'entities', hasSlices: true, allowSliceCrossImports: false },
+        { name: 'features', hasSlices: true, allowSliceCrossImports: false },
       ]);
     });
 
@@ -37,8 +38,8 @@ describe('layers-config', () => {
       const result = normalizeLayersConfig(config);
 
       expect(result).toEqual([
-        { name: 'shared', hasSlices: false },
-        { name: 'features', hasSlices: true },
+        { name: 'shared', hasSlices: false, allowSliceCrossImports: false },
+        { name: 'features', hasSlices: true, allowSliceCrossImports: false },
       ]);
     });
 
@@ -46,7 +47,7 @@ describe('layers-config', () => {
       const config: LayersConfig = [{ name: 'entities' }];
       const result = normalizeLayersConfig(config);
 
-      expect(result).toEqual([{ name: 'entities', hasSlices: true }]);
+      expect(result).toEqual([{ name: 'entities', hasSlices: true, allowSliceCrossImports: false }]);
     });
 
     it('should convert layer names to lowercase', () => {
@@ -54,8 +55,8 @@ describe('layers-config', () => {
       const result = normalizeLayersConfig(config);
 
       expect(result).toEqual([
-        { name: 'entities', hasSlices: true },
-        { name: 'features', hasSlices: true },
+        { name: 'entities', hasSlices: true, allowSliceCrossImports: false },
+        { name: 'features', hasSlices: true, allowSliceCrossImports: false },
       ]);
     });
 
@@ -71,9 +72,9 @@ describe('layers-config', () => {
       const result = normalizeLayersConfig(config);
 
       expect(result).toHaveLength(6);
-      expect(result[0]).toEqual({ name: 'shared', hasSlices: false });
-      expect(result[1]).toEqual({ name: 'entities', hasSlices: true });
-      expect(result[5]).toEqual({ name: 'app', hasSlices: false });
+      expect(result[0]).toEqual({ name: 'shared', hasSlices: false, allowSliceCrossImports: false });
+      expect(result[1]).toEqual({ name: 'entities', hasSlices: true, allowSliceCrossImports: false });
+      expect(result[5]).toEqual({ name: 'app', hasSlices: false, allowSliceCrossImports: false });
     });
 
     it('should handle custom layers', () => {
@@ -86,10 +87,10 @@ describe('layers-config', () => {
       const result = normalizeLayersConfig(config);
 
       expect(result).toEqual([
-        { name: 'core', hasSlices: false },
-        { name: 'domain', hasSlices: true },
-        { name: 'application', hasSlices: true },
-        { name: 'infrastructure', hasSlices: false },
+        { name: 'core', hasSlices: false, allowSliceCrossImports: false },
+        { name: 'domain', hasSlices: true, allowSliceCrossImports: false },
+        { name: 'application', hasSlices: true, allowSliceCrossImports: false },
+        { name: 'infrastructure', hasSlices: false, allowSliceCrossImports: false },
       ]);
     });
   });
@@ -97,8 +98,8 @@ describe('layers-config', () => {
   describe('getLayerNames', () => {
     it('should return array of layer names', () => {
       const config: NormalizedLayerConfig[] = [
-        { name: 'shared', hasSlices: false },
-        { name: 'entities', hasSlices: true },
+        { name: 'shared', hasSlices: false, allowSliceCrossImports: false },
+        { name: 'entities', hasSlices: true, allowSliceCrossImports: false },
       ];
 
       expect(getLayerNames(config)).toEqual(['shared', 'entities']);
@@ -112,10 +113,10 @@ describe('layers-config', () => {
   describe('getLayersWithSlices', () => {
     it('should return only layers with hasSlices: true', () => {
       const config: NormalizedLayerConfig[] = [
-        { name: 'shared', hasSlices: false },
-        { name: 'entities', hasSlices: true },
-        { name: 'features', hasSlices: true },
-        { name: 'app', hasSlices: false },
+        { name: 'shared', hasSlices: false, allowSliceCrossImports: false },
+        { name: 'entities', hasSlices: true, allowSliceCrossImports: false },
+        { name: 'features', hasSlices: true, allowSliceCrossImports: false },
+        { name: 'app', hasSlices: false, allowSliceCrossImports: false },
       ];
 
       expect(getLayersWithSlices(config)).toEqual(['entities', 'features']);
@@ -123,8 +124,8 @@ describe('layers-config', () => {
 
     it('should return empty array if no layers with slices', () => {
       const config: NormalizedLayerConfig[] = [
-        { name: 'shared', hasSlices: false },
-        { name: 'app', hasSlices: false },
+        { name: 'shared', hasSlices: false, allowSliceCrossImports: false },
+        { name: 'app', hasSlices: false, allowSliceCrossImports: false },
       ];
 
       expect(getLayersWithSlices(config)).toEqual([]);
@@ -134,9 +135,9 @@ describe('layers-config', () => {
   describe('getLayersWithoutSlices', () => {
     it('should return only layers with hasSlices: false', () => {
       const config: NormalizedLayerConfig[] = [
-        { name: 'shared', hasSlices: false },
-        { name: 'entities', hasSlices: true },
-        { name: 'app', hasSlices: false },
+        { name: 'shared', hasSlices: false, allowSliceCrossImports: false },
+        { name: 'entities', hasSlices: true, allowSliceCrossImports: false },
+        { name: 'app', hasSlices: false, allowSliceCrossImports: false },
       ];
 
       expect(getLayersWithoutSlices(config)).toEqual(['shared', 'app']);
@@ -144,8 +145,8 @@ describe('layers-config', () => {
 
     it('should return empty array if all layers have slices', () => {
       const config: NormalizedLayerConfig[] = [
-        { name: 'entities', hasSlices: true },
-        { name: 'features', hasSlices: true },
+        { name: 'entities', hasSlices: true, allowSliceCrossImports: false },
+        { name: 'features', hasSlices: true, allowSliceCrossImports: false },
       ];
 
       expect(getLayersWithoutSlices(config)).toEqual([]);
@@ -154,9 +155,9 @@ describe('layers-config', () => {
 
   describe('isKnownLayer', () => {
     const config: NormalizedLayerConfig[] = [
-      { name: 'shared', hasSlices: false },
-      { name: 'entities', hasSlices: true },
-      { name: 'features', hasSlices: true },
+      { name: 'shared', hasSlices: false, allowSliceCrossImports: false },
+      { name: 'entities', hasSlices: true, allowSliceCrossImports: false },
+      { name: 'features', hasSlices: true, allowSliceCrossImports: false },
     ];
 
     it('should return true for known layer', () => {
@@ -184,10 +185,10 @@ describe('layers-config', () => {
 
   describe('getLayerWeight', () => {
     const config: NormalizedLayerConfig[] = [
-      { name: 'shared', hasSlices: false },
-      { name: 'entities', hasSlices: true },
-      { name: 'features', hasSlices: true },
-      { name: 'app', hasSlices: false },
+      { name: 'shared', hasSlices: false, allowSliceCrossImports: false },
+      { name: 'entities', hasSlices: true, allowSliceCrossImports: false },
+      { name: 'features', hasSlices: true, allowSliceCrossImports: false },
+      { name: 'app', hasSlices: false, allowSliceCrossImports: false },
     ];
 
     it('should return correct weight for each layer', () => {
@@ -215,10 +216,10 @@ describe('layers-config', () => {
 
   describe('canLayerContainSlices', () => {
     const config: NormalizedLayerConfig[] = [
-      { name: 'shared', hasSlices: false },
-      { name: 'entities', hasSlices: true },
-      { name: 'features', hasSlices: true },
-      { name: 'app', hasSlices: false },
+      { name: 'shared', hasSlices: false, allowSliceCrossImports: false },
+      { name: 'entities', hasSlices: true, allowSliceCrossImports: false },
+      { name: 'features', hasSlices: true, allowSliceCrossImports: false },
+      { name: 'app', hasSlices: false, allowSliceCrossImports: false },
     ];
 
     it('should return true for layers with slices', () => {
@@ -238,6 +239,34 @@ describe('layers-config', () => {
 
     it('should return false for unknown layer', () => {
       expect(canLayerContainSlices('unknown', config)).toBe(false);
+    });
+  });
+
+  describe('canLayerAllowSliceCrossImports', () => {
+    const config: NormalizedLayerConfig[] = [
+      { name: 'shared', hasSlices: false, allowSliceCrossImports: false },
+      { name: 'modules', hasSlices: true, allowSliceCrossImports: true },
+      { name: 'features', hasSlices: true, allowSliceCrossImports: false },
+      { name: 'app', hasSlices: false, allowSliceCrossImports: false },
+    ];
+
+    it('should return true for layers with allowSliceCrossImports: true', () => {
+      expect(canLayerAllowSliceCrossImports('modules', config)).toBe(true);
+    });
+
+    it('should return false for layers with allowSliceCrossImports: false', () => {
+      expect(canLayerAllowSliceCrossImports('shared', config)).toBe(false);
+      expect(canLayerAllowSliceCrossImports('features', config)).toBe(false);
+      expect(canLayerAllowSliceCrossImports('app', config)).toBe(false);
+    });
+
+    it('should handle case-insensitive lookup', () => {
+      expect(canLayerAllowSliceCrossImports('MODULES', config)).toBe(true);
+      expect(canLayerAllowSliceCrossImports('Modules', config)).toBe(true);
+    });
+
+    it('should return false for unknown layer', () => {
+      expect(canLayerAllowSliceCrossImports('unknown', config)).toBe(false);
     });
   });
 

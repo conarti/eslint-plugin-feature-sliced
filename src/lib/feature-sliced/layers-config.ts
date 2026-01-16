@@ -13,12 +13,14 @@ function normalizeLayerConfigItem(item: LayerConfigItem): NormalizedLayerConfig 
     return {
       name: item.toLowerCase(),
       hasSlices: true,
+      allowSliceCrossImports: false,
     };
   }
 
   return {
     name: item.name.toLowerCase(),
     hasSlices: item.hasSlices ?? true,
+    allowSliceCrossImports: item.allowSliceCrossImports ?? false,
   };
 }
 
@@ -81,4 +83,13 @@ export function getLayerWeight(layer: string, config: NormalizedLayerConfig[]): 
 export function canLayerContainSlices(layer: string, config: NormalizedLayerConfig[]): boolean {
   const layerConfig = config.find((l) => l.name === layer.toLowerCase());
   return layerConfig?.hasSlices ?? false;
+}
+
+/**
+ * Checks if the layer allows cross-imports between its slices.
+ * Returns false if layer is not found.
+ */
+export function canLayerAllowSliceCrossImports(layer: string, config: NormalizedLayerConfig[]): boolean {
+  const layerConfig = config.find((l) => l.name === layer.toLowerCase());
+  return layerConfig?.allowSliceCrossImports ?? false;
 }

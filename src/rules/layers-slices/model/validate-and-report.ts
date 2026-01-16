@@ -14,7 +14,10 @@ import {
   extractPathsInfo,
   type PathsInfo,
 } from '../../../lib/feature-sliced';
-import { normalizeLayersConfig } from '../../../lib/feature-sliced/layers-config';
+import {
+  canLayerAllowSliceCrossImports,
+  normalizeLayersConfig,
+} from '../../../lib/feature-sliced/layers-config';
 import {
   extractRuleOptions,
   hasPath,
@@ -101,12 +104,23 @@ export function validateAndReport(
     return;
   }
 
+  /*
+   * Check allowSliceCrossImports for same-layer cross-slice imports.
+   * If enabled for the target layer, allow imports between slices.
+   */
+  const layersConfig = config ?? normalizeLayersConfig();
+  if (pathsInfo.isSameLayer && !pathsInfo.isSameSlice) {
+    const targetLayer = pathsInfo.fsdPartsOfTarget.layer;
+    if (targetLayer && canLayerAllowSliceCrossImports(targetLayer, layersConfig)) {
+      return;
+    }
+  }
+
   if (isNotSuitableForValidation(pathsInfo)) {
     return;
   }
 
   const { allowTypeImports } = extractRuleOptions(optionsWithDefault);
-  const layersConfig = config ?? normalizeLayersConfig();
   const nodesToReport = validate(node, pathsInfo, allowTypeImports, layersConfig);
   reportValidationErrors(nodesToReport, context, pathsInfo, layersConfig);
 }
