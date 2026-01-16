@@ -72,6 +72,7 @@ export function validateAndReport(
   context: RuleContext,
   optionsWithDefault: Readonly<Options>,
   config?: NormalizedLayerConfig[],
+  segmentsConfig?: string[],
 ) {
   if (!hasPath(node)) {
     return;
@@ -82,7 +83,7 @@ export function validateAndReport(
     return;
   }
 
-  const pathsInfo = extractPathsInfo(node, context, { layersConfig: config });
+  const pathsInfo = extractPathsInfo(node, context, { layersConfig: config, segmentsConfig });
 
   /*
    * Check @x cross-import pattern.
