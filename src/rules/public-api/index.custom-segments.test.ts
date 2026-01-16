@@ -1,6 +1,7 @@
 import * as tseslintParser from '@typescript-eslint/parser';
 import { RuleTester } from '../../../tests/rule-tester';
 import {
+  makeCustomLayersAndSegmentsSettings,
   makeCustomSegmentsSettings,
   makePublicApiErrorWithSuggestion,
   makePublicApiOptions,
@@ -200,6 +201,77 @@ ruleTester.run('public-api (unknown segment detection)', rule, {
       options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
       errors: [
         makeUnknownSegmentError('lib'),
+      ],
+    },
+  ],
+});
+
+/**
+ * Custom layers + custom segments combined configuration
+ */
+const customLayersAndSegmentsSettings = makeCustomLayersAndSegmentsSettings(
+  [
+    { name: 'shared', hasSlices: false },
+    'domain',
+    'features',
+    { name: 'app', hasSlices: false },
+  ],
+  ['services', 'hooks'],
+);
+
+ruleTester.run('public-api (custom layers + custom segments)', rule, {
+  valid: [
+    {
+      name: 'should allow import from public API with custom layers and segments',
+      filename: 'src/features/auth/ui.tsx',
+      code: "import { User } from '@/domain/user'",
+      settings: customLayersAndSegmentsSettings,
+    },
+    {
+      name: 'should recognize custom segment with custom layers',
+      filename: 'src/features/auth/ui.tsx',
+      code: "import { domainService } from '@/domain/user'",
+      settings: customLayersAndSegmentsSettings,
+    },
+  ],
+
+  invalid: [
+    {
+      name: 'should error on deep import with custom layers and segments',
+      filename: 'src/features/auth/ui.tsx',
+      code: "import { api } from '@/domain/user/services'",
+      settings: customLayersAndSegmentsSettings,
+      errors: [
+        makePublicApiErrorWithSuggestion(
+          'services',
+          "import { api } from '@/domain/user'",
+          '@/domain/user',
+        ),
+      ],
+    },
+  ],
+});
+
+ruleTester.run('public-api (group folders with unknown segment)', rule, {
+  valid: [
+    {
+      name: 'should not error for known segment in group folder path',
+      filename: 'src/features/auth/ui.tsx',
+      code: "import { api } from '@/entities/(users)/admin/model'",
+      settings: extendSegmentsSettings,
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+    },
+  ],
+
+  invalid: [
+    {
+      name: 'should error on unknown segment in group folder path',
+      filename: 'src/features/auth/ui.tsx',
+      code: "import { api } from '@/entities/(users)/admin/unknown'",
+      settings: extendSegmentsSettings,
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+      errors: [
+        makeUnknownSegmentError('unknown'),
       ],
     },
   ],

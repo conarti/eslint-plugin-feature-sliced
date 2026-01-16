@@ -25,7 +25,7 @@ export default createEslintRule<Options, MessageIds>({
       [MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API]: 'Absolute imports are only allowed from public api ("{{ fixedPath }}")',
       [MESSAGE_ID.REMOVE_SUGGESTION]: 'Remove the "{{ valueToRemove }}"',
       [MESSAGE_ID.LAYERS_PUBLIC_API_NOT_ALLOWED]: 'The layer public API is not allowed. It harms both architecturally and practically (code splitting)',
-      [MESSAGE_ID.UNKNOWN_SEGMENT]: 'Unknown segment "{{ segment }}". Configure in settings or use public API.',
+      [MESSAGE_ID.UNKNOWN_SEGMENT]: 'Unknown segment "{{ segment }}". Add it to segments configuration or use the public API.',
     },
     schema: [
       {

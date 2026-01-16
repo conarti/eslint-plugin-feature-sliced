@@ -1,6 +1,5 @@
 import { DEFAULT_SEGMENTS } from '../../config';
 import {
-  getSegmentNames,
   isKnownSegment,
   normalizeSegmentsConfig,
 } from './segments-config';
@@ -68,18 +67,6 @@ describe('segments-config', () => {
       const result = normalizeSegmentsConfig({ replace: ['ui', 'UI', 'model'] });
 
       expect(result).toEqual(['ui', 'model']);
-    });
-  });
-
-  describe('getSegmentNames', () => {
-    it('should return segment names from array', () => {
-      const segments = ['ui', 'model', 'services'];
-
-      expect(getSegmentNames(segments)).toEqual(['ui', 'model', 'services']);
-    });
-
-    it('should return empty array for empty config', () => {
-      expect(getSegmentNames([])).toEqual([]);
     });
   });
 

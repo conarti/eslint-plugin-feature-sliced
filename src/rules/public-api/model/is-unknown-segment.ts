@@ -14,8 +14,16 @@ import {
 } from '../config';
 
 /**
+ * Checks if a path part is a group folder (e.g., "(auth-group)")
+ */
+function isGroupFolder(part: string): boolean {
+  return part.startsWith('(') && part.endsWith(')');
+}
+
+/**
  * Extracts potential segment from path after slice.
  * Returns the segment name if found in path structure, null otherwise.
+ * Handles group folders by skipping them.
  */
 function extractPotentialSegment(
   targetPath: string,
@@ -34,17 +42,18 @@ function extractPotentialSegment(
     return null;
   }
 
-  /* Structure: layer/slice/segment or layer/group/slice/segment */
+  /* Structure: layer/slice/segment or layer/(group)/slice/segment */
   const partsAfterLayer = parts.slice(layerIndex + 1);
 
-  if (partsAfterLayer.length < 2) {
+  /* Filter out group folders to get actual slice/segment structure */
+  const nonGroupParts = partsAfterLayer.filter((part) => !isGroupFolder(part));
+
+  if (nonGroupParts.length < 2) {
     return null;
   }
 
-  /* Find the second segment after layer (could be slice or group) */
-  /* Then check the third one which should be segment */
-  /* For simplicity, check if 2nd part looks like a segment */
-  const potentialSegment = partsAfterLayer[1];
+  /* After filtering groups: [slice, segment, ...] */
+  const potentialSegment = nonGroupParts[1];
 
   /* Remove file extension if present */
   const segmentWithoutExt = potentialSegment?.replace(/\.\w+$/, '') || null;

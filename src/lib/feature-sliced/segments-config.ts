@@ -23,13 +23,6 @@ export function normalizeSegmentsConfig(config?: SegmentsConfig): string[] {
 }
 
 /**
- * Returns segment names from normalized config
- */
-export function getSegmentNames(segments: string[]): string[] {
-  return segments;
-}
-
-/**
  * Checks if the given string is a known segment
  */
 export function isKnownSegment(segment: unknown, segments: string[]): boolean {
