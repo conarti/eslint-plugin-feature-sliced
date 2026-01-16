@@ -1,5 +1,5 @@
 import type { NormalizedLayerConfig } from '../../config';
-import { segments } from '../../config';
+import { DEFAULT_SEGMENTS } from '../../config';
 import {
   getLayersWithSlices,
   normalizeLayersConfig,
@@ -9,11 +9,12 @@ import {
  * Extracts slice from the path.
  *
  * Heuristic: slice is the last path segment BEFORE an FSD-segment
- * (ui/model/lib/api/config/assets) or file.
+ * (ui/model/lib/api/config/assets or custom segments) or file.
  *
  * Fallback: if no FSD-segment found, take the last segment after layer.
  *
- * If config is not provided, uses default FSD layers.
+ * If layersConfig is not provided, uses default FSD layers.
+ * If segmentsConfig is not provided, uses default FSD segments.
  *
  * @example
  * 'entities/User/model' -> 'User'
@@ -22,10 +23,12 @@ import {
  */
 export function extractSlice(
   targetPath: string,
-  config?: NormalizedLayerConfig[],
+  layersConfig?: NormalizedLayerConfig[],
+  segmentsConfig?: string[],
 ): string | null {
-  const layersConfig = config ?? normalizeLayersConfig();
-  const layersWithSlices = getLayersWithSlices(layersConfig);
+  const normalizedLayersConfig = layersConfig ?? normalizeLayersConfig();
+  const segmentsList = segmentsConfig ?? [...DEFAULT_SEGMENTS];
+  const layersWithSlices = getLayersWithSlices(normalizedLayersConfig);
 
   /* Remove filename (e.g., /index.ts or /model.ts) */
   const pathWithoutFile = targetPath.replace(/\/[\w-]+\.\w+$/, '');
@@ -48,7 +51,7 @@ export function extractSlice(
 
   /* Find index of first FSD-segment (case-insensitive) */
   const segmentIndex = partsAfterLayer.findIndex((part) =>
-    segments.some((seg) => seg.toLowerCase() === part.toLowerCase()),
+    segmentsList.some((seg) => seg.toLowerCase() === part.toLowerCase()),
   );
 
   /* If FSD-segment found and there's at least one element before it */
