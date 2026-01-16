@@ -10,14 +10,12 @@ import {
   type TSESTree,
 } from '@typescript-eslint/utils';
 import {
+  canLayerAllowSliceCrossImports,
   extractCrossImportInfo,
   extractPathsInfo,
+  normalizeLayersConfig,
   type PathsInfo,
 } from '../../../lib/feature-sliced';
-import {
-  canLayerAllowSliceCrossImports,
-  normalizeLayersConfig,
-} from '../../../lib/feature-sliced/layers-config';
 import {
   extractRuleOptions,
   hasPath,

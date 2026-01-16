@@ -6,7 +6,9 @@ import type {
 import { DEFAULT_LAYERS_CONFIG } from '../../config';
 
 /**
- * Normalizes a single layer config item to NormalizedLayerConfig
+ * Normalizes a single layer config item to NormalizedLayerConfig.
+ * Note: allowSliceCrossImports is ignored when hasSlices is false,
+ * since cross-slice imports are not possible without slices.
  */
 function normalizeLayerConfigItem(item: LayerConfigItem): NormalizedLayerConfig {
   if (typeof item === 'string') {
@@ -17,10 +19,12 @@ function normalizeLayerConfigItem(item: LayerConfigItem): NormalizedLayerConfig 
     };
   }
 
+  const hasSlices = item.hasSlices ?? true;
+
   return {
     name: item.name.toLowerCase(),
-    hasSlices: item.hasSlices ?? true,
-    allowSliceCrossImports: item.allowSliceCrossImports ?? false,
+    hasSlices,
+    allowSliceCrossImports: hasSlices ? (item.allowSliceCrossImports ?? false) : false,
   };
 }
 

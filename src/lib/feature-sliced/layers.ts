@@ -1,5 +1,6 @@
 import type { NormalizedLayerConfig } from '../../config';
 import {
+  canLayerAllowSliceCrossImports as canAllowSliceCrossImportsWithConfig,
   canLayerContainSlices as canContainSlicesWithConfig,
   getLayerWeight as getWeightWithConfig,
   isKnownLayer,
@@ -31,4 +32,13 @@ export function getLayerWeight(layer: string, config?: NormalizedLayerConfig[]):
 export function canLayerContainSlices(layer: string, config?: NormalizedLayerConfig[]): boolean {
   const layersConfig = config ?? normalizeLayersConfig();
   return canContainSlicesWithConfig(layer, layersConfig);
+}
+
+/**
+ * Checks if layer allows cross-imports between its slices.
+ * If config is not provided, uses default FSD layers.
+ */
+export function canLayerAllowSliceCrossImports(layer: string, config?: NormalizedLayerConfig[]): boolean {
+  const layersConfig = config ?? normalizeLayersConfig();
+  return canAllowSliceCrossImportsWithConfig(layer, layersConfig);
 }

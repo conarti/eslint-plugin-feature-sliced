@@ -93,6 +93,19 @@ describe('layers-config', () => {
         { name: 'infrastructure', hasSlices: false, allowSliceCrossImports: false },
       ]);
     });
+
+    it('should ignore allowSliceCrossImports when hasSlices is false', () => {
+      const config: LayersConfig = [
+        { name: 'shared', hasSlices: false, allowSliceCrossImports: true },
+        { name: 'modules', hasSlices: true, allowSliceCrossImports: true },
+      ];
+      const result = normalizeLayersConfig(config);
+
+      expect(result).toEqual([
+        { name: 'shared', hasSlices: false, allowSliceCrossImports: false },
+        { name: 'modules', hasSlices: true, allowSliceCrossImports: true },
+      ]);
+    });
   });
 
   describe('getLayerNames', () => {
@@ -270,7 +283,7 @@ describe('layers-config', () => {
     });
   });
 
-  describe('dEFAULT_LAYERS_CONFIG', () => {
+  describe('default layers config', () => {
     it('should have correct default FSD layers', () => {
       const normalized = normalizeLayersConfig(DEFAULT_LAYERS_CONFIG);
       const names = getLayerNames(normalized);
