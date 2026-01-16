@@ -1,7 +1,7 @@
 {
   "name": "@conarti/eslint-plugin-feature-sliced",
   "type": "module",
-  "version": "2.0.0-rc.4",
+  "version": "2.0.0-rc.5",
   "description": "Feature-sliced design methodology plugin",
   "author": "Aleksandr Belous <abelous2009@gmail.com>",
   "license": "ISC",
