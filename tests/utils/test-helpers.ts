@@ -12,6 +12,11 @@ import {
   type Options as LayersSlicesOptions,
 } from '../../src/rules/layers-slices/config';
 import {
+  ERROR_MESSAGE_ID as NO_CROSS_SEGMENT_REEXPORT_MESSAGE_ID,
+  type MessageIds as NoCrossSegmentReexportMessageIds,
+  type Options as NoCrossSegmentReexportOptions,
+} from '../../src/rules/no-cross-segment-reexport/config';
+import {
   MESSAGE_ID as PUBLIC_API_MESSAGE_ID,
   type Options as PublicApiOptions,
   VALIDATION_LEVEL,
@@ -262,4 +267,46 @@ export function makeCustomLayersSlicesError(
       layersOrder,
     },
   };
+}
+
+/* === no-cross-segment-reexport helpers === */
+
+/**
+ * Creates no-cross-segment-reexport error
+ */
+export function makeCrossSegmentReexportError(
+  currentSegment: string,
+  targetSegment: string,
+): TSESLint.TestCaseError<NoCrossSegmentReexportMessageIds> {
+  return {
+    messageId: NO_CROSS_SEGMENT_REEXPORT_MESSAGE_ID.NO_CROSS_SEGMENT_REEXPORT,
+    data: {
+      currentSegment,
+      targetSegment,
+    },
+  };
+}
+
+/**
+ * Creates no-cross-segment-reexport options with ignoreImports
+ */
+export function makeCrossSegmentReexportIgnoreOptions(patterns: string[]): NoCrossSegmentReexportOptions {
+  return [
+    {
+      ignoreImports: patterns,
+      ignoreFiles: [],
+    },
+  ];
+}
+
+/**
+ * Creates no-cross-segment-reexport options with ignoreFiles
+ */
+export function makeCrossSegmentReexportIgnoreFilesOptions(patterns: string[]): NoCrossSegmentReexportOptions {
+  return [
+    {
+      ignoreImports: [],
+      ignoreFiles: patterns,
+    },
+  ];
 }

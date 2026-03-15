@@ -74,6 +74,22 @@ interface PublicApiOptions {
   ignoreFiles?: string[];
 }
 
+interface NoCrossSegmentReexportOptions {
+  /**
+   * Severity level for this rule
+   * @default uses global severity or 'error'
+   */
+  severity?: Severity;
+  /**
+   * Ignore certain import paths (import foo from '<path-to-ignore>')
+   */
+  ignoreImports?: string[];
+  /**
+   * Disable the rule in certain files
+   */
+  ignoreFiles?: string[];
+}
+
 interface ESLintPluginFeatureSlicedOptions {
   /**
    * Global severity level for all rules.
@@ -98,6 +114,7 @@ interface ESLintPluginFeatureSlicedOptions {
   absoluteRelative?: false | Partial<AbsoluteRelativeOptions>;
   layersSlices?: false | Partial<LayersSlicesOptions>;
   publicApi?: false | Partial<PublicApiOptions>;
+  noCrossSegmentReexport?: false | Partial<NoCrossSegmentReexportOptions>;
   sortImports?: false | ImportOrderConfigName;
 }
 
@@ -109,10 +126,11 @@ export function createPlugin(options: ESLintPluginFeatureSlicedOptions = {}): Ty
     absoluteRelative,
     layersSlices,
     publicApi,
+    noCrossSegmentReexport,
   } = options;
 
   const normalizedLayers = normalizeLayersConfig(layers);
-  const rules = defineRules({ severity, absoluteRelative, layersSlices, publicApi, sortImports }, normalizedLayers);
+  const rules = defineRules({ severity, absoluteRelative, layersSlices, publicApi, noCrossSegmentReexport, sortImports }, normalizedLayers);
 
   return {
     name: PLUGIN_NAME,
@@ -137,6 +155,7 @@ function defineRules(
     absoluteRelative = {},
     layersSlices = {},
     publicApi = {},
+    noCrossSegmentReexport = {},
     sortImports = 'recommended',
   } = options;
 
@@ -154,6 +173,7 @@ function defineRules(
     [RULE_NAMES.LAYERS_SLICES]: createRuleEntry(layersSlices),
     [RULE_NAMES.ABSOLUTE_RELATIVE]: createRuleEntry(absoluteRelative),
     [RULE_NAMES.PUBLIC_API]: createRuleEntry(publicApi),
+    [RULE_NAMES.NO_CROSS_SEGMENT_REEXPORT]: createRuleEntry(noCrossSegmentReexport),
   };
 
   if (sortImports) {
