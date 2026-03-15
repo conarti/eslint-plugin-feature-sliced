@@ -15,7 +15,7 @@ const NOT_CROSS_SEGMENT: CrossSegmentReexportInfo = {
   targetSegment: null,
 };
 
-const FILE_EXT_REGEXP = /\.\w+$/;
+const FILE_EXT_REGEXP = /\..+$/;
 
 /**
  * Known FSD segments in lowercase for matching
@@ -30,10 +30,27 @@ export function splitPathParts(path: string): string[] {
 }
 
 /**
- * Removes filename parts (parts containing a file extension) from path components
+ * Converts path parts to directory-like components:
+ * - Index files (index.ts, index.tsx, etc.) are removed entirely
+ * - Other files with extensions are converted to their name without extension
+ *   (e.g. `model.ts` → `model`, since segment can be a file)
+ * - Directory parts are kept as-is
  */
-export function removeFilenameParts(parts: string[]): string[] {
-  return parts.filter((part) => !FILE_EXT_REGEXP.test(part));
+export function normalizeToDirParts(parts: string[]): string[] {
+  const INDEX_FILE_REGEXP = /^index\..+$/;
+
+  return parts.reduce<string[]>((acc, part) => {
+    if (INDEX_FILE_REGEXP.test(part))
+      return acc;
+
+    if (FILE_EXT_REGEXP.test(part)) {
+      acc.push(part.replace(FILE_EXT_REGEXP, ''));
+      return acc;
+    }
+
+    acc.push(part);
+    return acc;
+  }, []);
 }
 
 /**
@@ -157,7 +174,7 @@ export function isCrossSegmentReexport(
 
   /* Get directory parts after layer for current file */
   const currentAfterLayer = currentParts.slice(currentLayerIndex + 1);
-  const currentPathParts = removeFilenameParts(currentAfterLayer);
+  const currentPathParts = normalizeToDirParts(currentAfterLayer);
 
   /* Extract segment and slice from current file */
   const currentInfo = extractSegmentAndSlice(currentPathParts);
@@ -178,7 +195,7 @@ export function isCrossSegmentReexport(
 
   /* Get directory parts after layer for target path */
   const targetAfterLayer = targetParts.slice(targetLayerIndex + 1);
-  const targetPathParts = removeFilenameParts(targetAfterLayer);
+  const targetPathParts = normalizeToDirParts(targetAfterLayer);
 
   /* Check if target is in same slice but different segment */
   const targetSegment = findTargetSegmentInSameSlice(

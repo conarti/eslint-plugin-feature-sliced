@@ -89,6 +89,7 @@ ruleTester.run('no-cross-segment-reexport', rule, {
       filename: 'src/entities/cluster/model/store.ts',
       code: 'const store = {}; export default store;',
     },
+
   ],
   invalid: [
     {
@@ -177,6 +178,17 @@ ruleTester.run('no-cross-segment-reexport', rule, {
         'api',
         '..',
         "export { foo } from '..'",
+      )],
+    },
+    {
+      name: 'should flag cross-segment re-export when segment is a file',
+      filename: 'src/entities/cluster/model.ts',
+      code: "export { foo } from './api'",
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'model',
+        'api',
+        '.',
+        "export { foo } from '.'",
       )],
     },
     {

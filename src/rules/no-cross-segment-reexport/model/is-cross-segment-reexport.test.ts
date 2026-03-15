@@ -4,7 +4,7 @@ import {
   findLayerIndex,
   findTargetSegmentInSameSlice,
   isCrossSegmentReexport,
-  removeFilenameParts,
+  normalizeToDirParts,
   splitPathParts,
 } from './is-cross-segment-reexport';
 
@@ -30,25 +30,49 @@ describe('splitPathParts', () => {
   });
 });
 
-describe('removeFilenameParts', () => {
-  it('should remove parts with file extensions', () => {
-    expect(removeFilenameParts(['cluster', 'model', 'index.ts'])).toEqual(['cluster', 'model']);
+describe('normalizeToDirParts', () => {
+  it('should remove index files', () => {
+    expect(normalizeToDirParts(['cluster', 'model', 'index.ts'])).toEqual(['cluster', 'model']);
   });
 
-  it('should handle multiple file extensions', () => {
-    expect(removeFilenameParts(['ui', 'Component.tsx', 'styles.css'])).toEqual(['ui']);
+  it('should remove index files with different extensions', () => {
+    expect(normalizeToDirParts(['cluster', 'model', 'index.tsx'])).toEqual(['cluster', 'model']);
+  });
+
+  it('should convert segment files to names without extension', () => {
+    expect(normalizeToDirParts(['cluster', 'model.ts'])).toEqual(['cluster', 'model']);
+  });
+
+  it('should convert multiple segment files', () => {
+    expect(normalizeToDirParts(['ui', 'Component.tsx', 'styles.css'])).toEqual(['ui', 'Component', 'styles']);
   });
 
   it('should keep directory-only parts', () => {
-    expect(removeFilenameParts(['cluster', 'model', 'store'])).toEqual(['cluster', 'model', 'store']);
+    expect(normalizeToDirParts(['cluster', 'model', 'store'])).toEqual(['cluster', 'model', 'store']);
   });
 
-  it('should return empty array when all parts are filenames', () => {
-    expect(removeFilenameParts(['index.ts'])).toEqual([]);
+  it('should return empty array when only index file', () => {
+    expect(normalizeToDirParts(['index.ts'])).toEqual([]);
   });
 
   it('should return same array when no filenames present', () => {
-    expect(removeFilenameParts(['model', 'store'])).toEqual(['model', 'store']);
+    expect(normalizeToDirParts(['model', 'store'])).toEqual(['model', 'store']);
+  });
+
+  it('should handle mixed parts', () => {
+    expect(normalizeToDirParts(['cluster', 'model', 'store.ts', 'index.ts'])).toEqual(['cluster', 'model', 'store']);
+  });
+
+  it('should handle compound extensions like .d.ts', () => {
+    expect(normalizeToDirParts(['cluster', 'model.d.ts'])).toEqual(['cluster', 'model']);
+  });
+
+  it('should remove index.d.ts as index file', () => {
+    expect(normalizeToDirParts(['cluster', 'index.d.ts'])).toEqual(['cluster']);
+  });
+
+  it('should handle .module.css compound extension', () => {
+    expect(normalizeToDirParts(['cluster', 'Component.module.css'])).toEqual(['cluster', 'Component']);
   });
 });
 
@@ -344,6 +368,62 @@ describe('isCrossSegmentReexport', () => {
     const result = isCrossSegmentReexport(
       'src/entities/cluster/model/index.ts',
       'src/entities/user/api',
+      defaultConfig,
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: false,
+      currentSegment: null,
+      targetSegment: null,
+    });
+  });
+
+  it('should detect cross-segment when current segment is a file', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cluster/model.ts',
+      'src/entities/cluster/api',
+      defaultConfig,
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: true,
+      currentSegment: 'model',
+      targetSegment: 'api',
+    });
+  });
+
+  it('should detect cross-segment when target segment is a file', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cluster/model/index.ts',
+      'src/entities/cluster/api.ts',
+      defaultConfig,
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: true,
+      currentSegment: 'model',
+      targetSegment: 'api',
+    });
+  });
+
+  it('should detect cross-segment when both segments are files', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cluster/model.ts',
+      'src/entities/cluster/api.ts',
+      defaultConfig,
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: true,
+      currentSegment: 'model',
+      targetSegment: 'api',
+    });
+  });
+
+  it('should not flag same segment when both are files', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cluster/model.ts',
+      'src/entities/cluster/model',
       defaultConfig,
     );
 
