@@ -91,6 +91,7 @@ import { something } from './lib';
 | [layers-slices](src/rules/layers-slices/README.md) | Validates imports between layers | |
 | [absolute-relative](src/rules/absolute-relative/README.md) | Validates path types | |
 | [public-api](src/rules/public-api/README.md) | Enforces public API imports | 💡 |
+| [no-cross-segment-reexport](docs/rules/no-cross-segment-reexport/README.md) | Checks for cross-segment re-exports within the same slice | 💡 |
 | [import-order](src/rules/import-order/README.md) | Sorts imports by FSD layers | 🔧 |
 
 ## Configuration
