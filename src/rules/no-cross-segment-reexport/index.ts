@@ -14,9 +14,12 @@ export default createEslintRule<Options, MessageIds>({
     docs: {
       description: 'Checks for cross-segment re-exports within the same slice',
     },
+    hasSuggestions: true,
     messages: {
       [ERROR_MESSAGE_ID.NO_CROSS_SEGMENT_REEXPORT]:
         'Segment "{{ currentSegment }}" should not re-export from sibling segment "{{ targetSegment }}". Move the re-export to the slice public API.',
+      [ERROR_MESSAGE_ID.MOVE_TO_SLICE_PUBLIC_API_SUGGESTION]:
+        'Replace import path with slice public API ("{{ suggestedPath }}")',
     },
     schema: [
       {

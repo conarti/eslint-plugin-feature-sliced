@@ -27,13 +27,11 @@ export function validateAndReport(
   const {
     normalizedCurrentFilePath,
     absoluteTargetPath,
-    normalizedCwd,
   } = extractPaths(node, context);
 
   const result = isCrossSegmentReexport(
     normalizedCurrentFilePath,
     absoluteTargetPath,
-    normalizedCwd,
     config,
   );
 
@@ -43,7 +41,7 @@ export function validateAndReport(
   reportCrossSegmentReexport(
     context,
     node,
-    result.currentSegment!,
-    result.targetSegment!,
+    result.currentSegment,
+    result.targetSegment,
   );
 }

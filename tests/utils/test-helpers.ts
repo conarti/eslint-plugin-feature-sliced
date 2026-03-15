@@ -288,6 +288,33 @@ export function makeCrossSegmentReexportError(
 }
 
 /**
+ * Creates no-cross-segment-reexport error with suggestion
+ */
+export function makeCrossSegmentReexportErrorWithSuggestion(
+  currentSegment: string,
+  targetSegment: string,
+  suggestedPath: string,
+  suggestionOutput: string,
+): TSESLint.TestCaseError<NoCrossSegmentReexportMessageIds> {
+  return {
+    messageId: NO_CROSS_SEGMENT_REEXPORT_MESSAGE_ID.NO_CROSS_SEGMENT_REEXPORT,
+    data: {
+      currentSegment,
+      targetSegment,
+    },
+    suggestions: [
+      {
+        messageId: NO_CROSS_SEGMENT_REEXPORT_MESSAGE_ID.MOVE_TO_SLICE_PUBLIC_API_SUGGESTION,
+        data: {
+          suggestedPath,
+        },
+        output: suggestionOutput,
+      },
+    ],
+  };
+}
+
+/**
  * Creates no-cross-segment-reexport options with ignoreImports
  */
 export function makeCrossSegmentReexportIgnoreOptions(patterns: string[]): NoCrossSegmentReexportOptions {

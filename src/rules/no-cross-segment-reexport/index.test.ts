@@ -1,7 +1,7 @@
 import * as tseslintParser from '@typescript-eslint/parser';
 import { RuleTester } from '../../../tests/rule-tester';
 import {
-  makeCrossSegmentReexportError,
+  makeCrossSegmentReexportErrorWithSuggestion,
   makeCrossSegmentReexportIgnoreFilesOptions,
   makeCrossSegmentReexportIgnoreOptions,
 } from '../../../tests/utils';
@@ -75,6 +75,11 @@ ruleTester.run('no-cross-segment-reexport', rule, {
       code: 'export const foo = 1',
     },
     {
+      name: 'should not flag named export without source',
+      filename: 'src/entities/cluster/model/index.ts',
+      code: 'const foo = 1; export { foo }',
+    },
+    {
       name: 'should not flag re-export to the same segment name',
       filename: 'src/entities/cluster/model/index.ts',
       code: "export { foo } from './model-utils'",
@@ -90,57 +95,107 @@ ruleTester.run('no-cross-segment-reexport', rule, {
       name: 'should flag named re-export from sibling segment',
       filename: 'src/entities/cluster/model/index.ts',
       code: "export { foo } from '../api'",
-      errors: [makeCrossSegmentReexportError('model', 'api')],
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'model',
+        'api',
+        '..',
+        "export { foo } from '..'",
+      )],
     },
     {
       name: 'should flag type re-export from sibling segment',
       filename: 'src/entities/cluster/model/index.ts',
       code: "export type { Foo } from '../api'",
-      errors: [makeCrossSegmentReexportError('model', 'api')],
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'model',
+        'api',
+        '..',
+        "export type { Foo } from '..'",
+      )],
     },
     {
       name: 'should flag star re-export from sibling segment',
       filename: 'src/entities/cluster/model/index.ts',
       code: "export * from '../api'",
-      errors: [makeCrossSegmentReexportError('model', 'api')],
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'model',
+        'api',
+        '..',
+        "export * from '..'",
+      )],
     },
     {
       name: 'should flag re-export from non-standard segment (i18n)',
       filename: 'src/entities/cluster/model/index.ts',
       code: "export { foo } from '../i18n'",
-      errors: [makeCrossSegmentReexportError('model', 'i18n')],
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'model',
+        'i18n',
+        '..',
+        "export { foo } from '..'",
+      )],
     },
     {
       name: 'should flag re-export from nested file within segment',
       filename: 'src/entities/cluster/model/store/index.ts',
       code: "export { foo } from '../../api'",
-      errors: [makeCrossSegmentReexportError('model', 'api')],
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'model',
+        'api',
+        '../..',
+        "export { foo } from '../..'",
+      )],
     },
     {
       name: 'should flag cross-segment re-export in features layer',
       filename: 'src/features/auth/ui/index.ts',
       code: "export { foo } from '../model'",
-      errors: [makeCrossSegmentReexportError('ui', 'model')],
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'ui',
+        'model',
+        '..',
+        "export { foo } from '..'",
+      )],
     },
     {
       name: 'should flag cross-segment re-export in widgets layer',
       filename: 'src/widgets/header/ui/index.ts',
       code: "export { foo } from '../model'",
-      errors: [makeCrossSegmentReexportError('ui', 'model')],
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'ui',
+        'model',
+        '..',
+        "export { foo } from '..'",
+      )],
     },
     {
       name: 'should flag cross-segment re-export in group folder',
       filename: 'src/entities/group/User/model/index.ts',
       code: "export { foo } from '../api'",
-      errors: [makeCrossSegmentReexportError('model', 'api')],
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'model',
+        'api',
+        '..',
+        "export { foo } from '..'",
+      )],
     },
     {
       name: 'should flag multiple cross-segment re-exports',
       filename: 'src/entities/cluster/model/index.ts',
       code: "export { foo } from '../api';\nexport { bar } from '../i18n';",
       errors: [
-        makeCrossSegmentReexportError('model', 'api'),
-        makeCrossSegmentReexportError('model', 'i18n'),
+        makeCrossSegmentReexportErrorWithSuggestion(
+          'model',
+          'api',
+          '..',
+          "export { foo } from '..';\nexport { bar } from '../i18n';",
+        ),
+        makeCrossSegmentReexportErrorWithSuggestion(
+          'model',
+          'i18n',
+          '..',
+          "export { foo } from '../api';\nexport { bar } from '..';",
+        ),
       ],
     },
   ],
