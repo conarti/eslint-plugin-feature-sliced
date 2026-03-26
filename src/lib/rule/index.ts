@@ -5,6 +5,7 @@ export { extractLayersConfig } from './extract-layers-config';
 export { extractNodePath } from './extract-node-path';
 export { extractPaths } from './extract-paths';
 export { extractRuleOptions } from './extract-rule-options';
+export { extractSegmentsConfig } from './extract-segments-config';
 export { getSourceRangeWithoutQuotes } from './get-source-range-without-quotes';
 export { hasPath } from './has-path';
 export { isIgnored } from './is-ignored';

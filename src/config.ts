@@ -112,6 +112,7 @@ export type Segment = Segments[number];
 
 /**
  * Slice segments regulated by feature-sliced methodologies
+ * @deprecated Use normalizeSegmentsConfig() from segments-config.ts for custom segments support
  */
 export const segments: Segments = [
   'ui',
@@ -121,6 +122,25 @@ export const segments: Segments = [
   'config',
   'assets',
 ];
+
+/**
+ * Default FSD segments
+ */
+export const DEFAULT_SEGMENTS: readonly string[] = [
+  'ui',
+  'model',
+  'lib',
+  'api',
+  'config',
+  'assets',
+];
+
+/* === Segment Customization Types === */
+
+/**
+ * Segments configuration: array extends defaults, object with replace replaces them
+ */
+export type SegmentsConfig = string[] | { replace: string[] };
 
 export const pathSeparator = '/';
 

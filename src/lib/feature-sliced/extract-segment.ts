@@ -1,5 +1,5 @@
-import type { NormalizedLayerConfig, Segment } from '../../config';
-import { segments } from '../../config';
+import type { NormalizedLayerConfig } from '../../config';
+import { DEFAULT_SEGMENTS } from '../../config';
 import {
   getLayersWithSlices,
   normalizeLayersConfig,
@@ -7,9 +7,9 @@ import {
 
 type SegmentFiles = string | null;
 
-function createFsdPartsRegExp(layersWithSlices: string[]): RegExp {
+function createFsdPartsRegExp(layersWithSlices: string[], segmentsList: string[]): RegExp {
   const layersUnion = layersWithSlices.join('|');
-  const segmentsUnion = segments.join('|');
+  const segmentsUnion = segmentsList.join('|');
   return new RegExp(
     `(?<=(?<layer>${layersUnion}))\\/(?<slice>([\\w-]*\\/)+?)(?<segment>(${segmentsUnion})(\\.\\w+)?)(\\/(?<segmentFiles>.*))?`,
   );
@@ -17,15 +17,18 @@ function createFsdPartsRegExp(layersWithSlices: string[]): RegExp {
 
 /**
  * Extracts segment from the path.
- * If config is not provided, uses default FSD layers.
+ * If layersConfig is not provided, uses default FSD layers.
+ * If segmentsConfig is not provided, uses default FSD segments.
  */
 export function extractSegment(
   targetPath: string,
-  config?: NormalizedLayerConfig[],
-): [Segment | null, SegmentFiles] {
-  const layersConfig = config ?? normalizeLayersConfig();
-  const layersWithSlices = getLayersWithSlices(layersConfig);
-  const fsdPartsRegExp = createFsdPartsRegExp(layersWithSlices);
+  layersConfig?: NormalizedLayerConfig[],
+  segmentsConfig?: string[],
+): [string | null, SegmentFiles] {
+  const normalizedLayersConfig = layersConfig ?? normalizeLayersConfig();
+  const segmentsList = segmentsConfig ?? [...DEFAULT_SEGMENTS];
+  const layersWithSlices = getLayersWithSlices(normalizedLayersConfig);
+  const fsdPartsRegExp = createFsdPartsRegExp(layersWithSlices, segmentsList);
 
   const fsdParts = targetPath.match(fsdPartsRegExp);
 
@@ -41,5 +44,5 @@ export function extractSegment(
   const fileExtensionRegExp = /\.[^/.]+$/;
   const segmentWithoutFileExtension = segment?.replace(fileExtensionRegExp, '') || null;
 
-  return [segmentWithoutFileExtension as Segment | null, segmentFiles];
+  return [segmentWithoutFileExtension, segmentFiles];
 }

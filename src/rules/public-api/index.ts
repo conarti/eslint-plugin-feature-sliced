@@ -1,6 +1,7 @@
 import {
   createEslintRule,
   extractLayersConfig,
+  extractSegmentsConfig,
   type ImportExpression,
 } from '../../lib/rule';
 import {
@@ -24,6 +25,7 @@ export default createEslintRule<Options, MessageIds>({
       [MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API]: 'Absolute imports are only allowed from public api ("{{ fixedPath }}")',
       [MESSAGE_ID.REMOVE_SUGGESTION]: 'Remove the "{{ valueToRemove }}"',
       [MESSAGE_ID.LAYERS_PUBLIC_API_NOT_ALLOWED]: 'The layer public API is not allowed. It harms both architecturally and practically (code splitting)',
+      [MESSAGE_ID.UNKNOWN_SEGMENT]: 'Unknown segment "{{ segment }}". Add it to segments configuration or use the public API.',
     },
     schema: [
       {
@@ -62,19 +64,20 @@ export default createEslintRule<Options, MessageIds>({
 
   create(context, optionsWithDefault) {
     const layersConfig = extractLayersConfig(context);
+    const segmentsConfig = extractSegmentsConfig(context);
 
     return {
       ImportDeclaration(node) {
-        validateAndReport(node, context, optionsWithDefault, layersConfig);
+        validateAndReport(node, context, optionsWithDefault, layersConfig, segmentsConfig);
       },
       ImportExpression(node) {
-        validateAndReport(node as ImportExpression /* TSESTree has invalid type for this node */, context, optionsWithDefault, layersConfig);
+        validateAndReport(node as ImportExpression /* TSESTree has invalid type for this node */, context, optionsWithDefault, layersConfig, segmentsConfig);
       },
       ExportAllDeclaration(node) {
-        validateAndReport(node, context, optionsWithDefault, layersConfig);
+        validateAndReport(node, context, optionsWithDefault, layersConfig, segmentsConfig);
       },
       ExportNamedDeclaration(node) {
-        validateAndReport(node, context, optionsWithDefault, layersConfig);
+        validateAndReport(node, context, optionsWithDefault, layersConfig, segmentsConfig);
       },
       Program(node) {
         validateAndReportProgram(node, context, optionsWithDefault);

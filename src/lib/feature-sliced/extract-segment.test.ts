@@ -1,4 +1,5 @@
 import {
+  DEFAULT_SEGMENTS,
   layersWithoutSlices,
   segments,
 } from '../../config';
@@ -6,6 +7,7 @@ import { extractSegment } from './extract-segment';
 
 const FSD_SEGMENTS = segments;
 const FSD_LAYERS_WITHOUT_SLICES = layersWithoutSlices;
+const CUSTOM_SEGMENTS = [...DEFAULT_SEGMENTS, 'services', 'hooks'];
 
 describe('extract-segment', () => {
   interface TestCase {
@@ -107,5 +109,81 @@ describe('extract-segment', () => {
   }) => {
     const actual = extractSegment(path);
     expect(actual).toStrictEqual(expected);
+  });
+
+  describe('with custom segments config', () => {
+    it('should recognize custom segment when provided in config', () => {
+      const result = extractSegment(
+        'src/entities/foo/services/index.ts',
+        undefined,
+        CUSTOM_SEGMENTS,
+      );
+      expect(result).toStrictEqual(['services', 'index.ts']);
+    });
+
+    it('should recognize another custom segment', () => {
+      const result = extractSegment(
+        'src/features/bar/hooks/useAuth.ts',
+        undefined,
+        CUSTOM_SEGMENTS,
+      );
+      expect(result).toStrictEqual(['hooks', 'useAuth.ts']);
+    });
+
+    it('should still recognize default segments with custom config', () => {
+      const result = extractSegment(
+        'src/entities/foo/ui/Button.tsx',
+        undefined,
+        CUSTOM_SEGMENTS,
+      );
+      expect(result).toStrictEqual(['ui', 'Button.tsx']);
+    });
+
+    it('should not recognize unknown segment even with custom config', () => {
+      const result = extractSegment(
+        'src/entities/foo/unknown/index.ts',
+        undefined,
+        CUSTOM_SEGMENTS,
+      );
+      expect(result).toStrictEqual([null, null]);
+    });
+
+    it('should work with replace mode (only custom segments)', () => {
+      const replaceSegments = ['services', 'stores'];
+      const result = extractSegment(
+        'src/entities/foo/services/index.ts',
+        undefined,
+        replaceSegments,
+      );
+      expect(result).toStrictEqual(['services', 'index.ts']);
+    });
+
+    it('should not recognize default segment in replace mode if not included', () => {
+      const replaceSegments = ['services', 'stores'];
+      const result = extractSegment(
+        'src/entities/foo/ui/Button.tsx',
+        undefined,
+        replaceSegments,
+      );
+      expect(result).toStrictEqual([null, null]);
+    });
+
+    it('should work with custom segments as folder', () => {
+      const result = extractSegment(
+        'src/features/auth/services',
+        undefined,
+        CUSTOM_SEGMENTS,
+      );
+      expect(result).toStrictEqual(['services', null]);
+    });
+
+    it('should work with custom segments as file', () => {
+      const result = extractSegment(
+        'src/features/auth/services.ts',
+        undefined,
+        CUSTOM_SEGMENTS,
+      );
+      expect(result).toStrictEqual(['services', null]);
+    });
   });
 });

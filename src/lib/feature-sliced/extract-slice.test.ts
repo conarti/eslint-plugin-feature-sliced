@@ -1,7 +1,8 @@
-import { layersWithoutSlices } from '../../config';
+import { DEFAULT_SEGMENTS, layersWithoutSlices } from '../../config';
 import { extractSlice } from './extract-slice';
 
 const FSD_LAYERS_WITHOUT_SLICES = layersWithoutSlices;
+const CUSTOM_SEGMENTS = [...DEFAULT_SEGMENTS, 'services', 'hooks'];
 
 describe('extract-slice', () => {
   describe('layers without slices', () => {
@@ -184,6 +185,65 @@ describe('extract-slice', () => {
 
     it.each(cases)('$name: $path', ({ path, expected }) => {
       expect(extractSlice(path)).toBe(expected);
+    });
+  });
+
+  describe('with custom segments config', () => {
+    it('should use custom segment as boundary for slice detection', () => {
+      const result = extractSlice(
+        'src/entities/foo/services/index.ts',
+        undefined,
+        CUSTOM_SEGMENTS,
+      );
+      expect(result).toBe('foo');
+    });
+
+    it('should work with another custom segment', () => {
+      const result = extractSlice(
+        'src/features/auth/LoginForm/hooks/useAuth.ts',
+        undefined,
+        CUSTOM_SEGMENTS,
+      );
+      expect(result).toBe('LoginForm');
+    });
+
+    it('should still recognize default segments with custom config', () => {
+      const result = extractSlice(
+        'src/entities/User/model/index.ts',
+        undefined,
+        CUSTOM_SEGMENTS,
+      );
+      expect(result).toBe('User');
+    });
+
+    it('should use fallback when unknown segment used (not in custom config)', () => {
+      const replaceSegments = ['services', 'stores'];
+      const result = extractSlice(
+        'src/entities/foo/ui/index.ts',
+        undefined,
+        replaceSegments,
+      );
+      /* When ui is not recognized as segment, fallback returns last folder */
+      expect(result).toBe('ui');
+    });
+
+    it('should work with replace mode segments', () => {
+      const replaceSegments = ['services', 'stores'];
+      const result = extractSlice(
+        'src/entities/foo/services/index.ts',
+        undefined,
+        replaceSegments,
+      );
+      expect(result).toBe('foo');
+    });
+
+    it('should work with group folders and custom segments', () => {
+      const result = extractSlice(
+        'src/entities/group/User/services/api.ts',
+        undefined,
+        CUSTOM_SEGMENTS,
+      );
+      expect(result).toBe('User');
     });
   });
 });

@@ -9,7 +9,8 @@ import {
   isIgnoredCurrentFile,
   isIgnoredTarget,
 } from '../../../lib/rule';
-import { reportShouldBeFromPublicApi } from './errors';
+import { reportShouldBeFromPublicApi, reportUnknownSegment } from './errors';
+import { isUnknownSegment } from './is-unknown-segment';
 import { shouldBeFromPublicApi } from './should-be-from-public-api';
 
 export function validateAndReport(
@@ -17,6 +18,7 @@ export function validateAndReport(
   context: RuleContext,
   optionsWithDefault: Readonly<Options>,
   layersConfig?: NormalizedLayerConfig[],
+  segmentsConfig?: string[],
 ) {
   if (!hasPath(node)) {
     return;
@@ -27,7 +29,13 @@ export function validateAndReport(
     return;
   }
 
-  if (shouldBeFromPublicApi(node, context, optionsWithDefault, layersConfig)) {
-    reportShouldBeFromPublicApi(node, context, layersConfig);
+  const unknownSegment = isUnknownSegment(node, context, optionsWithDefault, layersConfig, segmentsConfig);
+  if (unknownSegment) {
+    reportUnknownSegment(node, context, unknownSegment);
+    return;
+  }
+
+  if (shouldBeFromPublicApi(node, context, optionsWithDefault, layersConfig, segmentsConfig)) {
+    reportShouldBeFromPublicApi(node, context, layersConfig, segmentsConfig);
   }
 }

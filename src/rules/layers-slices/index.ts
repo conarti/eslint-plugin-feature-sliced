@@ -5,6 +5,7 @@ import type {
 import {
   createEslintRule,
   extractLayersConfig,
+  extractSegmentsConfig,
   type ImportExpression,
 } from '../../lib/rule';
 import { ERROR_MESSAGE_ID } from './config';
@@ -54,13 +55,14 @@ export default createEslintRule<Options, MessageIds>({
 
   create(context, optionsWithDefault) {
     const layersConfig = extractLayersConfig(context);
+    const segmentsConfig = extractSegmentsConfig(context);
 
     return {
       ImportDeclaration(node) {
-        validateAndReport(node, context, optionsWithDefault, layersConfig);
+        validateAndReport(node, context, optionsWithDefault, layersConfig, segmentsConfig);
       },
       ImportExpression(node) {
-        validateAndReport(node as ImportExpression /* TSESTree has invalid type for this node */, context, optionsWithDefault, layersConfig);
+        validateAndReport(node as ImportExpression /* TSESTree has invalid type for this node */, context, optionsWithDefault, layersConfig, segmentsConfig);
       },
     };
   },
