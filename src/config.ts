@@ -10,6 +10,7 @@ export const RULE_NAMES = {
   ABSOLUTE_RELATIVE: `${PLUGIN_NAME}/absolute-relative`,
   PUBLIC_API: `${PLUGIN_NAME}/public-api`,
   IMPORT_ORDER: `${PLUGIN_NAME}/import-order`,
+  NO_CROSS_SEGMENT_REEXPORT: `${PLUGIN_NAME}/no-cross-segment-reexport`,
 } as const;
 
 export type Layers = ReadonlyArray<
