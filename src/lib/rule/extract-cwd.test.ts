@@ -3,13 +3,14 @@ import { extractCwd } from './extract-cwd';
 
 function createMockContext(cwd?: string): UnknownRuleContext {
   return {
+    cwd: cwd,
     getCwd: cwd !== undefined ? () => cwd : undefined,
   } as unknown as UnknownRuleContext;
 }
 
 describe('extract-cwd', () => {
-  it('should return undefined when getCwd is not available', () => {
-    const context = { getCwd: undefined } as unknown as UnknownRuleContext;
+  it('should return undefined when cwd is not available', () => {
+    const context = { cwd: undefined, getCwd: undefined } as unknown as UnknownRuleContext;
 
     expect(extractCwd(context)).toBeUndefined();
   });
