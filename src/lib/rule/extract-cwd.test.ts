@@ -40,4 +40,49 @@ describe('extract-cwd', () => {
 
     expect(extractCwd(context)).toBeUndefined();
   });
+
+  describe('eslint 10 compatibility', () => {
+    it('should work with ESLint 10 property-based context API (no getCwd method)', () => {
+      const context = {
+        cwd: '/Users/project',
+      } as unknown as UnknownRuleContext;
+
+      expect(extractCwd(context)).toBe('/Users/project');
+    });
+
+    it('should work with ESLint 9 method-based context API (no cwd property)', () => {
+      const context = {
+        cwd: undefined,
+        getCwd: () => '/Users/project',
+      } as unknown as UnknownRuleContext;
+
+      expect(extractCwd(context)).toBe('/Users/project');
+    });
+
+    it('should prefer cwd property over getCwd method', () => {
+      const context = {
+        cwd: '/from-property',
+        getCwd: () => '/from-method',
+      } as unknown as UnknownRuleContext;
+
+      expect(extractCwd(context)).toBe('/from-property');
+    });
+
+    it('should normalize Windows path from cwd property', () => {
+      const context = {
+        cwd: 'C:\\Users\\project',
+      } as unknown as UnknownRuleContext;
+
+      expect(extractCwd(context)).toBe('C:/Users/project');
+    });
+
+    it('should fall back to getCwd when cwd property is undefined', () => {
+      const context = {
+        cwd: undefined,
+        getCwd: () => 'C:\\Users\\project',
+      } as unknown as UnknownRuleContext;
+
+      expect(extractCwd(context)).toBe('C:/Users/project');
+    });
+  });
 });

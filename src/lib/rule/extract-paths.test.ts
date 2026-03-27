@@ -81,4 +81,69 @@ describe('extract-paths', () => {
     expect(result.normalizedTargetPath).toBe('./types');
     expect(result.absoluteTargetPath).toBe('/Users/project/src/entities/user/model/types');
   });
+
+  describe('eslint 10 compatibility', () => {
+    it('should work with ESLint 10 property-based context API (no methods)', () => {
+      const node = createMockNode('../model');
+      const context = {
+        physicalFilename: '/Users/project/src/features/foo/ui/index.ts',
+        filename: '/Users/project/src/features/foo/ui/index.ts',
+        cwd: '/Users/project',
+      } as unknown as UnknownRuleContext;
+
+      const result = extractPaths(node, context);
+
+      expect(result.normalizedCurrentFilePath).toBe('/Users/project/src/features/foo/ui/index.ts');
+      expect(result.normalizedCwd).toBe('/Users/project');
+      expect(result.absoluteTargetPath).toBe('/Users/project/src/features/foo/model');
+    });
+
+    it('should work with ESLint 9 method-based context API (no properties)', () => {
+      const node = createMockNode('../model');
+      const context = {
+        physicalFilename: undefined,
+        filename: undefined,
+        cwd: undefined,
+        getPhysicalFilename: () => '/Users/project/src/features/foo/ui/index.ts',
+        getFilename: () => '/Users/project/src/features/foo/ui/index.ts',
+        getCwd: () => '/Users/project',
+      } as unknown as UnknownRuleContext;
+
+      const result = extractPaths(node, context);
+
+      expect(result.normalizedCurrentFilePath).toBe('/Users/project/src/features/foo/ui/index.ts');
+      expect(result.normalizedCwd).toBe('/Users/project');
+      expect(result.absoluteTargetPath).toBe('/Users/project/src/features/foo/model');
+    });
+
+    it('should prefer properties over methods when both are present', () => {
+      const node = createMockNode('../model');
+      const context = {
+        physicalFilename: '/Users/project/src/features/foo/ui/index.ts',
+        filename: '/Users/project/src/features/foo/ui/index.ts',
+        cwd: '/Users/project',
+        getPhysicalFilename: () => '/other/path/src/features/foo/ui/index.ts',
+        getFilename: () => '/other/path/src/features/foo/ui/index.ts',
+        getCwd: () => '/other/path',
+      } as unknown as UnknownRuleContext;
+
+      const result = extractPaths(node, context);
+
+      expect(result.normalizedCurrentFilePath).toBe('/Users/project/src/features/foo/ui/index.ts');
+      expect(result.normalizedCwd).toBe('/Users/project');
+    });
+
+    it('should fall back to filename when physicalFilename is undefined', () => {
+      const node = createMockNode('../model');
+      const context = {
+        physicalFilename: undefined,
+        filename: '/Users/project/src/features/foo/ui/index.ts',
+        cwd: '/Users/project',
+      } as unknown as UnknownRuleContext;
+
+      const result = extractPaths(node, context);
+
+      expect(result.normalizedCurrentFilePath).toBe('/Users/project/src/features/foo/ui/index.ts');
+    });
+  });
 });
