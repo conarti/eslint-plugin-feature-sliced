@@ -2,9 +2,14 @@ import { ESLint } from 'eslint';
 import { configLib } from '../../../tests/utils';
 import { recommended } from './recommended';
 
+/*
+ * overrideConfigFile: true отключает поиск config-файла в ESLint 9.
+ * При переходе на ESLint 10 нужно убрать эту опцию (она удалена),
+ * flat config используется по умолчанию.
+ */
 const eslint = new ESLint({
   overrideConfigFile: true,
-  overrideConfig: configLib.setParser(recommended),
+  overrideConfig: [configLib.setParser(recommended)],
 });
 
 interface ConfigTestCase {
