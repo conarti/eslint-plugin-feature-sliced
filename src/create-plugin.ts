@@ -3,6 +3,7 @@ import type {
   ImportOrderConfigName,
   LayersConfig,
   NormalizedLayerConfig,
+  SegmentsConfig,
   TypedFlatConfigItem,
 } from './config';
 import type { ValidationLevel } from './rules/public-api/config';
@@ -111,6 +112,16 @@ interface ESLintPluginFeatureSlicedOptions {
    * ]
    */
   layers?: LayersConfig;
+  /**
+   * Custom segments configuration.
+   * - Array (extend mode): adds segments to the defaults (ui, model, api, lib, config)
+   * - Object with replace (replace mode): replaces defaults entirely
+   * @example
+   * segments: ['i18n', 'hooks']
+   * @example
+   * segments: { replace: ['ui', 'model', 'i18n'] }
+   */
+  segments?: SegmentsConfig;
   absoluteRelative?: false | Partial<AbsoluteRelativeOptions>;
   layersSlices?: false | Partial<LayersSlicesOptions>;
   publicApi?: false | Partial<PublicApiOptions>;
@@ -122,6 +133,7 @@ export function createPlugin(options: ESLintPluginFeatureSlicedOptions = {}): Ty
   const {
     severity = 'error',
     layers,
+    segments,
     sortImports = 'recommended',
     absoluteRelative,
     layersSlices,
@@ -140,6 +152,7 @@ export function createPlugin(options: ESLintPluginFeatureSlicedOptions = {}): Ty
     settings: {
       [PLUGIN_NAME]: {
         layers: normalizedLayers,
+        ...(segments !== undefined && { segments }),
       },
     },
     rules,
