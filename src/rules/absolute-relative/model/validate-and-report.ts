@@ -3,7 +3,7 @@ import type {
   Options,
   RuleContext,
 } from '../config';
-import { extractPathsInfo } from '../../../lib/feature-sliced';
+import { extractCrossImportInfo, extractPathsInfo } from '../../../lib/feature-sliced';
 import {
   hasPath,
   type ImportExportNodes,
@@ -38,6 +38,12 @@ export function validateAndReport(
   }
 
   const pathsInfo = extractPathsInfo(node, context, { layersConfig });
+
+  /* @x cross-imports are always absolute, skip relative/absolute checks */
+  const crossImportInfo = extractCrossImportInfo(pathsInfo.normalizedTargetPath);
+  if (crossImportInfo.isCrossImport) {
+    return;
+  }
 
   if (shouldBeRelative(pathsInfo)) {
     reportShouldBeRelative(node, context);

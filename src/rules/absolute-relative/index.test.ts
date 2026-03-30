@@ -153,6 +153,39 @@ ruleTester.run('absolute-relative', rule, {
   ],
 });
 
+/* === @x cross-import tests === */
+
+ruleTester.run('absolute-relative (@x cross-imports)', rule, {
+  valid: [
+    {
+      name: '@x cross-import with alias prefix',
+      filename: 'src/entities/policies/ui/Component.vue',
+      code: "import { useGroups } from '@/entities/groups/@x/policies';",
+    },
+    {
+      name: '@x cross-import without alias',
+      filename: 'src/entities/Session/model.ts',
+      code: "import { User } from 'entities/User/@x/Session';",
+    },
+    {
+      name: '@x cross-import with .ts extension',
+      filename: 'src/entities/Session/model.ts',
+      code: "import { User } from '@/entities/User/@x/Session.ts';",
+    },
+    {
+      name: '@x cross-import from nested file',
+      filename: 'src/entities/Session/ui/Card.tsx',
+      code: "import { User } from '@/entities/User/@x/Session';",
+    },
+    {
+      name: '@x cross-import with hyphenated slice names',
+      filename: 'src/entities/user-session/model.ts',
+      code: "import { UserProfile } from '@/entities/user-profile/@x/user-session';",
+    },
+  ],
+  invalid: [],
+});
+
 /* === Group folders smoke tests === */
 
 ruleTester.run('absolute-relative (group folders)', rule, {
