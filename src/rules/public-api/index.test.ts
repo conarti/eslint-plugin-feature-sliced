@@ -355,6 +355,24 @@ ruleTester.run('public-api (@x cross-imports)', rule, {
       filename: 'src/entities/user-session/model.ts',
       code: "import { UserProfile } from '@/entities/user-profile/@x/user-session';",
     },
+    {
+      name: '@x file is valid public API with segments level',
+      filename: 'src/entities/Session/model.ts',
+      code: "import { User } from '@/entities/User/@x/Session';",
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+    },
+    {
+      name: '@x file with .ts extension is valid with segments level',
+      filename: 'src/entities/Session/ui/Card.tsx',
+      code: "import { User } from 'entities/User/@x/Session.ts';",
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+    },
+    {
+      name: '@x file with hyphenated names is valid with segments level',
+      filename: 'src/entities/user-session/model.ts',
+      code: "import { UserProfile } from '@/entities/user-profile/@x/user-session';",
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+    },
   ],
   invalid: [],
 });

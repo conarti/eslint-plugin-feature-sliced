@@ -1,6 +1,6 @@
 import type { NormalizedLayerConfig } from '../../../config';
 import { DEFAULT_SEGMENTS } from '../../../config';
-import { extractPathsInfo } from '../../../lib/feature-sliced';
+import { extractCrossImportInfo, extractPathsInfo } from '../../../lib/feature-sliced';
 import { getLayersWithSlices, normalizeLayersConfig } from '../../../lib/feature-sliced/layers-config';
 import { isKnownSegment } from '../../../lib/feature-sliced/segments-config';
 import {
@@ -83,6 +83,11 @@ export function isUnknownSegment(
   const effectiveSegmentsConfig = segmentsConfig ?? [...DEFAULT_SEGMENTS];
 
   const pathsInfo = extractPathsInfo(node, context, { layersConfig, segmentsConfig: effectiveSegmentsConfig });
+
+  const crossImportInfo = extractCrossImportInfo(pathsInfo.normalizedTargetPath);
+  if (crossImportInfo.isCrossImport) {
+    return null;
+  }
 
   /* If segment was already extracted successfully, it's known */
   if (pathsInfo.fsdPartsOfTarget.segment) {
