@@ -182,6 +182,11 @@ describe('extract-slice', () => {
         expected: null,
       },
       {
+        name: 'segment after layer with extensionless file (no slice)',
+        path: 'src/entities/model/mappers',
+        expected: null,
+      },
+      {
         name: 'slice with numbers',
         path: 'src/entities/User123/model',
         expected: 'User123',

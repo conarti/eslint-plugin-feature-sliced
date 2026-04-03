@@ -59,13 +59,19 @@ export function extractSlice(
     return partsAfterLayer[segmentIndex - 1];
   }
 
-  /* Edge case: FSD-segment right after layer (e.g., entities/model/User/ui) */
+  /* Edge case: FSD-segment right after layer */
   if (segmentIndex === 0) {
-    /* If the segment is the only part after layer, there is no slice */
-    if (partsAfterLayer.length === 1) {
+    const remainingParts = partsAfterLayer.slice(1);
+    const hasMoreSegments = remainingParts.some((part) =>
+      segmentsList.some((seg) => seg.toLowerCase() === part.toLowerCase()),
+    );
+
+    /* If no more segments found, this is a bare segment without a slice (e.g., entities/api/queries) */
+    if (!hasMoreSegments) {
       return null;
     }
 
+    /* Segment-named group folder (e.g., entities/model/User/ui) */
     return partsAfterLayer[0];
   }
 
