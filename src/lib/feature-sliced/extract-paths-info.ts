@@ -35,8 +35,9 @@ function compareFeatureSlicedParts(fsPartsToCompare: FSPartsToCompare) {
     && currentFile.validatedFeatureSlicedParts.hasLayer
     && target.fsdParts.layer === currentFile.fsdParts.layer;
   const isSameSlice = isSameLayer
-    && target.validatedFeatureSlicedParts.hasSlice && currentFile.validatedFeatureSlicedParts.hasSlice
-    && target.fsdParts.slice === currentFile.fsdParts.slice;
+    && ((target.validatedFeatureSlicedParts.hasSlice && currentFile.validatedFeatureSlicedParts.hasSlice
+      && target.fsdParts.slice === currentFile.fsdParts.slice)
+      || (target.validatedFeatureSlicedParts.hasNotSlice && currentFile.validatedFeatureSlicedParts.hasNotSlice));
   const isSameSegment = target.fsdParts.segment === currentFile.fsdParts.segment;
   /**
    * Whether the import/export file and the current file are inside the same layer that cannot contain slices

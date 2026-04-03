@@ -61,6 +61,11 @@ export function extractSlice(
 
   /* Edge case: FSD-segment right after layer (e.g., entities/model/User/ui) */
   if (segmentIndex === 0) {
+    /* If the segment is the only part after layer, there is no slice */
+    if (partsAfterLayer.length === 1) {
+      return null;
+    }
+
     return partsAfterLayer[0];
   }
 

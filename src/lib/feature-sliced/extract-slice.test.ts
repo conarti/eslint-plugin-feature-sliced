@@ -172,6 +172,16 @@ describe('extract-slice', () => {
         expected: null,
       },
       {
+        name: 'segment directly after layer without slice',
+        path: 'src/entities/api/queries.ts',
+        expected: null,
+      },
+      {
+        name: 'another segment directly after layer without slice',
+        path: 'src/entities/model/mappers.ts',
+        expected: null,
+      },
+      {
         name: 'slice with numbers',
         path: 'src/entities/User123/model',
         expected: 'User123',
