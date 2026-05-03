@@ -122,6 +122,11 @@ ruleTester.run('layers-slices', rule, {
       code: "import generatePayloadMapper from './generatePayloadMapper';",
     },
     {
+      name: 'should be valid if relative import within slice with non-segment subfolders',
+      filename: 'src/features/foo/components/bar/bar.tsx',
+      code: "import { Baz } from './baz/baz';",
+    },
+    {
       name: "should be valid if import inside 'app' layer",
       filename: 'src/app/foo/index.ts',
       code: "import { Bar } from '../bar';",
@@ -205,6 +210,12 @@ ruleTester.run('layers-slices', rule, {
       filename: 'src/entities/foo-bar-baz/ui/index.vue',
       code: "import { FooBar } from '../../foo-bar/ui/index.vue';",
       errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      name: 'should still flag relative cross-slice import from a slice with non-segment subfolders',
+      filename: 'src/features/foo/components/bar/bar.tsx',
+      code: "import { Other } from '../../../other/baz';",
+      errors: [makeLayersSlicesError('features', 'features')],
     },
     {
       name: 'should detect layer correctly if there are layer names in the path',
