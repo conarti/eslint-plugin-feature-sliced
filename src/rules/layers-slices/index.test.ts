@@ -207,6 +207,12 @@ ruleTester.run('layers-slices', rule, {
       errors: [makeLayersSlicesError('entities', 'entities')],
     },
     {
+      name: 'should still flag relative cross-slice import from a slice with non-segment subfolders',
+      filename: 'src/features/foo/components/bar/bar.tsx',
+      code: "import { Other } from '../../../other/baz';",
+      errors: [makeLayersSlicesError('features', 'features')],
+    },
+    {
       name: 'should detect layer correctly if there are layer names in the path',
       filename: 'src/entities/Viewer/model/types.ts',
       code: "import { u } from '../../../entities/User';",
@@ -352,6 +358,12 @@ ruleTester.run('layers-slices (group folders)', rule, {
       name: 'should report cross-slice import with group folders',
       filename: 'src/entities/users/User/model/index.ts',
       code: "import { foo } from '@/entities/products/Product/model';",
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      name: 'should report relative cross-slice import with group folders',
+      filename: 'src/entities/users/User/model/index.ts',
+      code: "import { admin } from '../../Admin/model';",
       errors: [makeLayersSlicesError('entities', 'entities')],
     },
   ],

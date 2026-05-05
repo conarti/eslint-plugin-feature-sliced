@@ -96,6 +96,8 @@ import featureSliced from '@conarti/eslint-plugin-feature-sliced';
 
 export default [
     featureSliced({
+        /* Adds project-specific segment names to ui, model, lib, api, config and assets */
+        segments: ['components', 'hooks', 'services', 'i18n'],
         /* Enables public api check in segments */
         publicApi: { level: 'segments' },
         /* Uses a different import sorter. You can disable it and use your own plugins and configurations */

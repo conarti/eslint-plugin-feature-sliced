@@ -15,6 +15,7 @@ import rule from './index';
 const customSegments = ['i18n', 'hooks', 'services'];
 
 const customSegmentsSettings = makeCustomSegmentsSettings(customSegments);
+const componentsSegmentSettings = makeCustomSegmentsSettings(['components']);
 
 const ruleTester = new RuleTester({
   languageOptions: {
@@ -95,6 +96,12 @@ ruleTester.run('layers-slices (custom segments - same slice relative imports)', 
       filename: 'src/entities/user/services/api.ts',
       code: "import { UserType } from '../model/types'",
       settings: customSegmentsSettings,
+    },
+    {
+      name: 'should allow relative import within components segment subfolders',
+      filename: 'src/features/foo/components/bar/bar.tsx',
+      code: "import { Baz } from './baz/baz'",
+      settings: componentsSegmentSettings,
     },
   ],
 
