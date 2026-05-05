@@ -365,5 +365,11 @@ ruleTester.run('layers-slices (group folders)', rule, {
       code: "import { foo } from '@/entities/products/Product/model';",
       errors: [makeLayersSlicesError('entities', 'entities')],
     },
+    {
+      name: 'should report relative cross-slice import with group folders',
+      filename: 'src/entities/users/User/model/index.ts',
+      code: "import { admin } from '../../Admin/model';",
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
   ],
 });

@@ -5,12 +5,24 @@ import { isPathRelative } from '../../../lib/path';
  * For a relative import, treats current and target as the same slice
  * when both paths share the layer and the first folder after it.
  *
- * Per FSD, a slice is the first folder under its layer. Relative imports
- * are scoped within a slice by convention, so this path-based comparison
- * is reliable even when a slice has subfolders that don't match a known
- * FSD-segment (the heuristic-based slice extractor can pick a wrong leaf
- * in that case, producing false positives like "features into features").
+ * This fallback is only used when the regular extractor cannot find FSD
+ * segments in either path. If a segment is present, the extractor has enough
+ * information to support group folders and should stay authoritative.
  */
+function splitProjectPath(path: string, cwd?: string): string[] {
+  if (!cwd) {
+    return path.split('/').filter(Boolean);
+  }
+
+  const lowerCasedPath = path.toLowerCase();
+  const lowerCasedCwd = cwd.toLowerCase();
+  const pathWithinCwd = lowerCasedPath.startsWith(`${lowerCasedCwd}/`)
+    ? path.slice(cwd.length + 1)
+    : path;
+
+  return pathWithinCwd.split('/').filter(Boolean);
+}
+
 function isRelativeImportWithinSameSliceScope(pathsInfo: PathsInfo): boolean {
   if (!isPathRelative(pathsInfo.normalizedTargetPath)) {
     return false;
@@ -22,8 +34,12 @@ function isRelativeImportWithinSameSliceScope(pathsInfo: PathsInfo): boolean {
     return false;
   }
 
-  const currentParts = pathsInfo.normalizedCurrentFilePath.split('/').filter(Boolean);
-  const targetParts = pathsInfo.absoluteTargetPath.split('/').filter(Boolean);
+  if (pathsInfo.fsdPartsOfCurrentFile.segment || pathsInfo.fsdPartsOfTarget.segment) {
+    return false;
+  }
+
+  const currentParts = splitProjectPath(pathsInfo.normalizedCurrentFilePath, pathsInfo.normalizedCwd);
+  const targetParts = splitProjectPath(pathsInfo.absoluteTargetPath, pathsInfo.normalizedCwd);
 
   const layerLc = currentLayer.toLowerCase();
   const currentLayerIdx = currentParts.findIndex((part) => part.toLowerCase() === layerLc);
