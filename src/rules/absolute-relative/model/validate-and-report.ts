@@ -1,39 +1,49 @@
-import { extractPathsInfo } from '../../../lib/feature-sliced';
+import type { NormalizedLayerConfig } from '../../../config';
+import type {
+  Options,
+  RuleContext,
+} from '../config';
+import { extractCrossImportInfo, extractPathsInfo } from '../../../lib/feature-sliced';
 import {
   hasPath,
-  isIgnoredCurrentFile,
   type ImportExportNodes,
+  isIgnoredCurrentFile,
+  isIgnoredTarget,
 } from '../../../lib/rule';
 import {
-  type RuleContext,
-  type Options,
-} from '../config';
-import {
-  reportShouldBeRelative,
   reportShouldBeAbsolute,
+  reportShouldBeRelative,
 } from './errors';
 import { shouldBeAbsolute } from './should-be-absolute';
 import { shouldBeRelative } from './should-be-relative';
 
-type ValidateOptions = {
+interface ValidateOptions {
   needCheckForAbsolute: boolean;
-}
+};
 
 export function validateAndReport(
   node: ImportExportNodes,
   context: RuleContext,
   optionsWithDefault: Readonly<Options>,
   options: ValidateOptions = { needCheckForAbsolute: true },
+  layersConfig?: NormalizedLayerConfig[],
 ) {
   if (!hasPath(node)) {
     return;
   }
 
-  if (isIgnoredCurrentFile(context, optionsWithDefault)) {
+  const isIgnoredForValidation = isIgnoredTarget(node, optionsWithDefault) || isIgnoredCurrentFile(context, optionsWithDefault);
+  if (isIgnoredForValidation) {
     return;
   }
 
-  const pathsInfo = extractPathsInfo(node, context);
+  const pathsInfo = extractPathsInfo(node, context, { layersConfig });
+
+  /* @x cross-imports are always absolute, skip relative/absolute checks */
+  const crossImportInfo = extractCrossImportInfo(pathsInfo.normalizedTargetPath);
+  if (crossImportInfo.isCrossImport) {
+    return;
+  }
 
   if (shouldBeRelative(pathsInfo)) {
     reportShouldBeRelative(node, context);

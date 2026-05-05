@@ -1,8 +1,9 @@
-import {
-  type Layer,
-  layers,
-} from '../../config';
+import type { NormalizedLayerConfig } from '../../config';
 import { getByRegExp } from '../shared';
+import {
+  getLayerNames,
+  normalizeLayersConfig,
+} from './layers-config';
 
 function prepareToExtract(targetPath: string, cwd?: string): string {
   const lowerCasedTargetPath = targetPath.toLowerCase();
@@ -17,13 +18,20 @@ function prepareToExtract(targetPath: string, cwd?: string): string {
 }
 
 /**
- * Returns the layer from the path
+ * Returns the layer from the path.
+ * If config is not provided, uses default FSD layers.
  */
-export function extractLayer(targetPath: string, cwd?: string): Layer | null {
-  const layersRegExpPattern = `(${layers.join('|')})(?![\\w\\.-])`;
-  const layersRegExp = new RegExp(layersRegExpPattern, 'ig');
+export function extractLayer(
+  targetPath: string,
+  cwd?: string,
+  config?: NormalizedLayerConfig[],
+): string | null {
+  const layersConfig = config ?? normalizeLayersConfig();
+  const layerNames = getLayerNames(layersConfig);
+  const layersRegExpPattern = `(${layerNames.join('|')})(?![\\w\\.-])`;
+  const layersRegExp = new RegExp(layersRegExpPattern, 'gi');
 
   const pathForExtract = prepareToExtract(targetPath, cwd);
 
-  return getByRegExp<Layer>(pathForExtract, layersRegExp);
+  return getByRegExp<string>(pathForExtract, layersRegExp);
 }

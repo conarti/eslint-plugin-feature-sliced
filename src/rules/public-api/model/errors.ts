@@ -1,4 +1,5 @@
-import { type TSESTree } from '@typescript-eslint/utils';
+import type { TSESTree } from '@typescript-eslint/utils';
+import type { NormalizedLayerConfig } from '../../../config';
 import { extractPathsInfo } from '../../../lib/feature-sliced';
 import {
   getSourceRangeWithoutQuotes,
@@ -10,8 +11,13 @@ import {
 } from '../config';
 import { convertToPublicApi } from './convert-to-public-api';
 
-export function reportShouldBeFromPublicApi(node: ImportExportNodesWithSourceValue, context: RuleContext) {
-  const pathsInfo = extractPathsInfo(node, context);
+export function reportShouldBeFromPublicApi(
+  node: ImportExportNodesWithSourceValue,
+  context: RuleContext,
+  layersConfig?: NormalizedLayerConfig[],
+  segmentsConfig?: string[],
+) {
+  const pathsInfo = extractPathsInfo(node, context, { layersConfig, segmentsConfig });
   const [fixedPath, valueToRemove] = convertToPublicApi(pathsInfo);
 
   context.report({
@@ -29,6 +35,20 @@ export function reportShouldBeFromPublicApi(node: ImportExportNodesWithSourceVal
         fix: (fixer) => fixer.replaceTextRange(getSourceRangeWithoutQuotes(node.source.range), fixedPath),
       },
     ],
+  });
+}
+
+export function reportUnknownSegment(
+  node: ImportExportNodesWithSourceValue,
+  context: RuleContext,
+  segment: string,
+) {
+  context.report({
+    node: node.source,
+    messageId: MESSAGE_ID.UNKNOWN_SEGMENT,
+    data: {
+      segment,
+    },
   });
 }
 

@@ -1,21 +1,10 @@
-import recommended from './configs/recommended';
-import rules from './configs/rules';
-import absoluteRelative from './rules/absolute-relative';
-import layersSlices from './rules/layers-slices';
-import publicApi from './rules/public-api';
+import { createPlugin } from './create-plugin';
+import { plugin } from './plugin';
 
-export = {
-  parserOptions: {
-    ecmaVersion: '2015',
-    sourceType: 'module',
-  },
-  rules: {
-    'absolute-relative': absoluteRelative,
-    'layers-slices': layersSlices,
-    'public-api': publicApi,
-  },
-  configs: {
-    recommended,
-    rules,
-  },
-};
+export { createPlugin };
+export { plugin };
+export { layers, PLUGIN_NAME, RULE_NAMES, segments } from './config';
+export type { ImportOrderConfigName, Layer, Segment, TypedFlatConfigItem } from './config';
+export type { Severity } from './create-plugin';
+
+export default createPlugin;

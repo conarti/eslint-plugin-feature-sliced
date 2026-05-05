@@ -1,30 +1,31 @@
 import {
-  createRule,
+  createEslintRule,
+  extractLayersConfig,
+  extractSegmentsConfig,
   type ImportExpression,
 } from '../../lib/rule';
 import {
   MESSAGE_ID,
-  VALIDATION_LEVEL,
   type MessageIds,
   type Options,
+  VALIDATION_LEVEL,
 } from './config';
 import { validateAndReport } from './model';
 import { validateAndReportProgram } from './model/validate-and-report-program';
 
-export default createRule<Options, MessageIds>({
+export default createEslintRule<Options, MessageIds>({
   name: 'public-api',
   meta: {
     type: 'problem',
     docs: {
       description: 'Check for module imports from public api',
     },
-    /* it doesn't understand when context.report is not in this module */
-    // eslint-disable-next-line eslint-plugin/require-meta-has-suggestions
     hasSuggestions: true,
     messages: {
       [MESSAGE_ID.SHOULD_BE_FROM_PUBLIC_API]: 'Absolute imports are only allowed from public api ("{{ fixedPath }}")',
       [MESSAGE_ID.REMOVE_SUGGESTION]: 'Remove the "{{ valueToRemove }}"',
       [MESSAGE_ID.LAYERS_PUBLIC_API_NOT_ALLOWED]: 'The layer public API is not allowed. It harms both architecturally and practically (code splitting)',
+      [MESSAGE_ID.UNKNOWN_SEGMENT]: 'Unknown segment "{{ segment }}". Add it to segments configuration or use the public API.',
     },
     schema: [
       {
@@ -37,7 +38,13 @@ export default createRule<Options, MessageIds>({
               VALIDATION_LEVEL.SLICES,
             ],
           },
-          ignoreInFilesPatterns: {
+          ignoreImports: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
+          ignoreFiles: {
             type: 'array',
             items: {
               type: 'string',
@@ -50,23 +57,27 @@ export default createRule<Options, MessageIds>({
   defaultOptions: [
     {
       level: VALIDATION_LEVEL.SLICES,
-      ignoreInFilesPatterns: [],
+      ignoreImports: [],
+      ignoreFiles: [],
     },
   ],
 
   create(context, optionsWithDefault) {
+    const layersConfig = extractLayersConfig(context);
+    const segmentsConfig = extractSegmentsConfig(context);
+
     return {
       ImportDeclaration(node) {
-        validateAndReport(node, context, optionsWithDefault);
+        validateAndReport(node, context, optionsWithDefault, layersConfig, segmentsConfig);
       },
       ImportExpression(node) {
-        validateAndReport(node as ImportExpression /* TSESTree has invalid type for this node */, context, optionsWithDefault);
+        validateAndReport(node as ImportExpression /* TSESTree has invalid type for this node */, context, optionsWithDefault, layersConfig, segmentsConfig);
       },
       ExportAllDeclaration(node) {
-        validateAndReport(node, context, optionsWithDefault);
+        validateAndReport(node, context, optionsWithDefault, layersConfig, segmentsConfig);
       },
       ExportNamedDeclaration(node) {
-        validateAndReport(node, context, optionsWithDefault);
+        validateAndReport(node, context, optionsWithDefault, layersConfig, segmentsConfig);
       },
       Program(node) {
         validateAndReportProgram(node, context, optionsWithDefault);

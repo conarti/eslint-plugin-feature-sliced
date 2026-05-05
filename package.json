@@ -1,8 +1,14 @@
 {
   "name": "@conarti/eslint-plugin-feature-sliced",
-  "version": "1.0.5",
+  "type": "module",
+  "version": "2.0.0-rc.15",
   "description": "Feature-sliced design methodology plugin",
-  "repository": "https://github.com/conarti/eslint-plugin-fsd.git",
+  "author": "Aleksandr Belous <abelous2009@gmail.com>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/conarti/eslint-plugin-feature-sliced.git"
+  },
   "keywords": [
     "eslint",
     "eslintplugin",
@@ -12,21 +18,29 @@
     "feature-driven",
     "feature-based"
   ],
-  "files": [
-    "dist",
-    "CHANGELOG.md"
-  ],
-  "author": "conarti",
-  "main": "./dist/index.js",
   "exports": {
-    ".": "./dist/index.js",
-    "./import-order": "./dist/configs/import-order/index.js"
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "CHANGELOG.md",
+    "dist"
+  ],
+  "engines": {
+    "node": ">= 18.0.0"
   },
   "scripts": {
     "clean": "rimraf ./dist",
-    "build": "npm run clean && tsc -p tsconfig.build.json",
-    "lint": "npm-run-all \"lint:*\"",
-    "lint:js": "eslint .",
+    "build": "tsup --format esm,cjs --clean --dts",
+    "stub": "tsup --format esm",
+    "dev": "npx @eslint/config-inspector --config eslint.config.ts",
+    "watch": "tsup --format esm,cjs --watch",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint .",
     "test": "vitest",
     "test:ui": "vitest --ui --api 9527",
     "test:run": "vitest run",
@@ -41,47 +55,39 @@
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
   },
+  "peerDependencies": {
+    "eslint": ">=9"
+  },
+  "dependencies": {
+    "@typescript-eslint/utils": "^8.45.0",
+    "eslint-flat-config-utils": "^0.4.0",
+    "eslint-plugin-import-x": "^4.16.1",
+    "picomatch": "^2.3.1"
+  },
   "devDependencies": {
-    "@total-typescript/ts-reset": "^0.4.2",
-    "@tsconfig/node14": "^14.1.0",
-    "@types/eslint": "^8.44.0",
+    "@antfu/eslint-config": "^3.7.3",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@total-typescript/ts-reset": "^0.6.1",
+    "@types/eslint": "^9.6.1",
     "@types/node": "^20.4.2",
     "@types/picomatch": "^2.3.0",
-    "@typescript-eslint/eslint-plugin": "^6.1.0",
-    "@typescript-eslint/parser": "^6.1.0",
-    "@typescript-eslint/utils": "^6.1.0",
+    "@typescript-eslint/parser": "^8.45.0",
+    "@typescript-eslint/rule-tester": "^8.45.0",
     "@vitest/coverage-v8": "^0.33.0",
     "@vitest/ui": "^0.33.0",
     "conventional-changelog-cli": "^2.2.2",
-    "eslint": "^8.45.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-import-resolver-typescript": "^3.5.5",
-    "eslint-plugin-eslint-plugin": "^5.1.1",
-    "eslint-plugin-filenames-simple": "^0.8.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-modules-newlines": "^0.0.7",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-unused-imports": "^3.0.0",
-    "eslint-plugin-vitest": "^0.2.6",
+    "eslint": "^9.11.1",
+    "eslint-plugin-vitest": "^0.5.4",
     "execa": "5.1.1",
-    "npm-run-all": "^4.1.5",
     "picocolors": "^1.0.0",
     "prompts": "^2.4.2",
     "rimraf": "^5.0.1",
+    "semantic-release": "^24.2.0",
     "semver": "^7.5.4",
-    "typescript": "^4.9.5",
+    "tsup": "^8.5.0",
+    "typescript": "^5.6.2",
     "vitepress": "^1.0.0-alpha.64",
     "vitest": "^0.33.0"
-  },
-  "engines": {
-    "node": "^14.17.0 || ^16.0.0 || >= 18.0.0"
-  },
-  "peerDependencies": {
-    "eslint": ">=7",
-    "eslint-plugin-import": ">=2.26"
-  },
-  "license": "ISC",
-  "dependencies": {
-    "picomatch": "^2.3.1"
   }
 }

@@ -1,15 +1,16 @@
-import { type TSESLint } from '@typescript-eslint/utils';
+import type { TSESLint } from '@typescript-eslint/utils';
 
-export const enum ERROR_MESSAGE_ID {
-  MUST_BE_RELATIVE_PATH = 'must-be-relative-path',
-  MUST_BE_ABSOLUTE_PATH = 'must-be-absolute-path',
-}
+export const ERROR_MESSAGE_ID = {
+  MUST_BE_RELATIVE_PATH: 'must-be-relative-path',
+  MUST_BE_ABSOLUTE_PATH: 'must-be-absolute-path',
+} as const;
 
-export type MessageIds = ERROR_MESSAGE_ID;
+export type MessageIds = typeof ERROR_MESSAGE_ID[keyof typeof ERROR_MESSAGE_ID];
 
 export type Options = [
   {
-    ignoreInFilesPatterns: string[],
+    ignoreImports: string[];
+    ignoreFiles: string[];
   },
 ];
 

@@ -1,17 +1,17 @@
 import { ESLint } from 'eslint';
 import { configLib } from '../../../tests/utils';
-import cfg from './recommended';
+import { recommended } from './recommended';
 
 const eslint = new ESLint({
-  useEslintrc: false,
-  baseConfig: configLib.setParser(cfg),
+  overrideConfigFile: true,
+  overrideConfig: [configLib.setParser(recommended)],
 });
 
-type ConfigTestCase = {
+interface ConfigTestCase {
   name: string;
   code: string;
   expectedErrorCount: number;
-};
+}
 
 const cases: ConfigTestCase[] = [
   {

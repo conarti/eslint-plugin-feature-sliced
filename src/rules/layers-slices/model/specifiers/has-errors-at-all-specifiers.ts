@@ -1,4 +1,4 @@
-import { type TSESTree } from '@typescript-eslint/utils';
+import type { TSESTree } from '@typescript-eslint/utils';
 
 export function hasErrorsAtAllSpecifiers(specifiers: TSESTree.ImportSpecifier[], invalidSpecifiers: TSESTree.ImportSpecifier[]): boolean {
   const allSpecifiersCount = specifiers.length;

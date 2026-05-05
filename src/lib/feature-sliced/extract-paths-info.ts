@@ -1,7 +1,8 @@
+import type { NormalizedLayerConfig } from '../../config';
 import {
+  extractPaths,
   type ImportExportNodesWithSourceValue,
   type UnknownRuleContext,
-  extractPaths,
 } from '../rule';
 import {
   type ExtractedFeatureSlicedParts,
@@ -12,16 +13,16 @@ import {
   validateExtractedFeatureSlicedParts,
 } from './validate-extracted-feature-sliced-parts';
 
-type FSPartsToCompare = {
+interface FSPartsToCompare {
   target: {
-    validatedFeatureSlicedParts: ValidatedFeatureSlicedParts,
-    fsdParts: ExtractedFeatureSlicedParts,
-  },
+    validatedFeatureSlicedParts: ValidatedFeatureSlicedParts;
+    fsdParts: ExtractedFeatureSlicedParts;
+  };
   currentFile: {
-    validatedFeatureSlicedParts: ValidatedFeatureSlicedParts,
-    fsdParts: ExtractedFeatureSlicedParts,
-  }
-};
+    validatedFeatureSlicedParts: ValidatedFeatureSlicedParts;
+    fsdParts: ExtractedFeatureSlicedParts;
+  };
+}
 
 function compareFeatureSlicedParts(fsPartsToCompare: FSPartsToCompare) {
   const {
@@ -33,8 +34,10 @@ function compareFeatureSlicedParts(fsPartsToCompare: FSPartsToCompare) {
   const isSameLayer = target.validatedFeatureSlicedParts.hasLayer
     && currentFile.validatedFeatureSlicedParts.hasLayer
     && target.fsdParts.layer === currentFile.fsdParts.layer;
-  const isSameSlice = target.validatedFeatureSlicedParts.hasSlice && currentFile.validatedFeatureSlicedParts.hasSlice
-    && target.fsdParts.slice === currentFile.fsdParts.slice;
+  const isSameSlice = isSameLayer
+    && ((target.validatedFeatureSlicedParts.hasSlice && currentFile.validatedFeatureSlicedParts.hasSlice
+      && target.fsdParts.slice === currentFile.fsdParts.slice)
+      || (target.validatedFeatureSlicedParts.hasNotSlice && currentFile.validatedFeatureSlicedParts.hasNotSlice));
   const isSameSegment = target.fsdParts.segment === currentFile.fsdParts.segment;
   /**
    * Whether the import/export file and the current file are inside the same layer that cannot contain slices
@@ -52,7 +55,23 @@ function compareFeatureSlicedParts(fsPartsToCompare: FSPartsToCompare) {
   };
 }
 
-export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context: UnknownRuleContext) {
+interface ExtractPathsInfoOptions {
+  layersConfig?: NormalizedLayerConfig[];
+  segmentsConfig?: string[];
+}
+
+/**
+ * Extracts paths info including FSD parts.
+ * If layersConfig is not provided, uses default FSD layers.
+ * If segmentsConfig is not provided, uses default FSD segments.
+ */
+export function extractPathsInfo(
+  node: ImportExportNodesWithSourceValue,
+  context: UnknownRuleContext,
+  options?: ExtractPathsInfoOptions,
+) {
+  const { layersConfig, segmentsConfig } = options ?? {};
+
   const {
     targetPath,
     normalizedTargetPath,
@@ -61,11 +80,11 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
     normalizedCwd,
   } = extractPaths(node, context);
 
-  const fsdPartsOfTarget = extractFeatureSlicedParts(absoluteTargetPath, normalizedCwd);
-  const fsdPartsOfCurrentFile = extractFeatureSlicedParts(normalizedCurrentFilePath, normalizedCwd);
+  const fsdPartsOfTarget = extractFeatureSlicedParts(absoluteTargetPath, normalizedCwd, { layersConfig, segmentsConfig });
+  const fsdPartsOfCurrentFile = extractFeatureSlicedParts(normalizedCurrentFilePath, normalizedCwd, { layersConfig, segmentsConfig });
 
-  const validatedFeatureSlicedPartsOfTarget = validateExtractedFeatureSlicedParts(fsdPartsOfTarget);
-  const validatedFeatureSlicedPartsOfCurrentFile = validateExtractedFeatureSlicedParts(fsdPartsOfCurrentFile);
+  const validatedFeatureSlicedPartsOfTarget = validateExtractedFeatureSlicedParts(fsdPartsOfTarget, layersConfig);
+  const validatedFeatureSlicedPartsOfCurrentFile = validateExtractedFeatureSlicedParts(fsdPartsOfCurrentFile, layersConfig);
 
   const {
     hasUnknownLayers,
@@ -104,4 +123,4 @@ export function extractPathsInfo(node: ImportExportNodesWithSourceValue, context
   };
 }
 
-export type PathsInfo = ReturnType<typeof extractPathsInfo>
+export type PathsInfo = ReturnType<typeof extractPathsInfo>;

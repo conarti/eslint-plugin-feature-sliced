@@ -1,4 +1,4 @@
-import { type PathsInfo } from '../../../lib/feature-sliced';
+import type { PathsInfo } from '../../../lib/feature-sliced';
 import { isPathRelative } from '../../../lib/path';
 
 export function shouldBeRelative(pathsInfo: PathsInfo): boolean {

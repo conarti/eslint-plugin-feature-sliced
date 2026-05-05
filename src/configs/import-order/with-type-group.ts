@@ -1,31 +1,14 @@
-import { layers } from '../../config';
+import type { TypedFlatConfigItem } from '../../config';
+import { PLUGIN_NAME, RULE_NAMES } from '../../config';
+import { plugin } from '../../plugin';
+import { importOrderRuleConfigs } from '../../rules/import-order/configs';
 
-const LAYERS_REVERSED = [...layers].reverse();
-
-export = {
-  plugins: [
-    'import',
-  ],
-  rules: {
-    'import/order': [
-      2,
-      {
-        alphabetize: {
-          order: 'asc',
-          caseInsensitive: true,
-        },
-        'newlines-between': 'never',
-        pathGroups: LAYERS_REVERSED.map(
-          (layer) => ({
-            pattern: `**/?(*)${layer}{,/**}`,
-            group: 'internal',
-            position: 'after',
-          }),
-        ),
-        distinctGroup: false,
-        pathGroupsExcludedImportTypes: ['builtin', 'type'],
-        groups: ['builtin', 'external', 'internal', 'type', 'parent', 'sibling', 'index'],
-      },
-    ],
+export const withTypeGroup = {
+  name: '@conarti/feature-sliced/import-order/with-type-group',
+  plugins: {
+    [PLUGIN_NAME]: plugin,
   },
-};
+  rules: {
+    [RULE_NAMES.IMPORT_ORDER]: importOrderRuleConfigs['with-type-group'],
+  },
+} satisfies TypedFlatConfigItem;

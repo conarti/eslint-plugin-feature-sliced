@@ -1,9 +1,9 @@
+import type { UnknownRuleContext } from './models';
 import { normalizePath } from '../path';
-import { type UnknownRuleContext } from './models';
 
 export function extractCurrentFilePath(context: UnknownRuleContext) {
-  const currentFilePath = context.getPhysicalFilename
-    ? context.getPhysicalFilename()
-    : context.getFilename(); /* FIXME: getFilename is deprecated */
+  /* Свойства physicalFilename/filename доступны в ESLint 10+, методы оставлены для совместимости с ESLint 9 */
+  const currentFilePath = context.physicalFilename ?? context.filename
+    ?? (context.getPhysicalFilename ? context.getPhysicalFilename() : context.getFilename());
   return normalizePath(currentFilePath);
 }

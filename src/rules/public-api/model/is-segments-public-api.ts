@@ -1,4 +1,4 @@
-import { type PathsInfo } from '../../../lib/feature-sliced';
+import type { PathsInfo } from '../../../lib/feature-sliced';
 import { isIndexFile } from './is-index-file';
 
 export function isSegmentsPublicApi(pathsInfo: PathsInfo) {

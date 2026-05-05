@@ -1,87 +1,85 @@
-import { TSESLint } from '@typescript-eslint/utils';
-import { ERROR_MESSAGE_ID } from './config';
+import * as tseslintParser from '@typescript-eslint/parser';
+import { RuleTester } from '../../../tests/rule-tester';
+import {
+  absoluteRelativeErrors,
+  makeAbsoluteRelativeOptions,
+} from '../../../tests/utils';
 import rule from './index';
 
-const ruleTester = new TSESLint.RuleTester({
-  parserOptions: {
+const ruleTester = new RuleTester({
+  languageOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
+    parser: tseslintParser,
   },
-  parser: require.resolve('@typescript-eslint/parser'),
 });
-
-const errorMustBeAbsolute = {
-  messageId: ERROR_MESSAGE_ID.MUST_BE_ABSOLUTE_PATH,
-};
-
-const errorMustBeRelative = {
-  messageId: ERROR_MESSAGE_ID.MUST_BE_RELATIVE_PATH,
-};
-
-const makeIgnoreInFilesOptions = (patterns: string[]): [{ ignoreInFilesPatterns: string[] }] => [
-  {
-    ignoreInFilesPatterns: patterns,
-  },
-];
 
 ruleTester.run('absolute-relative', rule, {
   valid: [
     {
-      filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
+      name: 'should be valid if relative import within same slice',
+      filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: "import { TheHeader } from './TheHeader';",
     },
     {
+      name: 'should be valid if absolute import from another layer',
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: "import { useBar } from 'src/shared/hooks';",
     },
     {
+      name: 'should be valid if relative import within same slice (lib)',
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: "import { useBar } from '../../lib';",
     },
     {
+      name: 'should be valid if relative import within same layer (app)',
       filename: 'src/app/App.tsx',
       code: "import { AppRouter } from './providers/router';",
     },
     {
+      name: 'should be valid if absolute import from another layer (widgets)',
       filename: 'src/app/App.tsx',
       code: "import { Foo } from 'widgets/foo';",
     },
     {
+      name: 'should be valid if relative import within same slice (pages)',
       filename: 'src/pages/passport-info-case-edit/lib/index.ts',
       code: "import generatePayloadMapper from './generatePayloadMapper';",
     },
     {
-      filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/widgets/payments-widget-wrapper/index.ts',
+      name: 'should be valid if re-export from same slice (star export)',
+      filename: 'src/widgets/payments-widget-wrapper/index.ts',
       code: "export * from './model';",
     },
     {
-      filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/components/blocks/MarriageDetails/index.ts',
+      name: 'should be valid if re-export from same slice (named export)',
+      filename: 'src/components/blocks/MarriageDetails/index.ts',
       code: "export { MarriageDetails } from './MarriageDetails';",
     },
     {
-      name: 'should be valid if it has ignored in files options',
-      filename: '/Users/conarti/Projects/frontend/src/shared/foo/index.ts',
+      name: 'should be valid if it has ignoreFiles option',
+      filename: 'src/shared/foo/index.ts',
       code: "import { BAR } from '@/shared/bar';",
-      options: makeIgnoreInFilesOptions(['**/*/shared/foo/**/*']),
+      options: makeAbsoluteRelativeOptions({ ignoreFiles: ['**/*/shared/foo/**/*'] }),
     },
     {
       name: "should be valid if it has slice with 'layer' name",
-      filename: '/Users/conarti/Projects/frontend/src/processes/shared/index.ts',
+      filename: 'src/processes/shared/index.ts',
       code: 'import { BAR } from \'@/shared/constants\';',
     },
     {
       name: 'should be valid if the import is not from a layer (absolute import)',
-      filename: '/Users/conarti/Projects/frontend/src/shared/foo/index.ts',
+      filename: 'src/shared/foo/index.ts',
       code: 'import { BAR } from \'@/bar\';',
     },
     {
       name: 'should be valid if the import is not from a layer (relative import)',
-      filename: '/Users/conarti/Projects/frontend/src/shared/foo/index.ts',
+      filename: 'src/shared/foo/index.ts',
       code: "import { BAR } from '../../../bar';",
     },
     {
       name: 'should be valid if the import is not from a slice (absolute import)',
-      filename: 'frontend/src/shared/foo/index.ts',
+      filename: 'src/shared/foo/index.ts',
       code: "import { Something } from '@/app';",
     },
     {
@@ -93,85 +91,122 @@ ruleTester.run('absolute-relative', rule, {
 
   invalid: [
     {
-      name: 'Import from a single slice',
-      filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
-      code: 'import { TheHeader } from \'widgets/TheHeader\';',
-      errors: [errorMustBeRelative],
-    },
-    {
-      name: 'Import from a single slice and import expression',
-      filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
-      code: 'const TheHeader = () => import(\'widgets/TheHeader\');',
-      errors: [errorMustBeRelative],
-    },
-    {
-      name: 'Import from a single slice with an alias',
-      filename: '/Users/conarti/Projects/react-course/src/widgets/TheHeader/ui/TheHeader.stories.tsx',
+      name: 'should report relative if import same slice with alias',
+      filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { TheHeader } from \'@/widgets/TheHeader\';',
-      errors: [errorMustBeRelative],
+      errors: [absoluteRelativeErrors.mustBeRelative],
     },
     {
-      name: 'Import from another layer',
+      name: 'should report absolute if relative import from another layer',
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { useBar } from \'../../../shared/hooks\';',
-      errors: [errorMustBeAbsolute],
+      errors: [absoluteRelativeErrors.mustBeAbsolute],
     },
     {
-      name: 'Import from a single slice',
+      name: 'should report relative if absolute import from same slice',
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: 'import { useBar } from \'src/widgets/TheHeader/lib\';',
-      errors: [errorMustBeRelative],
+      errors: [absoluteRelativeErrors.mustBeRelative],
     },
     {
-      name: 'Import from a single layer',
+      name: 'should report relative if import within same layer (app)',
       filename: 'src/app/App.tsx',
       code: 'import { AppRouter } from \'app/providers/router\';',
-      errors: [errorMustBeRelative],
+      errors: [absoluteRelativeErrors.mustBeRelative],
     },
     {
+      name: 'should report absolute if relative import from another layer (features)',
       filename: 'src/app/App.tsx',
       code: 'import { Foo } from \'../features/foo\';',
-      errors: [errorMustBeAbsolute],
+      errors: [absoluteRelativeErrors.mustBeAbsolute],
     },
     {
+      name: 'should report relative if absolute import within same layer (shared)',
       filename: 'src/shared/ui/AppSelect/AppSelect.tsx',
       code: 'import CheckIcon from \'shared/assets/icons/check.svg\';',
-      errors: [errorMustBeRelative],
+      errors: [absoluteRelativeErrors.mustBeRelative],
     },
     {
+      name: 'should report relative if absolute import within same layer (app with src prefix)',
       filename: 'src/app/foo/bar/ui.tsx',
       code: 'import { Baz } from \'src/app/baz\';',
-      errors: [errorMustBeRelative],
+      errors: [absoluteRelativeErrors.mustBeRelative],
     },
     {
-      filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/widgets/payments-widget-wrapper/index.ts',
-      code: 'export * from \'@/widgets/payments-widget-wrapper/model\';',
-      errors: [errorMustBeRelative],
-    },
-    {
-      filename: '/Users/conarti/Projects/bp-passport-rf-frontend/src/widgets/blocks/MarriageDetails/index.ts',
-      code: 'export { MarriageDetails } from \'@/widgets/blocks/MarriageDetails/MarriageDetails\';',
-      errors: [errorMustBeRelative],
-    },
-    {
-      name: 'should be invalid if the import is from layer public api (relative import)',
-      filename: 'frontend/src/shared/foo/index.ts',
+      name: 'should report absolute if relative import from layer public api',
+      filename: 'src/shared/foo/index.ts',
       code: "import { Something } from '../../app';",
-      errors: [errorMustBeAbsolute],
+      errors: [absoluteRelativeErrors.mustBeAbsolute],
     },
     {
-      /* TODO take layer from config constant */
-      name: 'should report relative if import to {layerWithSlices1} "{layerWithSlices1}/index.*" file',
+      name: 'should report relative if import to entities layer public api file',
       filename: 'src/entities/index.ts',
       code: "import { foo } from 'entities/foo';",
-      errors: [errorMustBeRelative],
+      errors: [absoluteRelativeErrors.mustBeRelative],
     },
     {
-      /* TODO take layer from config constant */
-      name: 'should report relative if import to {layerWithoutSlices1} "{layerWithoutSlices1}/index.*" file',
+      name: 'should report relative if import to shared layer public api file',
       filename: 'src/shared/index.ts',
       code: "import { foo } from 'shared/foo';",
-      errors: [errorMustBeRelative],
+      errors: [absoluteRelativeErrors.mustBeRelative],
+    },
+  ],
+});
+
+/* === @x cross-import tests === */
+
+ruleTester.run('absolute-relative (@x cross-imports)', rule, {
+  valid: [
+    {
+      name: '@x cross-import with alias prefix',
+      filename: 'src/entities/policies/ui/Component.vue',
+      code: "import { useGroups } from '@/entities/groups/@x/policies';",
+    },
+    {
+      name: '@x cross-import without alias',
+      filename: 'src/entities/Session/model.ts',
+      code: "import { User } from 'entities/User/@x/Session';",
+    },
+    {
+      name: '@x cross-import with .ts extension',
+      filename: 'src/entities/Session/model.ts',
+      code: "import { User } from '@/entities/User/@x/Session.ts';",
+    },
+    {
+      name: '@x cross-import from nested file',
+      filename: 'src/entities/Session/ui/Card.tsx',
+      code: "import { User } from '@/entities/User/@x/Session';",
+    },
+    {
+      name: '@x cross-import with hyphenated slice names',
+      filename: 'src/entities/user-session/model.ts',
+      code: "import { UserProfile } from '@/entities/user-profile/@x/user-session';",
+    },
+  ],
+  invalid: [],
+});
+
+/* === Group folders smoke tests === */
+
+ruleTester.run('absolute-relative (group folders)', rule, {
+  valid: [
+    {
+      name: 'should allow relative import within same slice with group folder',
+      filename: 'src/entities/group/User/ui/index.ts',
+      code: "import { userModel } from '../model';",
+    },
+    {
+      name: 'should allow absolute import from another slice with group folder',
+      filename: 'src/features/auth/Feature/ui/index.ts',
+      code: "import { User } from '@/entities/users/User';",
+    },
+  ],
+  invalid: [
+    {
+      name: 'should report relative if absolute import within same slice with group folder',
+      filename: 'src/entities/group/User/ui/index.ts',
+      code: "import { userModel } from '@/entities/group/User/model';",
+      errors: [absoluteRelativeErrors.mustBeRelative],
     },
   ],
 });

@@ -1,110 +1,63 @@
-import { type TSESLint } from '@typescript-eslint/utils';
+import type { Options } from './config';
+import * as tseslintParser from '@typescript-eslint/parser';
 import { RuleTester } from '../../../tests/rule-tester';
-import { type Layer } from '../../config';
 import {
-  ERROR_MESSAGE_ID,
-  type MessageIds,
-  type Options,
-} from './config';
+  layersSlicesAllowTypeImportsOptions,
+  makeInvalidCrossImportError,
+  makeLayersSlicesError,
+  makeLayersSlicesErrorAtSpecifier,
+  makeLayersSlicesIgnoreInFilesOptions,
+  makeLayersSlicesIgnoreOptions,
+} from '../../../tests/utils';
 import rule from './index';
 
-const CWD_MOCK_PATH = '/Users/user/projects/project/app';
-
 const ruleTester = new RuleTester({
-  parserOptions: {
+  languageOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
+    parser: tseslintParser,
   },
-  parser: require.resolve('@typescript-eslint/parser'),
-  cwd: CWD_MOCK_PATH,
 });
-
-const makeFilename = (filename: string): string => `${CWD_MOCK_PATH}/${filename}`;
-
-const allowTypeImportsOptions: Options = [
-  {
-    allowTypeImports: true,
-  },
-] as Options;
-
-const makeIgnoreOptions = (patterns: string[]): Options => [
-  {
-    ignorePatterns: patterns,
-  },
-] as Options;
-
-const makeIgnoreInFilesOptions = (patterns: string[]): Options => [
-  {
-    ignoreInFilesPatterns: patterns,
-  },
-] as Options;
-
-function makeErrorMessage(importLayer: Layer, currentFileLayer: Layer): TSESLint.TestCaseError<MessageIds> {
-  return {
-    messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
-    data: {
-      importLayer,
-      currentFileLayer,
-    },
-  };
-}
-
-type ErrorPosition = {
-  column: number;
-  endColumn: number;
-  line: number;
-  endLine: number;
-}
-
-function makeErrorMessageAtSpecifier(importLayer: Layer, currentFileLayer: Layer, position: ErrorPosition): TSESLint.TestCaseError<MessageIds> {
-  return {
-    messageId: ERROR_MESSAGE_ID.CAN_NOT_IMPORT,
-    data: {
-      importLayer,
-      currentFileLayer,
-    },
-    column: position.column,
-    endColumn: position.endColumn,
-    line: position.line,
-    endLine: position.endLine,
-  };
-}
-
-// TODO refactor tests
 
 ruleTester.run('layers-slices', rule, {
   valid: [
     {
-      name: 'should valid if import from "shared" to "features"',
+      name: 'should be valid if import from "shared" to "features"',
       filename: 'src/features/bar/ui.tsx',
       code: "import { foo } from '@/shared/foo.tsx'",
     },
     {
-      name: 'should valid if import from "entities" to "features"',
+      name: 'should be valid if import from "entities" to "features"',
       filename: 'src/features/bar/ui.tsx',
       code: "import { foo } from '@/entities/foo.tsx'",
     },
     {
-      filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\app\\providers',
-      code: "import { addCommentFormActions, addCommentFormReducer } from '@/widgets/Articl'",
+      name: 'should work with Windows paths (import widgets to app)',
+      filename: 'C:\\Users\\tim\\Desktop\\project\\src\\app\\providers',
+      code: "import { addCommentFormActions } from '@/widgets/Articl'",
     },
     {
-      filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\widgets\\pages',
+      name: 'should work with external packages',
+      filename: 'src/widgets/pages',
       code: "import { useLocation } from 'react-router-dom'",
     },
     {
-      filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\app\\providers',
-      code: "import { addCommentFormActions, addCommentFormReducer } from 'redux'",
+      name: 'should work with external packages (redux)',
+      filename: 'src/app/providers',
+      code: "import { addCommentFormActions } from 'redux'",
     },
     {
-      filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\index.tsx',
+      name: 'should allow import from root index to app',
+      filename: 'src/index.tsx',
       code: "import { StoreProvider } from '@/app/providers/StoreProvider';",
     },
     {
+      name: 'should be valid if import within same layer (shared)',
       filename: 'src/shared/ui/foo',
       code: "import { Baz } from 'shared/bar';",
     },
     {
+      name: 'should be valid if import within same layer (app)',
       filename: 'src/app/App.tsx',
       code: "import { AppRouter } from 'app/providers/router';",
     },
@@ -112,19 +65,19 @@ ruleTester.run('layers-slices', rule, {
       name: 'should allow "import type" with enabled option (separate import type style and same layer)',
       filename: 'src/entities/bar',
       code: "import type { Baz } from 'entities/baz';",
-      options: allowTypeImportsOptions,
+      options: layersSlicesAllowTypeImportsOptions,
     },
     {
       name: 'should allow "import type" with enabled option (separate import type style and to layer below)',
       filename: 'src/shared/ui/foo',
       code: "import type { Bar } from '@/entities/bar';",
-      options: allowTypeImportsOptions,
+      options: layersSlicesAllowTypeImportsOptions,
     },
     {
       name: 'should allow "import type" with enabled option (inline import type style and to layer below)',
       filename: 'src/shared/ui/foo',
       code: "import { type Bar } from '@/entities/bar';",
-      options: allowTypeImportsOptions,
+      options: layersSlicesAllowTypeImportsOptions,
     },
     {
       name: 'should allow type imports by default',
@@ -132,172 +85,186 @@ ruleTester.run('layers-slices', rule, {
       code: "import type { Foo } from '@/widgets/foo';",
     },
     {
+      name: 'should work with ignoreImports (exact match)',
       filename: 'src/shared/ui/foo',
       code: "import { Bar } from '@/entities/bar';",
-      options: makeIgnoreOptions(['@/entities/bar']),
+      options: makeLayersSlicesIgnoreOptions(['@/entities/bar']),
     },
     {
+      name: 'should work with ignoreImports (wildcard)',
       filename: 'src/shared/ui/foo',
       code: "import { Bar } from '@/entities/bar';",
-      options: makeIgnoreOptions(['**/bar']),
+      options: makeLayersSlicesIgnoreOptions(['**/bar']),
     },
     {
+      name: 'should be valid if import within same slice',
       filename: 'src/entities/bar/ui',
       code: "import { Bar } from '@/entities/bar/model';",
     },
     {
+      name: 'should be valid if relative import within same layer (shared)',
       filename: 'src/shared/ui/foo/index.ts',
       code: "import { useBar } from '../../../hooks/useBar.ts';",
     },
     {
+      name: 'should be valid if import from self (index.ts)',
       filename: 'src/shared/ui/foo/index.test.ts',
       code: "import { Foo } from './index.ts';",
     },
     {
+      name: 'should be valid if import from self (dot)',
       filename: 'src/shared/ui/foo/index.test.ts',
       code: "import { Foo } from '.';",
     },
     {
+      name: 'should be valid if relative import within same slice',
       filename: 'src/pages/foo-bar/lib/index.ts',
       code: "import generatePayloadMapper from './generatePayloadMapper';",
     },
     {
-      name: "import inside 'app' layer",
+      name: "should be valid if import inside 'app' layer",
       filename: 'src/app/foo/index.ts',
       code: "import { Bar } from '../bar';",
     },
     {
-      name: "has 'layer' name at not layer path part",
+      name: "should be valid if has 'layer' name at not layer path part",
       filename: 'src/features/foo/index.ts',
       code: "import { Bar } from 'src/entities/app-bar';",
     },
     {
-      /* TODO: should works without ignore options? This is the scope of the 'public-api' rule */
-      name: 'import to layer public api, but only with ignore options',
-      filename: '/Users/test/Projects/frontend/src/features/index.ts',
+      name: 'should work with ignoreFiles',
+      filename: 'src/features/index.ts',
       code: "import { Bar } from 'src/features/bar';",
-      options: makeIgnoreInFilesOptions(['**/src/(shared|entities|features|widgets|pages|processes|app)/index.ts']),
-    },
-    {
-      name: 'should be valid if import from same slice and slice contain "layer" name',
-      filename: makeFilename('src/features/foo-pages/ui/foo.vue'),
-      code: "import { foo } from '../model'",
+      options: makeLayersSlicesIgnoreInFilesOptions(['**/src/(shared|entities|features|widgets|pages|processes|app)/index.ts']),
     },
   ],
 
   invalid: [
     {
-      filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\entities\\providers',
-      code: "import { addCommentFormActions, addCommentFormReducer } from '@/features/Articl'",
-      errors: [makeErrorMessage('features', 'entities')],
+      name: 'should be invalid if import from "features" to "entities" (Windows path)',
+      filename: 'C:\\Users\\tim\\Desktop\\project\\src\\entities\\providers',
+      code: "import { addCommentFormActions } from '@/features/Articl'",
+      errors: [makeLayersSlicesError('features', 'entities')],
     },
     {
       name: 'should work with import expressions',
-      filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\entities\\providers',
+      filename: 'src/entities/providers',
       code: "const foo = () => import('@/features/Articl')",
-      errors: [makeErrorMessage('features', 'entities')],
+      errors: [makeLayersSlicesError('features', 'entities')],
     },
     {
-      filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\features\\providers',
-      code: "import { addCommentFormActions, addCommentFormReducer } from '@/widgets/Articl'",
-      errors: [makeErrorMessage('widgets', 'features')],
+      name: 'should be invalid if import "widgets" to "features"',
+      filename: 'src/features/providers',
+      code: "import { addCommentFormActions } from '@/widgets/Articl'",
+      errors: [makeLayersSlicesError('widgets', 'features')],
     },
     {
-      filename: 'C:\\Users\\tim\\Desktop\\javascript\\production_project\\src\\entities\\providers',
-      code: "import { addCommentFormActions, addCommentFormReducer } from '@/widgets/Articl'",
-      errors: [makeErrorMessage('widgets', 'entities')],
+      name: 'should be invalid if import "widgets" to "entities"',
+      filename: 'src/entities/providers',
+      code: "import { addCommentFormActions } from '@/widgets/Articl'",
+      errors: [makeLayersSlicesError('widgets', 'entities')],
     },
     {
       name: 'should be invalid if import "entities" to "shared" (to layer without slices)',
       filename: 'src/shared/ui/foo',
       code: "import { StoreProvider } from '@/entities/bar';",
-      errors: [makeErrorMessage('entities', 'shared')],
+      errors: [makeLayersSlicesError('entities', 'shared')],
     },
     {
       name: 'should be invalid if import "app" to "shared" (layers without slices)',
       filename: 'src/shared/ui/foo',
       code: "import { StoreProvider } from 'app/bar';",
-      errors: [makeErrorMessage('app', 'shared')],
+      errors: [makeLayersSlicesError('app', 'shared')],
     },
     {
+      name: 'should be invalid if import from same layer different slice (entities)',
       filename: 'src/entities/bar',
       code: "import { Baz } from 'entities/baz';",
-      errors: [makeErrorMessage('entities', 'entities')],
+      errors: [makeLayersSlicesError('entities', 'entities')],
     },
     {
+      name: 'should be invalid if relative import cross-slice (entities)',
       filename: 'src/entities/article/model/services.ts',
       code: "import { userModel } from '../../user';",
-      errors: [makeErrorMessage('entities', 'entities')],
+      errors: [makeLayersSlicesError('entities', 'entities')],
     },
     {
+      name: 'should be invalid if relative import to higher layer',
       filename: 'src/entities/foo/model.ts',
       code: "import { bar } from '../../../features/bar';",
-      errors: [makeErrorMessage('features', 'entities')],
+      errors: [makeLayersSlicesError('features', 'entities')],
     },
     {
+      name: 'should be invalid if relative import to higher layer (layer itself)',
       filename: 'src/entities/foo/model.ts',
       code: "import { bar } from '../../../features';",
-      errors: [makeErrorMessage('features', 'entities')],
+      errors: [makeLayersSlicesError('features', 'entities')],
     },
     {
-      filename: '/Users/conarti/Projects/feature-sliced-frontend/src/entities/foo-bar-baz/ui/index.vue',
+      name: 'should be invalid if relative cross-slice import (same layer)',
+      filename: 'src/entities/foo-bar-baz/ui/index.vue',
       code: "import { FooBar } from '../../foo-bar/ui/index.vue';",
-      errors: [makeErrorMessage('entities', 'entities')],
+      errors: [makeLayersSlicesError('entities', 'entities')],
     },
     {
-      name: 'if there are layer names in the path',
-      filename: `${CWD_MOCK_PATH}/src/entities/Viewer/model/types.ts`,
-      code: "import { u } from '@/entities/User';",
-      errors: [makeErrorMessage('entities', 'entities')],
+      name: 'should still flag relative cross-slice import from a slice with non-segment subfolders',
+      filename: 'src/features/foo/components/bar/bar.tsx',
+      code: "import { Other } from '../../../other/baz';",
+      errors: [makeLayersSlicesError('features', 'features')],
     },
     {
-      /* TODO: should this be valid? This is the scope of the 'public-api' rule */
-      name: 'import to layer public api',
-      filename: '/Users/test/Projects/frontend/src/features/index.ts',
+      name: 'should detect layer correctly if there are layer names in the path',
+      filename: 'src/entities/Viewer/model/types.ts',
+      code: "import { u } from '../../../entities/User';",
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      name: 'should be invalid if import same layer from public api',
+      filename: 'src/features/index.ts',
       code: "import { Bar } from 'src/features/bar';",
-      errors: [makeErrorMessage('features', 'features')],
+      errors: [makeLayersSlicesError('features', 'features')],
     },
     {
       name: 'should allow "import type" with enabled option, but throw errors for value imports',
       filename: 'src/shared/ui/foo',
       code: "import { type Bar, bar } from '@/entities/bar';",
-      options: allowTypeImportsOptions,
-      errors: [makeErrorMessage('entities', 'shared')],
+      options: layersSlicesAllowTypeImportsOptions,
+      errors: [makeLayersSlicesError('entities', 'shared')],
     },
     {
       name: 'should throw error for every specifier at correct positions and should not for valid specifiers',
       filename: 'src/shared/ui/foo',
-      code: `import { bar, type Bar, 
-        baz, 
+      code: `import { bar, type Bar,
+        baz,
         type Boz,
         boz,
       } from '@/entities/bar';`,
-      options: allowTypeImportsOptions,
+      options: layersSlicesAllowTypeImportsOptions,
       errors: [
-        makeErrorMessageAtSpecifier(
+        makeLayersSlicesErrorAtSpecifier(
           'entities',
           'shared',
-          { // "bar"
+          {
             line: 1,
             endLine: 1,
             column: 10,
             endColumn: 13,
           },
         ),
-        makeErrorMessageAtSpecifier(
+        makeLayersSlicesErrorAtSpecifier(
           'entities',
           'shared',
-          { // "baz"
+          {
             line: 2,
             endLine: 2,
             column: 9,
             endColumn: 12,
           },
         ),
-        makeErrorMessageAtSpecifier(
+        makeLayersSlicesErrorAtSpecifier(
           'entities',
           'shared',
-          { // "boz"
+          {
             line: 4,
             endLine: 4,
             column: 9,
@@ -315,7 +282,89 @@ ruleTester.run('layers-slices', rule, {
           allowTypeImports: false,
         },
       ] as Options,
-      errors: [makeErrorMessage('entities', 'shared')],
+      errors: [makeLayersSlicesError('entities', 'shared')],
+    },
+    {
+      name: 'should throw error when importing from higher layer with same slice name',
+      filename: 'src/entities/policies/model.ts',
+      code: "import { foo } from '../../../pages/policies/ui';",
+      errors: [makeLayersSlicesError('pages', 'entities')],
+    },
+    {
+      name: 'should throw error for @x import from wrong slice',
+      filename: 'src/entities/Order/model.ts',
+      code: "import { User } from '@/entities/User/@x/Session';",
+      errors: [makeInvalidCrossImportError('User', 'Session')],
+    },
+    {
+      name: 'should throw error for @x import from wrong slice (different slice)',
+      filename: 'src/entities/Product/ui/Card.tsx',
+      code: "import { User } from 'entities/User/@x/Session';",
+      errors: [makeInvalidCrossImportError('User', 'Session')],
+    },
+  ],
+});
+
+/* === @x cross-import tests === */
+
+ruleTester.run('layers-slices (@x cross-imports)', rule, {
+  valid: [
+    {
+      name: 'should allow @x cross-import from correct target slice',
+      filename: 'src/entities/Session/model.ts',
+      code: "import { User } from '@/entities/User/@x/Session';",
+    },
+    {
+      name: 'should allow @x cross-import with .ts extension',
+      filename: 'src/entities/Session/model.ts',
+      code: "import { User } from '@/entities/User/@x/Session.ts';",
+    },
+    {
+      name: 'should allow @x cross-import from nested file in target slice',
+      filename: 'src/entities/Session/ui/Card.tsx',
+      code: "import { User } from 'entities/User/@x/Session';",
+    },
+    {
+      name: 'should allow @x cross-import with hyphenated slice names',
+      filename: 'src/entities/user-session/model.ts',
+      code: "import { UserProfile } from '@/entities/user-profile/@x/user-session';",
+    },
+    {
+      name: 'should allow @x cross-import with group folders',
+      filename: 'src/entities/users/Session/model.ts',
+      code: "import { User } from '@/entities/users/User/@x/Session';",
+    },
+  ],
+  invalid: [],
+});
+
+/* === Group folders smoke tests === */
+
+ruleTester.run('layers-slices (group folders)', rule, {
+  valid: [
+    {
+      name: 'should allow import within same slice with group folder',
+      filename: 'src/entities/group/User/ui/index.ts',
+      code: "import { userModel } from '../model';",
+    },
+    {
+      name: 'should allow relative import within same slice with nested group folders',
+      filename: 'src/features/auth/forms/LoginForm/ui/index.ts',
+      code: "import { useLogin } from '../model';",
+    },
+  ],
+  invalid: [
+    {
+      name: 'should report cross-slice import with group folders',
+      filename: 'src/entities/users/User/model/index.ts',
+      code: "import { foo } from '@/entities/products/Product/model';",
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      name: 'should report relative cross-slice import with group folders',
+      filename: 'src/entities/users/User/model/index.ts',
+      code: "import { admin } from '../../Admin/model';",
+      errors: [makeLayersSlicesError('entities', 'entities')],
     },
   ],
 });

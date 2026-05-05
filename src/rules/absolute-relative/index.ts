@@ -1,15 +1,16 @@
-import {
-  createRule,
-  type ImportExpression,
-} from '../../lib/rule';
 import type {
   MessageIds,
   Options,
 } from './config';
+import {
+  createEslintRule,
+  extractLayersConfig,
+  type ImportExpression,
+} from '../../lib/rule';
 import { ERROR_MESSAGE_ID } from './config';
 import { validateAndReport } from './model';
 
-export default createRule<Options, MessageIds>({
+export default createEslintRule<Options, MessageIds>({
   name: 'absolute-relative',
   meta: {
     type: 'problem',
@@ -24,7 +25,13 @@ export default createRule<Options, MessageIds>({
       {
         type: 'object',
         properties: {
-          ignoreInFilesPatterns: {
+          ignoreImports: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
+          ignoreFiles: {
             type: 'array',
             items: {
               type: 'string',
@@ -36,23 +43,26 @@ export default createRule<Options, MessageIds>({
   },
   defaultOptions: [
     {
-      ignoreInFilesPatterns: [],
+      ignoreImports: [],
+      ignoreFiles: [],
     },
   ],
 
   create(context, optionsWithDefault) {
+    const layersConfig = extractLayersConfig(context);
+
     return {
       ImportDeclaration(node) {
-        validateAndReport(node, context, optionsWithDefault);
+        validateAndReport(node, context, optionsWithDefault, { needCheckForAbsolute: true }, layersConfig);
       },
       ImportExpression(node) {
-        validateAndReport(node as ImportExpression /* TSESTree has invalid type for this node */, context, optionsWithDefault);
+        validateAndReport(node as ImportExpression /* TSESTree has invalid type for this node */, context, optionsWithDefault, { needCheckForAbsolute: true }, layersConfig);
       },
       ExportAllDeclaration(node) {
-        validateAndReport(node, context, optionsWithDefault, { needCheckForAbsolute: false });
+        validateAndReport(node, context, optionsWithDefault, { needCheckForAbsolute: false }, layersConfig);
       },
       ExportNamedDeclaration(node) {
-        validateAndReport(node, context, optionsWithDefault, { needCheckForAbsolute: false });
+        validateAndReport(node, context, optionsWithDefault, { needCheckForAbsolute: false }, layersConfig);
       },
     };
   },

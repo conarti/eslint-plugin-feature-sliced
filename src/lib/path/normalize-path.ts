@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { pathSeparator } from '../../config';
 
 export function normalizePath(targetPath: string): string {

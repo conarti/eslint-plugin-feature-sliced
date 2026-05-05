@@ -1,4 +1,5 @@
-const path = require('path');
+const path = require('node:path');
+const process = require('node:process');
 const execa = require('execa');
 const c = require('picocolors');
 const prompts = require('prompts');
@@ -14,56 +15,59 @@ const packageJson = require('../package.json');
  * because the script uses 'rm -rf' to remove an already installed package with the same name.
  */
 
-const run = (bin, args, opts = {}) => execa(bin, args, {
-  stdio: 'inherit',
-  ...opts,
-});
+function run(bin, args, opts = {}) {
+  return execa(bin, args, {
+    stdio: 'inherit',
+    ...opts,
+  });
+}
 
 const step = (message) => console.log(c.cyan(`\n${message}`));
 
-const createDir = async (dirname) => {
+async function createDir(dirname) {
   await run('mkdir', [dirname]);
-};
+}
 
-const copy = async (from, to) => {
+async function copy(from, to) {
   const isRunningOnWin = process.platform === 'win32';
 
   if (isRunningOnWin) {
     await run('xcopy', ['/e', '/k', '/h', '/i', from, to]);
-  } else {
+  }
+  else {
     await run('cp', ['-a', from, to]);
   }
-};
+}
 
-const deleteFiles = async (dirnameOrFile) => {
+async function deleteFiles(dirnameOrFile) {
   await run('rimraf', [dirnameOrFile]);
-};
+}
 
-const cleanCompiledFiles = async (buildDir, packedPackageFileName) => {
+async function cleanCompiledFiles(buildDir, packedPackageFileName) {
   step('Clean compiled files...');
 
   await deleteFiles(packedPackageFileName);
   await deleteFiles(buildDir);
-};
+}
 
-const build = async (buildDir, packedPackageFileName) => {
+async function build(buildDir, packedPackageFileName) {
   step('Compiling package...');
 
   await run('npm', ['run', 'build']);
   await run('npm', ['pack']);
   await createDir(buildDir);
   await run('tar', ['-xzf', packedPackageFileName, '-C', buildDir, '--strip-components', '1']);
-};
+}
 
-const moveToProject = async (destinationDir, buildDir) => {
+async function moveToProject(destinationDir, buildDir) {
   step('Move compiled package to project...');
 
   await deleteFiles(destinationDir);
   await createDir(destinationDir);
   await copy(buildDir, destinationDir);
-};
+}
 
-const getCompilationInfo = async () => {
+async function getCompilationInfo() {
   const packageName = packageJson.name;
   const packageVersion = packageJson.version;
   const packedPackageFileName = `${packageName.replaceAll('@', '').replaceAll('/', '-')}-${packageVersion}.tgz`;
@@ -84,7 +88,7 @@ const getCompilationInfo = async () => {
     buildDir,
     destinationDir,
   };
-};
+}
 
 async function main() {
   const {
