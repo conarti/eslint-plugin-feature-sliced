@@ -108,7 +108,6 @@ export function extractPathsInfo(
     normalizedTargetPath,
     normalizedCurrentFilePath,
     absoluteTargetPath,
-    normalizedCwd,
 
     fsdPartsOfTarget,
     fsdPartsOfCurrentFile,

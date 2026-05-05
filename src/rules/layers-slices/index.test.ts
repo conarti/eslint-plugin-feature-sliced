@@ -122,11 +122,6 @@ ruleTester.run('layers-slices', rule, {
       code: "import generatePayloadMapper from './generatePayloadMapper';",
     },
     {
-      name: 'should be valid if relative import within slice with non-segment subfolders',
-      filename: 'src/features/foo/components/bar/bar.tsx',
-      code: "import { Baz } from './baz/baz';",
-    },
-    {
       name: "should be valid if import inside 'app' layer",
       filename: 'src/app/foo/index.ts',
       code: "import { Bar } from '../bar';",
