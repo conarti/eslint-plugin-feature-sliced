@@ -66,6 +66,8 @@ export interface LayerObjectConfig {
   name: string;
   /** Whether the layer can contain slices. Default: true */
   hasSlices?: boolean;
+  /** Whether to allow cross-imports between slices of this layer. Default: false */
+  allowSliceCrossImports?: boolean;
 }
 
 /**
@@ -84,6 +86,7 @@ export type LayersConfig = LayerConfigItem[];
 export interface NormalizedLayerConfig {
   name: string;
   hasSlices: boolean;
+  allowSliceCrossImports: boolean;
 }
 
 /**

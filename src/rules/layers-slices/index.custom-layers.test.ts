@@ -202,3 +202,76 @@ ruleTester.run('layers-slices (extra layers)', rule, {
     },
   ],
 });
+
+/**
+ * Test allowSliceCrossImports option
+ * When enabled for a layer, cross-imports between slices of that layer are allowed.
+ */
+const layersWithCrossImports = [
+  { name: 'shared', hasSlices: false },
+  { name: 'modules', hasSlices: true, allowSliceCrossImports: true },
+  'features',
+  { name: 'app', hasSlices: false },
+];
+
+const crossImportsSettings = makeCustomLayersSettings(layersWithCrossImports);
+const crossImportsLayersOrder = 'shared -> modules -> features -> app';
+
+ruleTester.run('layers-slices (allowSliceCrossImports)', rule, {
+  valid: [
+    {
+      name: 'should allow cross-slice import when allowSliceCrossImports is true',
+      filename: 'src/modules/user/model.ts',
+      code: "import { Order } from '@/modules/order'",
+      settings: crossImportsSettings,
+    },
+    {
+      name: 'should allow cross-slice import with relative path',
+      filename: 'src/modules/user/ui/Card.tsx',
+      code: "import { orderModel } from '../../order/model'",
+      settings: crossImportsSettings,
+    },
+    {
+      name: 'should still allow same-slice import',
+      filename: 'src/modules/user/ui.ts',
+      code: "import { userModel } from '@/modules/user/model'",
+      settings: crossImportsSettings,
+    },
+    {
+      name: 'should still allow import from lower layer',
+      filename: 'src/modules/user/model.ts',
+      code: "import { api } from '@/shared/api'",
+      settings: crossImportsSettings,
+    },
+    {
+      name: 'should allow import from modules to features',
+      filename: 'src/features/auth/model.ts',
+      code: "import { User } from '@/modules/user'",
+      settings: crossImportsSettings,
+    },
+  ],
+
+  invalid: [
+    {
+      name: 'should still error cross-slice in layer without allowSliceCrossImports',
+      filename: 'src/features/auth/model.ts',
+      code: "import { cart } from '@/features/cart'",
+      settings: crossImportsSettings,
+      errors: [makeCustomLayersSlicesError('features', 'features', crossImportsLayersOrder)],
+    },
+    {
+      name: 'should still error import from higher layer',
+      filename: 'src/modules/user/model.ts',
+      code: "import { AuthFeature } from '@/features/auth'",
+      settings: crossImportsSettings,
+      errors: [makeCustomLayersSlicesError('features', 'modules', crossImportsLayersOrder)],
+    },
+    {
+      name: 'should error when importing from modules layer to shared',
+      filename: 'src/shared/utils.ts',
+      code: "import { User } from '@/modules/user'",
+      settings: crossImportsSettings,
+      errors: [makeCustomLayersSlicesError('modules', 'shared', crossImportsLayersOrder)],
+    },
+  ],
+});

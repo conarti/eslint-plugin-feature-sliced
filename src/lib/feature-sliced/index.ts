@@ -9,11 +9,12 @@ export {
   type PathsInfo,
 } from './extract-paths-info';
 export {
+  canLayerAllowSliceCrossImports,
+  canLayerContainSlices,
   getLayerWeight,
   isLayer,
 } from './layers';
 export {
-  canLayerContainSlices,
   getLayerNames,
   getLayersWithoutSlices,
   getLayersWithSlices,

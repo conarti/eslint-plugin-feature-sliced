@@ -6,19 +6,25 @@ import type {
 import { DEFAULT_LAYERS_CONFIG } from '../../config';
 
 /**
- * Normalizes a single layer config item to NormalizedLayerConfig
+ * Normalizes a single layer config item to NormalizedLayerConfig.
+ * Note: allowSliceCrossImports is ignored when hasSlices is false,
+ * since cross-slice imports are not possible without slices.
  */
 function normalizeLayerConfigItem(item: LayerConfigItem): NormalizedLayerConfig {
   if (typeof item === 'string') {
     return {
       name: item.toLowerCase(),
       hasSlices: true,
+      allowSliceCrossImports: false,
     };
   }
 
+  const hasSlices = item.hasSlices ?? true;
+
   return {
     name: item.name.toLowerCase(),
-    hasSlices: item.hasSlices ?? true,
+    hasSlices,
+    allowSliceCrossImports: hasSlices ? (item.allowSliceCrossImports ?? false) : false,
   };
 }
 
@@ -81,4 +87,13 @@ export function getLayerWeight(layer: string, config: NormalizedLayerConfig[]): 
 export function canLayerContainSlices(layer: string, config: NormalizedLayerConfig[]): boolean {
   const layerConfig = config.find((l) => l.name === layer.toLowerCase());
   return layerConfig?.hasSlices ?? false;
+}
+
+/**
+ * Checks if the layer allows cross-imports between its slices.
+ * Returns false if layer is not found.
+ */
+export function canLayerAllowSliceCrossImports(layer: string, config: NormalizedLayerConfig[]): boolean {
+  const layerConfig = config.find((l) => l.name === layer.toLowerCase());
+  return layerConfig?.allowSliceCrossImports ?? false;
 }
