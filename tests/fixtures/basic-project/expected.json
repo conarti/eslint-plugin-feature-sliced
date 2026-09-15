@@ -1,0 +1,86 @@
+[
+  {
+    "file": "src/entities/index.ts",
+    "ruleId": "@conarti/feature-sliced/public-api",
+    "messageId": "layers-public-api-not-allowed",
+    "line": 2,
+    "column": 1,
+    "suggestions": []
+  },
+  {
+    "file": "src/entities/product/model/invalid-cross-import.ts",
+    "ruleId": "@conarti/feature-sliced/layers-slices",
+    "messageId": "invalid-cross-import",
+    "line": 2,
+    "column": 25,
+    "suggestions": []
+  },
+  {
+    "file": "src/entities/user/model/dynamic-upward-import.ts",
+    "ruleId": "@conarti/feature-sliced/layers-slices",
+    "messageId": "can-not-import",
+    "line": 3,
+    "column": 38,
+    "suggestions": []
+  },
+  {
+    "file": "src/entities/user/model/imports-features-upward.ts",
+    "ruleId": "@conarti/feature-sliced/layers-slices",
+    "messageId": "can-not-import",
+    "line": 2,
+    "column": 27,
+    "suggestions": []
+  },
+  {
+    "file": "src/entities/user/model/index.ts",
+    "ruleId": "@conarti/feature-sliced/no-cross-segment-reexport",
+    "messageId": "no-cross-segment-reexport",
+    "line": 2,
+    "column": 27,
+    "suggestions": [
+      "move-to-slice-public-api-suggestion"
+    ]
+  },
+  {
+    "file": "src/entities/user/ui/absolute-inside-slice.ts",
+    "ruleId": "@conarti/feature-sliced/absolute-relative",
+    "messageId": "must-be-relative-path",
+    "line": 2,
+    "column": 28,
+    "suggestions": []
+  },
+  {
+    "file": "src/pages/home/ui/deep-import-into-slice.ts",
+    "ruleId": "@conarti/feature-sliced/public-api",
+    "messageId": "should-be-from-public-api",
+    "line": 2,
+    "column": 26,
+    "suggestions": [
+      "remove-suggestion"
+    ]
+  },
+  {
+    "file": "src/widgets/header/ui/relative-cross-layer-import.ts",
+    "ruleId": "@conarti/feature-sliced/absolute-relative",
+    "messageId": "must-be-absolute-path",
+    "line": 2,
+    "column": 28,
+    "suggestions": []
+  },
+  {
+    "file": "src/widgets/header/ui/wrong-import-order.ts",
+    "ruleId": "@conarti/feature-sliced/import-order",
+    "messageId": "order",
+    "line": 3,
+    "column": 1,
+    "suggestions": []
+  },
+  {
+    "file": "src2/features/checkout/ui/unknown-segment-import.ts",
+    "ruleId": "@conarti/feature-sliced/public-api",
+    "messageId": "unknown-segment",
+    "line": 2,
+    "column": 30,
+    "suggestions": []
+  }
+]

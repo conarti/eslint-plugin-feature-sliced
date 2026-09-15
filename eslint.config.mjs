@@ -6,7 +6,7 @@ export default antfu({
     semi: true,
   },
   gitignore: true,
-  ignores: ['**/*.md'],
+  ignores: ['**/*.md', 'tests/fixtures/**'],
 }, {
   rules: {
     'style/quotes': ['error', 'single', { avoidEscape: true }],
