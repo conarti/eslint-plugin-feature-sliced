@@ -276,3 +276,148 @@ ruleTester.run('public-api (group folders with unknown segment)', rule, {
     },
   ],
 });
+
+/*
+ * A group folder such as "(admin)" must be balanced (starts with "(" and ends with ")")
+ * to be skipped when locating the segment. A near miss with an unbalanced paren is kept
+ * as a real path part, which shifts which part is treated as the potential segment.
+ */
+ruleTester.run('public-api (unknown segment - group folder detection)', rule, {
+  valid: [],
+
+  invalid: [
+    {
+      name: 'should treat a balanced group folder as skippable when locating the segment',
+      filename: 'src/pages/home/ui.tsx',
+      code: "import { api } from '@/entities/(admin)/orders/helpers/x'",
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+      errors: [
+        makeUnknownSegmentError('helpers'),
+      ],
+    },
+    {
+      name: 'should not treat an unbalanced near-miss group folder as skippable',
+      filename: 'src/pages/home/ui.tsx',
+      code: "import { api } from '@/entities/(admin/orders/helpers/x'",
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+      errors: [
+        makeUnknownSegmentError('orders'),
+      ],
+    },
+  ],
+});
+
+/*
+ * The target path is split on "/" and empty parts are filtered out, so a leading or
+ * doubled slash must not shift the position used to locate the potential segment.
+ */
+ruleTester.run('public-api (unknown segment - path normalization)', rule, {
+  valid: [],
+
+  invalid: [
+    {
+      name: 'should ignore a doubled slash right after the alias',
+      filename: 'src/pages/home/ui.tsx',
+      code: "import { api } from '@//entities/orders/unknown'",
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+      errors: [
+        makeUnknownSegmentError('unknown'),
+      ],
+    },
+    {
+      name: 'should ignore a doubled slash in the middle of the path',
+      filename: 'src/pages/home/ui.tsx',
+      code: "import { api } from '@/entities/orders//unknown'",
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+      errors: [
+        makeUnknownSegmentError('unknown'),
+      ],
+    },
+  ],
+});
+
+/*
+ * The file extension must be stripped from the potential segment before it is checked
+ * against the known segments list, so an extension-bearing and extension-free import
+ * of the same unknown segment must report the same segment name.
+ */
+ruleTester.run('public-api (unknown segment - extension handling)', rule, {
+  valid: [],
+
+  invalid: [
+    {
+      name: 'should report the same unknown segment when it has a file extension',
+      filename: 'src/pages/home/ui.tsx',
+      code: "import { api } from '@/entities/orders/helpers.ts'",
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+      errors: [
+        makeUnknownSegmentError('helpers'),
+      ],
+    },
+    {
+      name: 'should report the same unknown segment when it has no file extension',
+      filename: 'src/pages/home/ui.tsx',
+      code: "import { api } from '@/entities/orders/helpers'",
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+      errors: [
+        makeUnknownSegmentError('helpers'),
+      ],
+    },
+  ],
+});
+
+/*
+ * When the import already resolves to a known segment, a deep import beyond it must
+ * be reported as a regular public-api violation, never as an unknown segment, even
+ * when an extra path part sits between the layer and the slice.
+ */
+ruleTester.run('public-api (unknown segment - deep import into known segment)', rule, {
+  valid: [],
+
+  invalid: [
+    {
+      name: 'should not report unknown segment for a deep import into a default known segment',
+      filename: 'src/features/checkout/ui.tsx',
+      code: "import { reducer } from '@/entities/orders/order-checkout/model/reducer'",
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+      errors: [
+        makePublicApiErrorWithSuggestion(
+          'model/reducer',
+          "import { reducer } from '@/entities/orders/order-checkout'",
+          '@/entities/orders/order-checkout',
+        ),
+      ],
+    },
+    {
+      name: 'should not report unknown segment for a deep import into a custom known segment',
+      filename: 'src/features/checkout/ui.tsx',
+      code: "import { client } from '@/entities/orders/order-checkout/services/order-client'",
+      settings: extendSegmentsSettings,
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+      errors: [
+        makePublicApiErrorWithSuggestion(
+          'services/order-client',
+          "import { client } from '@/entities/orders/order-checkout'",
+          '@/entities/orders/order-checkout',
+        ),
+      ],
+    },
+  ],
+});
+
+/*
+ * When no potential segment can be extracted at all (a bare slice import with nothing
+ * left after the layer), the import is valid public API access and must not error.
+ */
+ruleTester.run('public-api (unknown segment - no potential segment)', rule, {
+  valid: [
+    {
+      name: 'should not error when there is no potential segment to check',
+      filename: 'src/features/checkout/ui.tsx',
+      code: "import { api } from '@/entities/orders'",
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+    },
+  ],
+
+  invalid: [],
+});
