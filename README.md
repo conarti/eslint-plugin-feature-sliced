@@ -35,7 +35,7 @@ import { useBar } from '../../../shared/hooks'; // error: should absolute
 // file: src/features/search-articles/...
 
 import { addCommentFormActions, addCommentFormReducer } from 'entities/Article/model/file.ts'; // error
-// fix: import { addCommentFormActions, addCommentFormReducer } from 'entities/Article';
+// suggestion: import { addCommentFormActions, addCommentFormReducer } from 'entities/Article';
 ```
 
 - Sort imports
@@ -74,6 +74,8 @@ npm i -D @conarti/eslint-plugin-feature-sliced
 Note: the plugin may conflict with other import sorting plugins installed in your project. 
 If you do not want to use this plugin's sorting, disable it. More about this below
 
+Note: v2 requires ESLint >= 9 with flat config. If you are on ESLint 8 or still using `.eslintrc`, stay on `@conarti/eslint-plugin-feature-sliced@1`.
+
 ## Usage
 
 For simple use with loose settings, just call the function:
@@ -96,6 +98,8 @@ import featureSliced from '@conarti/eslint-plugin-feature-sliced';
 
 export default [
     featureSliced({
+        /* Severity for the FSD rules (layers-slices, absolute-relative, public-api, no-cross-segment-reexport). Can be overridden per rule. Does not affect import-order */
+        severity: 'warn',
         /* Adds project-specific segment names to ui, model, lib, api, config and assets */
         segments: ['components', 'hooks', 'services', 'i18n'],
         /* Enables public api check in segments */
@@ -105,18 +109,17 @@ export default [
         /* This is how you can completely disable the rule */
         absoluteRelative: false,
         layersSlices: {
-            /* This is how you can disable the rule for imports in any files (ignore paths in code) */
-            ignorePatterns: [
+            /* This is how you can disable the rule for certain import paths (import foo from '<path-to-ignore>') */
+            ignoreImports: [
+                "@/entities/bar",
+            ],
+            /* This is how you can disable the rule for files or folders */
+            ignoreFiles: [
                 /**
                  * Please note that the plugin reads the entire file path from the root of your system, not the project.
                  * That's why we added "**" to the beginning.
                  */
-                "**/src/components/**/*"
-            ],
-            /* This is how you can disable the rule for files or folders (ignore all paths in files or folders) */
-            ignoreInFilesPatterns: [
-                /* Do not check imports like "import foo from '@/app/some-module/foo'" */
-                "@/app/some-module/*",
+                "**/src/components/**/*",
             ],
         },
     }),
@@ -128,9 +131,10 @@ export default [
 🔧 Automatically fixable by the [`--fix` CLI option](https://eslint.org/docs/user-guide/command-line-interface#--fix).
 💡 Suggestion fix (no automatic fix)
 
-| Name                                                                                | Description                               | 🔧 |
-|:------------------------------------------------------------------------------------|:------------------------------------------|:---|
-| [@conarti/feature-sliced/layers-slices](docs/rules/layers-slices/README.md)         | Checks layer imports                      |    |
-| [@conarti/feature-sliced/absolute-relative](docs/rules/absolute-relative/README.md) | Checks for absolute and relative paths    |    |
-| [@conarti/feature-sliced/public-api](docs/rules/public-api/README.md)               | Check for module imports from public api  | 💡 |
-| import/order                                                                        | Sort imports using 'eslint-plugin-import' | 🔧 |
+| Name                                                                                                     | Description                                                    | 🔧 |
+|:-----------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------|:---|
+| [@conarti/feature-sliced/layers-slices](src/rules/layers-slices/README.md)                                 | Checks layer imports                                              |    |
+| [@conarti/feature-sliced/absolute-relative](src/rules/absolute-relative/README.md)                         | Checks for absolute and relative paths                            |    |
+| [@conarti/feature-sliced/public-api](src/rules/public-api/README.md)                                       | Check for module imports from public api                          | 💡 |
+| [@conarti/feature-sliced/no-cross-segment-reexport](src/rules/no-cross-segment-reexport/README.md)         | Checks for re-exports between segments of the same slice          | 💡 |
+| @conarti/feature-sliced/import-order                                                                        | Sort imports using `eslint-plugin-import-x`'s `order` rule         | 🔧 |

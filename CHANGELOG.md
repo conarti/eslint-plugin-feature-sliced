@@ -1,3 +1,24 @@
+# Changelog
+
+## Migrating to 2.0.0
+
+From 2.0.0 onwards the changelog is maintained in GitHub Releases:
+https://github.com/conarti/eslint-plugin-feature-sliced/releases
+
+The entries below cover the 1.x history and are kept for reference.
+
+### Migrating from 1.x
+
+* ESLint 9 or newer is required, flat config only. Legacy `.eslintrc` is not supported.
+* Node 18.18 or newer is required.
+* The default export is a factory function now: `featureSliced()` instead of a plugin object.
+* The `configs` export (`recommended`, `rules`) and the `./import-order` subpath export are removed.
+* Rule options renamed in `absolute-relative`, `layers-slices` and `public-api`: `ignorePatterns` is now `ignoreImports`, `ignoreInFilesPatterns` is now `ignoreFiles`.
+* New rule `no-cross-segment-reexport`, enabled by default with the `error` severity.
+* New rule `import-order`.
+* Cross-import notation `@x` is supported.
+* New `severity` option.
+
 ## [1.0.5](https://github.com/conarti/eslint-plugin-fsd/compare/v1.0.4...v1.0.5) (2023-08-08)
 
 
