@@ -10,8 +10,8 @@ function createMockNode(sourcePath: string): ImportExportNodesWithSourceValue {
 function createMockContext(filename: string, cwd?: string): UnknownRuleContext {
   return {
     physicalFilename: filename,
-    filename: filename,
-    cwd: cwd,
+    filename,
+    cwd,
     getPhysicalFilename: () => filename,
     getFilename: () => filename,
     getCwd: cwd !== undefined ? () => cwd : undefined,

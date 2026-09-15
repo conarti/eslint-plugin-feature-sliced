@@ -8,7 +8,7 @@ export default defineConfig({
       provider: 'v8',
       enabled: true,
       include: ['**/src/**'],
-      exclude: ['**/rule-lib/models.ts'],
+      exclude: ['**/src/lib/rule/models.ts'],
       all: true,
       clean: true,
       cleanOnRerun: true,

@@ -3,7 +3,7 @@ import { extractCwd } from './extract-cwd';
 
 function createMockContext(cwd?: string): UnknownRuleContext {
   return {
-    cwd: cwd,
+    cwd,
     getCwd: cwd !== undefined ? () => cwd : undefined,
   } as unknown as UnknownRuleContext;
 }
