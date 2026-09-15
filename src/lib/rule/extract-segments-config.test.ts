@@ -119,3 +119,76 @@ describe('extractSegmentsConfig', () => {
     expect(result).toEqual([]);
   });
 });
+
+describe('segments settings validation table', () => {
+  interface SegmentsValidationCase {
+    name: string;
+    segments: unknown;
+    expected: string[];
+  }
+
+  /* Literal copy of DEFAULT_SEGMENTS from src/config.ts, kept independent of the module under test. */
+  const DEFAULT_SEGMENTS_LITERAL = ['ui', 'model', 'lib', 'api', 'config', 'assets'];
+
+  const cases: SegmentsValidationCase[] = [
+    {
+      name: 'array of strings extends the defaults',
+      segments: ['services'],
+      expected: [...DEFAULT_SEGMENTS_LITERAL, 'services'],
+    },
+    {
+      name: 'array with a non-string item is rejected and normalizes to defaults',
+      segments: [1, 'services'],
+      expected: DEFAULT_SEGMENTS_LITERAL,
+    },
+    {
+      name: 'empty array is valid and normalizes to defaults (duplicate of the existing empty array extend mode test above)',
+      segments: [],
+      expected: DEFAULT_SEGMENTS_LITERAL,
+    },
+    {
+      name: 'replace object with a valid string array replaces the defaults exactly',
+      segments: { replace: ['ui', 'model'] },
+      expected: ['ui', 'model'],
+    },
+    {
+      name: 'replace object with a non-array replace value is rejected and normalizes to defaults',
+      segments: { replace: 'ui' },
+      expected: DEFAULT_SEGMENTS_LITERAL,
+    },
+    {
+      name: 'replace object with an array containing a non-string is rejected and normalizes to defaults',
+      segments: { replace: [1] },
+      expected: DEFAULT_SEGMENTS_LITERAL,
+    },
+    {
+      name: 'object without a replace key is rejected and normalizes to defaults',
+      segments: { other: ['ui'] },
+      expected: DEFAULT_SEGMENTS_LITERAL,
+    },
+    {
+      name: 'null is rejected and normalizes to defaults',
+      segments: null,
+      expected: DEFAULT_SEGMENTS_LITERAL,
+    },
+    {
+      name: 'plain string is rejected and normalizes to defaults',
+      segments: 'services',
+      expected: DEFAULT_SEGMENTS_LITERAL,
+    },
+    {
+      name: 'number is rejected and normalizes to defaults',
+      segments: 42,
+      expected: DEFAULT_SEGMENTS_LITERAL,
+    },
+  ];
+
+  it.each(cases)('$name', ({ segments, expected }) => {
+    const context = createMockContext({
+      [PLUGIN_NAME]: { segments },
+    });
+
+    const result = extractSegmentsConfig(context);
+    expect(result).toEqual(expected);
+  });
+});
