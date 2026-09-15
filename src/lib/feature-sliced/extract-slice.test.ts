@@ -261,4 +261,91 @@ describe('extract-slice', () => {
       expect(result).toBe('User');
     });
   });
+
+  describe('path normalization (leading, doubled and trailing slashes)', () => {
+    const cases = [
+      {
+        name: 'leading slash returns the same slice as the clean path',
+        path: '/entities/orders/model',
+        expected: 'orders',
+      },
+      {
+        name: 'doubled slash returns the same slice as the clean path',
+        path: 'entities//orders/model',
+        expected: 'orders',
+      },
+      {
+        name: 'trailing slash returns the same slice as the clean path',
+        path: 'entities/orders/',
+        expected: 'orders',
+      },
+      {
+        name: 'doubled trailing slash returns the same slice as the clean path',
+        path: 'entities/orders//',
+        expected: 'orders',
+      },
+    ];
+
+    it.each(cases)('$name: $path', ({ path, expected }) => {
+      expect(extractSlice(path)).toBe(expected);
+    });
+  });
+
+  describe('layer boundary detection', () => {
+    const cases = [
+      {
+        name: 'no layer at all',
+        path: 'src/utils/helpers/index.ts',
+        expected: null,
+      },
+      {
+        name: 'layer as the last path part',
+        path: 'src/entities',
+        expected: null,
+      },
+      {
+        name: 'layer with exactly one part after it',
+        path: 'src/entities/orders',
+        expected: 'orders',
+      },
+    ];
+
+    it.each(cases)('$name: $path', ({ path, expected }) => {
+      expect(extractSlice(path)).toBe(expected);
+    });
+  });
+
+  describe('segment directly after layer (segmentIndex === 0)', () => {
+    const cases = [
+      {
+        name: 'bare segment with no further segment returns null',
+        path: 'entities/api/queries',
+        expected: null,
+      },
+      {
+        name: 'bare segment with no further segment returns null (uppercase segment)',
+        path: 'entities/API/queries',
+        expected: null,
+      },
+      {
+        name: 'segment-named group folder returns the segment name',
+        path: 'entities/model/OrderDetails/ui',
+        expected: 'model',
+      },
+      {
+        name: 'segment-named group folder returns the segment name, original case preserved',
+        path: 'entities/MODEL/OrderDetails/ui',
+        expected: 'MODEL',
+      },
+      {
+        name: 'segment-named group folder with no further segment flips hasMoreSegments to null',
+        path: 'entities/model/OrderDetails/notes',
+        expected: null,
+      },
+    ];
+
+    it.each(cases)('$name: $path', ({ path, expected }) => {
+      expect(extractSlice(path)).toBe(expected);
+    });
+  });
 });
