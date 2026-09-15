@@ -68,8 +68,6 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.7.3",
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/git": "^10.0.1",
     "@total-typescript/ts-reset": "^0.6.1",
     "@types/eslint": "^9.6.1",
     "@types/node": "^20.4.2",

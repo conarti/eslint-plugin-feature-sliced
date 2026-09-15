@@ -1,3 +1,50 @@
+# Release pipeline (semantic-release).
+#
+# How the version is computed
+#   semantic-release derives the next version from the commit messages added
+#   since the last non-prerelease git tag on this branch. It reads git tags, not
+#   package.json, so the `version` field in package.json is never authoritative
+#   here. The `v2.0.0-rc.*` tags are prereleases and are ignored on master, so
+#   the baseline stays `v1.0.5` until the first 2.x release is tagged.
+#
+# Merge strategy: use REBASE, never squash
+#   The angular preset used by @semantic-release/commit-analyzer does not
+#   understand the `feat!:` shorthand: `feat!` is not a recognized type, so such
+#   a commit produces no release at all, not a downgraded one. A major bump
+#   requires a literal `BREAKING CHANGE:` footer in a commit body. Rebase
+#   merging preserves the original commits (and their footers). A squash merge
+#   collapses them into one message whose body is easy to trim, which would
+#   silently downgrade a major release to a minor one. If a squash merge is
+#   unavoidable, paste a literal `BREAKING CHANGE:` line into the squash commit
+#   body by hand.
+#
+# Changelog
+#   From 2.0.0 the changelog lives in GitHub Releases, published by
+#   @semantic-release/github. @semantic-release/changelog and
+#   @semantic-release/git were removed on purpose: master is a protected branch
+#   with required reviews, and github-actions[bot] cannot push the release
+#   commit back to it, which would fail every run.
+#
+# Consequence of dropping @semantic-release/git
+#   package.json on master keeps its pre-release value. That is expected.
+#   @semantic-release/npm still bumps the version in the runner working tree
+#   during its `prepare` step, before `npm publish`, so the published tarball
+#   and the version inlined into `plugin.meta.version` are correct as long as
+#   the package rebuilds during `prepack`.
+#
+# dist-tags
+#   semantic-release only ever moves `latest`. After a major release, point the
+#   `next` tag at it manually:
+#     npm dist-tag add @conarti/eslint-plugin-feature-sliced@<version> next
+#
+# Before merging, run the "Release (dry run)" workflow to see the version this
+# pipeline would produce. A workflow_dispatch workflow only appears in the
+# Actions tab once it exists on the default branch, so the first dry run for this
+# PR has to be triggered with `gh workflow run release-dry-run.yml --ref <branch>
+# -f ref=<branch>` after the file lands on master, or run locally with
+# `GITHUB_TOKEN=$(gh auth token) npx semantic-release --dry-run --no-ci
+# --branches <branch> --plugins @semantic-release/commit-analyzer,@semantic-release/release-notes-generator`.
+
 name: Release
 
 on:
@@ -14,12 +61,12 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 20
           cache: npm
@@ -27,8 +74,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Type check
+        run: npm run type-check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm run test:run
+
       - name: Build
         run: npm run build
+
+      - name: Smoke test
+        run: npm run smoke
 
       - name: Release
         run: npx semantic-release
