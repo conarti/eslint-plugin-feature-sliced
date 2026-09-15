@@ -31,11 +31,12 @@
     "dist"
   ],
   "engines": {
-    "node": ">= 18.0.0"
+    "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
   },
   "scripts": {
     "clean": "rimraf ./dist",
     "build": "tsup --format esm,cjs --clean --dts",
+    "prepack": "npm run build",
     "stub": "tsup --format esm",
     "dev": "npx @eslint/config-inspector --config eslint.config.ts",
     "watch": "tsup --format esm,cjs --watch",
@@ -45,6 +46,7 @@
     "test:ui": "vitest --ui --api 9527",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "smoke": "node scripts/smoke.mjs",
     "publish:patch": "npm version patch && npm publish",
     "publish:minor": "npm version minor && npm publish",
     "publish:major": "npm version major && npm publish",
