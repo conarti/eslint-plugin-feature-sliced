@@ -150,3 +150,7 @@ docs/.vitepress/cache
 .DS_Store
 .omc/
 semantic-release.log
+
+# Stryker mutation testing
+reports/
+stryker-tmp/

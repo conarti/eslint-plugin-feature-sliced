@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [18, 20, 22]
+        node: [22, 24]
 
     steps:
       - uses: actions/checkout@v5
@@ -33,6 +33,31 @@ jobs:
 
       - name: Test
         run: npm run test:run
+
+      - name: Build
+        run: npm run build
+
+      - name: Smoke test
+        run: npm run smoke
+
+  # The test runner needs Node 22 or newer, while the published package still supports Node 18 and 20, so older Node only verifies that dist loads.
+  compat:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20]
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build
         run: npm run build

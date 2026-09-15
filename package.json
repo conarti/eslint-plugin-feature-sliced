@@ -46,6 +46,7 @@
     "test:ui": "vitest --ui --api 9527",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "test:mutation": "stryker run --incremental",
     "smoke": "node scripts/smoke.mjs",
     "publish:patch": "npm version patch && npm publish",
     "publish:minor": "npm version minor && npm publish",
@@ -68,17 +69,18 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.7.3",
+    "@stryker-mutator/core": "^10.0.0",
+    "@stryker-mutator/vitest-runner": "^10.0.0",
     "@total-typescript/ts-reset": "^0.6.1",
     "@types/eslint": "^9.6.1",
-    "@types/node": "^20.4.2",
+    "@types/node": "^22.20.2",
     "@types/picomatch": "^2.3.0",
     "@typescript-eslint/parser": "^8.45.0",
     "@typescript-eslint/rule-tester": "^8.45.0",
-    "@vitest/coverage-v8": "^0.33.0",
-    "@vitest/ui": "^0.33.0",
+    "@vitest/coverage-v8": "^5.0.1",
+    "@vitest/ui": "^5.0.1",
     "conventional-changelog-cli": "^2.2.2",
     "eslint": "^9.11.1",
-    "eslint-plugin-vitest": "^0.5.4",
     "execa": "5.1.1",
     "picocolors": "^1.0.0",
     "prompts": "^2.4.2",
@@ -88,6 +90,6 @@
     "tsup": "^8.5.0",
     "typescript": "^5.6.2",
     "vitepress": "^1.0.0-alpha.64",
-    "vitest": "^0.33.0"
+    "vitest": "^5.0.1"
   }
 }

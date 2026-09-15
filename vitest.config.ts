@@ -7,9 +7,8 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       enabled: true,
-      include: ['**/src/**'],
-      exclude: ['**/src/lib/rule/models.ts', '**/tests/fixtures/**'],
-      all: true,
+      include: ['src/**/*.ts'],
+      exclude: ['src/lib/rule/models.ts'],
       clean: true,
       cleanOnRerun: true,
       reporter: ['html'],
