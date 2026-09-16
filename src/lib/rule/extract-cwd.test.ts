@@ -1,64 +1,8 @@
 import type { UnknownRuleContext } from './models';
 import { extractCwd } from './extract-cwd';
 
-function createMockContext(cwd?: string): UnknownRuleContext {
-  return {
-    cwd,
-    getCwd: cwd !== undefined ? () => cwd : undefined,
-  } as unknown as UnknownRuleContext;
-}
-
 describe('extract-cwd', () => {
-  it('should return undefined when cwd is not available', () => {
-    const context = { cwd: undefined, getCwd: undefined } as unknown as UnknownRuleContext;
-
-    expect(extractCwd(context)).toBeUndefined();
-  });
-
-  it('should normalize Windows cwd to Unix format', () => {
-    const context = createMockContext('C:\\Users\\project\\src');
-
-    expect(extractCwd(context)).toBe('C:/Users/project/src');
-  });
-
-  it('should return Unix cwd unchanged', () => {
-    const context = createMockContext('/Users/project/src');
-
-    expect(extractCwd(context)).toBe('/Users/project/src');
-  });
-
-  it('should handle mixed separators', () => {
-    const context = createMockContext('C:/Users\\project/src');
-
-    expect(extractCwd(context)).toBe('C:/Users/project/src');
-  });
-
-  it('should return undefined when getCwd returns undefined', () => {
-    const context = {
-      getCwd: () => undefined,
-    } as unknown as UnknownRuleContext;
-
-    expect(extractCwd(context)).toBeUndefined();
-  });
-
-  describe('eslint 10 compatibility', () => {
-    it('should work with ESLint 10 property-based context API (no getCwd method)', () => {
-      const context = {
-        cwd: '/Users/project',
-      } as unknown as UnknownRuleContext;
-
-      expect(extractCwd(context)).toBe('/Users/project');
-    });
-
-    it('should work with ESLint 9 method-based context API (no cwd property)', () => {
-      const context = {
-        cwd: undefined,
-        getCwd: () => '/Users/project',
-      } as unknown as UnknownRuleContext;
-
-      expect(extractCwd(context)).toBe('/Users/project');
-    });
-
+  describe('context api shapes', () => {
     it('should prefer cwd property over getCwd method', () => {
       const context = {
         cwd: '/from-property',
@@ -68,21 +12,72 @@ describe('extract-cwd', () => {
       expect(extractCwd(context)).toBe('/from-property');
     });
 
-    it('should normalize Windows path from cwd property', () => {
-      const context = {
-        cwd: 'C:\\Users\\project',
-      } as unknown as UnknownRuleContext;
+    describe('property based (eslint 10)', () => {
+      it('should return Unix cwd unchanged', () => {
+        const context = {
+          cwd: '/Users/project/src',
+        } as unknown as UnknownRuleContext;
 
-      expect(extractCwd(context)).toBe('C:/Users/project');
+        expect(extractCwd(context)).toBe('/Users/project/src');
+      });
+
+      it('should normalize Windows cwd to Unix format', () => {
+        const context = {
+          cwd: 'C:\\Users\\project\\src',
+        } as unknown as UnknownRuleContext;
+
+        expect(extractCwd(context)).toBe('C:/Users/project/src');
+      });
+
+      it('should handle mixed separators', () => {
+        const context = {
+          cwd: 'C:/Users\\project/src',
+        } as unknown as UnknownRuleContext;
+
+        expect(extractCwd(context)).toBe('C:/Users/project/src');
+      });
+
+      it('should return undefined when cwd is not available', () => {
+        const context = {
+          cwd: undefined,
+        } as unknown as UnknownRuleContext;
+
+        expect(extractCwd(context)).toBeUndefined();
+      });
     });
 
-    it('should fall back to getCwd when cwd property is undefined', () => {
-      const context = {
-        cwd: undefined,
-        getCwd: () => 'C:\\Users\\project',
-      } as unknown as UnknownRuleContext;
+    describe('method based (eslint 9)', () => {
+      it('should return Unix cwd unchanged', () => {
+        const context = {
+          getCwd: () => '/Users/project',
+        } as unknown as UnknownRuleContext;
 
-      expect(extractCwd(context)).toBe('C:/Users/project');
+        expect(extractCwd(context)).toBe('/Users/project');
+      });
+
+      it('should normalize Windows cwd to Unix format', () => {
+        const context = {
+          getCwd: () => 'C:\\Users\\project',
+        } as unknown as UnknownRuleContext;
+
+        expect(extractCwd(context)).toBe('C:/Users/project');
+      });
+
+      it('should handle mixed separators', () => {
+        const context = {
+          getCwd: () => 'C:/Users\\project/src',
+        } as unknown as UnknownRuleContext;
+
+        expect(extractCwd(context)).toBe('C:/Users/project/src');
+      });
+
+      it('should return undefined when getCwd returns undefined', () => {
+        const context = {
+          getCwd: () => undefined,
+        } as unknown as UnknownRuleContext;
+
+        expect(extractCwd(context)).toBeUndefined();
+      });
     });
   });
 });
