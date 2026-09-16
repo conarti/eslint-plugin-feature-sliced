@@ -3,24 +3,27 @@ import {
   getLayerWeight,
   isLayer,
 } from './layers';
-import { normalizeLayersConfig } from './layers-config';
 
 describe('layers', () => {
   describe('isLayer', () => {
-    it('should fall back to normalizeLayersConfig() when config is omitted', () => {
-      expect(isLayer('entities')).toBe(isLayer('entities', normalizeLayersConfig()));
+    it('should recognize default layers when config is omitted', () => {
+      expect(isLayer('entities')).toBe(true);
+      expect(isLayer('unknown-layer')).toBe(false);
     });
   });
 
   describe('getLayerWeight', () => {
-    it('should fall back to normalizeLayersConfig() when config is omitted', () => {
-      expect(getLayerWeight('entities')).toBe(getLayerWeight('entities', normalizeLayersConfig()));
+    it('should return the default layer position when config is omitted', () => {
+      /* Weight is the index in the default layer order, where shared is 0 and entities follows it */
+      expect(getLayerWeight('shared')).toBe(0);
+      expect(getLayerWeight('entities')).toBe(1);
     });
   });
 
   describe('canLayerContainSlices', () => {
-    it('should fall back to normalizeLayersConfig() when config is omitted', () => {
-      expect(canLayerContainSlices('entities')).toBe(canLayerContainSlices('entities', normalizeLayersConfig()));
+    it('should read hasSlices from the default config when config is omitted', () => {
+      expect(canLayerContainSlices('entities')).toBe(true);
+      expect(canLayerContainSlices('shared')).toBe(false);
     });
   });
 });

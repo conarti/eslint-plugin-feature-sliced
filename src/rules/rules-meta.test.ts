@@ -35,7 +35,7 @@ const ruleCases = [
         ignoreFiles: [],
       },
     ],
-    hasSuggestions: false,
+    hasSuggestions: undefined,
   },
   {
     ruleName: 'layers-slices',
@@ -75,7 +75,7 @@ const ruleCases = [
         ignoreFiles: [],
       },
     ],
-    hasSuggestions: false,
+    hasSuggestions: undefined,
   },
   {
     ruleName: 'no-cross-segment-reexport',
@@ -162,7 +162,11 @@ const ruleCases = [
   },
 ];
 
-describe.each(ruleCases)('$ruleName meta', ({ rule, type, description, messages, schema, defaultOptions, hasSuggestions }) => {
+describe.each(ruleCases)('$ruleName meta', ({ ruleName, rule, type, description, messages, schema, defaultOptions, hasSuggestions }) => {
+  it('pins name', () => {
+    expect(rule.name).toBe(ruleName);
+  });
+
   it('pins meta.type', () => {
     expect(rule.meta.type).toBe(type);
   });
@@ -184,11 +188,6 @@ describe.each(ruleCases)('$ruleName meta', ({ rule, type, description, messages,
   });
 
   it('pins meta.hasSuggestions', () => {
-    if (hasSuggestions) {
-      expect(rule.meta.hasSuggestions).toBe(true);
-    }
-    else {
-      expect(rule.meta.hasSuggestions).toBeFalsy();
-    }
+    expect(rule.meta.hasSuggestions).toBe(hasSuggestions);
   });
 });

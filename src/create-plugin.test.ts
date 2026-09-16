@@ -23,13 +23,16 @@ describe('createPlugin', () => {
   it('enables exactly the five own rules, keyed by their configured names', () => {
     const config = createPlugin();
 
-    expect(Object.keys(config.rules!)).toEqual([
+    const ruleNames = Object.keys(config.rules!);
+
+    expect(ruleNames).toHaveLength(5);
+    expect(ruleNames).toEqual(expect.arrayContaining([
       '@conarti/feature-sliced/layers-slices',
       '@conarti/feature-sliced/absolute-relative',
       '@conarti/feature-sliced/public-api',
       '@conarti/feature-sliced/no-cross-segment-reexport',
       '@conarti/feature-sliced/import-order',
-    ]);
+    ]));
   });
 
   it('defaults every own rule to error severity and switches all of them to warn via options.severity', () => {
@@ -85,12 +88,15 @@ describe('createPlugin', () => {
   it('omits the import-order rule when sortImports is false, leaving the four own rules', () => {
     const config = createPlugin({ sortImports: false });
 
-    expect(Object.keys(config.rules!)).toEqual([
+    const ruleNames = Object.keys(config.rules!);
+
+    expect(ruleNames).toHaveLength(4);
+    expect(ruleNames).toEqual(expect.arrayContaining([
       '@conarti/feature-sliced/layers-slices',
       '@conarti/feature-sliced/absolute-relative',
       '@conarti/feature-sliced/public-api',
       '@conarti/feature-sliced/no-cross-segment-reexport',
-    ]);
+    ]));
   });
 
   it('normalizes the layers setting by default and when a custom layers config is passed', () => {
@@ -125,7 +131,7 @@ describe('createPlugin', () => {
   });
 });
 
-describe('plugin meta (P9)', () => {
+describe('plugin meta', () => {
   it('pins the plugin meta name and version', () => {
     expect(plugin.meta.name).toBe('@conarti/feature-sliced');
     expect(plugin.meta.version).toBe(packageJson.version);
@@ -142,14 +148,35 @@ describe('plugin meta (P9)', () => {
   });
 });
 
-describe('src/index.ts public API (P9)', () => {
+describe('src/index.ts public API', () => {
   it('re-exports createPlugin, plugin, layers, segments, PLUGIN_NAME, RULE_NAMES and a matching default export', () => {
     expect(indexModule.createPlugin).toBe(createPlugin);
     expect(indexModule.plugin).toBe(plugin);
-    expect(indexModule.layers).toBeDefined();
-    expect(indexModule.segments).toBeDefined();
+    expect(indexModule.layers).toStrictEqual([
+      'shared',
+      'entities',
+      'features',
+      'widgets',
+      'pages',
+      'processes',
+      'app',
+    ]);
+    expect(indexModule.segments).toStrictEqual([
+      'ui',
+      'model',
+      'lib',
+      'api',
+      'config',
+      'assets',
+    ]);
     expect(indexModule.PLUGIN_NAME).toBe('@conarti/feature-sliced');
-    expect(indexModule.RULE_NAMES).toBeDefined();
+    expect(indexModule.RULE_NAMES).toStrictEqual({
+      LAYERS_SLICES: '@conarti/feature-sliced/layers-slices',
+      ABSOLUTE_RELATIVE: '@conarti/feature-sliced/absolute-relative',
+      PUBLIC_API: '@conarti/feature-sliced/public-api',
+      IMPORT_ORDER: '@conarti/feature-sliced/import-order',
+      NO_CROSS_SEGMENT_REEXPORT: '@conarti/feature-sliced/no-cross-segment-reexport',
+    });
     expect(indexModule.default).toBe(createPlugin);
   });
 });

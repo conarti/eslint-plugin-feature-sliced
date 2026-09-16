@@ -27,7 +27,9 @@ export type Layer = Layers[number];
 
 /**
  * Layers arranged in order of their weight in the feature-sliced methodology
- * @deprecated Use normalizeLayersConfig() from layers-config.ts for custom layers support
+ * @deprecated Kept for backward compatibility only. The rules read the layer list from
+ * settings['@conarti/feature-sliced'].layers, which createPlugin() fills from its `layers`
+ * option, so this constant no longer affects the behavior of the plugin.
  */
 export const layers: Layers = [
   'shared',
