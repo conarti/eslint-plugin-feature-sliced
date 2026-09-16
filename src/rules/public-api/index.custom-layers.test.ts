@@ -1,24 +1,14 @@
 import * as tseslintParser from '@typescript-eslint/parser';
 import { RuleTester } from '../../../tests/rule-tester';
 import {
+  CUSTOM_LAYERS,
+  LAYERS_WITH_CORE_WITHOUT_SLICES,
   makeCustomLayersSettings,
   makePublicApiErrorWithSuggestion,
 } from '../../../tests/utils';
 import rule from './index';
 
-/**
- * Custom layers configuration for testing.
- * Order: core (no slices) < domain < features < pages < app (no slices)
- */
-const customLayers = [
-  { name: 'core', hasSlices: false },
-  'domain',
-  'features',
-  'pages',
-  { name: 'app', hasSlices: false },
-];
-
-const customLayersSettings = makeCustomLayersSettings(customLayers);
+const customLayersSettings = makeCustomLayersSettings(CUSTOM_LAYERS);
 
 const ruleTester = new RuleTester({
   languageOptions: {
@@ -108,13 +98,7 @@ ruleTester.run('public-api (custom layers)', rule, {
 /**
  * Test with layer that has hasSlices: false - should allow deep imports
  */
-const layersWithCoreFalse = [
-  { name: 'core', hasSlices: false },
-  'features',
-  { name: 'app', hasSlices: false },
-];
-
-const coreNoSlicesSettings = makeCustomLayersSettings(layersWithCoreFalse);
+const coreNoSlicesSettings = makeCustomLayersSettings(LAYERS_WITH_CORE_WITHOUT_SLICES);
 
 ruleTester.run('public-api (layer without slices)', rule, {
   valid: [

@@ -12,7 +12,7 @@ import {
 
 describe('layers-config', () => {
   describe('normalizeLayersConfig', () => {
-    it('should return default config when no config provided', () => {
+    it('should fall back to the default seven-layer config when called without an argument', () => {
       const result = normalizeLayersConfig();
       expect(result).toHaveLength(7);
       expect(result[0]).toEqual({ name: 'shared', hasSlices: false });

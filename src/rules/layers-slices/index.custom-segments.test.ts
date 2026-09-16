@@ -1,6 +1,8 @@
 import * as tseslintParser from '@typescript-eslint/parser';
 import { RuleTester } from '../../../tests/rule-tester';
 import {
+  CUSTOM_LAYERS,
+  customLayersOrder,
   makeCustomLayersAndSegmentsSettings,
   makeCustomLayersSlicesError,
   makeCustomSegmentsSettings,
@@ -119,16 +121,7 @@ ruleTester.run('layers-slices (custom segments - same slice relative imports)', 
 /**
  * Test with both custom layers and custom segments combined
  */
-const customLayers = [
-  { name: 'core', hasSlices: false },
-  'domain',
-  'features',
-  'pages',
-  { name: 'app', hasSlices: false },
-];
-
-const combinedSettings = makeCustomLayersAndSegmentsSettings(customLayers, customSegments);
-const customLayersOrder = 'core -> domain -> features -> pages -> app';
+const combinedSettings = makeCustomLayersAndSegmentsSettings(CUSTOM_LAYERS, customSegments);
 
 ruleTester.run('layers-slices (custom segments + custom layers combined)', rule, {
   valid: [

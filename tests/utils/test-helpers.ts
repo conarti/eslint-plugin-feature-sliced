@@ -219,6 +219,34 @@ export function makeAbsoluteRelativeOptions({
 /* === Custom layers helpers === */
 
 /**
+ * Custom layers fixture shared by the rule tests.
+ * Order: core (no slices) < domain < features < pages < app (no slices)
+ */
+export const CUSTOM_LAYERS: LayersConfig = [
+  { name: 'core', hasSlices: false },
+  'domain',
+  'features',
+  'pages',
+  { name: 'app', hasSlices: false },
+];
+
+/**
+ * Layers order string reported in errors raised under CUSTOM_LAYERS
+ */
+export const customLayersOrder = 'core -> domain -> features -> pages -> app';
+
+/**
+ * Custom layers fixture with no domain layer, used to check deep imports
+ * into a layer declared without slices.
+ * Order: core (no slices) < features < app (no slices)
+ */
+export const LAYERS_WITH_CORE_WITHOUT_SLICES: LayersConfig = [
+  { name: 'core', hasSlices: false },
+  'features',
+  { name: 'app', hasSlices: false },
+];
+
+/**
  * Creates ESLint settings with custom layers configuration
  */
 export function makeCustomLayersSettings(layers: LayersConfig): Record<string, unknown> {

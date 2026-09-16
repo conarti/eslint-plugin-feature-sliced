@@ -10,7 +10,7 @@ function createMockContext(settings?: Record<string, unknown>): UnknownRuleConte
 }
 
 describe('extractLayersConfig', () => {
-  it('should return default config when no settings provided', () => {
+  it('should fall back to the default seven-layer config when the context has no settings', () => {
     const context = createMockContext();
     const result = extractLayersConfig(context);
 

@@ -1,25 +1,14 @@
 import * as tseslintParser from '@typescript-eslint/parser';
 import { RuleTester } from '../../../tests/rule-tester';
 import {
+  CUSTOM_LAYERS,
+  customLayersOrder,
   makeCustomLayersSettings,
   makeCustomLayersSlicesError,
 } from '../../../tests/utils';
 import rule from './index';
 
-/**
- * Custom layers configuration for testing.
- * Order: core (no slices) < domain < features < pages < app (no slices)
- */
-const customLayers = [
-  { name: 'core', hasSlices: false },
-  'domain',
-  'features',
-  'pages',
-  { name: 'app', hasSlices: false },
-];
-
-const customLayersSettings = makeCustomLayersSettings(customLayers);
-const customLayersOrder = 'core -> domain -> features -> pages -> app';
+const customLayersSettings = makeCustomLayersSettings(CUSTOM_LAYERS);
 
 const ruleTester = new RuleTester({
   languageOptions: {
