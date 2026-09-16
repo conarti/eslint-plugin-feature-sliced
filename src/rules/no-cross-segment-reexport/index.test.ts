@@ -210,5 +210,49 @@ ruleTester.run('no-cross-segment-reexport', rule, {
         ),
       ],
     },
+    {
+      name: 'should flag cross-segment re-export when target segment is a file with an extension',
+      filename: 'src/entities/cluster/model/store/index.ts',
+      code: "export { foo } from '../../api.ts'",
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'model',
+        'api',
+        '../..',
+        "export { foo } from '../..'",
+      )],
+    },
+    {
+      name: 'should flag cross-segment re-export from three levels deep within the segment',
+      filename: 'src/entities/cluster/model/store/nested/index.ts',
+      code: "export { foo } from '../../../api'",
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'model',
+        'api',
+        '../../..',
+        "export { foo } from '../../..'",
+      )],
+    },
+    {
+      name: 'should flag cross-segment re-export from a non-standard segment with a subpath (constants)',
+      filename: 'src/entities/cluster/model/index.ts',
+      code: "export { foo } from '../constants/theme'",
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'model',
+        'constants',
+        '..',
+        "export { foo } from '..'",
+      )],
+    },
+    {
+      name: 'should flag cross-segment re-export using a Windows-style backslash path',
+      filename: 'src/entities/cluster/model/index.ts',
+      code: "export { foo } from '..\\\\api'",
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'model',
+        'api',
+        '..',
+        "export { foo } from '..'",
+      )],
+    },
   ],
 });
