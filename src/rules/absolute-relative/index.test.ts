@@ -90,6 +90,11 @@ ruleTester.run('absolute-relative', rule, {
       code: 'import { BAR } from \'@/shared/constants\';',
     },
     {
+      name: 'should be valid if absolute import from another slice of the same layer',
+      filename: 'src/entities/User/ui/index.ts',
+      code: "import { Order } from '@/entities/Order';",
+    },
+    {
       name: 'should be valid if the import is not from a layer (absolute import)',
       filename: 'src/shared/foo/index.ts',
       code: 'import { BAR } from \'@/bar\';',
@@ -170,6 +175,12 @@ ruleTester.run('absolute-relative', rule, {
       name: 'should report relative if import to shared layer public api file',
       filename: 'src/shared/index.ts',
       code: "import { foo } from 'shared/foo';",
+      errors: [absoluteRelativeErrors.mustBeRelative],
+    },
+    {
+      name: 'should report relative if absolute import within a layer without slices when the current file path carries a slice name',
+      filename: 'src/shared/entities/user-card/index.ts',
+      code: "import { formatDate } from '@/shared/lib/format';",
       errors: [absoluteRelativeErrors.mustBeRelative],
     },
     {
