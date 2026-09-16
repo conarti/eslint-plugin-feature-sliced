@@ -89,7 +89,51 @@ ruleTester.run('no-cross-segment-reexport', rule, {
       filename: 'src/entities/cluster/model/store.ts',
       code: 'const store = {}; export default store;',
     },
-
+    {
+      name: 'should not flag re-export when a segment folder sits directly under the layer',
+      filename: 'src/entities/model/store/index.ts',
+      code: "export { foo } from '../api'",
+    },
+    {
+      name: 'should not flag nested re-export when a segment folder sits directly under the layer',
+      filename: 'src/entities/model/store/index.ts',
+      code: "export { foo } from './helpers'",
+    },
+    {
+      name: 'should allow re-export from the slice public API index file',
+      filename: 'src/entities/cluster/model/index.ts',
+      code: "export { foo } from '../index.ts'",
+    },
+    {
+      name: 'should not flag re-export from the group folder root',
+      filename: 'src/entities/group/User/model/index.ts',
+      code: "export { foo } from '../..'",
+    },
+    {
+      name: 'should not flag re-export from the layer root',
+      filename: 'src/entities/cluster/model/index.ts',
+      code: "export { foo } from '../..'",
+    },
+    {
+      name: 'should not flag re-export from another slice inside the same group folder',
+      filename: 'src/entities/group/Admin/model/index.ts',
+      code: "export { foo } from '../../User/api'",
+    },
+    {
+      name: 'should not flag re-export from another slice at the slice public API',
+      filename: 'src/entities/cluster/index.ts',
+      code: "export { foo } from '../user/model'",
+    },
+    {
+      name: 'should not flag re-export from a slice with the same name in another layer',
+      filename: 'src/features/user/model/index.ts',
+      code: "export { foo } from '../../../entities/user/api'",
+    },
+    {
+      name: 'should not flag re-export from a slice-bearing layer when the current layer has no slices',
+      filename: 'src/shared/lib/index.ts',
+      code: "export { foo } from '../../entities/user/api'",
+    },
   ],
   invalid: [
     {
@@ -250,6 +294,39 @@ ruleTester.run('no-cross-segment-reexport', rule, {
       errors: [makeCrossSegmentReexportErrorWithSuggestion(
         'model',
         'api',
+        '..',
+        "export { foo } from '..'",
+      )],
+    },
+    {
+      name: 'should flag cross-segment re-export in a group folder when the segment is a file',
+      filename: 'src/entities/group/User/model.ts',
+      code: "export { foo } from './api'",
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'model',
+        'api',
+        '.',
+        "export { foo } from '.'",
+      )],
+    },
+    {
+      name: 'should flag re-export from a sibling segment when the current segment is non-standard (i18n)',
+      filename: 'src/entities/cluster/i18n/index.ts',
+      code: "export { foo } from '../api'",
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'i18n',
+        'api',
+        '..',
+        "export { foo } from '..'",
+      )],
+    },
+    {
+      name: 'should flag cross-segment re-export when the slice and segment folders are capitalised',
+      filename: 'src/entities/Orders/Model/index.ts',
+      code: "export { foo } from '../Api'",
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'Model',
+        'Api',
         '..',
         "export { foo } from '..'",
       )],
