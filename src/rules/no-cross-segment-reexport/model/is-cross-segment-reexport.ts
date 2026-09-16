@@ -25,7 +25,7 @@ const KNOWN_SEGMENTS = segments.map((s) => s.toLowerCase());
 /**
  * Splits a path string into non-empty parts
  */
-export function splitPathParts(path: string): string[] {
+function splitPathParts(path: string): string[] {
   return path.split('/').filter(Boolean);
 }
 
@@ -36,7 +36,7 @@ export function splitPathParts(path: string): string[] {
  *   (e.g. `model.ts` → `model`, since segment can be a file)
  * - Directory parts are kept as-is
  */
-export function normalizeToDirParts(parts: string[]): string[] {
+function normalizeToDirParts(parts: string[]): string[] {
   const INDEX_FILE_REGEXP = /^index\..+$/;
 
   return parts.reduce<string[]>((acc, part) => {
@@ -56,7 +56,7 @@ export function normalizeToDirParts(parts: string[]): string[] {
 /**
  * Finds the index of a layer part in the path components
  */
-export function findLayerIndex(parts: string[], layersWithSlices: string[]): number {
+function findLayerIndex(parts: string[], layersWithSlices: string[]): number {
   return parts.findIndex((part) =>
     layersWithSlices.includes(part.toLowerCase()),
   );
@@ -79,7 +79,7 @@ export function findLayerIndex(parts: string[], layersWithSlices: string[]): num
  *
  * @returns null if no valid segment/slice structure is found
  */
-export function extractSegmentAndSlice(pathParts: string[]): { segment: string; sliceParts: string[] } | null {
+function extractSegmentAndSlice(pathParts: string[]): { segment: string; sliceParts: string[] } | null {
   if (pathParts.length < 2)
     return null;
 
@@ -118,7 +118,7 @@ export function extractSegmentAndSlice(pathParts: string[]): { segment: string; 
  *
  * @returns the target segment name if it's a cross-segment reference, or null otherwise
  */
-export function findTargetSegmentInSameSlice(
+function findTargetSegmentInSameSlice(
   targetPathParts: string[],
   currentSliceParts: string[],
   currentSegment: string,

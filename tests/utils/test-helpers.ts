@@ -1,5 +1,5 @@
 import type { TSESLint } from '@typescript-eslint/utils';
-import type { Layer, LayersConfig, NormalizedLayerConfig, SegmentsConfig } from '../../src/config';
+import type { Layer, LayersConfig, SegmentsConfig } from '../../src/config';
 import { PLUGIN_NAME } from '../../src/config';
 import { normalizeLayersConfig } from '../../src/lib/feature-sliced/layers-config';
 import {
@@ -258,17 +258,6 @@ export function makeCustomLayersSettings(layers: LayersConfig): Record<string, u
 }
 
 /**
- * Creates ESLint settings with normalized layers configuration
- */
-export function makeNormalizedLayersSettings(layers: NormalizedLayerConfig[]): Record<string, unknown> {
-  return {
-    [PLUGIN_NAME]: {
-      layers,
-    },
-  };
-}
-
-/**
  * Creates layers-slices error with custom layer names (string instead of Layer type)
  */
 export function makeCustomLayersSlicesError(
@@ -287,22 +276,6 @@ export function makeCustomLayersSlicesError(
 }
 
 /* === no-cross-segment-reexport helpers === */
-
-/**
- * Creates no-cross-segment-reexport error
- */
-export function makeCrossSegmentReexportError(
-  currentSegment: string,
-  targetSegment: string,
-): TSESLint.TestCaseError<NoCrossSegmentReexportMessageIds> {
-  return {
-    messageId: NO_CROSS_SEGMENT_REEXPORT_MESSAGE_ID.NO_CROSS_SEGMENT_REEXPORT,
-    data: {
-      currentSegment,
-      targetSegment,
-    },
-  };
-}
 
 /**
  * Creates no-cross-segment-reexport error with suggestion

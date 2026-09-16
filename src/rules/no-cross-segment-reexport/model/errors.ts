@@ -19,7 +19,7 @@ import { ERROR_MESSAGE_ID, type RuleContext } from '../config';
  * // result: '../..'
  * ```
  */
-export function buildSlicePublicApiPath(sourcePath: string, targetSegment: string): string {
+function buildSlicePublicApiPath(sourcePath: string, targetSegment: string): string {
   const parts = sourcePath.split('/');
 
   /* Find and remove the target segment from the path */

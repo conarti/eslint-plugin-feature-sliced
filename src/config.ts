@@ -50,18 +50,12 @@ export const layersWithoutSlices: Layer[] = [
   'app',
 ];
 
-/**
- * Layers that can contain slices by feature-sliced methodology
- * @deprecated Use getLayersWithSlices() from layers-config.ts for custom layers support
- */
-export const layersWithSlices: Layer[] = layers.filter((layer) => !layersWithoutSlices.includes(layer));
-
 /* === Layer Customization Types === */
 
 /**
  * Object configuration for a layer
  */
-export interface LayerObjectConfig {
+interface LayerObjectConfig {
   /** Layer name */
   name: string;
   /** Whether the layer can contain slices. Default: true */
@@ -143,8 +137,6 @@ export const DEFAULT_SEGMENTS: readonly string[] = [
 export type SegmentsConfig = string[] | { replace: string[] };
 
 export const pathSeparator = '/';
-
-export const RULE_DOCS_URL = 'https://example.com/rule/';
 
 export type TypedFlatConfigItem = Omit<Linter.Config<Linter.RulesRecord>, 'plugins'> & {
   // Relax plugins type limitation, as most of the plugins did not have correct type info yet.

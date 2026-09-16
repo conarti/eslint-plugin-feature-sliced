@@ -2,7 +2,7 @@ import type { Linter } from 'eslint';
 import type { NormalizedLayerConfig } from '../../config';
 import { getLayerNames, normalizeLayersConfig } from '../../lib/feature-sliced/layers-config';
 
-export type ImportOrderRuleConfig = Linter.RuleEntry;
+type ImportOrderRuleConfig = Linter.RuleEntry;
 
 /**
  * Creates pathGroups for import-order rule based on layers config
