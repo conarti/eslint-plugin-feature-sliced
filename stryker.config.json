@@ -1,5 +1,6 @@
 {
   "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "patches_comment": "The vitest runner is patched locally, see patches/@stryker-mutator+vitest-runner+10.0.0.patch, applied by the prepare script. Version 10.0.0 builds the per mutant testNamePattern by joining the describe chain with a single space, while vitest 5 matches that pattern against the chain joined with ' > '. Unpatched, every non static mutant runs zero tests and is reported as Survived. Upstream issue: https://github.com/stryker-mutator/stryker-js/issues/6210",
   "testRunner": "vitest",
   "plugins": ["@stryker-mutator/vitest-runner"],
   "vitest": {
@@ -9,6 +10,8 @@
   "tempDirName": "stryker-tmp",
   "disableTypeChecks_comment": "Stryker adds a @ts-nocheck banner to every sandbox file by default. That rewrites tests/fixtures/basic-project and shifts the line numbers the fixture integration test asserts on. Vitest transpiles without type checking, so the banner is not needed here.",
   "disableTypeChecks": false,
+  "timeoutMS_comment": "A static mutant reruns the whole suite serially, because the runner forces maxWorkers 1 for static mutants. Nearly all of that cost is module loading, which enters the timeout formula as a flat overhead and not as a multiple of the test time, so timeoutFactor is the wrong knob to turn. With this value the budget is 1.5 x 742 + 30000 + 7690, about 38.8 s, against a serial suite that runs in about 8.4 s.",
+  "timeoutMS": 30000,
   "mutate": [
     "src/**/*.ts",
     "!src/**/*.test.ts",
