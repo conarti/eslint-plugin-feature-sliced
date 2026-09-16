@@ -1,7 +1,11 @@
+import type { LayersConfig } from '../../config';
+import { createPlugin } from '../../create-plugin';
 import { normalizeLayersConfig } from '../../lib/feature-sliced/layers-config';
 import { createImportOrderRuleConfigs, importOrderRuleConfigs } from './configs';
 
 const DEFAULT_LAYERS_REVERSED = ['app', 'processes', 'pages', 'widgets', 'features', 'entities', 'shared'];
+const IMPORT_ORDER_RULE_NAME = '@conarti/feature-sliced/import-order';
+const CONFIG_NAMES = ['recommended', 'with-newlines', 'with-type-group', 'with-newlines-and-type-group'] as const;
 
 function makePathGroups(layerNames: string[]) {
   return layerNames.map((layer) => ({
@@ -63,5 +67,23 @@ describe('createImportOrderRuleConfigs', () => {
 
   it('should expose the default configs through the deprecated constant', () => {
     expect(importOrderRuleConfigs).toEqual(createImportOrderRuleConfigs());
+  });
+});
+
+describe('createPlugin import-order wiring', () => {
+  it.each(CONFIG_NAMES)('should emit the "%s" config when sortImports selects it', (name) => {
+    const config = createPlugin({ sortImports: name });
+
+    expect(config.rules![IMPORT_ORDER_RULE_NAME]).toEqual(createImportOrderRuleConfigs()[name]);
+  });
+
+  it('should propagate custom layers into the emitted import-order entry', () => {
+    const layers: LayersConfig = ['core', 'domain', { name: 'app', hasSlices: false }];
+
+    const config = createPlugin({ layers });
+    const [, options] = config.rules![IMPORT_ORDER_RULE_NAME] as [string, { pathGroups: unknown }];
+
+    expect(options.pathGroups).toEqual(makePathGroups(['app', 'domain', 'core']));
+    expect(config.rules![IMPORT_ORDER_RULE_NAME]).toEqual(createImportOrderRuleConfigs(normalizeLayersConfig(layers)).recommended);
   });
 });
