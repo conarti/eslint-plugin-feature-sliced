@@ -1,5 +1,5 @@
 import type { LayersConfig, NormalizedLayerConfig } from '../../config';
-import { DEFAULT_LAYERS_CONFIG } from '../../config';
+import { DEFAULT_LAYERS_CONFIG, layers, layersWithoutSlices } from '../../config';
 import {
   canLayerContainSlices,
   getLayerNames,
@@ -275,6 +275,14 @@ describe('layers-config', () => {
         'pages',
         'processes',
       ]);
+    });
+
+    it('should match the deprecated layers array', () => {
+      expect(layers).toEqual(getLayerNames(normalizeLayersConfig()));
+    });
+
+    it('should match the deprecated layersWithoutSlices array', () => {
+      expect(layersWithoutSlices).toEqual(getLayersWithoutSlices(normalizeLayersConfig()));
     });
   });
 });
