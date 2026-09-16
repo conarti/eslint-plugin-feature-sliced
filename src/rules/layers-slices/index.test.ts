@@ -234,11 +234,13 @@ ruleTester.run('layers-slices', rule, {
     {
       name: 'should throw error for every specifier at correct positions and should not for valid specifiers',
       filename: 'src/shared/ui/foo',
-      code: `import { bar, type Bar,
-        baz,
-        type Boz,
-        boz,
-      } from '@/entities/bar';`,
+      code: [
+        'import { bar, type Bar,',
+        '  baz,',
+        '  type Boz,',
+        '  boz,',
+        "} from '@/entities/bar';",
+      ].join('\n'),
       options: layersSlicesAllowTypeImportsOptions,
       errors: [
         makeLayersSlicesErrorAtSpecifier(
@@ -257,8 +259,8 @@ ruleTester.run('layers-slices', rule, {
           {
             line: 2,
             endLine: 2,
-            column: 9,
-            endColumn: 12,
+            column: 3,
+            endColumn: 6,
           },
         ),
         makeLayersSlicesErrorAtSpecifier(
@@ -267,8 +269,8 @@ ruleTester.run('layers-slices', rule, {
           {
             line: 4,
             endLine: 4,
-            column: 9,
-            endColumn: 12,
+            column: 3,
+            endColumn: 6,
           },
         ),
       ],
