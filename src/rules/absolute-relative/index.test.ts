@@ -43,18 +43,18 @@ ruleTester.run('absolute-relative', rule, {
     },
     {
       name: 'should be valid if relative import within same slice (pages)',
-      filename: 'src/pages/passport-info-case-edit/lib/index.ts',
+      filename: 'src/pages/order-checkout/lib/index.ts',
       code: "import generatePayloadMapper from './generatePayloadMapper';",
     },
     {
       name: 'should be valid if re-export from same slice (star export)',
-      filename: 'src/widgets/payments-widget-wrapper/index.ts',
+      filename: 'src/widgets/payments-widget/index.ts',
       code: "export * from './model';",
     },
     {
       name: 'should be valid if re-export from same slice (named export)',
-      filename: 'src/components/blocks/MarriageDetails/index.ts',
-      code: "export { MarriageDetails } from './MarriageDetails';",
+      filename: 'src/components/blocks/OrderDetails/index.ts',
+      code: "export { OrderDetails } from './OrderDetails';",
     },
     {
       name: 'should be valid if it has ignoreFiles option',
@@ -158,14 +158,14 @@ ruleTester.run('absolute-relative', rule, {
     },
     {
       name: 'should report relative if export from same slice with alias (cwd-dependent)',
-      filename: 'src/widgets/payments-widget-wrapper/index.ts',
-      code: "export * from '@/widgets/payments-widget-wrapper/model';",
+      filename: 'src/widgets/payments-widget/index.ts',
+      code: "export * from '@/widgets/payments-widget/model';",
       errors: [absoluteRelativeErrors.mustBeRelative],
     },
     {
       name: 'should report relative if export from same slice with nested path (cwd-dependent)',
-      filename: 'src/widgets/blocks/MarriageDetails/index.ts',
-      code: "export { MarriageDetails } from '@/widgets/blocks/MarriageDetails/MarriageDetails';",
+      filename: 'src/widgets/blocks/OrderDetails/index.ts',
+      code: "export { OrderDetails } from '@/widgets/blocks/OrderDetails/OrderDetails';",
       errors: [absoluteRelativeErrors.mustBeRelative],
     },
   ],
@@ -177,8 +177,8 @@ ruleTester.run('absolute-relative (@x cross-imports)', rule, {
   valid: [
     {
       name: '@x cross-import with alias prefix',
-      filename: 'src/entities/policies/ui/Component.vue',
-      code: "import { useGroups } from '@/entities/groups/@x/policies';",
+      filename: 'src/entities/orders/ui/Component.vue',
+      code: "import { useGroups } from '@/entities/groups/@x/orders';",
     },
     {
       name: '@x cross-import without alias',

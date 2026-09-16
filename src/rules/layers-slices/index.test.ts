@@ -286,8 +286,8 @@ ruleTester.run('layers-slices', rule, {
     },
     {
       name: 'should throw error when importing from higher layer with same slice name',
-      filename: 'src/entities/policies/model.ts',
-      code: "import { foo } from '../../../pages/policies/ui';",
+      filename: 'src/entities/orders/model.ts',
+      code: "import { foo } from '../../../pages/orders/ui';",
       errors: [makeLayersSlicesError('pages', 'entities')],
     },
     {

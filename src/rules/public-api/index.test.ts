@@ -249,12 +249,12 @@ ruleTester.run('public-api', rule, {
     },
     {
       name: 'should report import with .vue extension from internal segment',
-      code: "import PassportIssuanceSearchRegistryParams from '@/entities/passport-issuance/ui/search-registry-params.vue';",
+      code: "import DocumentRegistrySearchParams from '@/entities/document-registry/ui/search-registry-params.vue';",
       errors: [
         makePublicApiErrorWithSuggestion(
           'ui/search-registry-params.vue',
-          "import PassportIssuanceSearchRegistryParams from '@/entities/passport-issuance';",
-          '@/entities/passport-issuance',
+          "import DocumentRegistrySearchParams from '@/entities/document-registry';",
+          '@/entities/document-registry',
         ),
       ],
     },
@@ -343,27 +343,29 @@ ruleTester.run('public-api', rule, {
         ),
       ],
     },
+    /* Original identifiers in the issue #18 report: PolicyNodeDetailsPage, policies, getNodePolicyById. */
     {
       name: 'should throw error when importing from different layer with same slice name (api segment) (issue #18)',
-      filename: 'src/pages/policies/ui/PolicyNodeDetailsPage.vue',
-      code: "import { getNodePolicyById } from '@/entities/policies/api';",
+      filename: 'src/pages/orders/ui/OrderDetailsPage.vue',
+      code: "import { getOrderById } from '@/entities/orders/api';",
       errors: [
         makePublicApiErrorWithSuggestion(
           'api',
-          "import { getNodePolicyById } from '@/entities/policies';",
-          '@/entities/policies',
+          "import { getOrderById } from '@/entities/orders';",
+          '@/entities/orders',
         ),
       ],
     },
+    /* Original identifiers in the issue #18 report: PolicyNodeDetailsPage, policies, createNodePolicyFields. */
     {
       name: 'should throw error when importing from different layer with same slice name (lib segment) (issue #18)',
-      filename: 'src/pages/policies/ui/PolicyNodeDetailsPage.vue',
-      code: "import { createNodePolicyFields } from '@/entities/policies/lib';",
+      filename: 'src/pages/orders/ui/OrderDetailsPage.vue',
+      code: "import { createOrderFields } from '@/entities/orders/lib';",
       errors: [
         makePublicApiErrorWithSuggestion(
           'lib',
-          "import { createNodePolicyFields } from '@/entities/policies';",
-          '@/entities/policies',
+          "import { createOrderFields } from '@/entities/orders';",
+          '@/entities/orders',
         ),
       ],
     },

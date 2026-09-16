@@ -41,7 +41,7 @@ ruleTester.run('layers-slices (custom segments - extend mode)', rule, {
     },
     {
       name: 'should allow same-slice relative import from model to custom i18n segment',
-      filename: 'src/entities/policies/model/actions.ts',
+      filename: 'src/entities/orders/model/actions.ts',
       code: "import { t } from '../i18n'",
       settings: customSegmentsSettings,
     },
@@ -74,8 +74,8 @@ ruleTester.run('layers-slices (custom segments - extend mode)', rule, {
 ruleTester.run('layers-slices (custom segments - same slice relative imports)', rule, {
   valid: [
     {
-      name: 'should allow entities/policies/model importing ../i18n with custom segment',
-      filename: 'src/entities/policies/model/confirm-mass.ts',
+      name: 'should allow entities/orders/model importing ../i18n with custom segment',
+      filename: 'src/entities/orders/model/confirm-mass.ts',
       code: "import { t } from '../i18n'",
       settings: customSegmentsSettings,
     },
