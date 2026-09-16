@@ -57,6 +57,16 @@ ruleTester.run('absolute-relative', rule, {
       code: "export { OrderDetails } from './OrderDetails';",
     },
     {
+      name: 'should be valid if relative export from another layer (star export)',
+      filename: 'src/widgets/TheHeader/ui/index.ts',
+      code: "export * from '../../../shared/hooks';",
+    },
+    {
+      name: 'should be valid if relative export from another layer (named export)',
+      filename: 'src/widgets/TheHeader/ui/index.ts',
+      code: "export { useBar } from '../../../shared/hooks';",
+    },
+    {
       name: 'should be valid if it has ignoreFiles option',
       filename: 'src/shared/foo/index.ts',
       code: "import { BAR } from '@/shared/bar';",
@@ -167,6 +177,12 @@ ruleTester.run('absolute-relative', rule, {
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: "const TheHeader = () => import('widgets/TheHeader');",
       errors: [absoluteRelativeErrors.mustBeRelative],
+    },
+    {
+      name: 'should report absolute if import expression from another layer',
+      filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
+      code: "const useHooks = () => import('../../../shared/hooks');",
+      errors: [absoluteRelativeErrors.mustBeAbsolute],
     },
     {
       name: 'should report relative if export from same slice with alias (cwd-dependent)',

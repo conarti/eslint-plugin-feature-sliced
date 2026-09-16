@@ -382,6 +382,30 @@ ruleTester.run('public-api', rule, {
       ],
     },
     {
+      name: 'should throw error when re-exporting from different layer with same slice name (named export)',
+      filename: 'src/pages/orders/ui/OrderDetailsPage.vue',
+      code: "export { getOrderById } from '@/entities/orders/api';",
+      errors: [
+        makePublicApiErrorWithSuggestion(
+          'api',
+          "export { getOrderById } from '@/entities/orders';",
+          '@/entities/orders',
+        ),
+      ],
+    },
+    {
+      name: 'should throw error when re-exporting from different layer with same slice name (star export)',
+      filename: 'src/pages/orders/ui/OrderDetailsPage.vue',
+      code: "export * from '@/entities/orders/api';",
+      errors: [
+        makePublicApiErrorWithSuggestion(
+          'api',
+          "export * from '@/entities/orders';",
+          '@/entities/orders',
+        ),
+      ],
+    },
+    {
       name: 'should still report should-be-from-public-api if ignoreImports has a near-miss pattern',
       filename: 'src/pages/orders/ui/OrderDetailsPage.vue',
       code: "import { getOrderById } from '@/entities/orders/api';",
