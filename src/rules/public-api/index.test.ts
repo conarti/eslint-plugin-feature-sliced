@@ -180,6 +180,18 @@ ruleTester.run('public-api', rule, {
       options: makePublicApiOptions({ ignoreFiles: [`**/(${layers.join('|')})/index.*`] }),
     },
     {
+      name: 'should be valid if ignoreImports has an exact-path entry matching the import',
+      filename: 'src/pages/orders/ui/OrderDetailsPage.vue',
+      code: "import { getOrderById } from '@/entities/orders/api';",
+      options: makePublicApiOptions({ ignoreImports: ['@/entities/orders/api'] }),
+    },
+    {
+      name: 'should be valid if ignoreImports has a wildcard entry matching the import',
+      filename: 'src/pages/orders/ui/OrderDetailsPage.vue',
+      code: "import { getOrderById } from '@/entities/orders/api';",
+      options: makePublicApiOptions({ ignoreImports: ['**/orders/api'] }),
+    },
+    {
       name: 'should work with multiple layer names in path (correct understand layer)',
       filename: 'src/processes/shared/index.js',
       code: "import { foo } from 'shared/foo';",
@@ -365,6 +377,19 @@ ruleTester.run('public-api', rule, {
         makePublicApiErrorWithSuggestion(
           'lib',
           "import { createOrderFields } from '@/entities/orders';",
+          '@/entities/orders',
+        ),
+      ],
+    },
+    {
+      name: 'should still report should-be-from-public-api if ignoreImports has a near-miss pattern',
+      filename: 'src/pages/orders/ui/OrderDetailsPage.vue',
+      code: "import { getOrderById } from '@/entities/orders/api';",
+      options: makePublicApiOptions({ ignoreImports: ['**/orders/model'] }),
+      errors: [
+        makePublicApiErrorWithSuggestion(
+          'api',
+          "import { getOrderById } from '@/entities/orders';",
           '@/entities/orders',
         ),
       ],

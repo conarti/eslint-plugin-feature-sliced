@@ -63,6 +63,18 @@ ruleTester.run('absolute-relative', rule, {
       options: makeAbsoluteRelativeOptions({ ignoreFiles: ['**/*/shared/foo/**/*'] }),
     },
     {
+      name: 'should be valid if ignoreImports has an exact-path entry matching the import',
+      filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
+      code: "import { TheHeader } from '@/widgets/TheHeader';",
+      options: makeAbsoluteRelativeOptions({ ignoreImports: ['@/widgets/TheHeader'] }),
+    },
+    {
+      name: 'should be valid if ignoreImports has a wildcard entry matching the import',
+      filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
+      code: "import { TheHeader } from '@/widgets/TheHeader';",
+      options: makeAbsoluteRelativeOptions({ ignoreImports: ['**/TheHeader'] }),
+    },
+    {
       name: "should be valid if it has slice with 'layer' name",
       filename: 'src/processes/shared/index.ts',
       code: 'import { BAR } from \'@/shared/constants\';',
@@ -166,6 +178,13 @@ ruleTester.run('absolute-relative', rule, {
       name: 'should report relative if export from same slice with nested path (cwd-dependent)',
       filename: 'src/widgets/blocks/OrderDetails/index.ts',
       code: "export { OrderDetails } from '@/widgets/blocks/OrderDetails/OrderDetails';",
+      errors: [absoluteRelativeErrors.mustBeRelative],
+    },
+    {
+      name: 'should still report relative if ignoreImports has a near-miss pattern',
+      filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
+      code: "import { TheHeader } from '@/widgets/TheHeader';",
+      options: makeAbsoluteRelativeOptions({ ignoreImports: ['**/TheFooter'] }),
       errors: [absoluteRelativeErrors.mustBeRelative],
     },
   ],
