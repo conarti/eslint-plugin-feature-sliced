@@ -150,6 +150,24 @@ ruleTester.run('absolute-relative', rule, {
       code: "import { foo } from 'shared/foo';",
       errors: [absoluteRelativeErrors.mustBeRelative],
     },
+    {
+      name: 'should report relative if import expression from same slice',
+      filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
+      code: "const TheHeader = () => import('widgets/TheHeader');",
+      errors: [absoluteRelativeErrors.mustBeRelative],
+    },
+    {
+      name: 'should report relative if export from same slice with alias (cwd-dependent)',
+      filename: 'src/widgets/payments-widget-wrapper/index.ts',
+      code: "export * from '@/widgets/payments-widget-wrapper/model';",
+      errors: [absoluteRelativeErrors.mustBeRelative],
+    },
+    {
+      name: 'should report relative if export from same slice with nested path (cwd-dependent)',
+      filename: 'src/widgets/blocks/MarriageDetails/index.ts',
+      code: "export { MarriageDetails } from '@/widgets/blocks/MarriageDetails/MarriageDetails';",
+      errors: [absoluteRelativeErrors.mustBeRelative],
+    },
   ],
 });
 

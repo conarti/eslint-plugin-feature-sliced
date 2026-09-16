@@ -24,18 +24,6 @@ import {
   type ValidationLevel,
 } from '../../src/rules/public-api/config';
 
-/**
- * Standard CWD for all tests
- */
-export const TEST_CWD = '/test/project';
-
-/**
- * Creates a file path relative to TEST_CWD
- */
-export function makeFilename(relativePath: string): string {
-  return `${TEST_CWD}/${relativePath}`;
-}
-
 /* === public-api helpers === */
 
 /**
