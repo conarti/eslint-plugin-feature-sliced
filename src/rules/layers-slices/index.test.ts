@@ -62,6 +62,11 @@ ruleTester.run('layers-slices', rule, {
       code: "import { AppRouter } from 'app/providers/router';",
     },
     {
+      name: 'should be valid if import within same layer (shared) when the target path carries a slice-capable layer name segment',
+      filename: 'src/shared/ui/foo/index.ts',
+      code: "import { Bar } from 'shared/entities/User/foo';",
+    },
+    {
       name: 'should allow "import type" with enabled option (separate import type style and same layer)',
       filename: 'src/entities/bar',
       code: "import type { Baz } from 'entities/baz';",
