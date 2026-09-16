@@ -4,6 +4,7 @@ import {
   absoluteRelativeErrors,
   CUSTOM_LAYERS,
   makeCustomLayersSettings,
+  MINIMAL_LAYERS,
 } from '../../../tests/utils';
 import rule from './index';
 
@@ -89,16 +90,7 @@ ruleTester.run('absolute-relative (custom layers)', rule, {
   ],
 });
 
-/**
- * Test with minimal layers configuration
- */
-const minimalLayers = [
-  { name: 'shared', hasSlices: false },
-  'features',
-  { name: 'app', hasSlices: false },
-];
-
-const minimalLayersSettings = makeCustomLayersSettings(minimalLayers);
+const minimalLayersSettings = makeCustomLayersSettings(MINIMAL_LAYERS);
 
 ruleTester.run('absolute-relative (minimal layers)', rule, {
   valid: [

@@ -5,6 +5,7 @@ import {
   customLayersOrder,
   makeCustomLayersSettings,
   makeCustomLayersSlicesError,
+  MINIMAL_LAYERS,
 } from '../../../tests/utils';
 import rule from './index';
 
@@ -103,16 +104,7 @@ ruleTester.run('layers-slices (custom layers)', rule, {
   ],
 });
 
-/**
- * Test with minimal layers configuration
- */
-const minimalLayers = [
-  { name: 'shared', hasSlices: false },
-  'features',
-  { name: 'app', hasSlices: false },
-];
-
-const minimalLayersSettings = makeCustomLayersSettings(minimalLayers);
+const minimalLayersSettings = makeCustomLayersSettings(MINIMAL_LAYERS);
 const minimalLayersOrder = 'shared -> features -> app';
 
 ruleTester.run('layers-slices (minimal layers)', rule, {

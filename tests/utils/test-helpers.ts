@@ -106,7 +106,7 @@ export function makeLayersSlicesError(
 /**
  * Error position in code
  */
-export interface ErrorPosition {
+interface ErrorPosition {
   column: number;
   endColumn: number;
   line: number;
@@ -242,6 +242,16 @@ export const customLayersOrder = 'core -> domain -> features -> pages -> app';
  */
 export const LAYERS_WITH_CORE_WITHOUT_SLICES: LayersConfig = [
   { name: 'core', hasSlices: false },
+  'features',
+  { name: 'app', hasSlices: false },
+];
+
+/**
+ * Smallest useful layers fixture shared by the rule tests.
+ * Order: shared (no slices) < features < app (no slices)
+ */
+export const MINIMAL_LAYERS: LayersConfig = [
+  { name: 'shared', hasSlices: false },
   'features',
   { name: 'app', hasSlices: false },
 ];

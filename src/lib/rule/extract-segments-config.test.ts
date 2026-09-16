@@ -142,11 +142,6 @@ describe('segments settings validation table', () => {
       expected: DEFAULT_SEGMENTS_LITERAL,
     },
     {
-      name: 'empty array is valid and normalizes to defaults (duplicate of the existing empty array extend mode test above)',
-      segments: [],
-      expected: DEFAULT_SEGMENTS_LITERAL,
-    },
-    {
       name: 'replace object with a valid string array replaces the defaults exactly',
       segments: { replace: ['ui', 'model'] },
       expected: ['ui', 'model'],

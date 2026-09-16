@@ -93,11 +93,11 @@ function extractSegmentAndSlice(pathParts: string[]): { segment: string; slicePa
     segmentIndex = knownSegmentIndex;
   }
   else if (knownSegmentIndex === 0) {
-    /* Segment right after layer with no slice — not a valid FSD structure */
+    /* Segment right after layer with no slice is not a valid FSD structure */
     return null;
   }
   else {
-    /* No known segment found — treat the last directory component as segment */
+    /* No known segment found: treat the last directory component as segment */
     segmentIndex = pathParts.length - 1;
     if (segmentIndex < 1)
       return null;
@@ -137,7 +137,7 @@ function findTargetSegmentInSameSlice(
   if (!targetHasSameSlice)
     return null;
 
-  /* Get target segment — what comes after the slice prefix */
+  /* Target segment is what comes after the slice prefix */
   const targetSegmentCandidate = targetPathParts[currentSliceParts.length];
 
   if (!targetSegmentCandidate)

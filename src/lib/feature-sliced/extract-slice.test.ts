@@ -1,12 +1,11 @@
 import { DEFAULT_SEGMENTS, layersWithoutSlices } from '../../config';
 import { extractSlice } from './extract-slice';
 
-const FSD_LAYERS_WITHOUT_SLICES = layersWithoutSlices;
 const CUSTOM_SEGMENTS = [...DEFAULT_SEGMENTS, 'services', 'hooks'];
 
 describe('extract-slice', () => {
   describe('layers without slices', () => {
-    const cases = FSD_LAYERS_WITHOUT_SLICES.map((layer) => ({
+    const cases = layersWithoutSlices.map((layer) => ({
       name: `should not return slice from layer "${layer}"`,
       path: `src/${layer}/foo/index.ts`,
       expected: null,
@@ -338,7 +337,7 @@ describe('extract-slice', () => {
         expected: 'MODEL',
       },
       {
-        name: 'segment-named group folder with no further segment flips hasMoreSegments to null',
+        name: 'segment-named group folder with no further segment returns null',
         path: 'entities/model/OrderDetails/notes',
         expected: null,
       },
