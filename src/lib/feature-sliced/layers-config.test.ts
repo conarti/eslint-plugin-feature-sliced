@@ -241,7 +241,7 @@ describe('layers-config', () => {
     });
   });
 
-  describe('dEFAULT_LAYERS_CONFIG', () => {
+  describe('default layers config', () => {
     it('should have correct default FSD layers', () => {
       const normalized = normalizeLayersConfig(DEFAULT_LAYERS_CONFIG);
       const names = getLayerNames(normalized);
