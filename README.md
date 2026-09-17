@@ -686,13 +686,39 @@ npm run test:mutation # stryker, incremental
 ```
 
 CI runs the type check, the lint, knip, the tests, the build and the smoke test on Node 22 and
-24, and repeats the build and the smoke test on Node 18 and 20.
+24, repeats the build and the smoke test on Node 18 and 20, and, on every pull request targeting
+`master` or `main`, lints the commit messages of that pull request.
 
 `tests/fixtures/basic-project` is the end-to-end anchor. It is a real, deliberately broken FSD tree
 that carries at least one violation per message id plus a set of files that have to stay silent,
 and the integration test runs ESLint over it with the plugin built from `src` and compares the whole report
 with a committed snapshot. A refactor that breaks the plumbing without breaking any unit test gets
 caught there, so read `tests/fixtures/basic-project/README.md` before touching it.
+
+### Commit messages
+
+Commits follow [Conventional Commits](https://www.conventionalcommits.org/):
+`type(scope): description`, header of at most 100 characters, and a subject written in neither
+sentence, start, pascal nor upper case. The allowed types are `build`, `chore`, `ci`, `docs`,
+`feat`, `fix`, `perf`, `refactor`, `revert`, `style` and `test`.
+
+Two extra rules apply to the whole message, header, body and footer alike. It has to stay ASCII, so
+no typographic dashes, arrows, emoji or non latin text. And it must not carry attribution lines: no
+`Co-authored-by:` trailer, no line starting with `Generated with`. Messages git writes itself, such
+as a merge, a revert or a `fixup!`, skip the conventional rules as long as they pass these two. One
+that breaks them is linted in full, so the report also lists conventional errors next to the real
+one, and they go away once the offending line is removed.
+
+`npm ci` and `npm install` install a `commit-msg` hook through the `prepare` script, so the check
+runs before the commit is written, on every Node version this package supports. The hook reads the
+file git is about to commit, where comment lines and the diff below the scissors line are not part
+of the message; CI reads the stored commit, where a line starting with a hash counts too. CI lints
+every commit of a pull request, because pull requests are rebased onto master and each commit lands
+there as is. To check a range by hand:
+
+```sh
+npx --no -- commitlint --from origin/master --to HEAD --verbose
+```
 
 ## License
 
