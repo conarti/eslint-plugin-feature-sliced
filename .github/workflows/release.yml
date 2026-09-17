@@ -37,13 +37,16 @@
 #   `next` tag at it manually:
 #     npm dist-tag add @conarti/eslint-plugin-feature-sliced@<version> next
 #
-# Before merging, run the "Release (dry run)" workflow to see the version this
-# pipeline would produce. A workflow_dispatch workflow only appears in the
-# Actions tab once it exists on the default branch, so the first dry run for this
-# PR has to be triggered with `gh workflow run release-dry-run.yml --ref <branch>
-# -f ref=<branch>` after the file lands on master, or run locally with
+# Release notes
+#   The generateNotes step is scripts/release-notes.mjs. When
+#   .github/releases/<version>.md exists, its content is the release body;
+#   otherwise the notes are generated from the commit history as usual.
+#
+# Before merging, read the "Release (dry run)" workflow run of the pull request:
+# it runs the same semantic-release configuration in dry-run mode and prints the
+# version this pipeline would produce. The same preview can be run locally with
 # `GITHUB_TOKEN=$(gh auth token) npx semantic-release --dry-run --no-ci
-# --branches <branch> --plugins @semantic-release/commit-analyzer,@semantic-release/release-notes-generator`.
+# --branches <branch> --plugins @semantic-release/commit-analyzer,./scripts/release-notes.mjs`.
 
 name: Release
 

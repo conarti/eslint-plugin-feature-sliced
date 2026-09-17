@@ -1,8 +1,9 @@
 # Release dry run.
 #
-# Manual, read-only preview of what the Release workflow would publish.
-# Run it from the Actions tab before merging anything into master, and read the
-# "The next release version is X" line near the end of the log.
+# Read-only preview of what the Release workflow would publish. It runs on every
+# pull request that targets master, and it can also be started by hand from the
+# Actions tab against any ref. Either way, read the "The next release version is
+# X" line near the end of the log.
 #
 # `--dry-run` makes semantic-release skip tag creation, the git push and every
 # plugin publish step. Nothing is tagged, pushed or published to npm.
@@ -12,15 +13,19 @@
 #
 # NPM_TOKEN is required even for a dry run: @semantic-release/npm runs
 # verifyConditions in dry-run mode, and that step calls `npm whoami`, failing
-# with ENONPMTOKEN when no token is configured. `contents: write` is required
-# because semantic-release core runs `verifyAuth`, a `git push --dry-run`
-# against the repository, and that check is not skipped in dry-run mode; without
-# write permission it throws EGITNOPERMISSION. Neither permission is exercised,
-# because --dry-run stops before any write.
+# with ENONPMTOKEN when no token is configured. A pull request from a fork has
+# no access to that secret and its head branch cannot be checked out from this
+# repository, so the job skips such pull requests instead of failing.
+# `contents: write` is required because semantic-release core runs `verifyAuth`,
+# a `git push --dry-run` against the repository, and that check is not skipped in
+# dry-run mode; without write permission it throws EGITNOPERMISSION. Neither
+# permission is exercised, because --dry-run stops before any write.
 
 name: Release (dry run)
 
 on:
+  pull_request:
+    branches: [master]
   workflow_dispatch:
     inputs:
       ref:
@@ -31,6 +36,7 @@ on:
 jobs:
   dry-run:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       contents: write
       issues: read
@@ -39,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          ref: ${{ inputs.ref }}
+          ref: ${{ inputs.ref || github.head_ref }}
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -62,9 +68,24 @@ jobs:
           set -o pipefail
           GITHUB_REF="refs/heads/$RELEASE_REF" npx semantic-release --dry-run --no-ci --branches "$RELEASE_REF" 2>&1 | tee semantic-release.log
         env:
-          RELEASE_REF: ${{ inputs.ref }}
+          RELEASE_REF: ${{ inputs.ref || github.head_ref }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Fail if no version was computed
         run: grep -q "The next release version is" semantic-release.log
+
+      # A major release must ship the hand written notes from .github/releases,
+      # otherwise scripts/release-notes.mjs falls back to the commit history.
+      - name: Check the curated release notes
+        run: |
+          version=$(sed -n 's/.*The next release version is \([0-9][^ ]*\).*/\1/p' semantic-release.log | tail -n 1)
+          notes=".github/releases/$version.md"
+          if [ -f "$notes" ]; then
+            echo "Curated release notes found: $notes"
+          elif [ "${version#*.}" = "0.0" ]; then
+            echo "::error::Major release $version has no curated notes at $notes"
+            exit 1
+          else
+            echo "No curated notes for $version, the notes will be generated from the commit history"
+          fi
