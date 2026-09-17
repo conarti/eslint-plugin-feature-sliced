@@ -1,11 +1,48 @@
 # Release pipeline (semantic-release).
 #
+# One workflow covers both sides of a release: it publishes from master, and on
+# every pull request to master it replays the same configuration in dry-run
+# mode, so both the computed version and the npm authentication are proven
+# before anything is merged.
+#
 # How the version is computed
 #   semantic-release derives the next version from the commit messages added
 #   since the last non-prerelease git tag on this branch. It reads git tags, not
 #   package.json, so the `version` field in package.json is never authoritative
 #   here. The `v2.0.0-rc.*` tags are prereleases and are ignored on master, so
 #   the baseline stays `v1.0.5` until the first 2.x release is tagged.
+#
+# Authentication: npm trusted publishing over OIDC
+#   No npm token exists in this repository and none is needed.
+#   @semantic-release/npm 13 asks GitHub Actions for an OIDC id token, checks in
+#   verifyConditions that registry.npmjs.org accepts it, and then skips the token
+#   path entirely. The credential that signs the upload is minted again by the
+#   bundled npm 11 during `npm publish`, which also attaches build provenance to
+#   the published tarball. The `id-token: write` permission below is what
+#   mints that id token; without it the exchange fails and the run falls back to
+#   a token that does not exist, which aborts the release.
+#
+# Why the dry run lives in this file
+#   npm accepts exactly one trusted publisher per package, matched on the
+#   repository owner, the repository name and the workflow file name under
+#   .github/workflows. This file is the registered publisher, so a dry run
+#   started from any other workflow file could never complete the exchange. Run
+#   from here, the pull request performs the same OIDC handshake as a real
+#   release and therefore proves the npmjs.com configuration ahead of the merge.
+#   Pull requests from forks are skipped: they get neither an id token nor write
+#   permissions, and their head branch cannot be checked out from this
+#   repository.
+#
+# What the dry run does and does not do
+#   Dry-run mode skips tag creation, the git push and every plugin publish step,
+#   so nothing is tagged, pushed or published. The no-ci option lifts the refusal
+#   to run outside CI and on pull requests, and the branch list from
+#   .releaserc.json is overridden, so an arbitrary ref can be analyzed.
+#   `contents: write` is still required, because semantic-release core runs
+#   verifyAuth, a git push in dry run form, and that check is not skipped;
+#   without write permission it throws EGITNOPERMISSION. The permission is
+#   never exercised, since dry-run mode stops before any write. Read the "The
+#   next release version is X" line near the end of the log.
 #
 # Merge strategy: use REBASE, never squash
 #   The angular preset used by @semantic-release/commit-analyzer does not
@@ -39,24 +76,40 @@
 #
 # Release notes
 #   The generateNotes step is scripts/release-notes.mjs. When
-#   .github/releases/<version>.md exists, its content is the release body;
-#   otherwise the notes are generated from the commit history as usual.
+#   .github/releases/<version>.md exists, its content is the release body
+#   verbatim; otherwise the notes are generated from the commit history as
+#   usual. The dry run fails a major release that has no such file, so curated
+#   notes cannot be forgotten.
 #
-# Before merging, read the "Release (dry run)" workflow run of the pull request:
-# it runs the same semantic-release configuration in dry-run mode and prints the
-# version this pipeline would produce. The same preview can be run locally with
-# `GITHUB_TOKEN=$(gh auth token) npx semantic-release --dry-run --no-ci
-# --branches <branch> --plugins @semantic-release/commit-analyzer,./scripts/release-notes.mjs`.
+# Recovery after a failed publish
+#   semantic-release pushes the git tag before the npm publish step runs. If the
+#   publish fails, the tag already exists and a rerun would see nothing to
+#   release, so delete it first:
+#     git push origin :refs/tags/v<version> && git tag -d v<version>
+#
+# The same preview can be run locally:
+#   GITHUB_TOKEN=$(gh auth token) npx semantic-release --dry-run --no-ci \
+#     --branches <branch> \
+#     --plugins @semantic-release/commit-analyzer,./scripts/release-notes.mjs
 
 name: Release
 
 on:
   push:
     branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch or ref to analyze in dry-run mode
+        required: true
+        default: master
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       contents: write
       issues: write
@@ -66,34 +119,79 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
+          ref: ${{ inputs.ref || github.head_ref || github.ref }}
           fetch-depth: 0
 
+      # npm recommends Node 24 and no package manager cache for release builds.
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: 22
-          cache: npm
+          node-version: 24
 
       - name: Install dependencies
         run: npm ci
 
+      # ci.yml already runs these checks on every pull request. The dry run only
+      # needs the computed version and the authentication check, so the quality
+      # gates below run on master pushes only.
       - name: Type check
+        if: github.event_name == 'push'
         run: npm run type-check
 
       - name: Lint
+        if: github.event_name == 'push'
         run: npm run lint
 
       - name: Test
+        if: github.event_name == 'push'
         run: npm run test:run
 
       - name: Build
+        if: github.event_name == 'push'
         run: npm run build
 
       - name: Smoke test
+        if: github.event_name == 'push'
         run: npm run smoke
 
       - name: Release
+        if: github.event_name == 'push'
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # semantic-release resolves the current branch through env-ci from GITHUB_REF,
+      # not from the checked-out ref. On workflow_dispatch GITHUB_REF is the branch
+      # picked in the "Use workflow from" dropdown, and on pull_request it is
+      # refs/pull/N/merge, so whenever it differs from the analyzed ref
+      # semantic-release refuses to run and exits 0 without computing anything.
+      # GITHUB_* variables cannot be overridden through `env:`, so the value is
+      # set at shell level for this one process.
+      - name: Release (dry run)
+        if: github.event_name != 'push'
+        run: |
+          set -o pipefail
+          GITHUB_REF="refs/heads/$RELEASE_REF" npx semantic-release --dry-run --no-ci --branches "$RELEASE_REF" 2>&1 | tee semantic-release.log
+        env:
+          RELEASE_REF: ${{ inputs.ref || github.head_ref }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fail if no version was computed
+        if: github.event_name != 'push'
+        run: grep -q "The next release version is" semantic-release.log
+
+      # A major release must ship the hand written notes from .github/releases,
+      # otherwise scripts/release-notes.mjs falls back to the commit history.
+      - name: Check the curated release notes
+        if: github.event_name != 'push'
+        run: |
+          version=$(sed -n 's/.*The next release version is \([0-9][^ ]*\).*/\1/p' semantic-release.log | tail -n 1)
+          notes=".github/releases/$version.md"
+          if [ -f "$notes" ]; then
+            echo "Curated release notes found: $notes"
+          elif [ "${version#*.}" = "0.0" ]; then
+            echo "::error::Major release $version has no curated notes at $notes"
+            exit 1
+          else
+            echo "No curated notes for $version, the notes will be generated from the commit history"
+          fi
