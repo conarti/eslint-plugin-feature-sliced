@@ -23,16 +23,19 @@ import { Foo } from '@/entities/foo' // filename: src/features/bar/ui.tsx
 
 `allowTypeImports: true`
 
-Disables the rule for type imports. This setting is enabled by default.
+Disables the rule for type imports. This setting is enabled by default. Both `import type { ... }` and inline `import { type ... }` specifiers are exempt; in an import that mixes type and value named specifiers, only the value ones are reported.
 
 ```typescript
-import type { FooType } from 'app/config' // filename: src/entities/bar/model.tsx
-// Attention! Doesn't work if the type was imported like this. You should always use 'type' prefix
-import { FooType } from 'app/config' // filename: src/entities/bar/model.tsx - still ERROR
+import type { FooType } from 'app/config' // filename: src/entities/bar/model.tsx, no error
+import { type FooType } from 'app/config' // filename: src/entities/bar/model.tsx, no error
+import { type FooType, foo } from 'app/config' // filename: src/entities/bar/model.tsx, error on foo only
+import { FooType } from 'app/config' // filename: src/entities/bar/model.tsx, error
 ```
 
+Known gap: a default import combined with inline type specifiers only, such as `import config, { type FooType } from 'app/config'`, is not reported at all. See [issue #38](https://github.com/conarti/eslint-plugin-feature-sliced/issues/38).
+
 Recommended to be used in conjunction with the `@typescript-eslint/no-restricted-imports` rule 
-and the ` allowTypeImports: true` setting.
+and the `allowTypeImports: true` setting.
 https://typescript-eslint.io/rules/no-restricted-imports/#allowtypeimports
 
 `ignoreImports`
@@ -85,4 +88,4 @@ In other situations, it is recommended to use this rule always.
 
 ## Further Reading
 
-https://feature-sliced.design/docs/reference/units/layers
+https://fsd.how/docs/reference/layers/
