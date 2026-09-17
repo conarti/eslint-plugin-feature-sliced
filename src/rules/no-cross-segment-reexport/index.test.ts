@@ -18,6 +18,22 @@ const ruleTester = new RuleTester({
 ruleTester.run('no-cross-segment-reexport', rule, {
   valid: [
     {
+      name: 'should be valid if a dynamic import source is a template literal',
+      filename: 'src/app/providers/i18n.ts',
+      /* eslint-disable-next-line no-template-curly-in-string -- the code under test is a template literal */
+      code: 'const load = (l: string) => import(`./locales/${l}.json`)',
+    },
+    {
+      name: 'should be valid if a dynamic import source is an identifier',
+      filename: 'src/app/providers/i18n.ts',
+      code: 'const load = (p: string) => import(p)',
+    },
+    {
+      name: 'should be valid if a dynamic import source is a call expression',
+      filename: 'src/app/providers/i18n.ts',
+      code: 'const load = (p: string) => import(String(p))',
+    },
+    {
       name: 'should allow re-export from segment in slice public API (index.ts at slice root)',
       filename: 'src/entities/cluster/index.ts',
       code: "export { foo } from './model'",

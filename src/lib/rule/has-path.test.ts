@@ -21,10 +21,28 @@ describe('hasPath', () => {
     expect(hasPath(node)).toBe(false);
   });
 
-  it('should return true when source is an object without a value', () => {
+  it('should return false when the source carries no string value', () => {
     const node = { type: 'ImportDeclaration', source: {} };
 
-    expect(hasPath(node)).toBe(true);
+    expect(hasPath(node)).toBe(false);
+  });
+
+  it('should return false when the source is a template literal', () => {
+    const node = { type: 'ImportExpression', source: { type: 'TemplateLiteral', quasis: [] } };
+
+    expect(hasPath(node)).toBe(false);
+  });
+
+  it('should return false when the source value is not a string', () => {
+    const node = { type: 'ImportExpression', source: { type: 'Literal', value: 123 } };
+
+    expect(hasPath(node)).toBe(false);
+  });
+
+  it('should return false when the source is an identifier', () => {
+    const node = { type: 'ImportExpression', source: { type: 'Identifier', name: 'path' } };
+
+    expect(hasPath(node)).toBe(false);
   });
 
   it('should return true for the happy path with source.value', () => {

@@ -158,6 +158,7 @@ const filesExpectedToBeClean = [
   'src/features/profile/model/uses-shared-helper.ts',
   'src/pages/home/index.ts',
   'src/pages/home/ui/home-page.ts',
+  'src/shared/lib/dynamic-locale-import.ts',
   'src/shared/lib/format-date.ts',
   'src/widgets/header/index.ts',
   'src/widgets/header/ui/header.ts',
