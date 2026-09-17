@@ -37,7 +37,7 @@
     "clean": "rimraf ./dist",
     "build": "tsup --format esm,cjs --clean --dts",
     "prepack": "npm run build",
-    "prepare": "patch-package",
+    "prepare": "patch-package && simple-git-hooks",
     "stub": "tsup --format esm",
     "dev": "npx @eslint/config-inspector --config eslint.config.ts",
     "watch": "tsup --format esm,cjs --watch",
@@ -73,6 +73,9 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.7.3",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@commitlint/is-ignored": "^19.8.1",
     "@semantic-release/release-notes-generator": "^14.1.0",
     "@stryker-mutator/core": "^10.0.0",
     "@stryker-mutator/vitest-runner": "^10.0.0",
@@ -93,9 +96,13 @@
     "rimraf": "^5.0.1",
     "semantic-release": "^25.0.9",
     "semver": "^7.5.4",
+    "simple-git-hooks": "^2.14.0",
     "tsup": "^8.5.0",
     "typescript": "^5.6.2",
     "vitepress": "^1.0.0-alpha.64",
     "vitest": "^5.0.1"
+  },
+  "simple-git-hooks": {
+    "commit-msg": "npx --no -- commitlint --edit \"$1\""
   }
 }
