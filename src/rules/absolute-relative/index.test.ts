@@ -17,6 +17,22 @@ const ruleTester = new RuleTester({
 ruleTester.run('absolute-relative', rule, {
   valid: [
     {
+      name: 'should be valid if a dynamic import source is a template literal',
+      filename: 'src/app/providers/i18n.ts',
+      /* eslint-disable-next-line no-template-curly-in-string -- the code under test is a template literal */
+      code: 'const load = (l: string) => import(`./locales/${l}.json`)',
+    },
+    {
+      name: 'should be valid if a dynamic import source is an identifier',
+      filename: 'src/app/providers/i18n.ts',
+      code: 'const load = (p: string) => import(p)',
+    },
+    {
+      name: 'should be valid if a dynamic import source is a call expression',
+      filename: 'src/app/providers/i18n.ts',
+      code: 'const load = (p: string) => import(String(p))',
+    },
+    {
       name: 'should be valid if relative import within same slice',
       filename: 'src/widgets/TheHeader/ui/TheHeader.stories.tsx',
       code: "import { TheHeader } from './TheHeader';",
