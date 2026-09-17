@@ -42,7 +42,10 @@
 #   verifyAuth, a git push in dry run form, and that check is not skipped;
 #   without write permission it throws EGITNOPERMISSION. The permission is
 #   never exercised, since dry-run mode stops before any write. Read the "The
-#   next release version is X" line near the end of the log.
+#   next release version is X" line near the end of the log. A pull request
+#   whose commits trigger no release ends with "There are no relevant changes,
+#   so no new version is released" instead, which is a healthy verdict and
+#   passes.
 #
 # Merge strategy: use REBASE, never squash
 #   The angular preset used by @semantic-release/commit-analyzer does not
@@ -176,9 +179,22 @@ jobs:
           RELEASE_REF: ${{ inputs.ref || github.head_ref }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Fail if no version was computed
+      # A dry run has exactly two healthy outcomes: semantic-release computed a
+      # version, or it analysed the commits and decided that none of them
+      # trigger a release. Anything else means it never reached a verdict, most
+      # often the silent early exit described above, so the step fails rather
+      # than letting an unproven pull request look green.
+      - name: Fail if the dry run reached no verdict
         if: github.event_name != 'push'
-        run: grep -q "The next release version is" semantic-release.log
+        run: |
+          if grep -q "The next release version is" semantic-release.log; then
+            echo "Dry run verdict: a version was computed"
+          elif grep -q "There are no relevant changes, so no new version is released" semantic-release.log; then
+            echo "Dry run verdict: no relevant changes, nothing to release"
+          else
+            echo "::error::The dry run reached no verdict, see semantic-release.log"
+            exit 1
+          fi
 
       # A major release must ship the hand written notes from .github/releases,
       # otherwise scripts/release-notes.mjs falls back to the commit history.
@@ -186,6 +202,10 @@ jobs:
         if: github.event_name != 'push'
         run: |
           version=$(sed -n 's/.*The next release version is \([0-9][^ ]*\).*/\1/p' semantic-release.log | tail -n 1)
+          if [ -z "$version" ]; then
+            echo "No release computed, no release notes to check"
+            exit 0
+          fi
           notes=".github/releases/$version.md"
           if [ -f "$notes" ]; then
             echo "Curated release notes found: $notes"
