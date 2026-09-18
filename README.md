@@ -603,10 +603,12 @@ The factory is a convenience. If you would rather write the three pieces yoursel
 plugin object and the rule names and wire them up by hand.
 
 The `settings['@conarti/feature-sliced']` key is optional: leave it out and the rules fall back to
-the default layers and segments. Supply `layers` there and it has to be in its normalized form, an
-object with `name` and `hasSlices` for every entry, because the rules take that array as it is and
-skip the normalization the factory performs. A plain string in it is not understood, and the layer
-list silently degrades.
+the default layers and segments. Supply `layers` there and either form works, the normalized
+`{ name, hasSlices }` object or a plain layer name, because the rules normalize the list where they
+read it. A list of plain names answers as the same layers answer through the factory. An empty list
+means a project with no layers, and a list in which no entry can name a layer falls back to the
+defaults. The factory remains the recommended route, because it is the form the options are
+documented in.
 
 ```js
 import { plugin, RULE_NAMES } from '@conarti/eslint-plugin-feature-sliced';
@@ -747,13 +749,27 @@ report that is new, and the one that disappears.
 | A re-export that forwards a lower layer through this file | `layers-slices` `pass-through-reexport` | Import the lower layer directly, or set `allowPassThroughReexports: true` |
 | A default import combined with inline type specifiers only | `layers-slices` `can-not-import` | The default specifier is a value import and was previously missed |
 | An absolute import inside a slice that uses a custom segment name | `absolute-relative` `must-be-relative-path` | Write it relative. Previously missed because the segment name was unknown |
-| A re-export between two custom-named sibling segments | `no-cross-segment-reexport` | Move the re-export to the slice public API |
+| A re-export between two sibling folders of a slice that hold no public API file of their own | `no-cross-segment-reexport` | Move the re-export to the slice public API. This follows from where the slice now ends, not from the `segments` setting |
 | An `index` file on a custom layer, or on any layer under a dotted directory | `public-api` `layers-public-api-not-allowed` | Remove the layer-level public API |
 | A deep import into a folder that is a segment by position but not by name | `public-api` `should-be-from-public-api` | Import through the slice public API |
 
-The one class that disappears is a cross-slice report between two folders that the filesystem
-now says are one slice, because only one of them holds a public API file. See
-[Where a slice ends](#where-a-slice-ends).
+Reports disappear in two directions, because the slice boundary can move either way.
+
+It moves shallower when two folders the old heuristic read as separate slices turn out to be
+one, only one of them holding a public API file, and the cross-slice report between them goes.
+This is the larger of the two.
+
+It moves deeper when a folder that holds its own public API file becomes a slice in its own
+right. An import of that folder stops being a deep import into its parent, and a re-export out
+of it stops being a cross-segment re-export. This direction also clears a false positive: a
+folder whose name merely begins with a built-in segment name, such as `ui-kit-button`, was
+reported as a deep import and named a public API path that does not exist.
+
+One report changes rule rather than appearing or disappearing. A re-export between two folders
+that each hold their own public API file is reported by `layers-slices` as `can-not-import`,
+where it used to be `no-cross-segment-reexport`.
+
+See [Where a slice ends](#where-a-slice-ends).
 
 Two notes for anyone who pins positions or counts rather than reading messages. A re-export is
 reported once per offending value specifier, so `export { a, type A, b } from '...'` produces

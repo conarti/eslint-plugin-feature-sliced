@@ -47,9 +47,15 @@ export { m } from '../model';
 
 > Segment "services" should not re-export from sibling segment "model". Move the re-export to the slice public API.
 
-Without `services` in the `segments` setting the same file is silent, because neither folder
-stands in segment position as far as the rule is concerned. Teaching the plugin about a custom
-segment therefore turns this check on for it.
+Without `services` in the `segments` setting this particular file is silent, because
+`services/index.ts` is then read as a slice public API of its own, which makes `services` a slice
+rather than a segment. That turns on the `index` file, not on the setting: two sibling folders
+with custom names and no `index` file of their own are checked at default settings too.
+Declaring the names as segments makes the check fire either way, because a configured segment
+name is where the slice ends.
+
+Where both folders carry their own `index` file they are two slices, so the re-export is not a
+cross-segment one and `layers-slices` reports it as `can-not-import` instead.
 
 ### Options
 
