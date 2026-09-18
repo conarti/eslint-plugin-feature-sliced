@@ -12,7 +12,7 @@ export function validateAndReportProgram(
   node: TSESTree.Program,
   context: RuleContext,
   optionsWithDefault: Readonly<Options>,
-  layersConfig?: NormalizedLayerConfig[],
+  layersConfig: NormalizedLayerConfig[],
 ) {
   if (isIgnoredCurrentFile(context, optionsWithDefault)) {
     return;

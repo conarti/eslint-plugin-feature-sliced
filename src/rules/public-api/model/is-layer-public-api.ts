@@ -8,7 +8,7 @@ import {
 } from '../../../lib/rule';
 import { isNull } from '../../../lib/shared';
 
-export function isLayerPublicApi(context: UnknownRuleContext, layersConfig?: NormalizedLayerConfig[]): boolean {
+export function isLayerPublicApi(context: UnknownRuleContext, layersConfig: NormalizedLayerConfig[]): boolean {
   const normalizedCurrentFilePath = extractCurrentFilePath(context);
   const cwd = extractCwd(context);
   const layer = extractLayer(normalizedCurrentFilePath, cwd, layersConfig);
