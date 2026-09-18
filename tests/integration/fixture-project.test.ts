@@ -185,6 +185,11 @@ const filesExpectedToBeClean = [
   'src2/entities/cart/services/helpers.ts',
   'src2/entities/cart/services/index.ts',
   'src2/entities/cart/ui/cart-view.ts',
+  'src2/entities/invoice/helpers/invoice-helper.ts',
+  'src2/entities/invoice/index.ts',
+  'src2/entities/invoice/services/index.ts',
+  'src2/entities/invoice/services/invoice-service.ts',
+  'src2/features/payment/index.ts',
 ];
 
 describe('fixture project', () => {

@@ -35,26 +35,43 @@ export function extractFeatureSlicedParts(
 
   const layer = extractLayer(targetPath, cwd, layersConfig);
   const sliceResolution = extractSlice(slicePath ?? targetPath, layersConfig, segmentsConfig, { cwd, hasPublicApi });
-  const [segment, segmentFiles] = extractSegment(targetPath, layersConfig, segmentsConfig);
+
+  /* The name list route, which is also what both sides fall back to together */
+  const [fallbackSegment, fallbackSegmentFiles] = extractSegment(targetPath, layersConfig, segmentsConfig);
+
+  const [segment, segmentFiles] = sliceResolution.resolved
+    ? extractSegment(slicePath ?? targetPath, layersConfig, segmentsConfig, sliceResolution.slice)
+    : [fallbackSegment, fallbackSegmentFiles];
 
   return {
     layer,
     slice: sliceResolution.slice,
     segment,
     segmentFiles,
-    sliceResolution,
+    resolved: sliceResolution.resolved,
+    fallback: {
+      slice: sliceResolution.fallbackSlice,
+      segment: fallbackSegment,
+      segmentFiles: fallbackSegmentFiles,
+    },
   };
 }
 
 export type ExtractedFeatureSlicedParts = ReturnType<typeof extractFeatureSlicedParts>;
 
 /**
- * Rewrites the parts so the slice comes from the path heuristic.
+ * Rewrites the parts so the slice and the segment come from the path heuristic.
  *
  * The never-mix rule: a comparison between a disk resolved slice and a heuristic one compares
  * two different definitions and can err in either direction, so when either side of a
- * comparison is unresolved both sides are taken back to the heuristic.
+ * comparison is unresolved both sides are taken back to the heuristic. The segment travels
+ * with the slice, because it is derived from the slice boundary.
  */
 export function withFallbackSlice(parts: ExtractedFeatureSlicedParts): ExtractedFeatureSlicedParts {
-  return { ...parts, slice: parts.sliceResolution.fallbackSlice };
+  return {
+    ...parts,
+    slice: parts.fallback.slice,
+    segment: parts.fallback.segment,
+    segmentFiles: parts.fallback.segmentFiles,
+  };
 }

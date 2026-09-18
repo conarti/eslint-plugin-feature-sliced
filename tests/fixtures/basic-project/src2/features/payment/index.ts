@@ -1,0 +1,1 @@
+export { payment } from './ui';

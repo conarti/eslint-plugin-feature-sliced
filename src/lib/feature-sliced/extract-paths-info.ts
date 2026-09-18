@@ -102,8 +102,7 @@ export function extractPathsInfo(
    * path heuristic. A failed probe never means "the same slice", because that is the verdict
    * that skips validation.
    */
-  const bothSidesResolved = resolvedPartsOfTarget.sliceResolution.resolved
-    && resolvedPartsOfCurrentFile.sliceResolution.resolved;
+  const bothSidesResolved = resolvedPartsOfTarget.resolved && resolvedPartsOfCurrentFile.resolved;
 
   const fsdPartsOfTarget = bothSidesResolved ? resolvedPartsOfTarget : withFallbackSlice(resolvedPartsOfTarget);
   const fsdPartsOfCurrentFile = bothSidesResolved ? resolvedPartsOfCurrentFile : withFallbackSlice(resolvedPartsOfCurrentFile);

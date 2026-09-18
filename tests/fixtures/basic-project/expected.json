@@ -8,6 +8,16 @@
     "suggestions": []
   },
   {
+    "file": "src/entities/(shop)/ShopA/ui/shop-a.ts",
+    "ruleId": "@conarti/feature-sliced/public-api",
+    "messageId": "should-be-from-public-api",
+    "line": 2,
+    "column": 23,
+    "suggestions": [
+      "remove-suggestion"
+    ]
+  },
+  {
     "file": "src/entities/group/UserA/ui/user-a.ts",
     "ruleId": "@conarti/feature-sliced/layers-slices",
     "messageId": "can-not-import",
@@ -120,6 +130,16 @@
     ]
   },
   {
+    "file": "src/pages/home/ui/deep-import-into-custom-segment.ts",
+    "ruleId": "@conarti/feature-sliced/public-api",
+    "messageId": "should-be-from-public-api",
+    "line": 2,
+    "column": 30,
+    "suggestions": [
+      "remove-suggestion"
+    ]
+  },
+  {
     "file": "src/pages/home/ui/deep-import-into-slice.ts",
     "ruleId": "@conarti/feature-sliced/public-api",
     "messageId": "should-be-from-public-api",
@@ -167,6 +187,14 @@
     "messageId": "unknown-segment",
     "line": 2,
     "column": 30,
+    "suggestions": []
+  },
+  {
+    "file": "src2/features/payment/ui/resolved-unknown-segment-import.ts",
+    "ruleId": "@conarti/feature-sliced/public-api",
+    "messageId": "unknown-segment",
+    "line": 2,
+    "column": 31,
     "suggestions": []
   }
 ]

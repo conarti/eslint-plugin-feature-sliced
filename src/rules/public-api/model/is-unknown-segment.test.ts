@@ -1,6 +1,9 @@
 import type { ImportExportNodesWithSourceValue } from '../../../lib/rule';
 import type { RuleContext } from '../config';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { makePublicApiOptions } from '../../../../tests/utils';
+import { DEFAULT_SEGMENTS } from '../../../config';
 import { normalizeLayersConfig } from '../../../lib/feature-sliced/layers-config';
 import { VALIDATION_LEVEL } from '../config';
 import { isUnknownSegment } from './is-unknown-segment';
@@ -77,6 +80,39 @@ describe('isUnknownSegment', () => {
       const node = createMockNode('entities/(admin)/orders/model');
 
       expect(isUnknownSegment(node, context, segmentsOptions, undefined, undefined)).toBeNull();
+    });
+  });
+  /*
+   * The filesystem route. The fixture project is a real tree, so a context carrying its root
+   * as the cwd makes the slice boundary resolvable and the segment positional.
+   */
+  describe('a segment named by the filesystem resolver', () => {
+    const fixtureRoot = path.resolve(
+      path.dirname(fileURLToPath(import.meta.url)),
+      '../../../../tests/fixtures/basic-project',
+    );
+
+    const resolvedContext = {
+      ...createMockContext(`${fixtureRoot}/src2/features/payment/ui/x.ts`),
+      cwd: fixtureRoot,
+    } as unknown as RuleContext;
+
+    it('reports a positional segment whose name is not a configured one', () => {
+      const node = createMockNode('src2/entities/invoice/helpers/invoice-helper');
+
+      expect(isUnknownSegment(node, resolvedContext, segmentsOptions)).toBe('helpers');
+    });
+
+    it('accepts a positional segment whose name is a configured one', () => {
+      const node = createMockNode('src2/entities/invoice/services/invoice-service');
+
+      expect(isUnknownSegment(
+        node,
+        resolvedContext,
+        segmentsOptions,
+        undefined,
+        [...DEFAULT_SEGMENTS, 'services'],
+      )).toBeNull();
     });
   });
 });

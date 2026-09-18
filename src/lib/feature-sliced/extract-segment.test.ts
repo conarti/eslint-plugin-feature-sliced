@@ -186,4 +186,71 @@ describe('extract-segment', () => {
       expect(result).toStrictEqual(['services', null]);
     });
   });
+
+  /*
+   * The positional route, taken whenever the filesystem resolved the slice boundary. The
+   * configured name list stops deciding what a segment is; the first part after the slice is
+   * the segment, whatever it is called.
+   */
+  describe('with a resolved slice boundary', () => {
+    it('takes the first part after the slice as the segment', () => {
+      expect(extractSegment('src/entities/foo/ui/index.ts', undefined, undefined, 'foo'))
+        .toStrictEqual(['ui', 'index.ts']);
+    });
+
+    it('takes a folder that is absent from the segment list', () => {
+      expect(extractSegment('src/entities/foo/custom-segment/index.ts', undefined, undefined, 'foo'))
+        .toStrictEqual(['custom-segment', 'index.ts']);
+    });
+
+    it('takes the part after the slice through a group folder', () => {
+      expect(extractSegment('src/entities/group-folder/foo/model/index.ts', undefined, undefined, 'foo'))
+        .toStrictEqual(['model', 'index.ts']);
+    });
+
+    it('takes the part after the slice through a parenthesized group folder', () => {
+      expect(extractSegment('src/entities/(group-folder)/foo/model/index.ts', undefined, undefined, 'foo'))
+        .toStrictEqual(['model', 'index.ts']);
+    });
+
+    it('keeps every part below the segment as the segment files', () => {
+      expect(extractSegment('src/entities/foo/model/sub-folder/sub-sub-folder/index.ts', undefined, undefined, 'foo'))
+        .toStrictEqual(['model', 'sub-folder/sub-sub-folder/index.ts']);
+    });
+
+    it('drops the extension of a segment written as a file', () => {
+      expect(extractSegment('src/entities/foo/model.ts', undefined, undefined, 'foo'))
+        .toStrictEqual(['model', null]);
+    });
+
+    it('returns nothing for the slice public api itself', () => {
+      expect(extractSegment('src/entities/foo/index.ts', undefined, undefined, 'foo'))
+        .toStrictEqual([null, null]);
+    });
+
+    it('returns nothing for the cross-import public api folder', () => {
+      expect(extractSegment('src/entities/foo/@x/session', undefined, undefined, 'foo'))
+        .toStrictEqual([null, null]);
+    });
+
+    it('returns nothing when nothing follows the slice', () => {
+      expect(extractSegment('src/entities/foo', undefined, undefined, 'foo'))
+        .toStrictEqual([null, null]);
+    });
+
+    it('returns nothing when the path holds no layer', () => {
+      expect(extractSegment('src/components/foo/ui', undefined, undefined, 'foo'))
+        .toStrictEqual([null, null]);
+    });
+
+    it('returns nothing when the slice is not one of the parts after the layer', () => {
+      expect(extractSegment('src/entities/bar/ui/index.ts', undefined, undefined, 'foo'))
+        .toStrictEqual([null, null]);
+    });
+
+    it('matches the slice name case-insensitively', () => {
+      expect(extractSegment('src/entities/Foo/ui/index.ts', undefined, undefined, 'foo'))
+        .toStrictEqual(['ui', 'index.ts']);
+    });
+  });
 });
