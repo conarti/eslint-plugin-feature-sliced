@@ -950,6 +950,39 @@ ruleTester.run('layers-slices (re-exports)', rule, {
       ],
     },
     {
+      /*
+       * Reading a re-export per specifier is what changes the report count: every value
+       * specifier carries its own report, so a second one is a second report rather than
+       * one report that moves back to the source.
+       */
+      name: 'should report each value specifier of a mixed upward re-export carrying two of them',
+      filename: 'src/entities/user/index.ts',
+      code: "export { loginUser, type AuthState, logoutUser } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [
+        makeLayersSlicesErrorAtSpecifier(
+          'features',
+          'entities',
+          {
+            line: 1,
+            endLine: 1,
+            column: 10,
+            endColumn: 19,
+          },
+        ),
+        makeLayersSlicesErrorAtSpecifier(
+          'features',
+          'entities',
+          {
+            line: 1,
+            endLine: 1,
+            column: 37,
+            endColumn: 47,
+          },
+        ),
+      ],
+    },
+    {
       name: 'should report only the value specifier of a mixed upward re-export when pass-through re-exports are allowed',
       filename: 'src/entities/user/index.ts',
       code: "export { loginUser, type AuthState } from '@/features/auth';",
@@ -981,6 +1014,34 @@ ruleTester.run('layers-slices (re-exports)', rule, {
             endLine: 1,
             column: 10,
             endColumn: 16,
+          },
+        ),
+      ],
+    },
+    {
+      name: 'should report each value specifier of a mixed pass-through re-export carrying two of them',
+      filename: 'src/features/auth/index.ts',
+      code: "export { Button, type ButtonProps, Input } from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [
+        makePassThroughReexportErrorAtSpecifier(
+          'shared',
+          'features',
+          {
+            line: 1,
+            endLine: 1,
+            column: 10,
+            endColumn: 16,
+          },
+        ),
+        makePassThroughReexportErrorAtSpecifier(
+          'shared',
+          'features',
+          {
+            line: 1,
+            endLine: 1,
+            column: 36,
+            endColumn: 41,
           },
         ),
       ],
@@ -1031,6 +1092,13 @@ ruleTester.run('layers-slices (re-exports)', rule, {
       code: "export type * from '@/shared/ui/button';",
       options: makeLayersSlicesPassThroughOptions(false, false),
       errors: [makePassThroughReexportError('shared', 'features')],
+    },
+    {
+      /* The import side of the equality the re-export case below is justified by. */
+      name: 'should report an upward import with an empty specifier list',
+      filename: 'src/entities/user/index.ts',
+      code: "import {} from '@/features/auth';",
+      errors: [makeLayersSlicesError('features', 'entities')],
     },
     {
       /*
