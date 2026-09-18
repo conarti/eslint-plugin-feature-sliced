@@ -90,6 +90,22 @@ describe('extract-feature-sliced-parts', () => {
     expect(parts.segmentFiles).toBeNull();
   });
 
+  /*
+   * `slicePath` exists so the slice can be resolved from a real directory. The segment is not
+   * resolved from it: with no boundary the name list reads the target path, which is the path
+   * the reports are about.
+   */
+  it('reads the fallback segment from the target path, not from the slice path', () => {
+    const parts = extractFeatureSlicedParts('@/widgets/header/model/use-x.ts', ROOT, {
+      slicePath: '/proj/src/widgets/header/ui/use-x.ts',
+      hasPublicApi: () => false,
+    });
+
+    expect(parts.resolved).toBe(false);
+    expect(parts.segment).toBe('model');
+    expect(parts.segmentFiles).toBe('use-x.ts');
+  });
+
   it('carries the boundary position alongside the slice name', () => {
     const parts = extractFeatureSlicedParts('/proj/src/entities/user/user/ui/a.ts', ROOT, {
       hasPublicApi: (directory) => directory === '/proj/src/entities/user/user',
