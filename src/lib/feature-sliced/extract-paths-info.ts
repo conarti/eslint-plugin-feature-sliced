@@ -7,7 +7,10 @@ import {
 import {
   type ExtractedFeatureSlicedParts,
   extractFeatureSlicedParts,
+  withFallbackSlice,
 } from './extract-feature-sliced-parts';
+import { hasPublicApi } from './has-public-api';
+import { rerootTargetPath } from './resolution-paths';
 import {
   type ValidatedFeatureSlicedParts,
   validateExtractedFeatureSlicedParts,
@@ -80,8 +83,30 @@ export function extractPathsInfo(
     normalizedCwd,
   } = extractPaths(node, context);
 
-  const fsdPartsOfTarget = extractFeatureSlicedParts(absoluteTargetPath, normalizedCwd, { layersConfig, segmentsConfig });
-  const fsdPartsOfCurrentFile = extractFeatureSlicedParts(normalizedCurrentFilePath, normalizedCwd, { layersConfig, segmentsConfig });
+  /*
+   * Only a relative specifier reaches the rules as a real path, so the target is rebuilt under
+   * the current file's layer root before the slice boundary is looked for on disk. Without it
+   * every aliased import would fail the probe and the resolution would do nothing at all.
+   */
+  const slicePathOfTarget = rerootTargetPath(normalizedCurrentFilePath, absoluteTargetPath, normalizedCwd, layersConfig)
+    ?? absoluteTargetPath;
+
+  const resolutionOptions = { layersConfig, segmentsConfig, hasPublicApi };
+
+  const resolvedPartsOfTarget = extractFeatureSlicedParts(absoluteTargetPath, normalizedCwd, { ...resolutionOptions, slicePath: slicePathOfTarget });
+  const resolvedPartsOfCurrentFile = extractFeatureSlicedParts(normalizedCurrentFilePath, normalizedCwd, resolutionOptions);
+
+  /*
+   * The only place that holds both sides at once, so the only place the never-mix rule can be
+   * stated: a side that the filesystem could not answer takes the whole comparison back to the
+   * path heuristic. A failed probe never means "the same slice", because that is the verdict
+   * that skips validation.
+   */
+  const bothSidesResolved = resolvedPartsOfTarget.sliceResolution.resolved
+    && resolvedPartsOfCurrentFile.sliceResolution.resolved;
+
+  const fsdPartsOfTarget = bothSidesResolved ? resolvedPartsOfTarget : withFallbackSlice(resolvedPartsOfTarget);
+  const fsdPartsOfCurrentFile = bothSidesResolved ? resolvedPartsOfCurrentFile : withFallbackSlice(resolvedPartsOfCurrentFile);
 
   const validatedFeatureSlicedPartsOfTarget = validateExtractedFeatureSlicedParts(fsdPartsOfTarget, layersConfig);
   const validatedFeatureSlicedPartsOfCurrentFile = validateExtractedFeatureSlicedParts(fsdPartsOfCurrentFile, layersConfig);

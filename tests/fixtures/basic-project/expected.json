@@ -1,10 +1,62 @@
 [
   {
+    "file": "src/entities/(shop)/ShopA/ui/shop-a.ts",
+    "ruleId": "@conarti/feature-sliced/layers-slices",
+    "messageId": "can-not-import",
+    "line": 2,
+    "column": 23,
+    "suggestions": []
+  },
+  {
+    "file": "src/entities/group/UserA/ui/user-a.ts",
+    "ruleId": "@conarti/feature-sliced/layers-slices",
+    "messageId": "can-not-import",
+    "line": 2,
+    "column": 23,
+    "suggestions": []
+  },
+  {
+    "file": "src/entities/group/UserA/ui/user-a.ts",
+    "ruleId": "@conarti/feature-sliced/public-api",
+    "messageId": "should-be-from-public-api",
+    "line": 2,
+    "column": 23,
+    "suggestions": [
+      "remove-suggestion"
+    ]
+  },
+  {
     "file": "src/entities/index.ts",
     "ruleId": "@conarti/feature-sliced/public-api",
     "messageId": "layers-public-api-not-allowed",
     "line": 2,
     "column": 1,
+    "suggestions": []
+  },
+  {
+    "file": "src/entities/modal/model/use-profile.ts",
+    "ruleId": "@conarti/feature-sliced/layers-slices",
+    "messageId": "can-not-import",
+    "line": 2,
+    "column": 25,
+    "suggestions": []
+  },
+  {
+    "file": "src/entities/modal/model/use-profile.ts",
+    "ruleId": "@conarti/feature-sliced/public-api",
+    "messageId": "should-be-from-public-api",
+    "line": 2,
+    "column": 25,
+    "suggestions": [
+      "remove-suggestion"
+    ]
+  },
+  {
+    "file": "src/entities/order/ui/uses-services.ts",
+    "ruleId": "@conarti/feature-sliced/absolute-relative",
+    "messageId": "must-be-relative-path",
+    "line": 2,
+    "column": 30,
     "suggestions": []
   },
   {
@@ -50,6 +102,24 @@
     "suggestions": []
   },
   {
+    "file": "src/features/book/search/ui/search-book.ts",
+    "ruleId": "@conarti/feature-sliced/layers-slices",
+    "messageId": "can-not-import",
+    "line": 2,
+    "column": 28,
+    "suggestions": []
+  },
+  {
+    "file": "src/features/book/search/ui/search-book.ts",
+    "ruleId": "@conarti/feature-sliced/public-api",
+    "messageId": "should-be-from-public-api",
+    "line": 2,
+    "column": 28,
+    "suggestions": [
+      "remove-suggestion"
+    ]
+  },
+  {
     "file": "src/pages/home/ui/deep-import-into-slice.ts",
     "ruleId": "@conarti/feature-sliced/public-api",
     "messageId": "should-be-from-public-api",
@@ -65,6 +135,14 @@
     "messageId": "must-be-absolute-path",
     "line": 2,
     "column": 28,
+    "suggestions": []
+  },
+  {
+    "file": "src/widgets/header/ui/uses-own-hooks.ts",
+    "ruleId": "@conarti/feature-sliced/absolute-relative",
+    "messageId": "must-be-relative-path",
+    "line": 2,
+    "column": 27,
     "suggestions": []
   },
   {

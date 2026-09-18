@@ -63,6 +63,15 @@ depend on the machine's locale.
 | `src/widgets/header/ui/relative-cross-layer-import.ts` | `absolute-relative` | `must-be-absolute-path` | An import that crosses a layer boundary has to be written as an absolute path |
 | `src/widgets/header/ui/wrong-import-order.ts` | `import-order` | `order` | External packages are ordered before FSD layer imports, so an `axios` import placed after a layer import is reported |
 | `src2/entities/cart/ui/absolute-inside-slice.ts` | `absolute-relative` | `must-be-relative-path` | The slice boundary follows the configured segment list: `services` is a segment of the `cart` slice, so an absolute import of it from the `ui` segment of the same slice is reported |
+| `src/entities/(shop)/ShopA/ui/shop-a.ts` | `layers-slices` | `can-not-import` | A parenthesized group folder resolves exactly like an un-parenthesized one: `ShopA` and `ShopB` stay two slices, so the import between them crosses a slice boundary |
+| `src/entities/group/UserA/ui/user-a.ts` | `layers-slices` | `can-not-import` | `UserA` and `UserB` each carry their own public api, so a group folder never merges them into one slice |
+| `src/entities/group/UserA/ui/user-a.ts` | `public-api` | `should-be-from-public-api` | The same import seen by the other rule: a sibling slice under a group folder still has to be reached through its public api |
+| `src/entities/modal/model/use-profile.ts` | `layers-slices` | `can-not-import` | Neither `entities/modal` nor `entities/request-profile` carries a public api and both of their `model/` folders do, so only the segment bound keeps the two slices apart |
+| `src/entities/modal/model/use-profile.ts` | `public-api` | `should-be-from-public-api` | The same import seen by the other rule |
+| `src/entities/order/ui/uses-services.ts` | `absolute-relative` | `must-be-relative-path` | `services/` holds no public api, so it is a folder of the `order` slice rather than a slice: an absolute import of it from the same slice has to be relative |
+| `src/features/book/search/ui/search-book.ts` | `layers-slices` | `can-not-import` | A group folder that carries its own public api does not swallow the sub-slices that carry theirs: `search` and `toggle-read` stay two slices |
+| `src/features/book/search/ui/search-book.ts` | `public-api` | `should-be-from-public-api` | The same import seen by the other rule |
+| `src/widgets/header/ui/uses-own-hooks.ts` | `absolute-relative` | `must-be-relative-path` | `hooks/` holds no public api, so the import never leaves the `header` slice and has to be written as a relative path |
 | `src2/features/checkout/ui/unknown-segment-import.ts` | `public-api` | `unknown-segment` | At `publicApi.level: 'segments'`, a folder in segment position that is not in the configured segment list (`helpers`) is reported instead of being silently accepted |
 
 Alongside the snapshot the test asserts that every rule id the plugin exports still appears
@@ -72,11 +81,13 @@ lint glob that quietly stops matching a subtree fails too.
 
 ## The clean files
 
-The remaining 30 `.ts` files carry no expectation at all, and the test asserts that they produce
+The remaining 45 `.ts` files carry no expectation at all, and the test asserts that they produce
 no message whatsoever. They are the false-positive guard: correct upward type-only imports,
 relative imports inside a slice, absolute imports across layers, slice and segment public apis,
 `@x` cross-imports addressed to the importing slice, and the custom `services` segment of `src2/`
-all have to stay silent. `src2/entities/basket/model/cross-import-at-segments-level.ts` is the one
+all have to stay silent. The public api files of the group folder shapes are here too: an
+`index.ts` that re-exports a folder of its own slice, and a group folder's own `index.ts` sitting
+next to the sub-slices that carry theirs. `src2/entities/basket/model/cross-import-at-segments-level.ts` is the one
 worth naming: it keeps the `@x` cross-import exempt from the `unknown-segment` check when
 `publicApi.level` is `'segments'`. A rule that starts over-reporting shows up here, not in the snapshot.
 

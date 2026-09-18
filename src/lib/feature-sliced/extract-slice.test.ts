@@ -12,7 +12,7 @@ describe('extract-slice', () => {
     }));
 
     it.each(cases)('$name', ({ path, expected }) => {
-      expect(extractSlice(path)).toBe(expected);
+      expect(extractSlice(path).slice).toBe(expected);
     });
   });
 
@@ -46,7 +46,7 @@ describe('extract-slice', () => {
     ];
 
     it.each(cases)('$name: $path', ({ path, expected }) => {
-      expect(extractSlice(path)).toBe(expected);
+      expect(extractSlice(path).slice).toBe(expected);
     });
   });
 
@@ -95,7 +95,7 @@ describe('extract-slice', () => {
     ];
 
     it.each(cases)('$name: $path', ({ path, expected }) => {
-      expect(extractSlice(path)).toBe(expected);
+      expect(extractSlice(path).slice).toBe(expected);
     });
   });
 
@@ -139,7 +139,7 @@ describe('extract-slice', () => {
     ];
 
     it.each(cases)('$name: $path', ({ path, expected }) => {
-      expect(extractSlice(path)).toBe(expected);
+      expect(extractSlice(path).slice).toBe(expected);
     });
   });
 
@@ -198,7 +198,7 @@ describe('extract-slice', () => {
     ];
 
     it.each(cases)('$name: $path', ({ path, expected }) => {
-      expect(extractSlice(path)).toBe(expected);
+      expect(extractSlice(path).slice).toBe(expected);
     });
   });
 
@@ -209,7 +209,7 @@ describe('extract-slice', () => {
         undefined,
         CUSTOM_SEGMENTS,
       );
-      expect(result).toBe('foo');
+      expect(result.slice).toBe('foo');
     });
 
     it('should work with another custom segment', () => {
@@ -218,7 +218,7 @@ describe('extract-slice', () => {
         undefined,
         CUSTOM_SEGMENTS,
       );
-      expect(result).toBe('LoginForm');
+      expect(result.slice).toBe('LoginForm');
     });
 
     it('should still recognize default segments with custom config', () => {
@@ -227,7 +227,7 @@ describe('extract-slice', () => {
         undefined,
         CUSTOM_SEGMENTS,
       );
-      expect(result).toBe('User');
+      expect(result.slice).toBe('User');
     });
 
     it('should use fallback when unknown segment used (not in custom config)', () => {
@@ -238,7 +238,7 @@ describe('extract-slice', () => {
         replaceSegments,
       );
       /* When ui is not recognized as segment, fallback returns last folder */
-      expect(result).toBe('ui');
+      expect(result.slice).toBe('ui');
     });
 
     it('should work with replace mode segments', () => {
@@ -248,7 +248,7 @@ describe('extract-slice', () => {
         undefined,
         replaceSegments,
       );
-      expect(result).toBe('foo');
+      expect(result.slice).toBe('foo');
     });
 
     it('should work with group folders and custom segments', () => {
@@ -257,7 +257,7 @@ describe('extract-slice', () => {
         undefined,
         CUSTOM_SEGMENTS,
       );
-      expect(result).toBe('User');
+      expect(result.slice).toBe('User');
     });
   });
 
@@ -286,7 +286,7 @@ describe('extract-slice', () => {
     ];
 
     it.each(cases)('$name: $path', ({ path, expected }) => {
-      expect(extractSlice(path)).toBe(expected);
+      expect(extractSlice(path).slice).toBe(expected);
     });
   });
 
@@ -310,7 +310,7 @@ describe('extract-slice', () => {
     ];
 
     it.each(cases)('$name: $path', ({ path, expected }) => {
-      expect(extractSlice(path)).toBe(expected);
+      expect(extractSlice(path).slice).toBe(expected);
     });
   });
 
@@ -344,7 +344,7 @@ describe('extract-slice', () => {
     ];
 
     it.each(cases)('$name: $path', ({ path, expected }) => {
-      expect(extractSlice(path)).toBe(expected);
+      expect(extractSlice(path).slice).toBe(expected);
     });
   });
 });
