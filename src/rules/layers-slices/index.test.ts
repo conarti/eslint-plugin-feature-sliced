@@ -158,6 +158,24 @@ ruleTester.run('layers-slices', rule, {
       code: "import { Bar } from 'src/features/bar';",
       options: makeLayersSlicesIgnoreInFilesOptions(['**/src/(shared|entities|features|widgets|pages|processes|app)/index.ts']),
     },
+    {
+      name: 'should work with ignoreFiles under a directory whose name starts with a dot',
+      filename: '/proj/.worktrees/w1/src/entities/user/model/a.ts',
+      code: "import { a } from 'src/features/auth';",
+      options: makeLayersSlicesIgnoreInFilesOptions(['**/entities/**']),
+    },
+    {
+      name: 'should work with ignoreImports when the import path carries a dot directory',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import { a } from 'src/.generated/entities/api';",
+      options: makeLayersSlicesIgnoreOptions(['**/entities/**']),
+    },
+    {
+      name: 'should keep ignoring a dotted file matched by a negated ignoreFiles pattern',
+      filename: '/proj/src/.generated/a.ts',
+      code: "import { a } from 'src/features/auth';",
+      options: makeLayersSlicesIgnoreInFilesOptions(['!src/**']),
+    },
   ],
 
   invalid: [
@@ -324,6 +342,13 @@ ruleTester.run('layers-slices', rule, {
       filename: 'src/entities/Product/ui/Card.tsx',
       code: "import { User } from 'entities/User/@x/Session';",
       errors: [makeInvalidCrossImportError('User', 'Session')],
+    },
+    {
+      name: 'should still report if an ignoreFiles pattern matches no part of a dotted path',
+      filename: '/proj/.worktrees/w1/src/entities/user/model/a.ts',
+      code: "import { a } from 'src/features/auth';",
+      options: makeLayersSlicesIgnoreInFilesOptions(['**/widgets/**']),
+      errors: [makeLayersSlicesError('features', 'entities')],
     },
   ],
 });
