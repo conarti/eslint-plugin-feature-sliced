@@ -76,6 +76,9 @@ depend on the machine's locale.
 | `src/widgets/header/ui/uses-own-hooks.ts` | `absolute-relative` | `must-be-relative-path` | `hooks/` holds no public api, so the import never leaves the `header` slice and has to be written as a relative path |
 | `src2/features/payment/ui/resolved-unknown-segment-import.ts` | `public-api` | `unknown-segment` | The same check reached through the filesystem: both slices carry a public api, so `helpers` is the segment by position, and the configured list is asked only whether that name is recognised |
 | `src2/features/checkout/ui/unknown-segment-import.ts` | `public-api` | `unknown-segment` | At `publicApi.level: 'segments'`, a folder in segment position that is not in the configured segment list (`helpers`) is reported instead of being silently accepted |
+| `src/entities/panel/panel/ui/index.ts` | `no-cross-segment-reexport` | `no-cross-segment-reexport` (suggestion `move-to-slice-public-api-suggestion`) | The slice is `panel/panel`, the folder that holds the public api, and not the `panel/` folder above it that repeats its name, so `ui` is the segment and its re-export of `../model` crosses a segment boundary |
+| `src/entities/panel/panel/ui/reaches-sibling-slice.ts` | `layers-slices` | `can-not-import` | The slice directory of a file is the one the filesystem resolved, so `panel/other` is a sibling slice rather than a folder of `panel/panel`, and the import crosses a slice boundary |
+| `src/entities/panel/panel/ui/reaches-sibling-slice.ts` | `public-api` | `should-be-from-public-api` | The same import seen by the other rule |
 
 Alongside the snapshot the test asserts that every rule id the plugin exports still appears
 somewhere in the report, so a preset that silently stops enabling a rule fails the suite, and
@@ -84,7 +87,7 @@ lint glob that quietly stops matching a subtree fails too.
 
 ## The clean files
 
-The remaining 55 `.ts` files carry no expectation at all, and the test asserts that they produce
+The remaining 60 `.ts` files carry no expectation at all, and the test asserts that they produce
 no message whatsoever. They are the false-positive guard: correct upward type-only imports,
 relative imports inside a slice, absolute imports across layers, slice and segment public apis,
 `@x` cross-imports addressed to the importing slice, and the custom `services` segment of `src2/`
@@ -95,7 +98,10 @@ next to the sub-slices that carry theirs. Two of them are load-bearing rather th
 cannot be resolved from disk: it stays silent only because one unresolved side sends both sides
 back to the path heuristic, where the two agree. `src/entities/ticket/handlers/index.ts` stays
 silent only because `handlers/` carries a public api of its own and is therefore a slice rather
-than a segment, which the rule can only know by asking the filesystem. `src2/entities/basket/model/cross-import-at-segments-level.ts` is the one
+than a segment, which the rule can only know by asking the filesystem. `src/pages/home/ui/imports-same-named-nested-slice.ts` is a third: `src/entities/panel/panel` is
+the public api of a slice whose folder repeats the name of the folder above it, so the path holds
+no segment and the import needs no other entry point.
+`src2/entities/basket/model/cross-import-at-segments-level.ts` is the one
 worth naming: it keeps the `@x` cross-import exempt from the `unknown-segment` check when
 `publicApi.level` is `'segments'`. A rule that starts over-reporting shows up here, not in the snapshot.
 

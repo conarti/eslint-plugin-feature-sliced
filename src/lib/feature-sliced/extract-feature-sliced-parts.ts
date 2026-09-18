@@ -39,13 +39,14 @@ export function extractFeatureSlicedParts(
   /* The name list route, which is also what both sides fall back to together */
   const [fallbackSegment, fallbackSegmentFiles] = extractSegment(targetPath, layersConfig, segmentsConfig);
 
-  const [segment, segmentFiles] = sliceResolution.resolved
-    ? extractSegment(slicePath ?? targetPath, layersConfig, segmentsConfig, sliceResolution.slice)
+  const [segment, segmentFiles] = sliceResolution.boundary !== null
+    ? extractSegment(slicePath ?? targetPath, layersConfig, segmentsConfig, sliceResolution.boundary)
     : [fallbackSegment, fallbackSegmentFiles];
 
   return {
     layer,
     slice: sliceResolution.slice,
+    sliceIndex: sliceResolution.boundary?.index ?? null,
     segment,
     segmentFiles,
     resolved: sliceResolution.resolved,
@@ -64,13 +65,14 @@ export type ExtractedFeatureSlicedParts = ReturnType<typeof extractFeatureSliced
  *
  * The never-mix rule: a comparison between a disk resolved slice and a heuristic one compares
  * two different definitions and can err in either direction, so when either side of a
- * comparison is unresolved both sides are taken back to the heuristic. The segment travels
- * with the slice, because it is derived from the slice boundary.
+ * comparison is unresolved both sides are taken back to the heuristic. The segment and the
+ * boundary position travel with the slice, because both are derived from it.
  */
 export function withFallbackSlice(parts: ExtractedFeatureSlicedParts): ExtractedFeatureSlicedParts {
   return {
     ...parts,
     slice: parts.fallback.slice,
+    sliceIndex: null,
     segment: parts.fallback.segment,
     segmentFiles: parts.fallback.segmentFiles,
   };

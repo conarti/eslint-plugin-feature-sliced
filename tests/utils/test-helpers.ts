@@ -1,5 +1,7 @@
 import type { TSESLint } from '@typescript-eslint/utils';
 import type { Layer, LayersConfig, SegmentsConfig } from '../../src/config';
+import path from 'node:path';
+import process from 'node:process';
 import { PLUGIN_NAME } from '../../src/config';
 import { normalizeLayersConfig } from '../../src/lib/feature-sliced/layers-config';
 import {
@@ -23,6 +25,19 @@ import {
   VALIDATION_LEVEL,
   type ValidationLevel,
 } from '../../src/rules/public-api/config';
+
+/* === on-disk fixture helpers === */
+
+/**
+ * An absolute path inside the on-disk fixture project.
+ *
+ * The slice boundary is read off the disk, and a file the rule sees is only probed when it
+ * lies under the working directory, so a rule case that has to exercise that route needs a
+ * real path rather than the invented ones the rest of the suites use.
+ */
+export function fixtureProjectPath(relativePath: string): string {
+  return path.join(process.cwd(), 'tests/fixtures/basic-project', relativePath);
+}
 
 /* === public-api helpers === */
 

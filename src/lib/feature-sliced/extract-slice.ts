@@ -16,11 +16,26 @@ export interface SliceResolutionOptions {
   hasPublicApi?: (directory: string) => boolean;
 }
 
+/**
+ * The slice boundary a public api file on disk decided, as a position rather than a name.
+ *
+ * The name alone cannot find the folder again: a slice may hold a folder of its own name, and
+ * a search by name stops at the first of the two, which is the folder above the slice.
+ */
+export interface SliceBoundary {
+  /** The name of the folder the walk settled on */
+  slice: string;
+  /** Its index among the path parts after the layer */
+  index: number;
+}
+
 export interface SliceResolution {
   /** Whether a public api file on disk decided the boundary */
   resolved: boolean;
   /** The answer for this path on its own: the resolved boundary, or the path heuristic */
   slice: string | null;
+  /** Where the resolved slice sits, or null when the path heuristic answered */
+  boundary: SliceBoundary | null;
   /** The path heuristic answer, kept so both sides of a comparison can fall back together */
   fallbackSlice: string | null;
 }
@@ -28,6 +43,7 @@ export interface SliceResolution {
 const UNRESOLVED: SliceResolution = {
   resolved: false,
   slice: null,
+  boundary: null,
   fallbackSlice: null,
 };
 
@@ -76,8 +92,8 @@ function resolveSliceFromDisk(
   segmentIndex: number,
   cwd: string,
   hasPublicApi: (directory: string) => boolean,
-): string | null {
-  const boundary = segmentIndex === -1 ? partsAfterLayer.length : segmentIndex;
+): SliceBoundary | null {
+  const bound = segmentIndex === -1 ? partsAfterLayer.length : segmentIndex;
 
   /*
    * Deepest first. The candidates are materialised and read from the end rather than walked
@@ -85,16 +101,17 @@ function resolveSliceFromDisk(
    * an unbounded loop.
    */
   const candidates = partsAfterLayer
-    .slice(0, boundary)
+    .slice(0, bound)
     .map((part, index) => ({
       part,
+      index,
       directory: [cwd, ...partsUpToLayer, ...partsAfterLayer.slice(0, index + 1)].join('/'),
     }))
     .reverse();
 
   const deepest = candidates.find((candidate) => hasPublicApi(candidate.directory));
 
-  return deepest === undefined ? null : deepest.part;
+  return deepest === undefined ? null : { slice: deepest.part, index: deepest.index };
 }
 
 /**
@@ -159,13 +176,13 @@ export function extractSlice(
 
   const canProbe = pathFromRoot !== null && cwd !== undefined && hasPublicApi !== undefined;
 
-  const resolvedSlice = canProbe
+  const boundary = canProbe
     ? resolveSliceFromDisk(parts.slice(0, layerIndex + 1), partsAfterLayer, segmentIndex, cwd, hasPublicApi)
     : null;
 
-  if (resolvedSlice === null) {
-    return { resolved: false, slice: fallbackSlice, fallbackSlice };
+  if (boundary === null) {
+    return { resolved: false, slice: fallbackSlice, boundary: null, fallbackSlice };
   }
 
-  return { resolved: true, slice: resolvedSlice, fallbackSlice };
+  return { resolved: true, slice: boundary.slice, boundary, fallbackSlice };
 }

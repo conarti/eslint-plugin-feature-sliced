@@ -37,8 +37,8 @@ export function isNotSuitableForValidation(pathsInfo: PathsInfo, layersConfig?: 
    * even when one of the two sides resolves to a folder deeper than that slice.
    */
   if (staysInsideOneSlice(
-    { path: pathsInfo.normalizedCurrentFilePath, slice: pathsInfo.fsdPartsOfCurrentFile.slice },
-    { path: pathsInfo.absoluteTargetPath, slice: pathsInfo.fsdPartsOfTarget.slice },
+    { path: pathsInfo.normalizedCurrentFilePath, slice: pathsInfo.fsdPartsOfCurrentFile.slice, sliceIndex: pathsInfo.fsdPartsOfCurrentFile.sliceIndex },
+    { path: pathsInfo.absoluteTargetPath, slice: pathsInfo.fsdPartsOfTarget.slice, sliceIndex: pathsInfo.fsdPartsOfTarget.sliceIndex },
     layersConfig,
   )) {
     return true;

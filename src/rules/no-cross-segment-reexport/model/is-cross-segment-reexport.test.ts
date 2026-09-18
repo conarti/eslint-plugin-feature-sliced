@@ -311,7 +311,7 @@ describe('isCrossSegmentReexport', () => {
       'src/entities/cluster/api',
       defaultConfig,
       undefined,
-      'cluster',
+      { slice: 'cluster', index: 0 },
     );
 
     expect(result).toEqual({
@@ -342,7 +342,7 @@ describe('isCrossSegmentReexport', () => {
       'src/entities/user/model/create-user',
       defaultConfig,
       undefined,
-      'user',
+      { slice: 'user', index: 0 },
     );
 
     expect(result).toEqual({
@@ -357,7 +357,7 @@ describe('isCrossSegmentReexport', () => {
       'src/entities/cluster/api',
       defaultConfig,
       undefined,
-      'cluster',
+      { slice: 'cluster', index: 0 },
     );
 
     expect(result).toEqual({
@@ -373,7 +373,7 @@ describe('isCrossSegmentReexport', () => {
       'src/entities/cart/helpers',
       defaultConfig,
       undefined,
-      'cart',
+      { slice: 'cart', index: 0 },
     );
 
     expect(result).toEqual({
@@ -389,7 +389,7 @@ describe('isCrossSegmentReexport', () => {
       'src/entities/group/User/api',
       defaultConfig,
       undefined,
-      'User',
+      { slice: 'User', index: 1 },
     );
 
     expect(result).toEqual({
@@ -405,7 +405,44 @@ describe('isCrossSegmentReexport', () => {
       'src/entities/cluster/api',
       defaultConfig,
       undefined,
-      'nowhere',
+      { slice: 'nowhere', index: 0 },
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: false,
+      currentSegment: null,
+      targetSegment: null,
+    });
+  });
+
+  /*
+   * The boundary is a position. A slice that holds a folder of its own name carries the name
+   * twice below the layer, and a search by name stops at the folder above the slice, which
+   * takes the slice prefix with it and hides every segment of the real slice.
+   */
+  it('takes the segment at the boundary rather than after the first folder of the same name', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/panel/panel/ui/index.ts',
+      'src/entities/panel/panel/model',
+      defaultConfig,
+      undefined,
+      { slice: 'panel', index: 1 },
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: true,
+      currentSegment: 'ui',
+      targetSegment: 'model',
+    });
+  });
+
+  it('reads the public api of a slice below a folder of its own name as carrying no segment', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/panel/panel/index.ts',
+      'src/entities/panel/panel/model',
+      defaultConfig,
+      undefined,
+      { slice: 'panel', index: 1 },
     );
 
     expect(result).toEqual({

@@ -229,6 +229,32 @@ describe('staysInsideOneSlice', () => {
     )).toBe(false);
   });
 
+  /*
+   * The slice directory is the one the resolver settled on. A slice that holds a folder of its
+   * own name carries that name twice, and truncating at the first of the two makes the folder
+   * above the slice look like the slice, which swallows every sibling slice under it.
+   */
+  it('takes the slice directory at the resolved boundary, not at the first folder of the same name', () => {
+    expect(staysInsideOneSlice(
+      { path: '/proj/src/entities/panel/panel/ui/a.ts', slice: 'panel', sliceIndex: 1 },
+      { path: 'src/entities/panel/other/ui/thing', slice: 'other', sliceIndex: 1 },
+    )).toBe(false);
+  });
+
+  it('still contains a folder that sits below the resolved boundary', () => {
+    expect(staysInsideOneSlice(
+      { path: '/proj/src/entities/panel/panel/ui/a.ts', slice: 'panel', sliceIndex: 1 },
+      { path: 'src/entities/panel/panel/ui/thing', slice: 'ui', sliceIndex: 2 },
+    )).toBe(true);
+  });
+
+  it('is false when the boundary does not point at the slice it names', () => {
+    expect(staysInsideOneSlice(
+      { path: 'src/entities/foo/model/a.ts', slice: 'foo', sliceIndex: 2 },
+      { path: '@/entities/foo/hooks', slice: 'foo', sliceIndex: 0 },
+    )).toBe(false);
+  });
+
   it('is false when the slice name is absent from the parts of its own path', () => {
     expect(staysInsideOneSlice(
       { path: 'src/entities/foo/model/a.ts', slice: 'ghost' },

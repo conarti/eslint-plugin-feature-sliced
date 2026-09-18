@@ -1,4 +1,5 @@
 import type { NormalizedLayerConfig } from '../../../config';
+import type { SliceBoundary } from '../../../lib/feature-sliced/extract-slice';
 import {
   getLayersWithSlices,
   normalizeLayersConfig,
@@ -78,18 +79,22 @@ function findLayerIndex(parts: string[], layersWithSlices: string[]): number {
  * Derives the segment from the slice boundary the shared resolver found: the segment is the
  * first path part after the slice, whatever it is called. The built-in list stops deciding
  * what a segment is and is only consulted to tell a segment file from an ordinary one.
+ *
+ * The boundary is used as the position it is. A slice that holds a folder of its own name
+ * carries the name twice, and a search by name would stop at the folder above the slice.
  */
-function extractSegmentAfterSlice(
+function extractSegmentAtBoundary(
   pathParts: DirPart[],
   segmentsList: string[],
-  slice: string,
+  boundary: SliceBoundary,
 ): { segment: string; sliceParts: DirPart[] } | null {
-  const sliceIndex = pathParts.findIndex((part) => part.name.toLowerCase() === slice.toLowerCase());
+  const slicePart = pathParts[boundary.index];
 
-  if (sliceIndex === -1)
+  /* The boundary counts from the layer, so it describes no path anchored on a different one */
+  if (!slicePart || slicePart.name.toLowerCase() !== boundary.slice.toLowerCase())
     return null;
 
-  const segmentPart = pathParts[sliceIndex + 1];
+  const segmentPart = pathParts[boundary.index + 1];
 
   if (!segmentPart)
     return null;
@@ -102,7 +107,7 @@ function extractSegmentAfterSlice(
   if (segmentPart.fromFile && !isKnownSegment(segmentPart.name, segmentsList))
     return null;
 
-  return { segment: segmentPart.name, sliceParts: pathParts.slice(0, sliceIndex + 1) };
+  return { segment: segmentPart.name, sliceParts: pathParts.slice(0, boundary.index + 1) };
 }
 
 /**
@@ -125,13 +130,13 @@ function extractSegmentAfterSlice(
 function extractSegmentAndSlice(
   pathParts: DirPart[],
   segmentsList: string[],
-  resolvedSlice: string | null,
+  boundary: SliceBoundary | null,
 ): { segment: string; sliceParts: DirPart[] } | null {
   if (pathParts.length < 2)
     return null;
 
-  if (resolvedSlice !== null) {
-    return extractSegmentAfterSlice(pathParts, segmentsList, resolvedSlice);
+  if (boundary !== null) {
+    return extractSegmentAtBoundary(pathParts, segmentsList, boundary);
   }
 
   const knownSegmentIndex = pathParts.findIndex((part) =>
@@ -217,7 +222,7 @@ export function isCrossSegmentReexport(
   absoluteTargetPath: string,
   config?: NormalizedLayerConfig[],
   segmentsConfig?: string[],
-  resolvedSlice?: string | null,
+  boundary?: SliceBoundary | null,
 ): CrossSegmentReexportInfo {
   const layersConfig = config ?? normalizeLayersConfig();
   const segmentsList = segmentsConfig ?? normalizeSegmentsConfig();
@@ -237,7 +242,7 @@ export function isCrossSegmentReexport(
   const currentPathParts = normalizeToDirParts(currentAfterLayer);
 
   /* Extract segment and slice from current file */
-  const currentInfo = extractSegmentAndSlice(currentPathParts, segmentsList, resolvedSlice ?? null);
+  const currentInfo = extractSegmentAndSlice(currentPathParts, segmentsList, boundary ?? null);
 
   if (!currentInfo)
     return NOT_CROSS_SEGMENT;

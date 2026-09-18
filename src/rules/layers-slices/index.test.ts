@@ -2,6 +2,7 @@ import type { Options } from './config';
 import * as tseslintParser from '@typescript-eslint/parser';
 import { RuleTester } from '../../../tests/rule-tester';
 import {
+  fixtureProjectPath,
   layersSlicesAllowTypeImportsOptions,
   makeInvalidCrossImportError,
   makeLayersSlicesError,
@@ -634,6 +635,29 @@ ruleTester.run('layers-slices (group folders)', rule, {
       name: '[GF] group folders: UserA and UserB are different slices today',
       filename: 'src/entities/group/UserA/ui/a.ts',
       code: "import { b } from '@/entities/group/UserB/ui';",
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+  ],
+});
+
+/*
+ * The filesystem route, read from the on-disk fixture project. A slice that holds a folder
+ * of its own name must not swallow its siblings: the slice directory is the one the resolver
+ * settled on, not the first folder along the path that carries the same name.
+ */
+ruleTester.run('layers-slices (resolved slice boundary)', rule, {
+  valid: [
+    {
+      name: 'should allow an import that stays inside the resolved slice',
+      filename: fixtureProjectPath('src/entities/panel/panel/ui/index.ts'),
+      code: "import { panelModel } from '../model';",
+    },
+  ],
+  invalid: [
+    {
+      name: 'should report an import into a sibling slice from a slice whose folder repeats the name above it',
+      filename: fixtureProjectPath('src/entities/panel/panel/ui/reaches-sibling-slice.ts'),
+      code: "import { thing } from 'src/entities/panel/other/ui/thing';",
       errors: [makeLayersSlicesError('entities', 'entities')],
     },
   ],

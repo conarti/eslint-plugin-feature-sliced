@@ -48,7 +48,7 @@ export function validateAndReport(
     absoluteTargetPath,
     config,
     segmentsConfig,
-    sliceResolution.resolved ? sliceResolution.slice : null,
+    sliceResolution.boundary,
   );
 
   if (!result.isCrossSegmentReexport)

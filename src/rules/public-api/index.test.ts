@@ -1,6 +1,7 @@
 import * as tseslintParser from '@typescript-eslint/parser';
 import { RuleTester } from '../../../tests/rule-tester';
 import {
+  fixtureProjectPath,
   makePublicApiErrorWithSuggestion,
   makePublicApiOptions,
   publicApiLayersNotAllowedError,
@@ -679,6 +680,35 @@ ruleTester.run('public-api (@x cross-imports)', rule, {
           'model/secret',
           "import { secret } from 'src/entities/other';",
           'src/entities/other',
+        ),
+      ],
+    },
+  ],
+});
+
+/*
+ * The filesystem route, read from the on-disk fixture project. `src/entities/panel/panel` is
+ * the public api of a slice whose folder repeats the name of the folder above it, so the path
+ * holds no segment and needs no other entry point; the segment below it still does.
+ */
+ruleTester.run('public-api (resolved slice boundary)', rule, {
+  valid: [
+    {
+      name: 'should be valid if the target is the public api of a slice whose folder repeats the name above it',
+      filename: fixtureProjectPath('src/pages/home/ui/imports-same-named-nested-slice.ts'),
+      code: "import { panelModel } from 'src/entities/panel/panel';",
+    },
+  ],
+  invalid: [
+    {
+      name: 'should report a deep import into a segment of a slice whose folder repeats the name above it',
+      filename: fixtureProjectPath('src/pages/home/ui/imports-same-named-nested-slice.ts'),
+      code: "import { panelModel } from 'src/entities/panel/panel/model';",
+      errors: [
+        makePublicApiErrorWithSuggestion(
+          'model',
+          "import { panelModel } from 'src/entities/panel/panel';",
+          'src/entities/panel/panel',
         ),
       ],
     },

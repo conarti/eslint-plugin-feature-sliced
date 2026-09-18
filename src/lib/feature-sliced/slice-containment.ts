@@ -56,6 +56,12 @@ export function containsOther(aParts: string[], bParts: string[]): boolean {
 export interface SliceLocation {
   path: string;
   slice: string | null;
+  /**
+   * Where that slice sits: its index among the path parts after the layer, when the
+   * filesystem resolved the boundary. Without one the name is searched for, which is
+   * all the path heuristic can offer.
+   */
+  sliceIndex?: number | null;
 }
 
 /**
@@ -63,8 +69,11 @@ export interface SliceLocation {
  * when the path holds no layer or when its own slice name is not one of those parts.
  *
  * The slice is the one already extracted for this path, so the truncation can never
- * disagree with it. The search starts at index 1 because index 0 is the layer, which
- * a slice carrying the layer name would otherwise match first.
+ * disagree with it. A resolved boundary is used as the position it is: a slice that
+ * holds a folder of its own name carries the name twice, and a search by name stops
+ * at the first of the two, which is the folder above the slice. The search that
+ * remains for an unresolved slice starts at index 1 because index 0 is the layer,
+ * which a slice carrying the layer name would otherwise match first.
  */
 function ownSliceDirParts(
   location: SliceLocation,
@@ -80,9 +89,14 @@ function ownSliceDirParts(
     return null;
   }
 
-  const sliceIndex = parts.indexOf(location.slice.toLowerCase(), 1);
+  const sliceName = location.slice.toLowerCase();
 
-  if (sliceIndex === -1) {
+  /* `parts` starts at the layer, so the slice sits one further along than the boundary counts */
+  const sliceIndex = location.sliceIndex === undefined || location.sliceIndex === null
+    ? parts.indexOf(sliceName, 1)
+    : location.sliceIndex + 1;
+
+  if (parts[sliceIndex] !== sliceName) {
     return null;
   }
 

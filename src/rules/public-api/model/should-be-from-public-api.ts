@@ -85,8 +85,8 @@ export function shouldBeFromPublicApi(
    * rule reads `isSameSlice` for the slice half and `isSameSegment` for the other.
    */
   const staysInOneSlice = staysInsideOneSlice(
-    { path: pathsInfo.normalizedCurrentFilePath, slice: pathsInfo.fsdPartsOfCurrentFile.slice },
-    { path: pathsInfo.absoluteTargetPath, slice: pathsInfo.fsdPartsOfTarget.slice },
+    { path: pathsInfo.normalizedCurrentFilePath, slice: pathsInfo.fsdPartsOfCurrentFile.slice, sliceIndex: pathsInfo.fsdPartsOfCurrentFile.sliceIndex },
+    { path: pathsInfo.absoluteTargetPath, slice: pathsInfo.fsdPartsOfTarget.slice, sliceIndex: pathsInfo.fsdPartsOfTarget.sliceIndex },
     layersConfig,
   );
 

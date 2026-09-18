@@ -1,4 +1,5 @@
 import type { NormalizedLayerConfig } from '../../config';
+import type { SliceBoundary } from './extract-slice';
 import { DEFAULT_SEGMENTS } from '../../config';
 import {
   getLayersWithSlices,
@@ -24,11 +25,15 @@ const FILE_EXTENSION_REGEXP = /\.[^/.]+$/;
  * Derives the segment from the slice boundary the filesystem resolved: the segment is the
  * first path part after the slice, whatever it is called, and the segment files are whatever
  * follows it. The configured name list stops deciding what a segment is.
+ *
+ * The boundary is used as the position it is. Looking the slice up by name instead would stop
+ * at the first part carrying that name, which is the wrong folder for a slice that holds a
+ * folder of its own name.
  */
-function extractSegmentAfterSlice(
+function extractSegmentAtBoundary(
   targetPath: string,
   layersWithSlices: string[],
-  slice: string,
+  boundary: SliceBoundary,
 ): [string | null, SegmentFiles] {
   const parts = targetPath.split('/').filter(Boolean);
 
@@ -41,13 +46,13 @@ function extractSegmentAfterSlice(
   }
 
   const partsAfterLayer = parts.slice(layerIndex + 1);
-  const sliceIndex = partsAfterLayer.findIndex((part) => part.toLowerCase() === slice.toLowerCase());
 
-  if (sliceIndex === -1) {
+  /* The boundary counts from the layer, so it describes no path anchored on a different one */
+  if (partsAfterLayer[boundary.index]?.toLowerCase() !== boundary.slice.toLowerCase()) {
     return [null, null];
   }
 
-  const segmentPart = partsAfterLayer[sliceIndex + 1];
+  const segmentPart = partsAfterLayer[boundary.index + 1];
 
   if (segmentPart === undefined) {
     return [null, null];
@@ -58,7 +63,7 @@ function extractSegmentAfterSlice(
     return [null, null];
   }
 
-  const segmentFiles = partsAfterLayer.slice(sliceIndex + 2).join('/');
+  const segmentFiles = partsAfterLayer.slice(boundary.index + 2).join('/');
 
   return [segmentPart.replace(FILE_EXTENSION_REGEXP, ''), segmentFiles || null];
 }
@@ -85,14 +90,14 @@ export function extractSegment(
   targetPath: string,
   layersConfig?: NormalizedLayerConfig[],
   segmentsConfig?: string[],
-  resolvedSlice?: string | null,
+  boundary?: SliceBoundary | null,
 ): [string | null, SegmentFiles] {
   const normalizedLayersConfig = layersConfig ?? normalizeLayersConfig();
   const segmentsList = segmentsConfig ?? [...DEFAULT_SEGMENTS];
   const layersWithSlices = getLayersWithSlices(normalizedLayersConfig);
 
-  if (resolvedSlice !== undefined && resolvedSlice !== null) {
-    return extractSegmentAfterSlice(targetPath, layersWithSlices, resolvedSlice);
+  if (boundary !== undefined && boundary !== null) {
+    return extractSegmentAtBoundary(targetPath, layersWithSlices, boundary);
   }
 
   const fsdPartsRegExp = createFsdPartsRegExp(layersWithSlices, segmentsList);

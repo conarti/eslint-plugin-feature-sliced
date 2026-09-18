@@ -70,6 +70,34 @@
     "suggestions": []
   },
   {
+    "file": "src/entities/panel/panel/ui/index.ts",
+    "ruleId": "@conarti/feature-sliced/no-cross-segment-reexport",
+    "messageId": "no-cross-segment-reexport",
+    "line": 1,
+    "column": 15,
+    "suggestions": [
+      "move-to-slice-public-api-suggestion"
+    ]
+  },
+  {
+    "file": "src/entities/panel/panel/ui/reaches-sibling-slice.ts",
+    "ruleId": "@conarti/feature-sliced/layers-slices",
+    "messageId": "can-not-import",
+    "line": 2,
+    "column": 23,
+    "suggestions": []
+  },
+  {
+    "file": "src/entities/panel/panel/ui/reaches-sibling-slice.ts",
+    "ruleId": "@conarti/feature-sliced/public-api",
+    "messageId": "should-be-from-public-api",
+    "line": 2,
+    "column": 23,
+    "suggestions": [
+      "remove-suggestion"
+    ]
+  },
+  {
     "file": "src/entities/product/model/invalid-cross-import.ts",
     "ruleId": "@conarti/feature-sliced/layers-slices",
     "messageId": "invalid-cross-import",
