@@ -71,7 +71,7 @@ lint glob that quietly stops matching a subtree fails too.
 
 ## The clean files
 
-The remaining 25 `.ts` files carry no expectation at all, and the test asserts that they produce
+The remaining 30 `.ts` files carry no expectation at all, and the test asserts that they produce
 no message whatsoever. They are the false-positive guard: correct upward type-only imports,
 relative imports inside a slice, absolute imports across layers, slice and segment public apis,
 `@x` cross-imports addressed to the importing slice, and the custom `services` segment of `src2/`
