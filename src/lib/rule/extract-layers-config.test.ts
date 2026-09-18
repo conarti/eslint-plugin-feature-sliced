@@ -71,4 +71,72 @@ describe('extractLayersConfig', () => {
     const result = extractLayersConfig(context);
     expect(result).toHaveLength(7);
   });
+
+  /*
+   * The setting is plain ESLint configuration, so it is written by hand as often as it is
+   * written by createPlugin, and by hand it is written in the shape the `layers` option takes.
+   */
+  describe('a list that createPlugin did not write', () => {
+    function extractFrom(layers: unknown) {
+      return extractLayersConfig(createMockContext({
+        [PLUGIN_NAME]: { layers },
+      }));
+    }
+
+    it('should normalize a plain list of layer names', () => {
+      expect(extractFrom(['shared', 'entities', 'app'])).toEqual([
+        { name: 'shared', hasSlices: true },
+        { name: 'entities', hasSlices: true },
+        { name: 'app', hasSlices: true },
+      ]);
+    });
+
+    it('should normalize a list that mixes names and objects', () => {
+      expect(extractFrom([{ name: 'Shared', hasSlices: false }, 'Entities'])).toEqual([
+        { name: 'shared', hasSlices: false },
+        { name: 'entities', hasSlices: true },
+      ]);
+    });
+
+    it('should leave an already normalized list unchanged', () => {
+      const normalized: NormalizedLayerConfig[] = [
+        { name: 'shared', hasSlices: false },
+        { name: 'entities', hasSlices: true },
+      ];
+
+      expect(extractFrom(normalized)).toEqual(normalized);
+    });
+
+    it('should honour an empty list as a project with no layers', () => {
+      expect(extractFrom([])).toEqual([]);
+    });
+
+    it('should return default config when an entry is neither a name nor an object', () => {
+      expect(extractFrom(['shared', 42])).toHaveLength(7);
+    });
+
+    it('should return default config when an entry is null', () => {
+      expect(extractFrom(['shared', null])).toHaveLength(7);
+    });
+
+    it('should return default config when an object entry carries no name', () => {
+      expect(extractFrom([{ hasSlices: true }])).toHaveLength(7);
+    });
+
+    it('should return default config when an object entry has a name that is not a string', () => {
+      expect(extractFrom([{ name: 42 }])).toHaveLength(7);
+    });
+
+    it('should return default config when a name is the empty string', () => {
+      expect(extractFrom([''])).toHaveLength(7);
+    });
+
+    it('should return default config when an object entry has an empty name', () => {
+      expect(extractFrom([{ name: '' }])).toHaveLength(7);
+    });
+
+    it('should return default config when layers is null', () => {
+      expect(extractFrom(null)).toHaveLength(7);
+    });
+  });
 });
