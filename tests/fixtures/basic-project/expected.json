@@ -76,6 +76,14 @@
     "suggestions": []
   },
   {
+    "file": "src2/entities/cart/ui/absolute-inside-slice.ts",
+    "ruleId": "@conarti/feature-sliced/absolute-relative",
+    "messageId": "must-be-relative-path",
+    "line": 2,
+    "column": 29,
+    "suggestions": []
+  },
+  {
     "file": "src2/features/checkout/ui/unknown-segment-import.ts",
     "ruleId": "@conarti/feature-sliced/public-api",
     "messageId": "unknown-segment",

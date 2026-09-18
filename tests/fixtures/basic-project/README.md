@@ -21,7 +21,7 @@ The fixture holds two independent projects, each linted with its own configurati
 | Subtree | Config | What it covers |
 |---------|--------|----------------|
 | `src/` | `featureSliced()` | The default options: one violation per rule and per message id, plus valid files that prove there are no false positives |
-| `src2/` | `featureSliced({ publicApi: { level: 'segments' }, segments: ['services'] })` | The `unknown-segment` message id, the custom `services` segment, and the cross-import exemption at the segments level |
+| `src2/` | `featureSliced({ publicApi: { level: 'segments' }, segments: ['services'] })` | The `unknown-segment` message id, the custom `services` segment as both a public api level and a slice boundary, and the cross-import exemption at the segments level |
 
 Imports inside the fixture do not need to resolve to anything: the rules only look at import
 paths, never at the module the path points to.
@@ -62,6 +62,7 @@ depend on the machine's locale.
 | `src/pages/home/ui/deep-import-into-slice.ts` | `public-api` | `should-be-from-public-api` (suggestion `remove-suggestion`) | Another slice may only be reached through its public api, never by a deep import into one of its segments, and the rule attaches a suggestion that strips the deep part of the path |
 | `src/widgets/header/ui/relative-cross-layer-import.ts` | `absolute-relative` | `must-be-absolute-path` | An import that crosses a layer boundary has to be written as an absolute path |
 | `src/widgets/header/ui/wrong-import-order.ts` | `import-order` | `order` | External packages are ordered before FSD layer imports, so an `axios` import placed after a layer import is reported |
+| `src2/entities/cart/ui/absolute-inside-slice.ts` | `absolute-relative` | `must-be-relative-path` | The slice boundary follows the configured segment list: `services` is a segment of the `cart` slice, so an absolute import of it from the `ui` segment of the same slice is reported |
 | `src2/features/checkout/ui/unknown-segment-import.ts` | `public-api` | `unknown-segment` | At `publicApi.level: 'segments'`, a folder in segment position that is not in the configured segment list (`helpers`) is reported instead of being silently accepted |
 
 Alongside the snapshot the test asserts that every rule id the plugin exports still appears
