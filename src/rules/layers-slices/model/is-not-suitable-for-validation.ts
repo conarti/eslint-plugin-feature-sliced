@@ -1,6 +1,9 @@
 import type { NormalizedLayerConfig } from '../../../config';
 import type { PathsInfo } from '../../../lib/feature-sliced';
-import { isCrossImportFileTargetingOwnSlice } from '../../../lib/feature-sliced/slice-containment';
+import {
+  isCrossImportFileTargetingOwnSlice,
+  staysInsideOneSlice,
+} from '../../../lib/feature-sliced/slice-containment';
 
 export function isNotSuitableForValidation(pathsInfo: PathsInfo, layersConfig?: NormalizedLayerConfig[]) {
   const {
@@ -26,6 +29,18 @@ export function isNotSuitableForValidation(pathsInfo: PathsInfo, layersConfig?: 
    * so it may reach that slice without crossing a slice boundary.
    */
   if (isCrossImportFileTargetingOwnSlice(pathsInfo.normalizedCurrentFilePath, pathsInfo.absoluteTargetPath, layersConfig)) {
+    return true;
+  }
+
+  /*
+   * An import that never leaves the slice it starts in is not a cross-slice import,
+   * even when one of the two sides resolves to a folder deeper than that slice.
+   */
+  if (staysInsideOneSlice(
+    { path: pathsInfo.normalizedCurrentFilePath, slice: pathsInfo.fsdPartsOfCurrentFile.slice },
+    { path: pathsInfo.absoluteTargetPath, slice: pathsInfo.fsdPartsOfTarget.slice },
+    layersConfig,
+  )) {
     return true;
   }
 
