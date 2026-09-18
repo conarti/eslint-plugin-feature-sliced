@@ -54,6 +54,7 @@ depend on the machine's locale.
 | File | Rule | Message id | What this proves |
 |------|------|------------|------------------|
 | `src/entities/index.ts` | `public-api` | `layers-public-api-not-allowed` | A layer must not have its own public api: an `index.ts` sitting directly on the `entities` layer and re-exporting a slice is a violation |
+| `src/entities/index.ts` | `layers-slices` | `can-not-import` | A re-export is a dependency, so the same `index.ts` takes the layer and slice check the equivalent import takes: re-exporting the `user` slice from the layer itself crosses a slice boundary |
 | `src/entities/product/model/invalid-cross-import.ts` | `layers-slices` | `invalid-cross-import` | An `@x` cross-import is addressed to one specific slice, so `.../session/@x/user` may not be consumed from the `product` slice |
 | `src/entities/user/model/dynamic-upward-import.ts` | `layers-slices` | `can-not-import` | The layer check also inspects dynamic `import()` expressions, not only static import declarations |
 | `src/entities/user/model/imports-features-upward.ts` | `layers-slices` | `can-not-import` | A lower layer may not import an upper one: `entities` importing `features` is a violation |

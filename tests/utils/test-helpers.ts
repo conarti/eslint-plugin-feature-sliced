@@ -156,6 +156,7 @@ export function makeLayersSlicesErrorAtSpecifier(
 export const layersSlicesAllowTypeImportsOptions: LayersSlicesOptions = [
   {
     allowTypeImports: true,
+    allowPassThroughReexports: false,
     ignoreImports: [],
     ignoreFiles: [],
   },
@@ -168,6 +169,7 @@ export function makeLayersSlicesIgnoreOptions(patterns: string[]): LayersSlicesO
   return [
     {
       allowTypeImports: true,
+      allowPassThroughReexports: false,
       ignoreImports: patterns,
       ignoreFiles: [],
     },
@@ -181,10 +183,44 @@ export function makeLayersSlicesIgnoreInFilesOptions(patterns: string[]): Layers
   return [
     {
       allowTypeImports: true,
+      allowPassThroughReexports: false,
       ignoreImports: [],
       ignoreFiles: patterns,
     },
   ];
+}
+
+/**
+ * Creates options with the pass-through re-export switch
+ */
+export function makeLayersSlicesPassThroughOptions(
+  allowPassThroughReexports: boolean,
+  allowTypeImports = true,
+): LayersSlicesOptions {
+  return [
+    {
+      allowTypeImports,
+      allowPassThroughReexports,
+      ignoreImports: [],
+      ignoreFiles: [],
+    },
+  ];
+}
+
+/**
+ * Creates layers-slices pass-through re-export error
+ */
+export function makePassThroughReexportError(
+  importLayer: Layer,
+  currentFileLayer: Layer,
+): TSESLint.TestCaseError<LayersSlicesMessageIds> {
+  return {
+    messageId: LAYERS_SLICES_MESSAGE_ID.PASS_THROUGH_REEXPORT,
+    data: {
+      importLayer,
+      currentFileLayer,
+    },
+  };
 }
 
 /**

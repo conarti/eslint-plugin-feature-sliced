@@ -44,6 +44,14 @@
     "suggestions": []
   },
   {
+    "file": "src/entities/index.ts",
+    "ruleId": "@conarti/feature-sliced/layers-slices",
+    "messageId": "can-not-import",
+    "line": 2,
+    "column": 28,
+    "suggestions": []
+  },
+  {
     "file": "src/entities/modal/model/use-profile.ts",
     "ruleId": "@conarti/feature-sliced/layers-slices",
     "messageId": "can-not-import",

@@ -1,5 +1,8 @@
 import type { NormalizedLayerConfig } from '../../../config';
-import type { ImportNodes } from '../../../lib/rule/models';
+import type {
+  ExportNodesWithSource,
+  ImportNodes,
+} from '../../../lib/rule/models';
 import type {
   Options,
   RuleContext,
@@ -24,6 +27,7 @@ import {
 import {
   reportCanNotImportLayer,
   reportInvalidCrossImport,
+  reportPassThroughReexport,
 } from './errors';
 import { isNotSuitableForValidation } from './is-not-suitable-for-validation';
 import {
@@ -32,6 +36,8 @@ import {
 } from './specifiers';
 import { extractImportSpecifiers } from './specifiers/extract-import-specifiers';
 import { validateNode } from './validate-node';
+import { validByLayerOrder } from './validate-node/valid-by-layer-order';
+import { validByTypeImport } from './validate-node/valid-by-type-import';
 
 function validate(
   node: ImportNodes,
@@ -58,6 +64,37 @@ function validate(
   return invalidSpecifiers;
 }
 
+function isReexport(node: ImportNodes | ExportNodesWithSource): node is ExportNodesWithSource {
+  return ASTUtils.isNodeOfTypes([AST_NODE_TYPES.ExportAllDeclaration, AST_NODE_TYPES.ExportNamedDeclaration])(node);
+}
+
+/**
+ * A re-export is a dependency, so it takes the same checks as the equivalent import, and one
+ * more that only a re-export can fail: forwarding a lower layer out through this file is a
+ * pass-through, which the layer order on its own calls valid.
+ */
+function validateAndReportReexport(
+  node: ExportNodesWithSource,
+  context: RuleContext,
+  pathsInfo: PathsInfo,
+  ruleOptions: Options[0],
+  layersConfig: NormalizedLayerConfig[],
+) {
+  if (validByTypeImport(node, ruleOptions.allowTypeImports)) {
+    return;
+  }
+
+  if (validByLayerOrder(pathsInfo.fsdPartsOfTarget, pathsInfo.fsdPartsOfCurrentFile, layersConfig)) {
+    if (!ruleOptions.allowPassThroughReexports) {
+      reportPassThroughReexport(context, node, pathsInfo);
+    }
+
+    return;
+  }
+
+  reportCanNotImportLayer(context, node, pathsInfo, layersConfig);
+}
+
 function reportValidationErrors(
   nodes: TSESTree.ImportClause[] | ImportNodes[],
   context: RuleContext,
@@ -68,7 +105,7 @@ function reportValidationErrors(
 }
 
 export function validateAndReport(
-  node: ImportNodes,
+  node: ImportNodes | ExportNodesWithSource,
   context: RuleContext,
   optionsWithDefault: Readonly<Options>,
   config?: NormalizedLayerConfig[],
@@ -106,8 +143,14 @@ export function validateAndReport(
     return;
   }
 
-  const { allowTypeImports } = extractRuleOptions(optionsWithDefault);
+  const ruleOptions = extractRuleOptions(optionsWithDefault);
   const layersConfig = config ?? normalizeLayersConfig();
-  const nodesToReport = validate(node, pathsInfo, allowTypeImports, layersConfig);
+
+  if (isReexport(node)) {
+    validateAndReportReexport(node, context, pathsInfo, ruleOptions, layersConfig);
+    return;
+  }
+
+  const nodesToReport = validate(node, pathsInfo, ruleOptions.allowTypeImports, layersConfig);
   reportValidationErrors(nodesToReport, context, pathsInfo, layersConfig);
 }

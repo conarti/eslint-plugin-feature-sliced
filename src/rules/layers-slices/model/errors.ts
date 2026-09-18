@@ -2,6 +2,7 @@ import type { TSESTree } from '@typescript-eslint/utils';
 import type { NormalizedLayerConfig } from '../../../config';
 import type { CrossImportInfo, PathsInfo } from '../../../lib/feature-sliced';
 import type { ImportExportNodesWithSourceValue } from '../../../lib/rule';
+import type { ExportNodesWithSource } from '../../../lib/rule/models';
 import { getLayerNames } from '../../../lib/feature-sliced/layers-config';
 import {
   ERROR_MESSAGE_ID,
@@ -32,6 +33,26 @@ export function reportCanNotImportLayer(
       importLayer: pathsInfo.fsdPartsOfTarget.layer,
       currentFileLayer: pathsInfo.fsdPartsOfCurrentFile.layer,
       layersOrder: layerNames.join(' -> '),
+    },
+  });
+}
+
+/**
+ * A re-export that forwards a lower layer out through this file is a pass-through:
+ * the layer order allows the dependency, but the public API of this slice starts
+ * carrying another layer's module.
+ */
+export function reportPassThroughReexport(
+  context: RuleContext,
+  node: ExportNodesWithSource,
+  pathsInfo: PathsInfo,
+) {
+  context.report({
+    node: node.source,
+    messageId: ERROR_MESSAGE_ID.PASS_THROUGH_REEXPORT,
+    data: {
+      importLayer: pathsInfo.fsdPartsOfTarget.layer,
+      currentFileLayer: pathsInfo.fsdPartsOfCurrentFile.layer,
     },
   });
 }

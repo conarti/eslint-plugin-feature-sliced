@@ -9,6 +9,8 @@ import {
   makeLayersSlicesErrorAtSpecifier,
   makeLayersSlicesIgnoreInFilesOptions,
   makeLayersSlicesIgnoreOptions,
+  makeLayersSlicesPassThroughOptions,
+  makePassThroughReexportError,
 } from '../../../tests/utils';
 import rule from './index';
 
@@ -659,6 +661,199 @@ ruleTester.run('layers-slices (resolved slice boundary)', rule, {
       filename: fixtureProjectPath('src/entities/panel/panel/ui/reaches-sibling-slice.ts'),
       code: "import { thing } from 'src/entities/panel/other/ui/thing';",
       errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+  ],
+});
+
+/*
+ * === Re-exports, issue #27 ===
+ *
+ * A re-export is a dependency. The export declarations take the same layer and slice checks
+ * as the equivalent import, so an upward re-export and a sibling slice re-export carry the
+ * same message. A re-export that forwards a lower layer out through this slice is a
+ * pass-through: it has its own message and is the only case the option silences.
+ */
+
+ruleTester.run('layers-slices (re-exports)', rule, {
+  valid: [
+    {
+      name: 'should allow a re-export that stays inside the slice',
+      filename: 'src/features/auth/index.ts',
+      code: "export { loginUser } from './model/login-user';",
+    },
+    {
+      name: 'should allow an export declaration without a source',
+      filename: 'src/features/auth/index.ts',
+      code: 'const loginUser = () => null; export { loginUser };',
+    },
+    {
+      name: 'should allow a re-export from the @x public api of the own slice',
+      filename: 'src/entities/session/index.ts',
+      code: "export { createUser } from '@/entities/user/@x/session';",
+    },
+    {
+      name: 'should allow an upward type re-export when type imports are allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export type { AuthState } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false),
+    },
+    {
+      name: 'should allow a pass-through re-export when pass-through re-exports are allowed',
+      filename: 'src/features/auth/index.ts',
+      code: "export { Button } from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(true),
+    },
+    {
+      name: 'should allow a pass-through export all when pass-through re-exports are allowed',
+      filename: 'src/features/auth/index.ts',
+      code: "export * from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(true),
+    },
+    {
+      name: 'should allow a pass-through namespace re-export when pass-through re-exports are allowed',
+      filename: 'src/features/auth/index.ts',
+      code: "export * as button from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(true),
+    },
+    {
+      name: 'should allow a pass-through type re-export when type imports are allowed',
+      filename: 'src/features/auth/index.ts',
+      code: "export type { ButtonProps } from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(false),
+    },
+  ],
+  invalid: [
+    {
+      name: 'should report an upward re-export',
+      filename: 'src/entities/user/index.ts',
+      code: "export { loginUser } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makeLayersSlicesError('features', 'entities')],
+    },
+    {
+      name: 'should report an upward re-export when pass-through re-exports are allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export { loginUser } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(true),
+      errors: [makeLayersSlicesError('features', 'entities')],
+    },
+    {
+      name: 'should report an upward export all',
+      filename: 'src/entities/user/index.ts',
+      code: "export * from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makeLayersSlicesError('features', 'entities')],
+    },
+    {
+      name: 'should report an upward export all when pass-through re-exports are allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export * from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(true),
+      errors: [makeLayersSlicesError('features', 'entities')],
+    },
+    {
+      name: 'should report an upward namespace re-export',
+      filename: 'src/entities/user/index.ts',
+      code: "export * as auth from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makeLayersSlicesError('features', 'entities')],
+    },
+    {
+      name: 'should report an upward namespace re-export when pass-through re-exports are allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export * as auth from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(true),
+      errors: [makeLayersSlicesError('features', 'entities')],
+    },
+    {
+      name: 'should report a sibling slice re-export',
+      filename: 'src/entities/user/index.ts',
+      code: "export { product } from '@/entities/product';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      name: 'should report a sibling slice re-export when pass-through re-exports are allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export { product } from '@/entities/product';",
+      options: makeLayersSlicesPassThroughOptions(true),
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      name: 'should report a sibling slice export all',
+      filename: 'src/entities/user/index.ts',
+      code: "export * from '@/entities/product';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      name: 'should report a sibling slice export all when pass-through re-exports are allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export * from '@/entities/product';",
+      options: makeLayersSlicesPassThroughOptions(true),
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      name: 'should report a sibling slice namespace re-export',
+      filename: 'src/entities/user/index.ts',
+      code: "export * as product from '@/entities/product';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      name: 'should report a sibling slice namespace re-export when pass-through re-exports are allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export * as product from '@/entities/product';",
+      options: makeLayersSlicesPassThroughOptions(true),
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      /* No options at all: the default has to reach the check, not only the type and the schema. */
+      name: 'should report a pass-through re-export with no options configured',
+      filename: 'src/features/auth/index.ts',
+      code: "export { Button } from '@/shared/ui/button';",
+      errors: [makePassThroughReexportError('shared', 'features')],
+    },
+    {
+      name: 'should report a pass-through re-export by default',
+      filename: 'src/features/auth/index.ts',
+      code: "export { Button } from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makePassThroughReexportError('shared', 'features')],
+    },
+    {
+      name: 'should report a pass-through export all by default',
+      filename: 'src/features/auth/index.ts',
+      code: "export * from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makePassThroughReexportError('shared', 'features')],
+    },
+    {
+      name: 'should report a pass-through namespace re-export by default',
+      filename: 'src/features/auth/index.ts',
+      code: "export * as button from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makePassThroughReexportError('shared', 'features')],
+    },
+    {
+      name: 'should report an upward type re-export when type imports are not allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export type { AuthState } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false, false),
+      errors: [makeLayersSlicesError('features', 'entities')],
+    },
+    {
+      name: 'should report a pass-through type re-export when type imports are not allowed',
+      filename: 'src/features/auth/index.ts',
+      code: "export type { ButtonProps } from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(false, false),
+      errors: [makePassThroughReexportError('shared', 'features')],
+    },
+    {
+      name: 'should report a re-export from the @x public api of another slice',
+      filename: 'src/entities/order/index.ts',
+      code: "export { createUser } from '@/entities/user/@x/session';",
+      errors: [makeInvalidCrossImportError('user', 'session')],
     },
   ],
 });

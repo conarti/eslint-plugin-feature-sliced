@@ -45,12 +45,16 @@ const ruleCases = [
     messages: {
       'can-not-import': 'You cannot import layer "{{ importLayer }}" into "{{ currentFileLayer }}" ({{ layersOrder }})',
       'invalid-cross-import': 'Cross-import "{{ sourceSlice }}/@x/{{ targetSlice }}" is only allowed from slice "{{ targetSlice }}"',
+      'pass-through-reexport': 'Re-export from layer "{{ importLayer }}" forwards it through "{{ currentFileLayer }}", import it directly instead',
     },
     schema: [
       {
         type: 'object',
         properties: {
           allowTypeImports: {
+            type: 'boolean',
+          },
+          allowPassThroughReexports: {
             type: 'boolean',
           },
           ignoreImports: {
@@ -71,6 +75,7 @@ const ruleCases = [
     defaultOptions: [
       {
         allowTypeImports: true,
+        allowPassThroughReexports: false,
         ignoreImports: [],
         ignoreFiles: [],
       },
