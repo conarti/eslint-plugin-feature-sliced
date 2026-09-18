@@ -740,8 +740,10 @@ Node 18.18 or newer is required as well. The 1.x line stays on npm as
 ### Upgrading from 2.0
 
 Nothing to change in your configuration. 2.1 adds no required option, renames nothing and moves
-no default of an existing check. It can raise your report count, so here is every class of
-report that is new, and the one that disappears.
+no default of an existing check. Only one message id is new, `layers-slices`
+`pass-through-reexport`; the rest of the table below is existing message ids reaching shapes
+they did not reach before. It can raise your report count, so here are the classes of report
+that are new, and the ones that disappear.
 
 | New report | Rule and message | What to do |
 | - | - | - |
@@ -760,10 +762,14 @@ one, only one of them holding a public API file, and the cross-slice report betw
 This is the larger of the two.
 
 It moves deeper when a folder that holds its own public API file becomes a slice in its own
-right. An import of that folder stops being a deep import into its parent, and a re-export out
-of it stops being a cross-segment re-export. This direction also clears a false positive: a
-folder whose name merely begins with a built-in segment name, such as `ui-kit-button`, was
-reported as a deep import and named a public API path that does not exist.
+right, and a re-export out of it stops being a cross-segment re-export. This direction also
+clears a false positive: a folder whose name merely begins with a built-in segment name, such
+as `ui-kit-button`, was reported as a deep import and named a public API path that does not
+exist.
+
+One more report can go quiet, and it has nothing to do with the slice boundary. An empty layer
+list written into `settings` by hand, `layers: []`, is honoured as a project with no layers, so
+`public-api` `layers-public-api-not-allowed` no longer fires under it. On 2.0 it did.
 
 One report changes rule rather than appearing or disappearing. A re-export between two folders
 that each hold their own public API file is reported by `layers-slices` as `can-not-import`,
@@ -771,10 +777,10 @@ where it used to be `no-cross-segment-reexport`.
 
 See [Where a slice ends](#where-a-slice-ends).
 
-Two notes for anyone who pins positions or counts rather than reading messages. A re-export is
-reported once per offending value specifier, so `export { a, type A, b } from '...'` produces
-two reports, and the report sits on the specifier rather than on the path whenever the
-declaration mixes value and inline type specifiers. Both match the import spelling, which has
+A note for anyone who pins positions or counts rather than reading messages. Where a re-export
+mixes value and inline type specifiers, the report sits on each offending value specifier
+rather than on the path, so `export { a, type A, b } from '...'` produces two reports. Where it
+does not, there is one report on the source string. Both match the import spelling, which has
 always behaved that way.
 
 ## Development

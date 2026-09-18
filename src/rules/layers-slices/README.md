@@ -48,9 +48,10 @@ export { type FooType, foo } from 'shared/config' // filename: src/app/providers
 export { foo } from 'shared/config' // filename: src/app/providers/index.ts, pass-through-reexport
 ```
 
-A declaration is reported once per offending value specifier, not once per declaration, so
-`export { a, type A, b } from 'app/config'` produces two reports. The import spelling of the
-same declaration has always behaved this way.
+A declaration that mixes value and inline type specifiers is reported once per offending value
+specifier, so `export { a, type A, b } from 'app/config'` produces two reports. A declaration
+with no inline type specifier is reported once, on the source string. The import spelling of
+the same declaration has always behaved this way.
 
 A default specifier is a value import, so a default combined with inline type specifiers only,
 such as `import config, { type FooType } from 'app/config'`, is reported on the default
