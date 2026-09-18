@@ -113,14 +113,24 @@ describe('release notes', () => {
   });
 
   describe('a resolved curated file', () => {
-    it('returns the 2.0.1 notes byte identical, apart from the single trailing newline', async () => {
-      const shipped = await fs.readFile(path.join(process.cwd(), '.github', 'releases', '2.0.1.md'), 'utf8');
-      const { context } = await generate('2.0.1', shipped);
+    /* The shipped files themselves, so the assertion is the property and not the expression
+     * generateNotes computes: what goes in comes back out with no byte changed. */
+    it.each(['2.0.0', '2.0.1'])('returns the shipped %s notes byte identical', async (version) => {
+      const shipped = await fs.readFile(path.join(process.cwd(), '.github', 'releases', `${version}.md`), 'utf8');
+      const { context } = await generate(version, shipped);
 
       const body = await generateNotes({}, context);
 
-      expect(body).toBe(`${shipped.trim()}\n`);
-      expect(body.trim()).toBe(shipped.trim());
+      expect(body).toBe(shipped);
+    });
+
+    /* Byte identity above holds because every shipped file ends in exactly one newline. The
+     * trimming that makes it hold for a file that does not is stated here rather than left
+     * to be discovered by a curated file that stops round tripping. */
+    it('trims a trailing blank line down to the single newline', async () => {
+      const { context } = await generate('2.0.1', '## What changed\n\nOne fix.\n\n\n');
+
+      await expect(generateNotes({}, context)).resolves.toBe('## What changed\n\nOne fix.\n');
     });
 
     it('does not touch a body that has no marker in it', async () => {
