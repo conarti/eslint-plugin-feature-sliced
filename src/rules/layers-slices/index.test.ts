@@ -505,6 +505,108 @@ ruleTester.run('layers-slices', rule, {
       ] as Options,
       errors: [makeLayersSlicesError('entities', 'shared')],
     },
+    {
+      /*
+       * The third shape the change reaches: a default specifier next to both a value named
+       * specifier and an inline type one. The inline type specifier is exempt, so not every
+       * specifier is invalid, and each remaining value specifier carries its own report at
+       * its own position rather than one report at the import source
+       */
+      name: 'should report both value specifiers of a default import combined with a value named and an inline type specifier (issue #38)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import config, { bar, type Bar } from '@/entities/bar';",
+      options: layersSlicesAllowTypeImportsOptions,
+      errors: [
+        makeLayersSlicesErrorAtSpecifier(
+          'entities',
+          'shared',
+          {
+            line: 1,
+            endLine: 1,
+            column: 8,
+            endColumn: 14,
+          },
+        ),
+        makeLayersSlicesErrorAtSpecifier(
+          'entities',
+          'shared',
+          {
+            line: 1,
+            endLine: 1,
+            column: 18,
+            endColumn: 21,
+          },
+        ),
+      ],
+    },
+    {
+      /*
+       * The report count follows the number of value specifiers, so a second value named
+       * specifier is a third report rather than one report that moves back to the source
+       */
+      name: 'should report every value specifier of a default import combined with two value named and an inline type specifier (issue #38)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import config, { bar, baz, type Bar } from '@/entities/bar';",
+      options: layersSlicesAllowTypeImportsOptions,
+      errors: [
+        makeLayersSlicesErrorAtSpecifier(
+          'entities',
+          'shared',
+          {
+            line: 1,
+            endLine: 1,
+            column: 8,
+            endColumn: 14,
+          },
+        ),
+        makeLayersSlicesErrorAtSpecifier(
+          'entities',
+          'shared',
+          {
+            line: 1,
+            endLine: 1,
+            column: 18,
+            endColumn: 21,
+          },
+        ),
+        makeLayersSlicesErrorAtSpecifier(
+          'entities',
+          'shared',
+          {
+            line: 1,
+            endLine: 1,
+            column: 23,
+            endColumn: 26,
+          },
+        ),
+      ],
+    },
+    {
+      /*
+       * With type imports disallowed nothing is exempt, so every specifier is invalid and
+       * the whole declaration collapses back to one report at the import source
+       */
+      name: 'should report a default import combined with a value named and an inline type specifier at the source when type imports are disallowed (issue #38 control)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import config, { bar, type Bar } from '@/entities/bar';",
+      options: [
+        {
+          allowTypeImports: false,
+        },
+      ] as Options,
+      errors: [
+        makeLayersSlicesErrorAtSpecifier(
+          'entities',
+          'shared',
+          {
+            line: 1,
+            endLine: 1,
+            column: 39,
+            endColumn: 55,
+          },
+        ),
+      ],
+    },
   ],
 });
 
@@ -978,6 +1080,40 @@ ruleTester.run('layers-slices (re-exports)', rule, {
             endLine: 1,
             column: 37,
             endColumn: 47,
+          },
+        ),
+      ],
+    },
+    {
+      /*
+       * The export side has no default specifier of its own: `export config, { bar } from`
+       * is not valid syntax, and the nearest shape is a `default as` named specifier. It is
+       * a value specifier like any other, so it is reported at its own position alongside
+       * the other value specifier while the inline type one stays exempt
+       */
+      name: 'should report a default re-export specifier alongside the other value specifier of a mixed upward re-export',
+      filename: 'src/entities/user/index.ts',
+      code: "export { default as config, loginUser, type AuthState } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [
+        makeLayersSlicesErrorAtSpecifier(
+          'features',
+          'entities',
+          {
+            line: 1,
+            endLine: 1,
+            column: 10,
+            endColumn: 27,
+          },
+        ),
+        makeLayersSlicesErrorAtSpecifier(
+          'features',
+          'entities',
+          {
+            line: 1,
+            endLine: 1,
+            column: 29,
+            endColumn: 38,
           },
         ),
       ],
