@@ -24,7 +24,7 @@ export function isLayerPublicApi(context: UnknownRuleContext, layersConfig: Norm
   /*
    * Matched twice on purpose, the same monotone form as is-ignored.ts: picomatch's
    * `**` does not cross a path segment starting with a dot, so a project under
-   * `.worktrees/` or `.claude/` never matched at all. The dot-aware result only
+   * `.worktrees/` or `.cache/` never matched at all. The dot-aware result only
    * ever widens the plain one, so it cannot invert a pattern.
    */
   return picomatch(patterns)(normalizedCurrentFilePath)
