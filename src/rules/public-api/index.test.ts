@@ -217,6 +217,25 @@ ruleTester.run('public-api', rule, {
       filename: 'src/features/foo-pages/ui/foo.vue',
       code: "import { foo } from '../model'",
     },
+    /*
+     * An import that never leaves the slice it starts in does not go through
+     * the public api of that slice, so it must not be asked for one (issue #41)
+     */
+    {
+      name: 'should be valid if a file in an unknown folder reaches a segment of its own slice (issue #41)',
+      filename: 'src/features/leaderboard/actions/get-top.ts',
+      code: "import { u } from '@/features/leaderboard/lib/utils';",
+    },
+    {
+      name: 'should be valid if a relative import from an unknown folder reaches a segment of its own slice (issue #41)',
+      filename: 'src/features/leaderboard/actions/get-top.ts',
+      code: "import { u } from '../lib/utils';",
+    },
+    {
+      name: 'should keep an import into an unknown folder of the current slice valid (issue #41 control)',
+      filename: 'src/widgets/header/Header.ts',
+      code: "import { other } from '@/widgets/header/hooks';",
+    },
   ],
 
   invalid: [
@@ -434,6 +453,18 @@ ruleTester.run('public-api', rule, {
         ),
       ],
     },
+    {
+      name: 'should still report an import into a segment of another slice (issue #41 control)',
+      filename: 'src/entities/user/model/a.ts',
+      code: "import { x } from '@/entities/other/model/x';",
+      errors: [
+        makePublicApiErrorWithSuggestion(
+          'model/x',
+          "import { x } from '@/entities/other';",
+          '@/entities/other',
+        ),
+      ],
+    },
   ],
 });
 
@@ -494,6 +525,16 @@ ruleTester.run('public-api (@x cross-imports)', rule, {
       name: 'should allow an @x file to import from its own slice through a bare specifier (issue #40)',
       filename: 'src/entities/foo/@x/bar.ts',
       code: "import { thing } from 'src/entities/foo/model/thing';",
+    },
+    /*
+     * Only the @x guard answers this one: the slice of the current file resolves to
+     * the @x folder and the slice of the target to the folder above its segment, so
+     * neither truncated side contains the other and the same-slice guard is silent
+     */
+    {
+      name: 'should allow an @x file to import through a nested folder of its own slice (issue #40)',
+      filename: 'src/entities/foo/@x/bar.ts',
+      code: "import { x } from '@/entities/foo/hooks/model/x';",
     },
     {
       name: 'should keep the same re-export silent in the slice public api',
