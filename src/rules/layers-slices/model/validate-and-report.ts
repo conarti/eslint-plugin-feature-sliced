@@ -102,7 +102,7 @@ export function validateAndReport(
     return;
   }
 
-  if (isNotSuitableForValidation(pathsInfo)) {
+  if (isNotSuitableForValidation(pathsInfo, config)) {
     return;
   }
 

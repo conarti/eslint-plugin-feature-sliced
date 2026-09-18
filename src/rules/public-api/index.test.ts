@@ -474,6 +474,40 @@ ruleTester.run('public-api (@x cross-imports)', rule, {
       code: "import { UserProfile } from '@/entities/user-profile/@x/user-session';",
       options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
     },
+    /* An @x file is the cross-import public api of its own slice and may reach that slice */
+    {
+      name: 'should allow an @x file to re-export from its own slice (issue #40)',
+      filename: 'src/entities/foo/@x/bar.ts',
+      code: "export { thing } from '../model/thing';",
+    },
+    {
+      name: 'should allow an @x file to import from its own slice (issue #40)',
+      filename: 'src/entities/foo/@x/bar.ts',
+      code: "import { thing } from '../model/thing';",
+    },
+    {
+      name: 'should allow an @x file to import from its own slice through an alias (issue #40)',
+      filename: 'src/entities/foo/@x/bar.ts',
+      code: "import { thing } from '@/entities/foo/model/thing';",
+    },
+    {
+      name: 'should keep the same re-export silent in the slice public api',
+      filename: 'src/entities/foo/index.ts',
+      code: "export { thing } from '../model/thing';",
+    },
   ],
-  invalid: [],
+  invalid: [
+    {
+      name: 'should report an @x file that reaches into another slice',
+      filename: 'src/entities/foo/@x/bar.ts',
+      code: "export { thing } from 'src/entities/other/model/thing';",
+      errors: [
+        makePublicApiErrorWithSuggestion(
+          'model/thing',
+          "export { thing } from 'src/entities/other';",
+          'src/entities/other',
+        ),
+      ],
+    },
+  ],
 });
