@@ -170,9 +170,14 @@ ruleTester.run('layers-slices', rule, {
       code: "import { a } from 'src/.generated/entities/api';",
       options: makeLayersSlicesIgnoreOptions(['**/entities/**']),
     },
+    /*
+     * The filename has to sit inside a layer and carry an import the rule would
+     * otherwise report, or the rule returns before the ignore check and the case
+     * passes whatever the matcher does
+     */
     {
       name: 'should keep ignoring a dotted file matched by a negated ignoreFiles pattern',
-      filename: '/proj/src/.generated/a.ts',
+      filename: 'src/entities/.generated/a.ts',
       code: "import { a } from 'src/features/auth';",
       options: makeLayersSlicesIgnoreInFilesOptions(['!src/**']),
     },
