@@ -101,6 +101,12 @@ ruleTester.run('layers-slices', rule, {
       options: layersSlicesAllowTypeImportsOptions,
     },
     {
+      name: 'should allow a default "import type" with enabled option (issue #38 control)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import type config from '@/entities/bar';",
+      options: layersSlicesAllowTypeImportsOptions,
+    },
+    {
       name: 'should allow type imports by default',
       filename: 'src/shared/utils/index.ts',
       code: "import type { Foo } from '@/widgets/foo';",
@@ -410,6 +416,90 @@ ruleTester.run('layers-slices', rule, {
       filename: 'src/entities/user/model/a.ts',
       code: "import { auth } from '@/features/auth';",
       errors: [makeLayersSlicesError('features', 'entities')],
+    },
+    /*
+     * Issue #38. A default or a namespace specifier is a value import unless the
+     * declaration itself is an "import type", so a declaration that mixes one with
+     * inline type specifiers must still be reported, at that value specifier
+     */
+    {
+      name: 'should report a default import combined with an inline type specifier (issue #38)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import config, { type Bar } from '@/entities/bar';",
+      options: layersSlicesAllowTypeImportsOptions,
+      errors: [
+        makeLayersSlicesErrorAtSpecifier(
+          'entities',
+          'shared',
+          {
+            line: 1,
+            endLine: 1,
+            column: 8,
+            endColumn: 14,
+          },
+        ),
+      ],
+    },
+    {
+      name: 'should report a default import combined with several inline type specifiers (issue #38)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import config, { type Bar, type Baz } from '@/entities/bar';",
+      options: layersSlicesAllowTypeImportsOptions,
+      errors: [
+        makeLayersSlicesErrorAtSpecifier(
+          'entities',
+          'shared',
+          {
+            line: 1,
+            endLine: 1,
+            column: 8,
+            endColumn: 14,
+          },
+        ),
+      ],
+    },
+    {
+      name: 'should report a default import on its own (issue #38 control)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import config from '@/entities/bar';",
+      options: layersSlicesAllowTypeImportsOptions,
+      errors: [makeLayersSlicesError('entities', 'shared')],
+    },
+    {
+      name: 'should report a namespace import on its own (issue #38 control)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import * as bar from '@/entities/bar';",
+      options: layersSlicesAllowTypeImportsOptions,
+      errors: [makeLayersSlicesError('entities', 'shared')],
+    },
+    {
+      name: 'should report a default import combined with a value named specifier (issue #38 control)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import config, { bar } from '@/entities/bar';",
+      options: layersSlicesAllowTypeImportsOptions,
+      errors: [makeLayersSlicesError('entities', 'shared')],
+    },
+    {
+      name: 'should report a default import combined with an inline type specifier when type imports are disallowed (issue #38 control)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import config, { type Bar } from '@/entities/bar';",
+      options: [
+        {
+          allowTypeImports: false,
+        },
+      ] as Options,
+      errors: [makeLayersSlicesError('entities', 'shared')],
+    },
+    {
+      name: 'should report an inline type specifier on its own when type imports are disallowed (issue #38 control)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import { type Bar } from '@/entities/bar';",
+      options: [
+        {
+          allowTypeImports: false,
+        },
+      ] as Options,
+      errors: [makeLayersSlicesError('entities', 'shared')],
     },
   ],
 });

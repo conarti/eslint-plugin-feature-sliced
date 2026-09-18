@@ -1,28 +1,25 @@
+import type { TSESTree } from '@typescript-eslint/utils';
 import type { NormalizedLayerConfig } from '../../../config';
 import type { CrossImportInfo, PathsInfo } from '../../../lib/feature-sliced';
 import type { ImportExportNodesWithSourceValue } from '../../../lib/rule';
-import {
-  AST_NODE_TYPES,
-  type TSESTree,
-} from '@typescript-eslint/utils';
 import { getLayerNames } from '../../../lib/feature-sliced/layers-config';
 import {
   ERROR_MESSAGE_ID,
   type RuleContext,
 } from '../config';
 
-function getReportPosition(node: ImportExportNodesWithSourceValue | TSESTree.ImportSpecifier): TSESTree.Node {
-  const isSpecifier = node.type === AST_NODE_TYPES.ImportSpecifier;
-  if (isSpecifier) {
-    return node;
+function getReportPosition(node: ImportExportNodesWithSourceValue | TSESTree.ImportClause): TSESTree.Node {
+  const isDeclaration = 'source' in node;
+  if (isDeclaration) {
+    return node.source;
   }
 
-  return node.source;
+  return node;
 }
 
 export function reportCanNotImportLayer(
   context: RuleContext,
-  node: ImportExportNodesWithSourceValue | TSESTree.ImportSpecifier,
+  node: ImportExportNodesWithSourceValue | TSESTree.ImportClause,
   pathsInfo: PathsInfo,
   layersConfig: NormalizedLayerConfig[],
 ) {

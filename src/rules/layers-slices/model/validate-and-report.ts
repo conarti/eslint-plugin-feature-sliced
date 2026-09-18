@@ -38,7 +38,7 @@ function validate(
   pathsInfo: PathsInfo,
   allowTypeImports: boolean,
   config?: NormalizedLayerConfig[],
-): ImportNodes[] | TSESTree.ImportSpecifier[] {
+): ImportNodes[] | TSESTree.ImportClause[] {
   if (validateNode(node, pathsInfo, allowTypeImports, config)) {
     return [];
   }
@@ -59,7 +59,7 @@ function validate(
 }
 
 function reportValidationErrors(
-  nodes: TSESTree.ImportSpecifier[] | ImportNodes[],
+  nodes: TSESTree.ImportClause[] | ImportNodes[],
   context: RuleContext,
   pathsInfo: PathsInfo,
   config: NormalizedLayerConfig[],

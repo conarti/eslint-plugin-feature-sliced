@@ -18,7 +18,7 @@ type ImportExportTypeNode = ImportDeclarationKindType
 /**
  * Checks if a node is an import or export of a type
  */
-export function isNodeType(node: ImportExportNodes | TSESTree.ImportSpecifier): node is ImportExportTypeNode {
+export function isNodeType(node: ImportExportNodes | TSESTree.ImportClause): node is ImportExportTypeNode {
   const isImport = ASTUtils.isNodeOfTypes([AST_NODE_TYPES.ImportSpecifier, AST_NODE_TYPES.ImportDeclaration])(node);
   const isExport = ASTUtils.isNodeOfTypes([AST_NODE_TYPES.ExportAllDeclaration, AST_NODE_TYPES.ExportNamedDeclaration])(node);
 
