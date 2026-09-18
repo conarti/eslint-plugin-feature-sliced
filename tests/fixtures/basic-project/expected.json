@@ -166,6 +166,14 @@
     ]
   },
   {
+    "file": "src/features/logout/index.ts",
+    "ruleId": "@conarti/feature-sliced/layers-slices",
+    "messageId": "pass-through-reexport",
+    "line": 2,
+    "column": 30,
+    "suggestions": []
+  },
+  {
     "file": "src/pages/home/ui/deep-import-into-custom-segment.ts",
     "ruleId": "@conarti/feature-sliced/public-api",
     "messageId": "should-be-from-public-api",
@@ -184,6 +192,14 @@
     "suggestions": [
       "remove-suggestion"
     ]
+  },
+  {
+    "file": "src/widgets/header/ui/blank-line-between-imports.ts",
+    "ruleId": "@conarti/feature-sliced/import-order",
+    "messageId": "noLineBetweenGroups",
+    "line": 2,
+    "column": 1,
+    "suggestions": []
   },
   {
     "file": "src/widgets/header/ui/relative-cross-layer-import.ts",

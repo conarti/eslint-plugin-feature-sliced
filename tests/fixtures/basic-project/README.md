@@ -80,11 +80,29 @@ depend on the machine's locale.
 | `src/entities/panel/panel/ui/index.ts` | `no-cross-segment-reexport` | `no-cross-segment-reexport` (suggestion `move-to-slice-public-api-suggestion`) | The slice is `panel/panel`, the folder that holds the public api, and not the `panel/` folder above it that repeats its name, so `ui` is the segment and its re-export of `../model` crosses a segment boundary |
 | `src/entities/panel/panel/ui/reaches-sibling-slice.ts` | `layers-slices` | `can-not-import` | The slice directory of a file is the one the filesystem resolved, so `panel/other` is a sibling slice rather than a folder of `panel/panel`, and the import crosses a slice boundary |
 | `src/entities/panel/panel/ui/reaches-sibling-slice.ts` | `public-api` | `should-be-from-public-api` | The same import seen by the other rule |
+| `src/features/logout/index.ts` | `layers-slices` | `pass-through-reexport` | A re-export the layer order allows is still a pass-through: the `logout` slice public api forwards the `entities/session` public api straight back out, so the public api of a `features` slice starts carrying an `entities` module |
+| `src/widgets/header/ui/blank-line-between-imports.ts` | `import-order` | `noLineBetweenGroups` | The default `sortImports` preset writes `"newlines-between": "never"`, so an empty line between two imports is reported even when the order of those imports is right |
 
-Alongside the snapshot the test asserts that every rule id the plugin exports still appears
-somewhere in the report, so a preset that silently stops enabling a rule fails the suite, and
-that the number of linted files matches the number of `.ts` files actually present here, so a
-lint glob that quietly stops matching a subtree fails too.
+Alongside the snapshot the test asserts three more things. Every rule id the plugin exports has
+to appear somewhere in the report, so a preset that silently stops enabling a rule fails the
+suite. Every message id the plugin declares has to appear too, read from the rule metadata the
+plugin exports rather than from a list kept by hand, so a message id added to a rule cannot ship
+without a fixture case and a message id that quietly stops firing cannot ship either. And the
+number of linted files has to match the number of `.ts` files actually present here, so a lint
+glob that quietly stops matching a subtree fails too.
+
+Six message ids cannot be produced from either subtree, and the test carries them in a list that
+names the reason for each instead of filtering them away. All six belong to `import-order`, which
+is `eslint-plugin-import-x`'s `order` rule re-exported under the plugin name. `error` is reported
+only when the rule cannot convert its own options into ranks, and `createPlugin` builds those
+options itself, so no preset reaches it. `noLineBetweenSingleLineImport`,
+`oneLineBetweenTheMultiLineImport` and `oneLineBetweenThisMultiLineImport` need
+`consolidateIslands: 'inside-groups'` together with `"newlines-between": "always-and-inside-groups"`,
+and none of the four `sortImports` presets sets either of them. `noLineWithinGroup`
+and `oneLineBetweenGroups` need `"newlines-between": "always"`, which is the `with-newlines`
+preset, while both subtrees here lint on the default `recommended` one; covering those two would
+take a third subtree. A second assertion fails if an entry of that list stops being declared or
+starts being reported, so the list cannot quietly turn into a filter.
 
 ## The clean files
 
