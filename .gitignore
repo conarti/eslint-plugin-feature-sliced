@@ -147,6 +147,9 @@ dist
 docs/.vitepress/dist
 docs/.vitepress/cache
 
+# A mutation run leaves a second cache here, which the docs/ entry above does not reach
+.vitepress/cache
+
 .DS_Store
 .omc/
 semantic-release.log
