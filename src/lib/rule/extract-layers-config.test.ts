@@ -1,6 +1,7 @@
-import type { NormalizedLayerConfig } from '../../config';
+import type { LayersConfig, NormalizedLayerConfig, TypedFlatConfigItem } from '../../config';
 import type { UnknownRuleContext } from './models';
-import { PLUGIN_NAME } from '../../config';
+import { DEFAULT_LAYERS_CONFIG, PLUGIN_NAME } from '../../config';
+import { createPlugin } from '../../create-plugin';
 import { extractLayersConfig } from './extract-layers-config';
 
 function createMockContext(settings?: Record<string, unknown>): UnknownRuleContext {
@@ -127,16 +128,73 @@ describe('extractLayersConfig', () => {
       expect(extractFrom([{ name: 42 }])).toHaveLength(7);
     });
 
-    it('should return default config when a name is the empty string', () => {
-      expect(extractFrom([''])).toHaveLength(7);
+    /*
+     * An empty name is a poor name and not one anybody writes on purpose, but createPlugin
+     * accepts it and writes it into this setting, so the read has to accept it too. Rejecting
+     * it here is how a factory configured project ends up linting against the defaults.
+     */
+    it('should honour a name that is the empty string', () => {
+      expect(extractFrom([''])).toEqual([{ name: '', hasSlices: true }]);
     });
 
-    it('should return default config when an object entry has an empty name', () => {
-      expect(extractFrom([{ name: '' }])).toHaveLength(7);
+    it('should honour an object entry whose name is the empty string', () => {
+      expect(extractFrom([{ name: '' }])).toEqual([{ name: '', hasSlices: true }]);
     });
 
     it('should return default config when layers is null', () => {
       expect(extractFrom(null)).toHaveLength(7);
+    });
+  });
+
+  /*
+   * The setting is written by createPlugin as often as it is written by hand, and the guard has
+   * to accept everything the factory can put there. Where it does not, a project configured
+   * through the factory silently lints against the default layers instead of its own, which is
+   * the one failure a guard placed at the read cannot be allowed to introduce.
+   */
+  describe('a list that createPlugin wrote', () => {
+    function writtenLayers(config: TypedFlatConfigItem): NormalizedLayerConfig[] {
+      return (config.settings![PLUGIN_NAME] as { layers: NormalizedLayerConfig[] }).layers;
+    }
+
+    function readBack(written: NormalizedLayerConfig[]): NormalizedLayerConfig[] {
+      return extractLayersConfig(createMockContext({
+        [PLUGIN_NAME]: { layers: written },
+      }));
+    }
+
+    const factoryOptions: Array<[string, LayersConfig | undefined]> = [
+      ['no layers option at all', undefined],
+      ['an empty list', []],
+      ['a single layer name', ['shared']],
+      ['plain layer names', ['shared', 'entities', 'app']],
+      ['layer names in mixed case', ['Shared', 'ENTITIES']],
+      ['objects that set hasSlices both ways', [{ name: 'shared', hasSlices: false }, { name: 'entities', hasSlices: true }]],
+      ['an object that leaves hasSlices out', [{ name: 'app' }]],
+      ['names and objects in one list', [{ name: 'Shared', hasSlices: false }, 'Entities']],
+      ['the default list spelled out', DEFAULT_LAYERS_CONFIG],
+      ['an empty name written as a string', ['shared', 'entities', '']],
+      ['an empty name written on an object', [{ name: '' }]],
+      ['an empty name and nothing else', ['']],
+    ];
+
+    it.each(factoryOptions)('should read back exactly what createPlugin writes for %s', (_label, layers) => {
+      const written = writtenLayers(createPlugin({ layers }));
+
+      expect(readBack(written)).toEqual(written);
+    });
+
+    /*
+     * hasSlices is checked by neither door. The claim here is not that a non boolean is
+     * sensible, it is that both doors treat it identically, so the setting cannot mean one
+     * thing through the factory and another by hand.
+     */
+    it('should carry a hasSlices that is not a boolean the same way through both doors', () => {
+      const layers = [{ name: 'shared', hasSlices: 'no' }] as unknown as LayersConfig;
+      const written = writtenLayers(createPlugin({ layers }));
+
+      expect(written).toEqual([{ name: 'shared', hasSlices: 'no' }]);
+      expect(readBack(written)).toEqual(written);
     });
   });
 });

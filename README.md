@@ -606,9 +606,9 @@ The `settings['@conarti/feature-sliced']` key is optional: leave it out and the 
 the default layers and segments. Supply `layers` there and either form works, the normalized
 `{ name, hasSlices }` object or a plain layer name, because the rules normalize the list where they
 read it. A list of plain names answers as the same layers answer through the factory. An empty list
-means a project with no layers, and a list in which no entry can name a layer falls back to the
-defaults. The factory remains the recommended route, because it is the form the options are
-documented in.
+means a project with no layers, and one entry that can name no layer, a `null` or a number for
+instance, sends the whole list back to the defaults rather than only that entry. The factory
+remains the recommended route, because it is the form the options are documented in.
 
 ```js
 import { plugin, RULE_NAMES } from '@conarti/eslint-plugin-feature-sliced';
