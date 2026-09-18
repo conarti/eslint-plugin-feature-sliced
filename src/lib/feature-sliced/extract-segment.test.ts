@@ -243,6 +243,15 @@ describe('extract-segment', () => {
         .toStrictEqual([null, null]);
     });
 
+    /*
+     * The boundary counts from the layer, so a path with no layer has no position to count
+     * from and no segment to give, even when the part the boundary names happens to sit there.
+     */
+    it('returns nothing when the path holds no layer and the boundary points at a part that is there', () => {
+      expect(extractSegment('components/foo/ui/x.ts', undefined, undefined, { slice: 'components', index: 0 }))
+        .toStrictEqual([null, null]);
+    });
+
     it('returns nothing when the slice is not one of the parts after the layer', () => {
       expect(extractSegment('src/entities/bar/ui/index.ts', undefined, undefined, { slice: 'foo', index: 0 }))
         .toStrictEqual([null, null]);
