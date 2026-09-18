@@ -95,5 +95,18 @@ describe('resolution-paths', () => {
       expect(rerootTargetPath('/home/me/entities/proj/src/widgets/header/Header.ts', '@/entities/user/model', '/home/me/entities/proj'))
         .toBe('/home/me/entities/proj/src/entities/user/model');
     });
+
+    /*
+     * A relative specifier arrives already rooted, so the target carries the checkout
+     * directory too. Searching it whole stops at the directory holding the checkout and roots
+     * the project under itself a second time, which names no directory on disk.
+     */
+    it('anchors an already rooted target on the layer inside the project too', () => {
+      expect(rerootTargetPath(
+        '/home/me/entities/proj/src/entities/card/ui/Card.ts',
+        '/home/me/entities/proj/src/entities/card/neighbor/ui/thing',
+        '/home/me/entities/proj',
+      )).toBe('/home/me/entities/proj/src/entities/card/neighbor/ui/thing');
+    });
   });
 });
