@@ -53,6 +53,11 @@ describe('resolution-paths', () => {
         .toBe('/proj/src/widgets/header/hooks/use-x');
     });
 
+    it('ignores empty parts left by a doubled slash in the current file path', () => {
+      expect(rerootTargetPath('/proj/src//widgets/header/Header.ts', '@/entities/user/model', '/proj'))
+        .toBe('/proj/src/entities/user/model');
+    });
+
     it('returns null for a package specifier, which carries no layer', () => {
       expect(rerootTargetPath(currentFile, 'lodash', '/proj')).toBeNull();
     });

@@ -79,15 +79,22 @@ function resolveSliceFromDisk(
 ): string | null {
   const boundary = segmentIndex === -1 ? partsAfterLayer.length : segmentIndex;
 
-  for (let index = boundary - 1; index >= 0; index -= 1) {
-    const directory = [cwd, ...partsUpToLayer, ...partsAfterLayer.slice(0, index + 1)].join('/');
+  /*
+   * Deepest first. The candidates are materialised and read from the end rather than walked
+   * with a descending index, so no single-operator change to this function can turn it into
+   * an unbounded loop.
+   */
+  const candidates = partsAfterLayer
+    .slice(0, boundary)
+    .map((part, index) => ({
+      part,
+      directory: [cwd, ...partsUpToLayer, ...partsAfterLayer.slice(0, index + 1)].join('/'),
+    }))
+    .reverse();
 
-    if (hasPublicApi(directory)) {
-      return partsAfterLayer[index];
-    }
-  }
+  const deepest = candidates.find((candidate) => hasPublicApi(candidate.directory));
 
-  return null;
+  return deepest === undefined ? null : deepest.part;
 }
 
 /**

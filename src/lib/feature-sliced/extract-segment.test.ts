@@ -252,5 +252,39 @@ describe('extract-segment', () => {
       expect(extractSegment('src/entities/Foo/ui/index.ts', undefined, undefined, 'foo'))
         .toStrictEqual(['ui', 'index.ts']);
     });
+    it('reads a folder whose name only starts with index as a segment', () => {
+      expect(extractSegment('src/entities/foo/indexes/x.ts', undefined, undefined, 'foo'))
+        .toStrictEqual(['indexes', 'x.ts']);
+    });
+
+    it('reads a file whose name only ends with an index name as a segment', () => {
+      expect(extractSegment('src/entities/foo/my-index.ts', undefined, undefined, 'foo'))
+        .toStrictEqual(['my-index', null]);
+    });
+
+    it('returns nothing for a bare index entry carrying no extension', () => {
+      expect(extractSegment('src/entities/foo/index', undefined, undefined, 'foo'))
+        .toStrictEqual([null, null]);
+    });
+
+    it('drops only the last extension of a segment file carrying several', () => {
+      expect(extractSegment('src/entities/foo/model.spec.ts', undefined, undefined, 'foo'))
+        .toStrictEqual(['model.spec', null]);
+    });
+
+    it('ignores empty parts left by a doubled slash', () => {
+      expect(extractSegment('src/entities/foo//ui/x.ts', undefined, undefined, 'foo'))
+        .toStrictEqual(['ui', 'x.ts']);
+    });
+
+    it('looks for the slice below the layer, not anywhere in the path', () => {
+      expect(extractSegment('foo/entities/foo/ui/index.ts', undefined, undefined, 'foo'))
+        .toStrictEqual(['ui', 'index.ts']);
+    });
+
+    it('takes the name list route when the slice is explicitly unresolved', () => {
+      expect(extractSegment('src/entities/foo/custom-segment/index.ts', undefined, undefined, null))
+        .toStrictEqual([null, null]);
+    });
   });
 });

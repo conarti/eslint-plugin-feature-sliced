@@ -351,4 +351,67 @@ describe('isCrossSegmentReexport', () => {
       targetSegment: null,
     });
   });
+  it('takes a segment written as a file after the resolved slice when it carries a segment name', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cluster/model.ts',
+      'src/entities/cluster/api',
+      defaultConfig,
+      undefined,
+      'cluster',
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: true,
+      currentSegment: 'model',
+      targetSegment: 'api',
+    });
+  });
+
+  it('does not take a file after the resolved slice whose name is not a segment name', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cart/cart-service.ts',
+      'src/entities/cart/helpers',
+      defaultConfig,
+      undefined,
+      'cart',
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: false,
+      currentSegment: null,
+      targetSegment: null,
+    });
+  });
+
+  it('finds the resolved slice below a group folder rather than at the first part', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/group/User/model/index.ts',
+      'src/entities/group/User/api',
+      defaultConfig,
+      undefined,
+      'User',
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: true,
+      currentSegment: 'model',
+      targetSegment: 'api',
+    });
+  });
+
+  it('returns nothing when the resolved slice is not one of the parts below the layer', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cluster/model/index.ts',
+      'src/entities/cluster/api',
+      defaultConfig,
+      undefined,
+      'nowhere',
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: false,
+      currentSegment: null,
+      targetSegment: null,
+    });
+  });
 });

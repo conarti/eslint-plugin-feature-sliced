@@ -409,6 +409,15 @@ describe('extract-slice', () => {
         .toEqual({ resolved: false, slice: 'hooks', fallbackSlice: 'hooks' });
     });
 
+    it('does not probe a path that does not lie under the project root, whatever the probe answers', () => {
+      expect(extractSlice(
+        '@/widgets/header/hooks',
+        undefined,
+        [...DEFAULT_SEGMENTS],
+        { cwd: ROOT, hasPublicApi: () => true },
+      )).toEqual({ resolved: false, slice: 'hooks', fallbackSlice: 'hooks' });
+    });
+
     it('resolves nothing when the path does not lie under the project root', () => {
       expect(resolveWith('@/widgets/header/hooks', ['src/widgets/header']))
         .toEqual({ resolved: false, slice: 'hooks', fallbackSlice: 'hooks' });

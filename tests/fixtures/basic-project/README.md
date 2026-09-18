@@ -84,13 +84,18 @@ lint glob that quietly stops matching a subtree fails too.
 
 ## The clean files
 
-The remaining 50 `.ts` files carry no expectation at all, and the test asserts that they produce
+The remaining 55 `.ts` files carry no expectation at all, and the test asserts that they produce
 no message whatsoever. They are the false-positive guard: correct upward type-only imports,
 relative imports inside a slice, absolute imports across layers, slice and segment public apis,
 `@x` cross-imports addressed to the importing slice, and the custom `services` segment of `src2/`
 all have to stay silent. The public api files of the group folder shapes are here too: an
 `index.ts` that re-exports a folder of its own slice, and a group folder's own `index.ts` sitting
-next to the sub-slices that carry theirs. `src2/entities/basket/model/cross-import-at-segments-level.ts` is the one
+next to the sub-slices that carry theirs. Two of them are load-bearing rather than decorative.
+`src/entities/order/services/order-service.ts` reaches `src/entities/services`, whose own slice
+cannot be resolved from disk: it stays silent only because one unresolved side sends both sides
+back to the path heuristic, where the two agree. `src/entities/ticket/handlers/index.ts` stays
+silent only because `handlers/` carries a public api of its own and is therefore a slice rather
+than a segment, which the rule can only know by asking the filesystem. `src2/entities/basket/model/cross-import-at-segments-level.ts` is the one
 worth naming: it keeps the `@x` cross-import exempt from the `unknown-segment` check when
 `publicApi.level` is `'segments'`. A rule that starts over-reporting shows up here, not in the snapshot.
 

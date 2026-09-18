@@ -50,6 +50,7 @@ describe('has-public-api', () => {
 
     const otherFiles = [
       'index.d.ts',
+      'index.ts.bak',
       'index.test.ts',
       'index.spec.tsx',
       'index.module.css',
