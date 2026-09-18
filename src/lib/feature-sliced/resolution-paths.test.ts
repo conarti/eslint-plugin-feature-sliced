@@ -28,6 +28,23 @@ describe('resolution-paths', () => {
     it('returns null when the path does not lie under the root', () => {
       expect(relativeToRoot('@/entities/user/model', '/proj')).toBeNull();
     });
+
+    /*
+     * A prefix is not containment. `/projects` merely begins with `/proj`, and a path under it
+     * would otherwise be cut mid-name into a directory that exists nowhere, probed, and cached
+     * under that name for the rest of the process.
+     */
+    it('returns null for a sibling directory whose name only begins with the root name', () => {
+      expect(relativeToRoot('/projects/src/entities/user', '/proj')).toBeNull();
+    });
+
+    it('returns the empty path for the root itself', () => {
+      expect(relativeToRoot('/proj', '/proj')).toBe('');
+    });
+
+    it('accepts a root written with a trailing slash', () => {
+      expect(relativeToRoot('/proj/src/entities', '/proj/')).toBe('src/entities');
+    });
   });
 
   describe('rerootTargetPath', () => {

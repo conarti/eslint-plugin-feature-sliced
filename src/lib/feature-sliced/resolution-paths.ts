@@ -11,6 +11,11 @@ import {
  * case, but the slice of the original string is returned untouched: a lowercased directory
  * does not exist on a case sensitive filesystem, and this path is handed to a directory read.
  * This is why `extract-layer.ts`'s `prepareToExtract` cannot be reused here.
+ *
+ * Lying under the root means the root, then a separator or nothing. A bare prefix test would
+ * put `/projects/src` under `/proj` and cut it mid-name into `ects/src`, which names a
+ * directory that exists nowhere, is probed as if it did, and is cached under that name for
+ * the rest of the process.
  */
 export function relativeToRoot(targetPath: string, root?: string): string | null {
   if (root === undefined || root === '') {
@@ -21,7 +26,13 @@ export function relativeToRoot(targetPath: string, root?: string): string | null
     return null;
   }
 
-  return targetPath.slice(root.length).replace(/^\/+/, '');
+  const pathFromRoot = targetPath.slice(root.length);
+
+  if (pathFromRoot !== '' && !pathFromRoot.startsWith('/') && !root.endsWith('/')) {
+    return null;
+  }
+
+  return pathFromRoot.replace(/^\/+/, '');
 }
 
 /**
