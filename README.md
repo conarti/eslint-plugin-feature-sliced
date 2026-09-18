@@ -112,7 +112,7 @@ export default [
 ## What the plugin checks
 
 Every example below is taken from `tests/fixtures/basic-project`, the FSD tree the test suite lints
-end to end on every run. Its layout:
+end to end on every run, except where an example says otherwise. Its layout:
 
 ```text
 src/
@@ -190,6 +190,40 @@ import type { AuthState } from 'src/features/auth';
 
 Dynamic `import()` expressions are checked too.
 
+A re-export is a dependency, so `export ... from` takes the same checks as the import of the
+same path. Incorrect, `src/entities/index.ts`:
+
+```ts
+export { createUser } from './user';
+```
+
+> You cannot import layer "entities" into "entities" (shared -> entities -> features -> widgets -> pages -> processes -> app)
+
+That file is reported by `public-api` as well, for being a layer public API at all.
+
+Type-only re-exports are exempt in all three spellings, `export type { x } from`,
+`export type * from` and the inline `export { type x } from`. Correct,
+`src/features/profile/model/reexports-shared-type-inline.ts`:
+
+```ts
+export { type DateFormatter } from 'src/shared/lib/format-date';
+```
+
+A re-export of a **lower** layer is a different matter. Importing downward is legal, but
+re-exporting downward forwards that layer through this one, so every consumer of the file
+depends on the lower layer without saying so. It has its own message, and it is on by default.
+Incorrect (this example is not in the fixture), `src/widgets/nav/index.ts`:
+
+```ts
+export { createUser } from 'src/entities/user';
+```
+
+> Re-export from layer "entities" forwards it through "widgets", import it directly instead
+
+Turn it off with `layersSlices: { allowPassThroughReexports: true }`. A re-export that stays
+inside one slice, which is what a slice public API is made of, and one that joins two files of
+a layer without slices are not pass-through re-exports and are never reported.
+
 ### Absolute and relative paths
 
 Inside one slice, or inside a layer without slices, imports have to be relative. Across layers they
@@ -253,6 +287,10 @@ export { createUser } from './user';
 
 One segment of a slice must not re-export from a sibling segment. Only re-export statements
 (`export { x } from '...'`, `export type { x } from '...'`, `export * from '...'`) are looked at.
+
+A segment is decided by position, not by name: it is the first folder after the slice. The
+`segments` setting says which names are recognized there, so a slice using custom segment names
+is checked once those names are configured. See [Custom segments](#custom-segments).
 
 Incorrect, `src/entities/user/model/index.ts`:
 
@@ -327,7 +365,8 @@ off with `additionalProperties: false`.
 | `severity` | all four | `'error'` or `'warn'` | the factory `severity` | Severity for this rule only. |
 | `ignoreImports` | all four | `string[]` | `[]` | Skip imports whose specifier matches one of these globs. |
 | `ignoreFiles` | all four | `string[]` | `[]` | Skip files whose path matches one of these globs. |
-| `allowTypeImports` | `layers-slices` | `boolean` | `true` | Exempt type-only imports from the layer check. |
+| `allowTypeImports` | `layers-slices` | `boolean` | `true` | Exempt type-only imports and type-only re-exports from the layer check. |
+| `allowPassThroughReexports` | `layers-slices` | `boolean` | `false` | Allow a re-export to forward a lower layer through this file. Off by default, so such a re-export is reported as `pass-through-reexport`. |
 | `level` | `public-api` | `'slices'` or `'segments'` | `'slices'` | How deep the public API check goes. |
 
 A worked example:
@@ -489,20 +528,38 @@ export default [
 ];
 ```
 
-The segment list is used by `public-api`, where at `level: 'segments'` a folder standing in segment
-position that is not on the list is reported as `unknown-segment`, and by the path parsing that
-`layers-slices` relies on to tell a slice from a segment. Teaching the plugin about a custom
-segment therefore removes false positives from `public-api` and from `layers-slices`.
+All four FSD rules read the same list. A segment is decided by position, as the first folder
+after the slice, and the list says which names are recognized there. At `public-api` with
+`level: 'segments'`, a folder in segment position that is not on the list is reported as
+`unknown-segment`. `no-cross-segment-reexport` uses the list to name the two sibling segments.
+`layers-slices` and `absolute-relative` use it to tell where a slice stops and a segment begins.
+Teaching the plugin about a custom segment therefore removes false positives from all four.
 
-Known limitations. Two rules never read the `segments` option and match segment names against a
-built-in list instead, so in a project with custom segment names their idea of where a segment
-starts differs from the other rules:
+### Where a slice ends
 
-- `absolute-relative` resolves the slice of a path with the built-in list, so an absolute import
-  that stays inside a single slice is not reported when that slice uses a custom segment name. See
-  [issue #37](https://github.com/conarti/eslint-plugin-feature-sliced/issues/37).
-- `no-cross-segment-reexport` matches sibling segment names against the same built-in list. See
-  [issue #35](https://github.com/conarti/eslint-plugin-feature-sliced/issues/35).
+The plugin finds the end of a slice by looking at the filesystem. Between the layer and the
+first configured segment it walks the folders of the path and takes the deepest one that holds a
+public API file. A public API file is an `index` file and nothing else: `index.ts`, `.tsx`,
+`.js`, `.jsx`, `.mjs`, `.cjs`, `.mts`, `.cts`, `.vue` or `.svelte`. A colocated `index.d.ts`,
+`index.test.ts` or `index.module.css` does not turn its folder into a slice.
+
+Two things follow, and they are the reason a project may see its report count change:
+
+- **A folder inside a slice is not a slice.** With the `index.ts` on `entities/user`, the
+  folders `entities/user/components` and `entities/user/hooks` are parts of the `user` slice.
+  An import between them never leaves the slice, so `layers-slices` is silent and
+  `absolute-relative` requires it to be written as a relative path.
+- **A group folder does not hide the slices under it.** With an `index.ts` on each of
+  `entities/(shop)/ShopA` and `entities/(shop)/ShopB`, the two are separate slices and the
+  import between them is reported, whether or not the group folder is written in parentheses.
+
+Nothing configures this, and there is no option to turn it off. Where no folder in range holds a
+public API file, the slice is derived from the shape of the path as it was before, and the two
+definitions are never mixed within one comparison.
+
+The answer is cached per directory for as long as the process lives. For a command line run
+that is the run. In an editor it is the lifetime of the ESLint server, so an `index` file you
+add or delete is not noticed until that server restarts.
 
 ### Import sorting presets
 
@@ -646,9 +703,15 @@ cross-import at all, and falls back to the ordinary slice-to-slice and public AP
 | [`@conarti/feature-sliced/no-cross-segment-reexport`](src/rules/no-cross-segment-reexport/README.md) | Checks for cross-segment re-exports within the same slice | | 💡 |
 | [`@conarti/feature-sliced/import-order`](https://github.com/un-ts/eslint-plugin-import-x/blob/master/docs/rules/order.md) | Sorts imports, the `order` rule of `eslint-plugin-import-x` preconfigured for FSD layers | 🔧 | |
 
-Known limitation: the `public-api` check for an `index` file placed directly on a layer does not
-fire when the project sits under a directory whose name begins with a dot. See
-[issue #34](https://github.com/conarti/eslint-plugin-feature-sliced/issues/34).
+Besides `can-not-import` and `invalid-cross-import`, `layers-slices` carries a third message,
+`pass-through-reexport`, for a re-export that forwards a lower layer through the current one.
+It is on by default and is turned off with `allowPassThroughReexports`.
+
+Known limitation: if you point ESLint at a directory below your project root, such as `src`, a
+relative import that climbs above it lies under no root the plugin can anchor on and is read as
+written. Where the checkout also sits under a directory carrying a layer name, that reads as a
+layer and produces a report that is not there. Pointing ESLint's working directory at the
+project root avoids it.
 
 ## Migrating from 1.x
 
@@ -671,6 +734,32 @@ fire when the project sits under a directory whose name begins with a dot. See
 
 Node 18.18 or newer is required as well. The 1.x line stays on npm as
 `@conarti/eslint-plugin-feature-sliced@1` for projects that cannot move yet.
+
+### Upgrading from 2.0
+
+Nothing to change in your configuration. 2.1 adds no required option, renames nothing and moves
+no default of an existing check. It can raise your report count, so here is every class of
+report that is new, and the one that disappears.
+
+| New report | Rule and message | What to do |
+| - | - | - |
+| A re-export of an upper layer, or of a sibling slice | `layers-slices` `can-not-import` | Same fix as the equivalent import. `export ... from` is now a dependency |
+| A re-export that forwards a lower layer through this file | `layers-slices` `pass-through-reexport` | Import the lower layer directly, or set `allowPassThroughReexports: true` |
+| A default import combined with inline type specifiers only | `layers-slices` `can-not-import` | The default specifier is a value import and was previously missed |
+| An absolute import inside a slice that uses a custom segment name | `absolute-relative` `must-be-relative-path` | Write it relative. Previously missed because the segment name was unknown |
+| A re-export between two custom-named sibling segments | `no-cross-segment-reexport` | Move the re-export to the slice public API |
+| An `index` file on a custom layer, or on any layer under a dotted directory | `public-api` `layers-public-api-not-allowed` | Remove the layer-level public API |
+| A deep import into a folder that is a segment by position but not by name | `public-api` `should-be-from-public-api` | Import through the slice public API |
+
+The one class that disappears is a cross-slice report between two folders that the filesystem
+now says are one slice, because only one of them holds a public API file. See
+[Where a slice ends](#where-a-slice-ends).
+
+Two notes for anyone who pins positions or counts rather than reading messages. A re-export is
+reported once per offending value specifier, so `export { a, type A, b } from '...'` produces
+two reports, and the report sits on the specifier rather than on the path whenever the
+declaration mixes value and inline type specifiers. Both match the import spelling, which has
+always behaved that way.
 
 ## Development
 

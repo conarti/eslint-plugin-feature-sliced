@@ -35,6 +35,22 @@ Only re-export statements (`export { x } from '...'`, `export type { x } from '.
 
 A suggestion is offered to replace the sibling-segment path with a relative path to the slice's public API (e.g. `../api` → `..`).
 
+Segment names come from the `segments` setting that `featureSliced()` writes, not from a
+built-in list, so a project with custom segment names is checked too. This closes the remaining
+half of [issue #35](https://github.com/conarti/eslint-plugin-feature-sliced/issues/35).
+
+```js
+// filename: src/entities/cart/services/index.ts, with segments: ['services']
+
+export { m } from '../model';
+```
+
+> Segment "services" should not re-export from sibling segment "model". Move the re-export to the slice public API.
+
+Without `services` in the `segments` setting the same file is silent, because neither folder
+stands in segment position as far as the rule is concerned. Teaching the plugin about a custom
+segment therefore turns this check on for it.
+
 ### Options
 
 `ignoreImports`

@@ -25,6 +25,22 @@ import { useBar } from 'shared/hooks';
 
 Cross-imports (`@x/`) are always treated as absolute and are not checked by this rule.
 
+The rule reads the `segments` setting that `featureSliced()` writes, so a slice that uses a
+custom segment name is recognized as one slice. Before that, segment names were matched against
+a built-in list only, and an absolute import that never left such a slice went unreported. See
+[issue #37](https://github.com/conarti/eslint-plugin-feature-sliced/issues/37).
+
+```js
+// filename: src/entities/cart/ui/cart.ts, with segments: ['services']
+
+import { checkout } from 'src/entities/cart/services/checkout'; // should be relative
+```
+
+The slice boundary is also read from the filesystem: the folder that holds the slice's `index`
+file is the slice, and a folder inside it is part of it rather than a slice of its own. An
+absolute import between two such folders is reported as one that should be relative, whether or
+not the folder names appear in the `segments` setting.
+
 ### Options
 
 `ignoreImports`
