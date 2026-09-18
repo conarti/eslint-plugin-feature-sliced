@@ -349,6 +349,18 @@ ruleTester.run('no-cross-segment-reexport', rule, {
       )],
     },
     {
+      name: 'should flag a cross-segment re-export out of a configured custom segment',
+      filename: 'src/entities/cart/services/helpers/index.ts',
+      code: "export { foo } from '../../model'",
+      settings: makeCustomSegmentsSettings(['services']),
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'services',
+        'model',
+        '../..',
+        "export { foo } from '../..'",
+      )],
+    },
+    {
       name: 'should flag cross-segment re-export when the slice and segment folders are capitalised',
       filename: 'src/entities/Orders/Model/index.ts',
       code: "export { foo } from '../Api'",

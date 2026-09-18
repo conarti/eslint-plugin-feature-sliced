@@ -1,9 +1,12 @@
 import type { NormalizedLayerConfig } from '../../../config';
-import { segments } from '../../../config';
 import {
   getLayersWithSlices,
   normalizeLayersConfig,
 } from '../../../lib/feature-sliced/layers-config';
+import {
+  isKnownSegment,
+  normalizeSegmentsConfig,
+} from '../../../lib/feature-sliced/segments-config';
 
 export type CrossSegmentReexportInfo =
   | { isCrossSegmentReexport: false; currentSegment: null; targetSegment: null }
@@ -18,9 +21,9 @@ const NOT_CROSS_SEGMENT: CrossSegmentReexportInfo = {
 const FILE_EXT_REGEXP = /\..+$/;
 
 /**
- * Known FSD segments in lowercase for matching
+ * The cross-import public api folder of a slice, which is not one of its segments
  */
-const KNOWN_SEGMENTS = segments.map((s) => s.toLowerCase());
+const CROSS_IMPORT_DIR = '@x';
 
 /**
  * A path component after normalization, remembering whether the original
@@ -72,6 +75,37 @@ function findLayerIndex(parts: string[], layersWithSlices: string[]): number {
 }
 
 /**
+ * Derives the segment from the slice boundary the shared resolver found: the segment is the
+ * first path part after the slice, whatever it is called. The built-in list stops deciding
+ * what a segment is and is only consulted to tell a segment file from an ordinary one.
+ */
+function extractSegmentAfterSlice(
+  pathParts: DirPart[],
+  segmentsList: string[],
+  slice: string,
+): { segment: string; sliceParts: DirPart[] } | null {
+  const sliceIndex = pathParts.findIndex((part) => part.name.toLowerCase() === slice.toLowerCase());
+
+  if (sliceIndex === -1)
+    return null;
+
+  const segmentPart = pathParts[sliceIndex + 1];
+
+  if (!segmentPart)
+    return null;
+
+  /* The @x folder is the cross-import public api of the slice, so it crosses nothing */
+  if (segmentPart.name.toLowerCase() === CROSS_IMPORT_DIR)
+    return null;
+
+  /* A file name is a segment only when it carries a segment's name, as `model.ts` does */
+  if (segmentPart.fromFile && !isKnownSegment(segmentPart.name, segmentsList))
+    return null;
+
+  return { segment: segmentPart.name, sliceParts: pathParts.slice(0, sliceIndex + 1) };
+}
+
+/**
  * Extracts segment and slice information from path parts after the layer.
  *
  * For standard paths like `['cluster', 'model']`:
@@ -88,12 +122,20 @@ function findLayerIndex(parts: string[], layersWithSlices: string[]): number {
  *
  * @returns null if no valid segment/slice structure is found
  */
-function extractSegmentAndSlice(pathParts: DirPart[]): { segment: string; sliceParts: DirPart[] } | null {
+function extractSegmentAndSlice(
+  pathParts: DirPart[],
+  segmentsList: string[],
+  resolvedSlice: string | null,
+): { segment: string; sliceParts: DirPart[] } | null {
   if (pathParts.length < 2)
     return null;
 
+  if (resolvedSlice !== null) {
+    return extractSegmentAfterSlice(pathParts, segmentsList, resolvedSlice);
+  }
+
   const knownSegmentIndex = pathParts.findIndex((part) =>
-    KNOWN_SEGMENTS.includes(part.name.toLowerCase()),
+    isKnownSegment(part.name, segmentsList),
   );
 
   let segmentIndex: number;
@@ -166,14 +208,19 @@ function findTargetSegmentInSameSlice(
 
 /**
  * Detects whether a re-export crosses segment boundaries within the same slice.
- * Uses a path-based approach to support both standard and non-standard segments.
+ *
+ * The slice boundary is the shared one when the filesystem could resolve it, and this rule's
+ * own path derivation when it could not; the segment list is the configured one either way.
  */
 export function isCrossSegmentReexport(
   normalizedCurrentFilePath: string,
   absoluteTargetPath: string,
   config?: NormalizedLayerConfig[],
+  segmentsConfig?: string[],
+  resolvedSlice?: string | null,
 ): CrossSegmentReexportInfo {
   const layersConfig = config ?? normalizeLayersConfig();
+  const segmentsList = segmentsConfig ?? normalizeSegmentsConfig();
   const layersWithSlices = getLayersWithSlices(layersConfig).map((l) => l.toLowerCase());
 
   const currentParts = splitPathParts(normalizedCurrentFilePath);
@@ -190,7 +237,7 @@ export function isCrossSegmentReexport(
   const currentPathParts = normalizeToDirParts(currentAfterLayer);
 
   /* Extract segment and slice from current file */
-  const currentInfo = extractSegmentAndSlice(currentPathParts);
+  const currentInfo = extractSegmentAndSlice(currentPathParts, segmentsList, resolvedSlice ?? null);
 
   if (!currentInfo)
     return NOT_CROSS_SEGMENT;

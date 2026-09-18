@@ -1,3 +1,4 @@
+import { DEFAULT_SEGMENTS } from '../../../config';
 import { normalizeLayersConfig } from '../../../lib/feature-sliced/layers-config';
 import { isCrossSegmentReexport } from './is-cross-segment-reexport';
 
@@ -287,6 +288,67 @@ describe('isCrossSegmentReexport', () => {
       isCrossSegmentReexport: true,
       currentSegment: 'services',
       targetSegment: 'helpers',
+    });
+  });
+  it('reads the configured segments, so a custom segment folder anchors the slice', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cart/services/helpers/index.ts',
+      'src/entities/cart/model',
+      defaultConfig,
+      [...DEFAULT_SEGMENTS, 'services'],
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: true,
+      currentSegment: 'services',
+      targetSegment: 'model',
+    });
+  });
+
+  it('takes the segment after the resolved slice when the filesystem answered', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cluster/i18n/nested/index.ts',
+      'src/entities/cluster/api',
+      defaultConfig,
+      undefined,
+      'cluster',
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: true,
+      currentSegment: 'i18n',
+      targetSegment: 'api',
+    });
+  });
+
+  it('keeps its own derivation when the filesystem did not answer', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cluster/i18n/index.ts',
+      'src/entities/cluster/api',
+      defaultConfig,
+      undefined,
+      null,
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: true,
+      currentSegment: 'i18n',
+      targetSegment: 'api',
+    });
+  });
+  it('does not treat the cross-import public api folder of the resolved slice as a segment', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/user/@x/session.ts',
+      'src/entities/user/model/create-user',
+      defaultConfig,
+      undefined,
+      'user',
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: false,
+      currentSegment: null,
+      targetSegment: null,
     });
   });
 });
