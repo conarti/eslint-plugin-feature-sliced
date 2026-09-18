@@ -176,6 +176,40 @@ ruleTester.run('layers-slices', rule, {
       code: "import { a } from 'src/features/auth';",
       options: makeLayersSlicesIgnoreInFilesOptions(['!src/**']),
     },
+    /*
+     * An import that never leaves the slice it starts in is not a cross-slice import,
+     * whichever of the two sides sits in a folder that is not a known segment (issue #41)
+     */
+    {
+      name: 'should be valid if an import stays inside the slice of the current file (issue #41)',
+      filename: 'src/widgets/header/Header.ts',
+      code: "import { other } from '@/widgets/header/hooks';",
+    },
+    {
+      name: 'should be valid if an import stays inside the slice of the current file, nested deeper (issue #41)',
+      filename: 'src/widgets/header/Header.ts',
+      code: "import { other } from '@/widgets/header/hooks/use-x';",
+    },
+    {
+      name: 'should be valid if a file in a segment reaches an unknown folder of its own slice (issue #41)',
+      filename: 'src/widgets/header/ui/H.ts',
+      code: "import { other } from '@/widgets/header/hooks/use-x';",
+    },
+    {
+      name: 'should be valid if a file in an unknown folder reaches a segment of its own slice (issue #41)',
+      filename: 'src/features/leaderboard/actions/get-top.ts',
+      code: "import { u } from '@/features/leaderboard/lib/utils';",
+    },
+    {
+      name: 'should be valid if a relative import stays inside the slice of the current file (issue #41)',
+      filename: 'src/widgets/header/ui/H.ts',
+      code: "import { other } from '../hooks/use-x';",
+    },
+    {
+      name: 'should be valid if a relative import from an unknown folder reaches a segment of its own slice (issue #41)',
+      filename: 'src/features/leaderboard/actions/get-top.ts',
+      code: "import { u } from '../lib/utils';",
+    },
   ],
 
   invalid: [
@@ -350,6 +384,28 @@ ruleTester.run('layers-slices', rule, {
       options: makeLayersSlicesIgnoreInFilesOptions(['**/widgets/**']),
       errors: [makeLayersSlicesError('features', 'entities')],
     },
+    /*
+     * Controls for issue #41. Each pair uses slices that sit directly under their layer,
+     * so the same-slice guard must leave every one of them reporting
+     */
+    {
+      name: 'should still report an import that leaves the slice of the current file (issue #41 control)',
+      filename: 'src/widgets/header/Header.ts',
+      code: "import { other } from '@/widgets/footer/hooks';",
+      errors: [makeLayersSlicesError('widgets', 'widgets')],
+    },
+    {
+      name: 'should still report an import into a segment of another slice (issue #41 control)',
+      filename: 'src/entities/user/model/a.ts',
+      code: "import { x } from '@/entities/other/model/x';",
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      name: 'should still report an import into an upper layer (issue #41 control)',
+      filename: 'src/entities/user/model/a.ts',
+      code: "import { auth } from '@/features/auth';",
+      errors: [makeLayersSlicesError('features', 'entities')],
+    },
   ],
 });
 
@@ -388,6 +444,26 @@ ruleTester.run('layers-slices (@x cross-imports)', rule, {
       filename: 'src/entities/foo/@x/bar.ts',
       code: "import { thing } from '../model/thing';",
     },
+    /*
+     * Only the @x guard answers this one: the slice of the current file resolves to
+     * the @x folder itself and the slice of the target to the folder that holds it,
+     * so neither truncated side contains the other and the same-slice guard is silent
+     */
+    {
+      name: 'should allow an @x file to import an unknown folder of its own slice (issue #40)',
+      filename: 'src/entities/foo/@x/bar.ts',
+      code: "import { thing } from '@/entities/foo/hooks/use-x';",
+    },
+    {
+      name: 'should allow an @x file to import from its own slice through an alias (issue #40)',
+      filename: 'src/entities/foo/@x/bar.ts',
+      code: "import { thing } from '@/entities/foo/model/thing';",
+    },
+    {
+      name: 'should allow an @x file to import from its own slice through a bare specifier (issue #40)',
+      filename: 'src/entities/foo/@x/bar.ts',
+      code: "import { thing } from 'src/entities/foo/model/thing';",
+    },
   ],
   invalid: [
     {
@@ -396,10 +472,37 @@ ruleTester.run('layers-slices (@x cross-imports)', rule, {
       code: "import { thing } from '@/entities/other/model/thing';",
       errors: [makeLayersSlicesError('entities', 'entities')],
     },
+    /*
+     * An @x folder placed on the layer itself has no slice to stand for, so the
+     * guard must not treat the whole layer as one slice
+     */
+    {
+      name: 'should report an @x folder placed on the layer reaching another slice',
+      filename: 'src/entities/@x/bar.ts',
+      code: "import { secret } from '@/entities/other/model/secret';",
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      name: 'should report an @x folder placed on the layer from inside a segment',
+      filename: 'src/entities/@x/model/thing.ts',
+      code: "import { secret } from '@/entities/other/model/secret';",
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      name: 'should report an @x folder placed on the layer with a bare specifier',
+      filename: 'src/entities/@x/bar.ts',
+      code: "import { secret } from 'src/entities/other/model/secret';",
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
   ],
 });
 
-/* === Group folders smoke tests === */
+/*
+ * === [GF] Group folders smoke tests ===
+ *
+ * These cases pin the group folder decision: a folder between the layer and the slice
+ * is not itself a slice. Step B5 is the only step allowed to change what they expect.
+ */
 
 ruleTester.run('layers-slices (group folders)', rule, {
   valid: [
@@ -425,6 +528,17 @@ ruleTester.run('layers-slices (group folders)', rule, {
       name: 'should report relative cross-slice import with group folders',
       filename: 'src/entities/users/User/model/index.ts',
       code: "import { admin } from '../../Admin/model';",
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    /*
+     * Pinned deliberately rather than assumed. Under the filesystem slice resolution
+     * chosen for step B5 this expectation must not change; if B5 finds it changing,
+     * the resolution is wrong. No other step may touch this case.
+     */
+    {
+      name: '[GF] group folders: UserA and UserB are different slices today',
+      filename: 'src/entities/group/UserA/ui/a.ts',
+      code: "import { b } from '@/entities/group/UserB/ui';",
       errors: [makeLayersSlicesError('entities', 'entities')],
     },
   ],

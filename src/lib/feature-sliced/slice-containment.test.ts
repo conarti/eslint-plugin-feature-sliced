@@ -3,6 +3,7 @@ import {
   containsOther,
   isCrossImportFileTargetingOwnSlice,
   sliceDirParts,
+  staysInsideOneSlice,
 } from './slice-containment';
 
 describe('sliceDirParts', () => {
@@ -127,6 +128,139 @@ describe('isCrossImportFileTargetingOwnSlice', () => {
     expect(isCrossImportFileTargetingOwnSlice(
       'src/entities/foo/@x/bar.ts',
       'src/utils/thing',
+    )).toBe(false);
+  });
+
+  it('is false when the @x folder sits directly on the layer', () => {
+    expect(isCrossImportFileTargetingOwnSlice(
+      'src/entities/@x/bar.ts',
+      '@/entities/other/model/secret',
+    )).toBe(false);
+  });
+
+  it('is false when the @x folder sits directly on the layer and the file is in a segment', () => {
+    expect(isCrossImportFileTargetingOwnSlice(
+      'src/entities/@x/model/thing.ts',
+      '@/entities/other/model/secret',
+    )).toBe(false);
+  });
+
+  /*
+   * [GF] A folder between the layer and @x is read as the slice that holds it, so this
+   * pair is silent today. Whether "group" is a slice or a group folder cannot be told
+   * from the path, and step B5 is the only step allowed to change what this expects.
+   */
+  it('[GF] reads the folder between the layer and @x as the slice holding it', () => {
+    expect(isCrossImportFileTargetingOwnSlice(
+      'src/entities/group/@x/bar.ts',
+      '@/entities/group/other/model/x',
+    )).toBe(true);
+  });
+});
+
+describe('staysInsideOneSlice', () => {
+  it('is true when the target stays inside the slice directory of the current file', () => {
+    expect(staysInsideOneSlice(
+      { path: 'src/widgets/header/Header.ts', slice: 'header' },
+      { path: '@/widgets/header/hooks', slice: 'hooks' },
+    )).toBe(true);
+  });
+
+  it('is true in the reverse direction, when the current file sits deeper than the target slice', () => {
+    expect(staysInsideOneSlice(
+      { path: 'src/features/leaderboard/actions/get-top.ts', slice: 'actions' },
+      { path: '@/features/leaderboard/lib/utils', slice: 'leaderboard' },
+    )).toBe(true);
+  });
+
+  it('is true whatever the case of the slice name', () => {
+    expect(staysInsideOneSlice(
+      { path: 'src/entities/Group/UserA/ui/a.ts', slice: 'UserA' },
+      { path: '@/entities/Group/UserA/hooks', slice: 'hooks' },
+    )).toBe(true);
+  });
+
+  it('is false for two different slices under the same layer', () => {
+    expect(staysInsideOneSlice(
+      { path: 'src/widgets/header/Header.ts', slice: 'header' },
+      { path: '@/widgets/footer/hooks', slice: 'hooks' },
+    )).toBe(false);
+  });
+
+  it('is false for two slices that share a name prefix', () => {
+    expect(staysInsideOneSlice(
+      { path: 'src/entities/user/model/a.ts', slice: 'user' },
+      { path: '@/entities/user-profile/model/x', slice: 'user-profile' },
+    )).toBe(false);
+  });
+
+  it('does not read the layer itself as the slice when the two share a name', () => {
+    expect(staysInsideOneSlice(
+      { path: 'src/entities/entities/model/a.ts', slice: 'entities' },
+      { path: '@/entities/other/model/x', slice: 'other' },
+    )).toBe(false);
+  });
+
+  it('is false when the current file holds no slice', () => {
+    expect(staysInsideOneSlice(
+      { path: 'src/entities/foo/model/a.ts', slice: null },
+      { path: '@/entities/foo/hooks', slice: 'hooks' },
+    )).toBe(false);
+  });
+
+  it('is false when the target holds no slice', () => {
+    expect(staysInsideOneSlice(
+      { path: 'src/entities/foo/model/a.ts', slice: 'foo' },
+      { path: '@/entities/foo/hooks', slice: null },
+    )).toBe(false);
+  });
+
+  it('is false when the current file holds no layer', () => {
+    expect(staysInsideOneSlice(
+      { path: 'src/utils/helpers/a.ts', slice: 'helpers' },
+      { path: '@/entities/foo/hooks', slice: 'hooks' },
+    )).toBe(false);
+  });
+
+  it('is false when the target holds no layer', () => {
+    expect(staysInsideOneSlice(
+      { path: 'src/entities/foo/model/a.ts', slice: 'foo' },
+      { path: 'src/utils/helpers', slice: 'helpers' },
+    )).toBe(false);
+  });
+
+  it('is false when the slice name is absent from the parts of its own path', () => {
+    expect(staysInsideOneSlice(
+      { path: 'src/entities/foo/model/a.ts', slice: 'ghost' },
+      { path: '@/entities/foo/hooks', slice: 'hooks' },
+    )).toBe(false);
+  });
+
+  it('is false when the layer of the current file cannot contain slices', () => {
+    const layersConfig = [
+      { name: 'shared', hasSlices: false },
+      { name: 'entities', hasSlices: true },
+    ];
+
+    expect(staysInsideOneSlice(
+      { path: 'src/shared/lib/a.ts', slice: 'lib' },
+      { path: '@/shared/lib/helpers', slice: 'helpers' },
+      layersConfig,
+    )).toBe(false);
+  });
+
+  it('uses the configured layer names', () => {
+    const layersConfig = [{ name: 'modules', hasSlices: true }];
+
+    expect(staysInsideOneSlice(
+      { path: 'src/modules/header/Header.ts', slice: 'header' },
+      { path: '@/modules/header/hooks', slice: 'hooks' },
+      layersConfig,
+    )).toBe(true);
+    expect(staysInsideOneSlice(
+      { path: 'src/entities/header/Header.ts', slice: 'header' },
+      { path: '@/entities/header/hooks', slice: 'hooks' },
+      layersConfig,
     )).toBe(false);
   });
 });

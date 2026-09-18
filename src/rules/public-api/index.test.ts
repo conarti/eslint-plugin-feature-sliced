@@ -491,6 +491,11 @@ ruleTester.run('public-api (@x cross-imports)', rule, {
       code: "import { thing } from '@/entities/foo/model/thing';",
     },
     {
+      name: 'should allow an @x file to import from its own slice through a bare specifier (issue #40)',
+      filename: 'src/entities/foo/@x/bar.ts',
+      code: "import { thing } from 'src/entities/foo/model/thing';",
+    },
+    {
       name: 'should keep the same re-export silent in the slice public api',
       filename: 'src/entities/foo/index.ts',
       code: "export { thing } from '../model/thing';",
@@ -505,6 +510,46 @@ ruleTester.run('public-api (@x cross-imports)', rule, {
         makePublicApiErrorWithSuggestion(
           'model/thing',
           "export { thing } from 'src/entities/other';",
+          'src/entities/other',
+        ),
+      ],
+    },
+    /*
+     * An @x folder placed on the layer itself has no slice to stand for, so the
+     * guard must not treat the whole layer as one slice
+     */
+    {
+      name: 'should report an @x folder placed on the layer reaching another slice',
+      filename: 'src/entities/@x/bar.ts',
+      code: "import { secret } from '@/entities/other/model/secret';",
+      errors: [
+        makePublicApiErrorWithSuggestion(
+          'model/secret',
+          "import { secret } from '@/entities/other';",
+          '@/entities/other',
+        ),
+      ],
+    },
+    {
+      name: 'should report an @x folder placed on the layer from inside a segment',
+      filename: 'src/entities/@x/model/thing.ts',
+      code: "import { secret } from '@/entities/other/model/secret';",
+      errors: [
+        makePublicApiErrorWithSuggestion(
+          'model/secret',
+          "import { secret } from '@/entities/other';",
+          '@/entities/other',
+        ),
+      ],
+    },
+    {
+      name: 'should report an @x folder placed on the layer with a bare specifier',
+      filename: 'src/entities/@x/bar.ts',
+      code: "import { secret } from 'src/entities/other/model/secret';",
+      errors: [
+        makePublicApiErrorWithSuggestion(
+          'model/secret',
+          "import { secret } from 'src/entities/other';",
           'src/entities/other',
         ),
       ],
