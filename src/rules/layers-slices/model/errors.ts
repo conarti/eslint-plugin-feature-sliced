@@ -2,14 +2,17 @@ import type { TSESTree } from '@typescript-eslint/utils';
 import type { NormalizedLayerConfig } from '../../../config';
 import type { CrossImportInfo, PathsInfo } from '../../../lib/feature-sliced';
 import type { ImportExportNodesWithSourceValue } from '../../../lib/rule';
-import type { ExportNodesWithSource } from '../../../lib/rule/models';
+import type {
+  ExportNodesWithSource,
+  ImportExportSpecifier,
+} from '../../../lib/rule/models';
 import { getLayerNames } from '../../../lib/feature-sliced/layers-config';
 import {
   ERROR_MESSAGE_ID,
   type RuleContext,
 } from '../config';
 
-function getReportPosition(node: ImportExportNodesWithSourceValue | TSESTree.ImportClause): TSESTree.Node {
+function getReportPosition(node: ImportExportNodesWithSourceValue | ImportExportSpecifier): TSESTree.Node {
   const isDeclaration = 'source' in node;
   if (isDeclaration) {
     return node.source;
@@ -20,7 +23,7 @@ function getReportPosition(node: ImportExportNodesWithSourceValue | TSESTree.Imp
 
 export function reportCanNotImportLayer(
   context: RuleContext,
-  node: ImportExportNodesWithSourceValue | TSESTree.ImportClause,
+  node: ImportExportNodesWithSourceValue | ImportExportSpecifier,
   pathsInfo: PathsInfo,
   layersConfig: NormalizedLayerConfig[],
 ) {
@@ -44,11 +47,11 @@ export function reportCanNotImportLayer(
  */
 export function reportPassThroughReexport(
   context: RuleContext,
-  node: ExportNodesWithSource,
+  node: ExportNodesWithSource | TSESTree.ExportSpecifier,
   pathsInfo: PathsInfo,
 ) {
   context.report({
-    node: node.source,
+    node: getReportPosition(node),
     messageId: ERROR_MESSAGE_ID.PASS_THROUGH_REEXPORT,
     data: {
       importLayer: pathsInfo.fsdPartsOfTarget.layer,

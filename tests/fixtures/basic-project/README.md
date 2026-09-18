@@ -88,7 +88,7 @@ lint glob that quietly stops matching a subtree fails too.
 
 ## The clean files
 
-The remaining 60 `.ts` files carry no expectation at all, and the test asserts that they produce
+The remaining 61 `.ts` files carry no expectation at all, and the test asserts that they produce
 no message whatsoever. They are the false-positive guard: correct upward type-only imports,
 relative imports inside a slice, absolute imports across layers, slice and segment public apis,
 `@x` cross-imports addressed to the importing slice, and the custom `services` segment of `src2/`
@@ -105,6 +105,9 @@ no segment and the import needs no other entry point.
 `src2/entities/basket/model/cross-import-at-segments-level.ts` is the one
 worth naming: it keeps the `@x` cross-import exempt from the `unknown-segment` check when
 `publicApi.level` is `'segments'`. A rule that starts over-reporting shows up here, not in the snapshot.
+`src/features/profile/model/reexports-shared-type-inline.ts` is load-bearing for the same reason:
+an inline `export { type ... }` specifier is exempt exactly as the two import spellings are, so a
+re-export check that reads only the declaration turns this file into a report.
 
 ## Updating `expected.json`
 

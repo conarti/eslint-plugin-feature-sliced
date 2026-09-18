@@ -34,6 +34,7 @@ import {
   hasErrorsAtAllSpecifiers,
   validateSpecifiers,
 } from './specifiers';
+import { extractExportSpecifiers } from './specifiers/extract-export-specifiers';
 import { extractImportSpecifiers } from './specifiers/extract-import-specifiers';
 import { validateNode } from './validate-node';
 import { validByLayerOrder } from './validate-node/valid-by-layer-order';
@@ -69,6 +70,31 @@ function isReexport(node: ImportNodes | ExportNodesWithSource): node is ExportNo
 }
 
 /**
+ * A named re-export is read per specifier, the way an import is: an inline `type` specifier is
+ * exempt, a declaration whose every specifier is exempt says nothing at all, and a declaration
+ * that mixes the two is reported at its value specifiers. `export * from` and `export * as ns
+ * from` reach no specifier, so the declaration itself stays the only thing to report.
+ */
+function validateReexport(
+  node: ExportNodesWithSource,
+  allowTypeImports: boolean,
+): (ExportNodesWithSource | TSESTree.ExportSpecifier)[] {
+  const isExportAll = ASTUtils.isNodeOfType(AST_NODE_TYPES.ExportAllDeclaration)(node);
+  if (isExportAll) {
+    return [node];
+  }
+
+  const specifiers = extractExportSpecifiers(node);
+  const invalidSpecifiers = validateSpecifiers(specifiers, allowTypeImports);
+
+  if (hasErrorsAtAllSpecifiers(specifiers, invalidSpecifiers)) {
+    return [node];
+  }
+
+  return invalidSpecifiers;
+}
+
+/**
  * A re-export is a dependency, so it takes the same checks as the equivalent import, and one
  * more that only a re-export can fail: forwarding a lower layer out through this file is a
  * pass-through, which the layer order on its own calls valid.
@@ -84,15 +110,17 @@ function validateAndReportReexport(
     return;
   }
 
+  const nodesToReport = validateReexport(node, ruleOptions.allowTypeImports);
+
   if (validByLayerOrder(pathsInfo.fsdPartsOfTarget, pathsInfo.fsdPartsOfCurrentFile, layersConfig)) {
     if (!ruleOptions.allowPassThroughReexports) {
-      reportPassThroughReexport(context, node, pathsInfo);
+      nodesToReport.forEach((nodeToReport) => reportPassThroughReexport(context, nodeToReport, pathsInfo));
     }
 
     return;
   }
 
-  reportCanNotImportLayer(context, node, pathsInfo, layersConfig);
+  nodesToReport.forEach((nodeToReport) => reportCanNotImportLayer(context, nodeToReport, pathsInfo, layersConfig));
 }
 
 function reportValidationErrors(

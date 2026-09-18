@@ -181,6 +181,7 @@ const filesExpectedToBeClean = [
   'src/features/book/search/index.ts',
   'src/features/book/toggle-read/index.ts',
   'src/features/book/toggle-read/ui/toggle-read.ts',
+  'src/features/profile/model/reexports-shared-type-inline.ts',
   'src/features/profile/model/uses-shared-helper.ts',
   'src/pages/home/index.ts',
   'src/pages/home/ui/home-page.ts',

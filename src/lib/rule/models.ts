@@ -22,6 +22,8 @@ export type ExportNodesWithSource = TSESTree.ExportAllDeclaration | TSESTree.Exp
 
 export type ImportExportNodesWithSourceValue = ImportNodesWithSource | ExportNodesWithSource;
 
+export type ImportExportSpecifier = TSESTree.ImportClause | TSESTree.ExportSpecifier;
+
 interface ImportKindType { importKind: 'type' };
 interface ExportKindType { exportKind: 'type' }
 

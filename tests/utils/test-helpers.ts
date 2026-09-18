@@ -224,6 +224,27 @@ export function makePassThroughReexportError(
 }
 
 /**
+ * Creates layers-slices pass-through re-export error with exact position
+ */
+export function makePassThroughReexportErrorAtSpecifier(
+  importLayer: Layer,
+  currentFileLayer: Layer,
+  position: ErrorPosition,
+): TSESLint.TestCaseError<LayersSlicesMessageIds> {
+  return {
+    messageId: LAYERS_SLICES_MESSAGE_ID.PASS_THROUGH_REEXPORT,
+    data: {
+      importLayer,
+      currentFileLayer,
+    },
+    column: position.column,
+    endColumn: position.endColumn,
+    line: position.line,
+    endLine: position.endLine,
+  };
+}
+
+/**
  * Creates error for invalid @x cross-import
  */
 export function makeInvalidCrossImportError(
