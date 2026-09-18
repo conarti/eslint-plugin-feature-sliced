@@ -144,6 +144,7 @@ const filesExpectedToBeClean = [
   'src/entities/session/index.ts',
   'src/entities/session/model/index.ts',
   'src/entities/session/model/session-token.ts',
+  'src/entities/user/@x/session.ts',
   'src/entities/user/api/fetch-user.ts',
   'src/entities/user/api/index.ts',
   'src/entities/user/index.ts',

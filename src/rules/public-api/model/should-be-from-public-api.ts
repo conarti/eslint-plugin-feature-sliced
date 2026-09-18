@@ -4,6 +4,7 @@ import {
   extractPathsInfo,
   type PathsInfo,
 } from '../../../lib/feature-sliced';
+import { isCrossImportFileTargetingOwnSlice } from '../../../lib/feature-sliced/slice-containment';
 import {
   extractRuleOptions,
   type ImportExportNodesWithSourceValue,
@@ -64,6 +65,14 @@ export function shouldBeFromPublicApi(
    */
   if (hasNestedCrossImportPath(pathsInfo.normalizedTargetPath)) {
     return true;
+  }
+
+  /*
+   * An @x file is the cross-import public api of its own slice,
+   * so it may reach that slice without going through the public api.
+   */
+  if (isCrossImportFileTargetingOwnSlice(pathsInfo.normalizedCurrentFilePath, pathsInfo.absoluteTargetPath, layersConfig)) {
+    return false;
   }
 
   return shouldBeFromSlicePublicApi(pathsInfo) || shouldBeFromSegmentsPublicApi(pathsInfo, ruleOptions);

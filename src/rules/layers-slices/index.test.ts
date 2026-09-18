@@ -382,8 +382,21 @@ ruleTester.run('layers-slices (@x cross-imports)', rule, {
       filename: 'src/entities/users/Session/model.ts',
       code: "import { User } from '@/entities/users/User/@x/Session';",
     },
+    /* An @x file is the cross-import public api of its own slice and may reach that slice */
+    {
+      name: 'should allow an @x file to import from its own slice (issue #40)',
+      filename: 'src/entities/foo/@x/bar.ts',
+      code: "import { thing } from '../model/thing';",
+    },
   ],
-  invalid: [],
+  invalid: [
+    {
+      name: 'should report an @x file that reaches into another slice',
+      filename: 'src/entities/foo/@x/bar.ts',
+      code: "import { thing } from '@/entities/other/model/thing';",
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+  ],
 });
 
 /* === Group folders smoke tests === */
