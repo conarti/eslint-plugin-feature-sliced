@@ -195,6 +195,21 @@ ruleTester.run('public-api', rule, {
       code: 'import { bar } from "./ui/bar";',
       options: makePublicApiOptions({ ignoreFiles: [`**/(${layers.join('|')})/index.*`] }),
     },
+    /*
+     * Issue #34, the layer public api half. The matcher below the extraction is
+     * only allowed to widen: a slice index under a dot directory stays silent.
+     */
+    {
+      name: 'should keep a slice public api silent under a dot directory (issue #34)',
+      filename: '/proj/.worktrees/w1/src/features/foo/index.ts',
+      code: 'import { bar } from "./ui/bar";',
+    },
+    {
+      name: 'should still honour ignoreFiles for a layer public api under a dot directory (issue #34)',
+      filename: '/proj/.worktrees/w1/src/features/index.ts',
+      code: "import { foo } from './foo';",
+      options: makePublicApiOptions({ ignoreFiles: ['**/features/index.*'] }),
+    },
     {
       name: 'should be valid if ignoreImports has an exact-path entry matching the import',
       filename: 'src/pages/orders/ui/OrderDetailsPage.vue',
@@ -370,6 +385,18 @@ ruleTester.run('public-api', rule, {
       name: 'export from layers public api is not allowed',
       filename: 'src/features/index.ts',
       code: "export { foo } from './foo'",
+      errors: [publicApiLayersNotAllowedError],
+    },
+    {
+      name: 'import to layers public api is not allowed under a dot directory (issue #34)',
+      filename: '/proj/.worktrees/w1/src/features/index.ts',
+      code: "import { foo } from './foo'",
+      errors: [publicApiLayersNotAllowedError],
+    },
+    {
+      name: 'import to layers public api is not allowed for a layer without slices ("shared")',
+      filename: 'src/shared/index.ts',
+      code: "import { foo } from './foo'",
       errors: [publicApiLayersNotAllowedError],
     },
     {

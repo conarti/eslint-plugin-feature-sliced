@@ -5,6 +5,7 @@ import {
   LAYERS_WITH_CORE_WITHOUT_SLICES,
   makeCustomLayersSettings,
   makePublicApiErrorWithSuggestion,
+  publicApiLayersNotAllowedError,
 } from '../../../tests/utils';
 import rule from './index';
 
@@ -50,6 +51,24 @@ ruleTester.run('public-api (custom layers)', rule, {
       code: "import { Button } from '@/shared/ui/button/styles'",
       settings: customLayersSettings,
     },
+    {
+      name: 'should keep a custom layer slice public api silent (issue #34)',
+      filename: 'src/domain/user/index.ts',
+      code: "export { User } from './model'",
+      settings: customLayersSettings,
+    },
+    /*
+     * The removing half of reading the configured layers: a standard FSD name
+     * the layers setting does not list is not a layer, so its index file is an
+     * ordinary file. This is the same rule as "should not recognize standard
+     * FSD layers as known" above, applied to the Program pass (issue #34)
+     */
+    {
+      name: 'should not report a standard FSD layer public api when the layers setting omits it (issue #34)',
+      filename: 'src/entities/index.ts',
+      code: "export { User } from './user'",
+      settings: customLayersSettings,
+    },
   ],
 
   invalid: [
@@ -91,6 +110,13 @@ ruleTester.run('public-api (custom layers)', rule, {
           '@/pages/home',
         ),
       ],
+    },
+    {
+      name: 'should error on a custom layer public api (domain) (issue #34)',
+      filename: 'src/domain/index.ts',
+      code: "export { User } from './user'",
+      settings: customLayersSettings,
+      errors: [publicApiLayersNotAllowedError],
     },
   ],
 });
@@ -135,6 +161,18 @@ ruleTester.run('public-api (layer without slices)', rule, {
           '@/features/auth',
         ),
       ],
+    },
+    /*
+     * hasSlices only decides whether a layer is split into slices, it never
+     * exempts the layer itself from the public api check, so "core" behaves
+     * exactly like the default "shared" layer does (issue #34)
+     */
+    {
+      name: 'should error on the public api of a layer declared without slices (core)',
+      filename: 'src/core/index.ts',
+      code: "export { config } from './config'",
+      settings: coreNoSlicesSettings,
+      errors: [publicApiLayersNotAllowedError],
     },
   ],
 });

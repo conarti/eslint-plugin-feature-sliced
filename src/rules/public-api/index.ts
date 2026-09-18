@@ -80,7 +80,7 @@ export default createEslintRule<Options, MessageIds>({
         validateAndReport(node, context, optionsWithDefault, layersConfig, segmentsConfig);
       },
       Program(node) {
-        validateAndReportProgram(node, context, optionsWithDefault);
+        validateAndReportProgram(node, context, optionsWithDefault, layersConfig);
       },
     };
   },
