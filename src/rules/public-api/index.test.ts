@@ -236,6 +236,22 @@ ruleTester.run('public-api', rule, {
       filename: 'src/widgets/header/Header.ts',
       code: "import { other } from '@/widgets/header/hooks';",
     },
+    /*
+     * The same-slice suppression covers the slice public api only. The segment
+     * public api of the same slice is a separate requirement, so reaching it is
+     * still valid at both validation levels (issue #41)
+     */
+    {
+      name: 'should keep a same-slice import into a segment public api valid from an unknown folder (issue #41)',
+      filename: 'src/features/leaderboard/actions/get-top.ts',
+      code: "import { u } from '@/features/leaderboard/lib';",
+    },
+    {
+      name: 'should keep a same-slice import into a segment public api valid from an unknown folder with segments validation level (issue #41)',
+      filename: 'src/features/leaderboard/actions/get-top.ts',
+      code: "import { u } from '@/features/leaderboard/lib';",
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+    },
   ],
 
   invalid: [
@@ -457,6 +473,50 @@ ruleTester.run('public-api', rule, {
       name: 'should still report an import into a segment of another slice (issue #41 control)',
       filename: 'src/entities/user/model/a.ts',
       code: "import { x } from '@/entities/other/model/x';",
+      errors: [
+        makePublicApiErrorWithSuggestion(
+          'model/x',
+          "import { x } from '@/entities/other';",
+          '@/entities/other',
+        ),
+      ],
+    },
+    /*
+     * The same-slice suppression must not reach the segment public api check: an
+     * import into the internals of another segment of the same slice is still
+     * reported when the current file sits outside the built-in segments (issue #41)
+     */
+    {
+      name: 'should still report a same-slice import into the internals of another segment from an unknown folder with segments validation level (issue #41)',
+      filename: 'src/features/leaderboard/actions/get-top.ts',
+      code: "import { u } from '@/features/leaderboard/lib/utils';",
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+      errors: [
+        makePublicApiErrorWithSuggestion(
+          'lib/utils',
+          "import { u } from '@/features/leaderboard';",
+          '@/features/leaderboard',
+        ),
+      ],
+    },
+    {
+      name: 'should still report a same-slice import into a nested path of another segment from an unknown folder with segments validation level (issue #41)',
+      filename: 'src/entities/user/hooks/a.ts',
+      code: "import { x } from '@/entities/user/model/deep/x';",
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
+      errors: [
+        makePublicApiErrorWithSuggestion(
+          'model/deep/x',
+          "import { x } from '@/entities/user';",
+          '@/entities/user',
+        ),
+      ],
+    },
+    {
+      name: 'should still report an import into a segment of another slice with segments validation level (issue #41 control)',
+      filename: 'src/entities/user/model/a.ts',
+      code: "import { x } from '@/entities/other/model/x';",
+      options: makePublicApiOptions({ level: VALIDATION_LEVEL.SEGMENTS }),
       errors: [
         makePublicApiErrorWithSuggestion(
           'model/x',

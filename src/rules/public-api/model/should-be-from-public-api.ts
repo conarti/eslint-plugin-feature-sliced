@@ -80,15 +80,16 @@ export function shouldBeFromPublicApi(
 
   /*
    * An import that never leaves the slice it starts in does not go through the
-   * public api of that slice, so it must not be asked for one.
+   * public api of that slice, so it must not be asked for one. It gates the slice
+   * half only: the segment public api is a separate requirement, the same way the
+   * rule reads `isSameSlice` for the slice half and `isSameSegment` for the other.
    */
-  if (staysInsideOneSlice(
+  const staysInOneSlice = staysInsideOneSlice(
     { path: pathsInfo.normalizedCurrentFilePath, slice: pathsInfo.fsdPartsOfCurrentFile.slice },
     { path: pathsInfo.absoluteTargetPath, slice: pathsInfo.fsdPartsOfTarget.slice },
     layersConfig,
-  )) {
-    return false;
-  }
+  );
 
-  return shouldBeFromSlicePublicApi(pathsInfo) || shouldBeFromSegmentsPublicApi(pathsInfo, ruleOptions);
+  return (!staysInOneSlice && shouldBeFromSlicePublicApi(pathsInfo))
+    || shouldBeFromSegmentsPublicApi(pathsInfo, ruleOptions);
 }
