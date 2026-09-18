@@ -23,6 +23,15 @@ const FILE_EXT_REGEXP = /\..+$/;
 const KNOWN_SEGMENTS = segments.map((s) => s.toLowerCase());
 
 /**
+ * A path component after normalization, remembering whether the original
+ * component was a file name rather than a directory
+ */
+interface DirPart {
+  name: string;
+  fromFile: boolean;
+}
+
+/**
  * Splits a path string into non-empty parts
  */
 function splitPathParts(path: string): string[] {
@@ -33,22 +42,22 @@ function splitPathParts(path: string): string[] {
  * Converts path parts to directory-like components:
  * - Index files (index.ts, index.tsx, etc.) are removed entirely
  * - Other files with extensions are converted to their name without extension
- *   (e.g. `model.ts` → `model`, since segment can be a file)
+ *   (e.g. `model.ts` → `model`, since segment can be a file) and marked `fromFile`
  * - Directory parts are kept as-is
  */
-function normalizeToDirParts(parts: string[]): string[] {
+function normalizeToDirParts(parts: string[]): DirPart[] {
   const INDEX_FILE_REGEXP = /^index\..+$/;
 
-  return parts.reduce<string[]>((acc, part) => {
+  return parts.reduce<DirPart[]>((acc, part) => {
     if (INDEX_FILE_REGEXP.test(part))
       return acc;
 
     if (FILE_EXT_REGEXP.test(part)) {
-      acc.push(part.replace(FILE_EXT_REGEXP, ''));
+      acc.push({ name: part.replace(FILE_EXT_REGEXP, ''), fromFile: true });
       return acc;
     }
 
-    acc.push(part);
+    acc.push({ name: part, fromFile: false });
     return acc;
   }, []);
 }
@@ -79,12 +88,12 @@ function findLayerIndex(parts: string[], layersWithSlices: string[]): number {
  *
  * @returns null if no valid segment/slice structure is found
  */
-function extractSegmentAndSlice(pathParts: string[]): { segment: string; sliceParts: string[] } | null {
+function extractSegmentAndSlice(pathParts: DirPart[]): { segment: string; sliceParts: DirPart[] } | null {
   if (pathParts.length < 2)
     return null;
 
   const knownSegmentIndex = pathParts.findIndex((part) =>
-    KNOWN_SEGMENTS.includes(part.toLowerCase()),
+    KNOWN_SEGMENTS.includes(part.name.toLowerCase()),
   );
 
   let segmentIndex: number;
@@ -101,9 +110,13 @@ function extractSegmentAndSlice(pathParts: string[]): { segment: string; slicePa
     segmentIndex = pathParts.length - 1;
     if (segmentIndex < 1)
       return null;
+
+    /* A file name is not a segment, so there is nothing to cross here */
+    if (pathParts[segmentIndex].fromFile)
+      return null;
   }
 
-  const segment = pathParts[segmentIndex];
+  const segment = pathParts[segmentIndex].name;
   const sliceParts = pathParts.slice(0, segmentIndex);
 
   if (sliceParts.length === 0)
@@ -119,8 +132,8 @@ function extractSegmentAndSlice(pathParts: string[]): { segment: string; slicePa
  * @returns the target segment name if it's a cross-segment reference, or null otherwise
  */
 function findTargetSegmentInSameSlice(
-  targetPathParts: string[],
-  currentSliceParts: string[],
+  targetPathParts: DirPart[],
+  currentSliceParts: DirPart[],
   currentSegment: string,
 ): string | null {
   if (targetPathParts.length === 0)
@@ -131,7 +144,7 @@ function findTargetSegmentInSameSlice(
     return null;
 
   const targetHasSameSlice = currentSliceParts.every(
-    (part, i) => part.toLowerCase() === targetPathParts[i]?.toLowerCase(),
+    (part, i) => part.name.toLowerCase() === targetPathParts[i]?.name.toLowerCase(),
   );
 
   if (!targetHasSameSlice)
@@ -144,8 +157,8 @@ function findTargetSegmentInSameSlice(
     return null;
 
   /* If target segment differs from current segment -> cross-segment reference */
-  if (targetSegmentCandidate.toLowerCase() !== currentSegment.toLowerCase()) {
-    return targetSegmentCandidate;
+  if (targetSegmentCandidate.name.toLowerCase() !== currentSegment.toLowerCase()) {
+    return targetSegmentCandidate.name;
   }
 
   return null;

@@ -4,6 +4,7 @@ import {
   makeCrossSegmentReexportErrorWithSuggestion,
   makeCrossSegmentReexportIgnoreFilesOptions,
   makeCrossSegmentReexportIgnoreOptions,
+  makeCustomSegmentsSettings,
 } from '../../../tests/utils';
 import rule from './index';
 
@@ -149,6 +150,17 @@ ruleTester.run('no-cross-segment-reexport', rule, {
       name: 'should not flag re-export from a slice-bearing layer when the current layer has no slices',
       filename: 'src/shared/lib/index.ts',
       code: "export { foo } from '../../entities/user/api'",
+    },
+    {
+      name: 'should not flag re-export from a sibling file inside a segment folder that is not a known segment',
+      filename: 'src/entities/cart/services/cart-service.ts',
+      code: "export * from './helpers'",
+    },
+    {
+      name: 'should not flag re-export from a sibling file inside a segment folder declared through settings',
+      filename: 'src/entities/cart/services/cart-service.ts',
+      code: "export * from './helpers'",
+      settings: makeCustomSegmentsSettings(['services']),
     },
   ],
   invalid: [
