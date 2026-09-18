@@ -132,6 +132,11 @@ export function extractPathsInfo(
     normalizedTargetPath,
     normalizedCurrentFilePath,
     absoluteTargetPath,
+    /*
+     * The project root travels with the paths it belongs to. A rule that searches one of them
+     * for a layer needs it: without it an ancestor folder carrying a layer name answers first.
+     */
+    normalizedCwd,
 
     fsdPartsOfTarget,
     fsdPartsOfCurrentFile,

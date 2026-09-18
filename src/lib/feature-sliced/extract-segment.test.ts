@@ -320,5 +320,92 @@ describe('extract-segment', () => {
       expect(extractSegment('src/entities/foo/custom-segment/index.ts', undefined, undefined, null))
         .toStrictEqual([null, null]);
     });
+
+    /*
+     * Nothing forbids holding several checkouts in a folder named after a layer, and the rules
+     * only ever see absolute paths. The boundary counts from the project's own layer, so the
+     * search for that layer has to start below the project root; an ancestor of the same name
+     * would otherwise answer first and every position below it would be off.
+     */
+    describe('under a project root', () => {
+      it('finds the layer below the root rather than in an ancestor of the same name', () => {
+        expect(extractSegment(
+          '/checkout/entities/proj/src/entities/foo/ui/index.ts',
+          undefined,
+          undefined,
+          { slice: 'foo', index: 0 },
+          '/checkout/entities/proj',
+        )).toStrictEqual(['ui', 'index.ts']);
+      });
+
+      it('counts the boundary from the layer below the root through a group folder', () => {
+        expect(extractSegment(
+          '/checkout/pages/proj/src/pages/(group)/foo/model/index.ts',
+          undefined,
+          undefined,
+          { slice: 'foo', index: 1 },
+          '/checkout/pages/proj',
+        )).toStrictEqual(['model', 'index.ts']);
+      });
+
+      /* The guarded case: a slice named after its own layer still has to be read by position */
+      it('keeps taking the segment at the boundary when the slice carries the layer name', () => {
+        expect(extractSegment(
+          '/checkout/entities/proj/src/entities/entities/ui/a.ts',
+          undefined,
+          undefined,
+          { slice: 'entities', index: 0 },
+          '/checkout/entities/proj',
+        )).toStrictEqual(['ui', 'a.ts']);
+      });
+
+      it('searches the path as written when it does not lie under the root', () => {
+        expect(extractSegment(
+          '@/entities/foo/ui/index.ts',
+          undefined,
+          undefined,
+          { slice: 'foo', index: 0 },
+          '/checkout/entities/proj',
+        )).toStrictEqual(['ui', 'index.ts']);
+      });
+    });
+  });
+
+  /*
+   * The name list route begins with the same layer search and needs the same anchor. A
+   * checkout held in a folder named after a layer otherwise turns the folders between that
+   * ancestor and the project's own tree into a slice, and the first configured segment name
+   * below it into a segment, for a path that carries no layer of its own at all.
+   */
+  describe('the name list route under a project root', () => {
+    it('finds no segment below a root whose ancestor carries a layer name', () => {
+      expect(extractSegment(
+        '/checkout/entities/proj/src/assets/index.ts',
+        undefined,
+        undefined,
+        undefined,
+        '/checkout/entities/proj',
+      )).toStrictEqual([null, null]);
+    });
+
+    it('still reads the segment of a path that carries its own layer below the root', () => {
+      expect(extractSegment(
+        '/checkout/entities/proj/src/entities/foo/ui/index.ts',
+        undefined,
+        undefined,
+        undefined,
+        '/checkout/entities/proj',
+      )).toStrictEqual(['ui', 'index.ts']);
+    });
+
+    it('reads a path that does not lie under the root as written', () => {
+      expect(extractSegment(
+        '@/entities/foo/ui/index.ts',
+        undefined,
+        undefined,
+        undefined,
+        '/checkout/entities/proj',
+      )).toStrictEqual(['ui', 'index.ts']);
+    });
   });
 });

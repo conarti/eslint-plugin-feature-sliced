@@ -37,10 +37,10 @@ export function extractFeatureSlicedParts(
   const sliceResolution = extractSlice(slicePath ?? targetPath, layersConfig, segmentsConfig, { cwd, hasPublicApi });
 
   /* The name list route, which is also what both sides fall back to together */
-  const [fallbackSegment, fallbackSegmentFiles] = extractSegment(targetPath, layersConfig, segmentsConfig);
+  const [fallbackSegment, fallbackSegmentFiles] = extractSegment(targetPath, layersConfig, segmentsConfig, undefined, cwd);
 
   const [segment, segmentFiles] = sliceResolution.boundary !== null
-    ? extractSegment(slicePath ?? targetPath, layersConfig, segmentsConfig, sliceResolution.boundary)
+    ? extractSegment(slicePath ?? targetPath, layersConfig, segmentsConfig, sliceResolution.boundary, cwd)
     : [fallbackSegment, fallbackSegmentFiles];
 
   return {

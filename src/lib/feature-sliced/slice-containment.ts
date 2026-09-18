@@ -3,6 +3,7 @@ import {
   getLayersWithSlices,
   normalizeLayersConfig,
 } from './layers-config';
+import { relativeToRoot } from './resolution-paths';
 
 const CROSS_IMPORT_DIR = '@x';
 
@@ -14,6 +15,11 @@ const CROSS_IMPORT_DIR = '@x';
  * made absolute when the specifier is relative: an aliased or a bare specifier
  * reaches the rules unchanged and shares no prefix with the current file path.
  *
+ * The layer is looked for below the project root. Nothing forbids holding a checkout in a
+ * folder named after a layer, and a search that starts at the top of an absolute path stops
+ * at that folder, which puts the whole slice prefix one branch too high. A path that lies
+ * under no root is read as written, which is what an aliased or a bare specifier is.
+ *
  * @example
  * 'src/entities/Foo/model/thing.ts' -> ['entities', 'foo', 'model', 'thing.ts']
  * '@/entities/foo/model/thing' -> ['entities', 'foo', 'model', 'thing']
@@ -21,10 +27,11 @@ const CROSS_IMPORT_DIR = '@x';
 export function sliceDirParts(
   targetPath: string,
   layersConfig?: NormalizedLayerConfig[],
+  root?: string,
 ): string[] | null {
   const layersWithSlices = getLayersWithSlices(layersConfig ?? normalizeLayersConfig());
 
-  const parts = targetPath
+  const parts = (relativeToRoot(targetPath, root) ?? targetPath)
     .split('/')
     .filter(Boolean)
     .map((part) => part.toLowerCase());
@@ -78,12 +85,13 @@ export interface SliceLocation {
 function ownSliceDirParts(
   location: SliceLocation,
   layersConfig?: NormalizedLayerConfig[],
+  root?: string,
 ): string[] | null {
   if (location.slice === null) {
     return null;
   }
 
-  const parts = sliceDirParts(location.path, layersConfig);
+  const parts = sliceDirParts(location.path, layersConfig, root);
 
   if (parts === null) {
     return null;
@@ -116,9 +124,10 @@ export function staysInsideOneSlice(
   currentFile: SliceLocation,
   target: SliceLocation,
   layersConfig?: NormalizedLayerConfig[],
+  root?: string,
 ): boolean {
-  const currentFileParts = ownSliceDirParts(currentFile, layersConfig);
-  const targetParts = ownSliceDirParts(target, layersConfig);
+  const currentFileParts = ownSliceDirParts(currentFile, layersConfig, root);
+  const targetParts = ownSliceDirParts(target, layersConfig, root);
 
   if (currentFileParts === null || targetParts === null) {
     return false;
@@ -139,9 +148,10 @@ export function isCrossImportFileTargetingOwnSlice(
   currentFilePath: string,
   targetPath: string,
   layersConfig?: NormalizedLayerConfig[],
+  root?: string,
 ): boolean {
-  const currentFileParts = sliceDirParts(currentFilePath, layersConfig);
-  const targetParts = sliceDirParts(targetPath, layersConfig);
+  const currentFileParts = sliceDirParts(currentFilePath, layersConfig, root);
+  const targetParts = sliceDirParts(targetPath, layersConfig, root);
 
   if (currentFileParts === null || targetParts === null) {
     return false;

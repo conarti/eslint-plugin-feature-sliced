@@ -5,6 +5,7 @@ import {
   getLayersWithSlices,
   normalizeLayersConfig,
 } from './layers-config';
+import { relativeToRoot } from './resolution-paths';
 
 type SegmentFiles = string | null;
 
@@ -85,24 +86,34 @@ function createFsdPartsRegExp(layersWithSlices: string[], segmentsList: string[]
  *
  * If layersConfig is not provided, uses default FSD layers.
  * If segmentsConfig is not provided, uses default FSD segments.
+ *
+ * Both routes begin by looking for the layer, so both look for it below the project root.
+ * Nothing forbids holding a checkout in a folder named after a layer, and a search that
+ * starts at the top of an absolute path stops at that folder: the positional route then
+ * counts the boundary from one branch too high, and the name list route reads the folders
+ * between the two as the slice. A path that lies under no root is read as written, which is
+ * what an aliased or a bare target is.
  */
 export function extractSegment(
   targetPath: string,
   layersConfig?: NormalizedLayerConfig[],
   segmentsConfig?: string[],
   boundary?: SliceBoundary | null,
+  root?: string,
 ): [string | null, SegmentFiles] {
   const normalizedLayersConfig = layersConfig ?? normalizeLayersConfig();
   const segmentsList = segmentsConfig ?? [...DEFAULT_SEGMENTS];
   const layersWithSlices = getLayersWithSlices(normalizedLayersConfig);
 
+  const pathFromRoot = relativeToRoot(targetPath, root) ?? targetPath;
+
   if (boundary !== undefined && boundary !== null) {
-    return extractSegmentAtBoundary(targetPath, layersWithSlices, boundary);
+    return extractSegmentAtBoundary(pathFromRoot, layersWithSlices, boundary);
   }
 
   const fsdPartsRegExp = createFsdPartsRegExp(layersWithSlices, segmentsList);
 
-  const fsdParts = targetPath.match(fsdPartsRegExp);
+  const fsdParts = pathFromRoot.match(fsdPartsRegExp);
 
   if (fsdParts === null) {
     return [null, null];

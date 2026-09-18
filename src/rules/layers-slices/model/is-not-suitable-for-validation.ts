@@ -28,7 +28,7 @@ export function isNotSuitableForValidation(pathsInfo: PathsInfo, layersConfig?: 
    * An @x file is the cross-import public api of its own slice,
    * so it may reach that slice without crossing a slice boundary.
    */
-  if (isCrossImportFileTargetingOwnSlice(pathsInfo.normalizedCurrentFilePath, pathsInfo.absoluteTargetPath, layersConfig)) {
+  if (isCrossImportFileTargetingOwnSlice(pathsInfo.normalizedCurrentFilePath, pathsInfo.absoluteTargetPath, layersConfig, pathsInfo.normalizedCwd)) {
     return true;
   }
 
@@ -40,6 +40,7 @@ export function isNotSuitableForValidation(pathsInfo: PathsInfo, layersConfig?: 
     { path: pathsInfo.normalizedCurrentFilePath, slice: pathsInfo.fsdPartsOfCurrentFile.slice, sliceIndex: pathsInfo.fsdPartsOfCurrentFile.sliceIndex },
     { path: pathsInfo.absoluteTargetPath, slice: pathsInfo.fsdPartsOfTarget.slice, sliceIndex: pathsInfo.fsdPartsOfTarget.sliceIndex },
     layersConfig,
+    pathsInfo.normalizedCwd,
   )) {
     return true;
   }

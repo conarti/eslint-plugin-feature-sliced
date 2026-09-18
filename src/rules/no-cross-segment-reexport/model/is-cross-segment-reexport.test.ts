@@ -451,4 +451,65 @@ describe('isCrossSegmentReexport', () => {
       targetSegment: null,
     });
   });
+
+  /*
+   * Nothing forbids holding several checkouts in a folder named after a layer, and this rule
+   * only ever sees absolute paths. The boundary counts from the project's own layer, so a
+   * search that stops at an ancestor of the same name describes no position in this path.
+   */
+  describe('under a project root', () => {
+    const ROOT = '/checkout/entities/proj';
+
+    it('finds the layer below the root rather than in an ancestor of the same name', () => {
+      const result = isCrossSegmentReexport(
+        `${ROOT}/src/entities/cluster/model/index.ts`,
+        `${ROOT}/src/entities/cluster/api`,
+        defaultConfig,
+        undefined,
+        { slice: 'cluster', index: 0 },
+        ROOT,
+      );
+
+      expect(result).toEqual({
+        isCrossSegmentReexport: true,
+        currentSegment: 'model',
+        targetSegment: 'api',
+      });
+    });
+
+    /* The guarded case: a slice below a folder of its own name is still read by position */
+    it('keeps taking the segment at the boundary when the slice sits below a folder of its name', () => {
+      const result = isCrossSegmentReexport(
+        `${ROOT}/src/entities/panel/panel/ui/index.ts`,
+        `${ROOT}/src/entities/panel/panel/model`,
+        defaultConfig,
+        undefined,
+        { slice: 'panel', index: 1 },
+        ROOT,
+      );
+
+      expect(result).toEqual({
+        isCrossSegmentReexport: true,
+        currentSegment: 'ui',
+        targetSegment: 'model',
+      });
+    });
+
+    it('reads a target that does not lie under the root as written', () => {
+      const result = isCrossSegmentReexport(
+        `${ROOT}/src/entities/cluster/model/index.ts`,
+        '@/entities/cluster/api',
+        defaultConfig,
+        undefined,
+        { slice: 'cluster', index: 0 },
+        ROOT,
+      );
+
+      expect(result).toEqual({
+        isCrossSegmentReexport: true,
+        currentSegment: 'model',
+        targetSegment: 'api',
+      });
+    });
+  });
 });

@@ -74,7 +74,7 @@ export function shouldBeFromPublicApi(
    * An @x file is the cross-import public api of its own slice,
    * so it may reach that slice without going through the public api.
    */
-  if (isCrossImportFileTargetingOwnSlice(pathsInfo.normalizedCurrentFilePath, pathsInfo.absoluteTargetPath, layersConfig)) {
+  if (isCrossImportFileTargetingOwnSlice(pathsInfo.normalizedCurrentFilePath, pathsInfo.absoluteTargetPath, layersConfig, pathsInfo.normalizedCwd)) {
     return false;
   }
 
@@ -88,6 +88,7 @@ export function shouldBeFromPublicApi(
     { path: pathsInfo.normalizedCurrentFilePath, slice: pathsInfo.fsdPartsOfCurrentFile.slice, sliceIndex: pathsInfo.fsdPartsOfCurrentFile.sliceIndex },
     { path: pathsInfo.absoluteTargetPath, slice: pathsInfo.fsdPartsOfTarget.slice, sliceIndex: pathsInfo.fsdPartsOfTarget.sliceIndex },
     layersConfig,
+    pathsInfo.normalizedCwd,
   );
 
   return (!staysInOneSlice && shouldBeFromSlicePublicApi(pathsInfo))

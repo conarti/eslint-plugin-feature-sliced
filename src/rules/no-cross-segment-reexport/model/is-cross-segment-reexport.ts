@@ -4,6 +4,7 @@ import {
   getLayersWithSlices,
   normalizeLayersConfig,
 } from '../../../lib/feature-sliced/layers-config';
+import { relativeToRoot } from '../../../lib/feature-sliced/resolution-paths';
 import {
   isKnownSegment,
   normalizeSegmentsConfig,
@@ -216,6 +217,12 @@ function findTargetSegmentInSameSlice(
  *
  * The slice boundary is the shared one when the filesystem could resolve it, and this rule's
  * own path derivation when it could not; the segment list is the configured one either way.
+ *
+ * Both paths are read below the project root. Nothing forbids holding a checkout in a folder
+ * named after a layer, and a search that starts at the top of an absolute path stops at that
+ * folder: the layer, the slice prefix and the position the boundary counts from would all be
+ * taken one branch too high. A path that lies under no root is read as written, which is what
+ * an aliased or a bare target is.
  */
 export function isCrossSegmentReexport(
   normalizedCurrentFilePath: string,
@@ -223,13 +230,14 @@ export function isCrossSegmentReexport(
   config?: NormalizedLayerConfig[],
   segmentsConfig?: string[],
   boundary?: SliceBoundary | null,
+  root?: string,
 ): CrossSegmentReexportInfo {
   const layersConfig = config ?? normalizeLayersConfig();
   const segmentsList = segmentsConfig ?? normalizeSegmentsConfig();
   const layersWithSlices = getLayersWithSlices(layersConfig).map((l) => l.toLowerCase());
 
-  const currentParts = splitPathParts(normalizedCurrentFilePath);
-  const targetParts = splitPathParts(absoluteTargetPath);
+  const currentParts = splitPathParts(relativeToRoot(normalizedCurrentFilePath, root) ?? normalizedCurrentFilePath);
+  const targetParts = splitPathParts(relativeToRoot(absoluteTargetPath, root) ?? absoluteTargetPath);
 
   /* Find layer index in current file path */
   const currentLayerIndex = findLayerIndex(currentParts, layersWithSlices);
