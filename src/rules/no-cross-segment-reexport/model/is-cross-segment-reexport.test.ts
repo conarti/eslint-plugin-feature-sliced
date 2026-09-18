@@ -233,4 +233,60 @@ describe('isCrossSegmentReexport', () => {
       targetSegment: null,
     });
   });
+
+  it('should not flag a sibling file when the segment folder is not a known segment', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cart/services/cart-service.ts',
+      'src/entities/cart/services/helpers',
+      defaultConfig,
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: false,
+      currentSegment: null,
+      targetSegment: null,
+    });
+  });
+
+  it('should detect cross-segment from a file inside a known segment folder', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cart/model/store.ts',
+      'src/entities/cart/api',
+      defaultConfig,
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: true,
+      currentSegment: 'model',
+      targetSegment: 'api',
+    });
+  });
+
+  it('should detect cross-segment when an unknown segment folder holds an index file', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cart/services/index.ts',
+      'src/entities/cart/model',
+      defaultConfig,
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: true,
+      currentSegment: 'services',
+      targetSegment: 'model',
+    });
+  });
+
+  it('should detect cross-segment when the target of an unknown segment folder is a file', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cart/services/index.ts',
+      'src/entities/cart/helpers.ts',
+      defaultConfig,
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: true,
+      currentSegment: 'services',
+      targetSegment: 'helpers',
+    });
+  });
 });

@@ -164,6 +164,7 @@ const filesExpectedToBeClean = [
   'src/widgets/header/ui/header.ts',
   'src2/entities/basket/model/cross-import-at-segments-level.ts',
   'src2/entities/cart/services/cart-service.ts',
+  'src2/entities/cart/services/helpers.ts',
   'src2/entities/cart/services/index.ts',
   'src2/entities/cart/ui/cart-view.ts',
 ];
