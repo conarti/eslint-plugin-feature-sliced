@@ -74,6 +74,7 @@ depend on the machine's locale.
 | `src/features/book/search/ui/search-book.ts` | `layers-slices` | `can-not-import` | A group folder that carries its own public api does not swallow the sub-slices that carry theirs: `search` and `toggle-read` stay two slices |
 | `src/features/book/search/ui/search-book.ts` | `public-api` | `should-be-from-public-api` | The same import seen by the other rule |
 | `src/widgets/header/ui/uses-own-hooks.ts` | `absolute-relative` | `must-be-relative-path` | `hooks/` holds no public api, so the import never leaves the `header` slice and has to be written as a relative path |
+| `src2/features/payment/ui/resolved-unknown-segment-import.ts` | `public-api` | `unknown-segment` | The same check reached through the filesystem: both slices carry a public api, so `helpers` is the segment by position, and the configured list is asked only whether that name is recognised |
 | `src2/features/checkout/ui/unknown-segment-import.ts` | `public-api` | `unknown-segment` | At `publicApi.level: 'segments'`, a folder in segment position that is not in the configured segment list (`helpers`) is reported instead of being silently accepted |
 
 Alongside the snapshot the test asserts that every rule id the plugin exports still appears
@@ -83,7 +84,7 @@ lint glob that quietly stops matching a subtree fails too.
 
 ## The clean files
 
-The remaining 45 `.ts` files carry no expectation at all, and the test asserts that they produce
+The remaining 50 `.ts` files carry no expectation at all, and the test asserts that they produce
 no message whatsoever. They are the false-positive guard: correct upward type-only imports,
 relative imports inside a slice, absolute imports across layers, slice and segment public apis,
 `@x` cross-imports addressed to the importing slice, and the custom `services` segment of `src2/`
