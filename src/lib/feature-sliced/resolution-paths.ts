@@ -76,7 +76,8 @@ export function rerootTargetPath(
    * for below the project root exactly as the current file's is. Searching the absolute path
    * would otherwise stop at a checkout directory that happens to carry a layer name and root
    * the target a second time under itself. An aliased or a bare target lies under no root and
-   * is searched as written.
+   * is searched as written, and so does a relative target that escapes the project root: that
+   * case is a known open question, not one this anchoring closes.
    */
   const targetFromRoot = relativeToRoot(targetPath, root);
 

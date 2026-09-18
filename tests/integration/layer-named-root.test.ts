@@ -3,6 +3,7 @@ import {
   cpSync,
   mkdirSync,
   mkdtempSync,
+  rmSync,
   writeFileSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -64,8 +65,17 @@ const PROJECT_FILES: Record<string, string> = {
   'src/entities/services/model/service-registry.ts': 'export const serviceRegistry = \'registry\';\n',
 };
 
+/**
+ * Every `mkdtemp` root a helper below has created, so `afterAll` can remove exactly those and
+ * nothing else. Only the `mkdtemp` root goes here, never the project nested under it, and never
+ * `tmpdir()` itself: another test file may be using its own directories under the same parent.
+ */
+const createdRoots: string[] = [];
+
 function createProjectUnder(ancestorName: string): string {
-  const root = path.join(mkdtempSync(path.join(tmpdir(), 'fsd-layer-root-')), ancestorName, 'proj');
+  const mkdtempRoot = mkdtempSync(path.join(tmpdir(), 'fsd-layer-root-'));
+  createdRoots.push(mkdtempRoot);
+  const root = path.join(mkdtempRoot, ancestorName, 'proj');
 
   for (const [relativePath, contents] of Object.entries(PROJECT_FILES)) {
     const filePath = path.join(root, relativePath);
@@ -156,7 +166,9 @@ const FIXTURE_SUBTREES = [
 ];
 
 function copyFixtureUnder(ancestorName: string): string {
-  const root = path.join(mkdtempSync(path.join(tmpdir(), 'fsd-layer-root-')), ancestorName, 'proj');
+  const mkdtempRoot = mkdtempSync(path.join(tmpdir(), 'fsd-layer-root-'));
+  createdRoots.push(mkdtempRoot);
+  const root = path.join(mkdtempRoot, ancestorName, 'proj');
 
   mkdirSync(path.dirname(root), { recursive: true });
   cpSync(path.join(fixtureRoot, 'src'), path.join(root, 'src'), { recursive: true });
@@ -202,4 +214,15 @@ describe('fixture project checked out under a directory named after a layer that
   it.each(LAYERS_WITH_SLICES)('answers under a parent named %s exactly as under a neutral one', async (ancestorName) => {
     expect(await lintFixtureCopy(copyFixtureUnder(ancestorName))).toEqual(neutral);
   });
+});
+
+/*
+ * Every project built above lives under its own `mkdtemp` root, so removing exactly those roots
+ * here clears every one of them, pass or fail, without touching `tmpdir()` itself or another
+ * test file's directories under it.
+ */
+afterAll(() => {
+  for (const root of createdRoots) {
+    rmSync(root, { recursive: true, force: true });
+  }
 });
