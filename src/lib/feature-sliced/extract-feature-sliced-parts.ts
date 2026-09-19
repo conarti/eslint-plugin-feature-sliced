@@ -9,7 +9,8 @@ interface ExtractOptions {
   /**
    * The path the slice is resolved from, when it differs from the target path: an aliased
    * target has to be re-rooted under the current file's layer root before it names a real
-   * directory. The layer and the segment keep reading the target path itself.
+   * directory. The layer and the fallback segment keep reading the target path itself; the
+   * boundary segment route reads the resolved slice path whenever there is one.
    */
   slicePath?: string;
   /** Answers whether an absolute directory holds a public api file */
