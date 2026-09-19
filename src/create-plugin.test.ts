@@ -1,4 +1,8 @@
 import type { NormalizedLayerConfig } from './config';
+import type { Options as AbsoluteRelativeRuleOptions } from './rules/absolute-relative/config';
+import type { Options as LayersSlicesRuleOptions } from './rules/layers-slices/config';
+import type { Options as NoCrossSegmentReexportRuleOptions } from './rules/no-cross-segment-reexport/config';
+import type { Options as PublicApiRuleOptions } from './rules/public-api/config';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -128,6 +132,83 @@ describe('createPlugin', () => {
 
     expect(config.name).toBe('@conarti/feature-sliced');
     expect(config.plugins!['@conarti/feature-sliced']).toBe(plugin);
+  });
+});
+
+/**
+ * Every option object the factory accepts for a rule, with the `false` switch-off removed.
+ * Read off createPlugin itself so it cannot be stated twice and drift.
+ */
+type FactoryOptions = NonNullable<Parameters<typeof createPlugin>[0]>;
+
+type FactoryRuleOptions<Key extends keyof FactoryOptions> = Exclude<FactoryOptions[Key], false | undefined>;
+
+/*
+ * The factory declares its per-rule options as hand written interfaces, which nothing otherwise
+ * ties to the option types the rules themselves declare. An option added to a rule and not to
+ * its interface still reaches the rule at runtime, because createRuleEntry spreads what it is
+ * given, but cannot be written down in a typed config. Both checks below close that gap.
+ */
+describe('createPlugin rule options', () => {
+  /*
+   * Type level, so tsc is what goes red here and the test run reports nothing. Each line asks
+   * that a factory interface name every option key its rule declares.
+   */
+  it('declares on every factory interface each option its rule declares', () => {
+    expectTypeOf<keyof LayersSlicesRuleOptions[0]>().toExtend<keyof FactoryRuleOptions<'layersSlices'>>();
+    expectTypeOf<keyof AbsoluteRelativeRuleOptions[0]>().toExtend<keyof FactoryRuleOptions<'absoluteRelative'>>();
+    expectTypeOf<keyof PublicApiRuleOptions[0]>().toExtend<keyof FactoryRuleOptions<'publicApi'>>();
+    expectTypeOf<keyof NoCrossSegmentReexportRuleOptions[0]>().toExtend<keyof FactoryRuleOptions<'noCrossSegmentReexport'>>();
+  });
+
+  /*
+   * Each option object stays written out inline: `satisfies Required<...>` keeps it exhaustive
+   * over its rule's option type, and only a fresh literal is excess-property checked against the
+   * factory interface, so hoisting one of these into a variable would quietly retire that check.
+   * Values differ from the rule defaults so that a dropped key shows up.
+   */
+  it('carries every option each rule declares through to the emitted rule entry', () => {
+    const config = createPlugin({
+      layersSlices: {
+        allowTypeImports: false,
+        allowPassThroughReexports: true,
+        ignoreImports: ['@/shared/lib/**'],
+        ignoreFiles: ['**/*.stories.ts'],
+      } satisfies Required<LayersSlicesRuleOptions[0]>,
+      absoluteRelative: {
+        ignoreImports: ['virtual:*'],
+        ignoreFiles: ['**/*.config.ts'],
+      } satisfies Required<AbsoluteRelativeRuleOptions[0]>,
+      publicApi: {
+        level: 'segments',
+        ignoreImports: ['@/app/**'],
+        ignoreFiles: ['**/*.spec.ts'],
+      } satisfies Required<PublicApiRuleOptions[0]>,
+      noCrossSegmentReexport: {
+        ignoreImports: ['@/entities/**'],
+        ignoreFiles: ['**/index.ts'],
+      } satisfies Required<NoCrossSegmentReexportRuleOptions[0]>,
+    });
+
+    expect(config.rules!['@conarti/feature-sliced/layers-slices']).toEqual(['error', {
+      allowTypeImports: false,
+      allowPassThroughReexports: true,
+      ignoreImports: ['@/shared/lib/**'],
+      ignoreFiles: ['**/*.stories.ts'],
+    }]);
+    expect(config.rules!['@conarti/feature-sliced/absolute-relative']).toEqual(['error', {
+      ignoreImports: ['virtual:*'],
+      ignoreFiles: ['**/*.config.ts'],
+    }]);
+    expect(config.rules!['@conarti/feature-sliced/public-api']).toEqual(['error', {
+      level: 'segments',
+      ignoreImports: ['@/app/**'],
+      ignoreFiles: ['**/*.spec.ts'],
+    }]);
+    expect(config.rules!['@conarti/feature-sliced/no-cross-segment-reexport']).toEqual(['error', {
+      ignoreImports: ['@/entities/**'],
+      ignoreFiles: ['**/index.ts'],
+    }]);
   });
 });
 

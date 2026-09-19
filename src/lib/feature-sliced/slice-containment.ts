@@ -3,6 +3,7 @@ import {
   getLayersWithSlices,
   normalizeLayersConfig,
 } from './layers-config';
+import { relativeToRoot } from './resolution-paths';
 
 const CROSS_IMPORT_DIR = '@x';
 
@@ -14,6 +15,11 @@ const CROSS_IMPORT_DIR = '@x';
  * made absolute when the specifier is relative: an aliased or a bare specifier
  * reaches the rules unchanged and shares no prefix with the current file path.
  *
+ * The layer is looked for below the project root. Nothing forbids holding a checkout in a
+ * folder named after a layer, and a search that starts at the top of an absolute path stops
+ * at that folder, which puts the whole slice prefix one branch too high. A path that lies
+ * under no root is read as written, which is what an aliased or a bare specifier is.
+ *
  * @example
  * 'src/entities/Foo/model/thing.ts' -> ['entities', 'foo', 'model', 'thing.ts']
  * '@/entities/foo/model/thing' -> ['entities', 'foo', 'model', 'thing']
@@ -21,10 +27,11 @@ const CROSS_IMPORT_DIR = '@x';
 export function sliceDirParts(
   targetPath: string,
   layersConfig?: NormalizedLayerConfig[],
+  root?: string,
 ): string[] | null {
   const layersWithSlices = getLayersWithSlices(layersConfig ?? normalizeLayersConfig());
 
-  const parts = targetPath
+  const parts = (relativeToRoot(targetPath, root) ?? targetPath)
     .split('/')
     .filter(Boolean)
     .map((part) => part.toLowerCase());
@@ -56,6 +63,12 @@ export function containsOther(aParts: string[], bParts: string[]): boolean {
 export interface SliceLocation {
   path: string;
   slice: string | null;
+  /**
+   * Where that slice sits: its index among the path parts after the layer, when the
+   * filesystem resolved the boundary. Without one the name is searched for, which is
+   * all the path heuristic can offer.
+   */
+  sliceIndex?: number | null;
 }
 
 /**
@@ -63,26 +76,35 @@ export interface SliceLocation {
  * when the path holds no layer or when its own slice name is not one of those parts.
  *
  * The slice is the one already extracted for this path, so the truncation can never
- * disagree with it. The search starts at index 1 because index 0 is the layer, which
- * a slice carrying the layer name would otherwise match first.
+ * disagree with it. A resolved boundary is used as the position it is: a slice that
+ * holds a folder of its own name carries the name twice, and a search by name stops
+ * at the first of the two, which is the folder above the slice. The search that
+ * remains for an unresolved slice starts at index 1 because index 0 is the layer,
+ * which a slice carrying the layer name would otherwise match first.
  */
 function ownSliceDirParts(
   location: SliceLocation,
   layersConfig?: NormalizedLayerConfig[],
+  root?: string,
 ): string[] | null {
   if (location.slice === null) {
     return null;
   }
 
-  const parts = sliceDirParts(location.path, layersConfig);
+  const parts = sliceDirParts(location.path, layersConfig, root);
 
   if (parts === null) {
     return null;
   }
 
-  const sliceIndex = parts.indexOf(location.slice.toLowerCase(), 1);
+  const sliceName = location.slice.toLowerCase();
 
-  if (sliceIndex === -1) {
+  /* `parts` starts at the layer, so the slice sits one further along than the boundary counts */
+  const sliceIndex = location.sliceIndex === undefined || location.sliceIndex === null
+    ? parts.indexOf(sliceName, 1)
+    : location.sliceIndex + 1;
+
+  if (parts[sliceIndex] !== sliceName) {
     return null;
   }
 
@@ -102,9 +124,10 @@ export function staysInsideOneSlice(
   currentFile: SliceLocation,
   target: SliceLocation,
   layersConfig?: NormalizedLayerConfig[],
+  root?: string,
 ): boolean {
-  const currentFileParts = ownSliceDirParts(currentFile, layersConfig);
-  const targetParts = ownSliceDirParts(target, layersConfig);
+  const currentFileParts = ownSliceDirParts(currentFile, layersConfig, root);
+  const targetParts = ownSliceDirParts(target, layersConfig, root);
 
   if (currentFileParts === null || targetParts === null) {
     return false;
@@ -125,9 +148,10 @@ export function isCrossImportFileTargetingOwnSlice(
   currentFilePath: string,
   targetPath: string,
   layersConfig?: NormalizedLayerConfig[],
+  root?: string,
 ): boolean {
-  const currentFileParts = sliceDirParts(currentFilePath, layersConfig);
-  const targetParts = sliceDirParts(targetPath, layersConfig);
+  const currentFileParts = sliceDirParts(currentFilePath, layersConfig, root);
+  const targetParts = sliceDirParts(targetPath, layersConfig, root);
 
   if (currentFileParts === null || targetParts === null) {
     return false;

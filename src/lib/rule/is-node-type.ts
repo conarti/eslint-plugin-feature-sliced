@@ -3,6 +3,7 @@ import type {
   ExportNamedDeclarationKindType,
   ImportDeclarationKindType,
   ImportExportNodes,
+  ImportExportSpecifier,
 } from './models';
 import {
   AST_NODE_TYPES,
@@ -13,14 +14,19 @@ import {
 type ImportExportTypeNode = ImportDeclarationKindType
   | ExportAllDeclarationKindType
   | ExportNamedDeclarationKindType
-  | TSESTree.ImportSpecifier & { importKind: 'type' };
+  | TSESTree.ImportSpecifier & { importKind: 'type' }
+  | TSESTree.ExportSpecifier & { exportKind: 'type' };
 
 /**
  * Checks if a node is an import or export of a type
  */
-export function isNodeType(node: ImportExportNodes | TSESTree.ImportSpecifier): node is ImportExportTypeNode {
+export function isNodeType(node: ImportExportNodes | ImportExportSpecifier): node is ImportExportTypeNode {
   const isImport = ASTUtils.isNodeOfTypes([AST_NODE_TYPES.ImportSpecifier, AST_NODE_TYPES.ImportDeclaration])(node);
-  const isExport = ASTUtils.isNodeOfTypes([AST_NODE_TYPES.ExportAllDeclaration, AST_NODE_TYPES.ExportNamedDeclaration])(node);
+  const isExport = ASTUtils.isNodeOfTypes([
+    AST_NODE_TYPES.ExportSpecifier,
+    AST_NODE_TYPES.ExportAllDeclaration,
+    AST_NODE_TYPES.ExportNamedDeclaration,
+  ])(node);
 
   if (isImport) {
     return node.importKind === 'type';

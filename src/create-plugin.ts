@@ -42,6 +42,11 @@ interface LayersSlicesOptions {
    */
   allowTypeImports?: boolean;
   /**
+   * Allow a re-export to forward a lower layer out through this file
+   * @default false
+   */
+  allowPassThroughReexports?: boolean;
+  /**
    * Ignore certain import paths (import foo from '<path-to-ignore>')
    */
   ignoreImports?: string[];

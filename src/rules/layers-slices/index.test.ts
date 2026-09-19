@@ -2,12 +2,16 @@ import type { Options } from './config';
 import * as tseslintParser from '@typescript-eslint/parser';
 import { RuleTester } from '../../../tests/rule-tester';
 import {
+  fixtureProjectPath,
   layersSlicesAllowTypeImportsOptions,
   makeInvalidCrossImportError,
   makeLayersSlicesError,
   makeLayersSlicesErrorAtSpecifier,
   makeLayersSlicesIgnoreInFilesOptions,
   makeLayersSlicesIgnoreOptions,
+  makeLayersSlicesPassThroughOptions,
+  makePassThroughReexportError,
+  makePassThroughReexportErrorAtSpecifier,
 } from '../../../tests/utils';
 import rule from './index';
 
@@ -98,6 +102,12 @@ ruleTester.run('layers-slices', rule, {
       name: 'should allow "import type" with enabled option (inline import type style and to layer below)',
       filename: 'src/shared/ui/foo',
       code: "import { type Bar } from '@/entities/bar';",
+      options: layersSlicesAllowTypeImportsOptions,
+    },
+    {
+      name: 'should allow a default "import type" with enabled option (issue #38 control)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import type config from '@/entities/bar';",
       options: layersSlicesAllowTypeImportsOptions,
     },
     {
@@ -411,6 +421,192 @@ ruleTester.run('layers-slices', rule, {
       code: "import { auth } from '@/features/auth';",
       errors: [makeLayersSlicesError('features', 'entities')],
     },
+    /*
+     * Issue #38. A default or a namespace specifier is a value import unless the
+     * declaration itself is an "import type", so a declaration that mixes one with
+     * inline type specifiers must still be reported, at that value specifier
+     */
+    {
+      name: 'should report a default import combined with an inline type specifier (issue #38)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import config, { type Bar } from '@/entities/bar';",
+      options: layersSlicesAllowTypeImportsOptions,
+      errors: [
+        makeLayersSlicesErrorAtSpecifier(
+          'entities',
+          'shared',
+          {
+            line: 1,
+            endLine: 1,
+            column: 8,
+            endColumn: 14,
+          },
+        ),
+      ],
+    },
+    {
+      name: 'should report a default import combined with several inline type specifiers (issue #38)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import config, { type Bar, type Baz } from '@/entities/bar';",
+      options: layersSlicesAllowTypeImportsOptions,
+      errors: [
+        makeLayersSlicesErrorAtSpecifier(
+          'entities',
+          'shared',
+          {
+            line: 1,
+            endLine: 1,
+            column: 8,
+            endColumn: 14,
+          },
+        ),
+      ],
+    },
+    {
+      name: 'should report a default import on its own (issue #38 control)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import config from '@/entities/bar';",
+      options: layersSlicesAllowTypeImportsOptions,
+      errors: [makeLayersSlicesError('entities', 'shared')],
+    },
+    {
+      name: 'should report a namespace import on its own (issue #38 control)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import * as bar from '@/entities/bar';",
+      options: layersSlicesAllowTypeImportsOptions,
+      errors: [makeLayersSlicesError('entities', 'shared')],
+    },
+    {
+      name: 'should report a default import combined with a value named specifier (issue #38 control)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import config, { bar } from '@/entities/bar';",
+      options: layersSlicesAllowTypeImportsOptions,
+      errors: [makeLayersSlicesError('entities', 'shared')],
+    },
+    {
+      name: 'should report a default import combined with an inline type specifier when type imports are disallowed (issue #38 control)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import config, { type Bar } from '@/entities/bar';",
+      options: [
+        {
+          allowTypeImports: false,
+        },
+      ] as Options,
+      errors: [makeLayersSlicesError('entities', 'shared')],
+    },
+    {
+      name: 'should report an inline type specifier on its own when type imports are disallowed (issue #38 control)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import { type Bar } from '@/entities/bar';",
+      options: [
+        {
+          allowTypeImports: false,
+        },
+      ] as Options,
+      errors: [makeLayersSlicesError('entities', 'shared')],
+    },
+    {
+      /*
+       * The third shape the change reaches: a default specifier next to both a value named
+       * specifier and an inline type one. The inline type specifier is exempt, so not every
+       * specifier is invalid, and each remaining value specifier carries its own report at
+       * its own position rather than one report at the import source
+       */
+      name: 'should report both value specifiers of a default import combined with a value named and an inline type specifier (issue #38)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import config, { bar, type Bar } from '@/entities/bar';",
+      options: layersSlicesAllowTypeImportsOptions,
+      errors: [
+        makeLayersSlicesErrorAtSpecifier(
+          'entities',
+          'shared',
+          {
+            line: 1,
+            endLine: 1,
+            column: 8,
+            endColumn: 14,
+          },
+        ),
+        makeLayersSlicesErrorAtSpecifier(
+          'entities',
+          'shared',
+          {
+            line: 1,
+            endLine: 1,
+            column: 18,
+            endColumn: 21,
+          },
+        ),
+      ],
+    },
+    {
+      /*
+       * The report count follows the number of value specifiers, so a second value named
+       * specifier is a third report rather than one report that moves back to the source
+       */
+      name: 'should report every value specifier of a default import combined with two value named and an inline type specifier (issue #38)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import config, { bar, baz, type Bar } from '@/entities/bar';",
+      options: layersSlicesAllowTypeImportsOptions,
+      errors: [
+        makeLayersSlicesErrorAtSpecifier(
+          'entities',
+          'shared',
+          {
+            line: 1,
+            endLine: 1,
+            column: 8,
+            endColumn: 14,
+          },
+        ),
+        makeLayersSlicesErrorAtSpecifier(
+          'entities',
+          'shared',
+          {
+            line: 1,
+            endLine: 1,
+            column: 18,
+            endColumn: 21,
+          },
+        ),
+        makeLayersSlicesErrorAtSpecifier(
+          'entities',
+          'shared',
+          {
+            line: 1,
+            endLine: 1,
+            column: 23,
+            endColumn: 26,
+          },
+        ),
+      ],
+    },
+    {
+      /*
+       * With type imports disallowed nothing is exempt, so every specifier is invalid and
+       * the whole declaration collapses back to one report at the import source
+       */
+      name: 'should report a default import combined with a value named and an inline type specifier at the source when type imports are disallowed (issue #38 control)',
+      filename: 'src/shared/ui/foo.ts',
+      code: "import config, { bar, type Bar } from '@/entities/bar';",
+      options: [
+        {
+          allowTypeImports: false,
+        },
+      ] as Options,
+      errors: [
+        makeLayersSlicesErrorAtSpecifier(
+          'entities',
+          'shared',
+          {
+            line: 1,
+            endLine: 1,
+            column: 39,
+            endColumn: 55,
+          },
+        ),
+      ],
+    },
   ],
 });
 
@@ -545,6 +741,511 @@ ruleTester.run('layers-slices (group folders)', rule, {
       filename: 'src/entities/group/UserA/ui/a.ts',
       code: "import { b } from '@/entities/group/UserB/ui';",
       errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+  ],
+});
+
+/*
+ * The filesystem route, read from the on-disk fixture project. A slice that holds a folder
+ * of its own name must not swallow its siblings: the slice directory is the one the resolver
+ * settled on, not the first folder along the path that carries the same name.
+ */
+ruleTester.run('layers-slices (resolved slice boundary)', rule, {
+  valid: [
+    {
+      name: 'should allow an import that stays inside the resolved slice',
+      filename: fixtureProjectPath('src/entities/panel/panel/ui/index.ts'),
+      code: "import { panelModel } from '../model';",
+    },
+  ],
+  invalid: [
+    {
+      name: 'should report an import into a sibling slice from a slice whose folder repeats the name above it',
+      filename: fixtureProjectPath('src/entities/panel/panel/ui/reaches-sibling-slice.ts'),
+      code: "import { thing } from 'src/entities/panel/other/ui/thing';",
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+  ],
+});
+
+/*
+ * === Re-exports, issue #27 ===
+ *
+ * A re-export is a dependency. The export declarations take the same layer and slice checks
+ * as the equivalent import, so an upward re-export and a sibling slice re-export carry the
+ * same message. A re-export that forwards a lower layer out through this slice is a
+ * pass-through: it has its own message and is the only case the option silences.
+ */
+
+ruleTester.run('layers-slices (re-exports)', rule, {
+  valid: [
+    {
+      name: 'should allow a re-export that stays inside the slice',
+      filename: 'src/features/auth/index.ts',
+      code: "export { loginUser } from './model/login-user';",
+    },
+    {
+      name: 'should allow an export declaration without a source',
+      filename: 'src/features/auth/index.ts',
+      code: 'const loginUser = () => null; export { loginUser };',
+    },
+    {
+      name: 'should allow a re-export from the @x public api of the own slice',
+      filename: 'src/entities/session/index.ts',
+      code: "export { createUser } from '@/entities/user/@x/session';",
+    },
+    {
+      name: 'should allow an upward type re-export when type imports are allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export type { AuthState } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false),
+    },
+    {
+      name: 'should allow a pass-through re-export when pass-through re-exports are allowed',
+      filename: 'src/features/auth/index.ts',
+      code: "export { Button } from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(true),
+    },
+    {
+      name: 'should allow a pass-through export all when pass-through re-exports are allowed',
+      filename: 'src/features/auth/index.ts',
+      code: "export * from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(true),
+    },
+    {
+      name: 'should allow a pass-through namespace re-export when pass-through re-exports are allowed',
+      filename: 'src/features/auth/index.ts',
+      code: "export * as button from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(true),
+    },
+    {
+      name: 'should allow a pass-through type re-export when type imports are allowed',
+      filename: 'src/features/auth/index.ts',
+      code: "export type { ButtonProps } from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(false),
+    },
+    {
+      name: 'should allow an upward type re-export when pass-through re-exports are allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export type { AuthState } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(true),
+    },
+    {
+      name: 'should allow a pass-through type re-export when pass-through re-exports are allowed',
+      filename: 'src/features/auth/index.ts',
+      code: "export type { ButtonProps } from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(true),
+    },
+    {
+      name: 'should allow an upward inline type re-export',
+      filename: 'src/entities/user/index.ts',
+      code: "export { type AuthState } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false),
+    },
+    {
+      name: 'should allow an upward inline type re-export when pass-through re-exports are allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export { type AuthState } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(true),
+    },
+    {
+      name: 'should allow a pass-through inline type re-export',
+      filename: 'src/features/auth/index.ts',
+      code: "export { type ButtonProps } from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(false),
+    },
+    {
+      name: 'should allow a pass-through inline type re-export when pass-through re-exports are allowed',
+      filename: 'src/features/auth/index.ts',
+      code: "export { type ButtonProps } from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(true),
+    },
+    {
+      /* No options at all: an inline type re-export has to be silent on the shipped defaults. */
+      name: 'should allow a pass-through inline type re-export with no options configured',
+      filename: 'src/features/auth/index.ts',
+      code: "export { type ButtonProps } from '@/shared/ui/button';",
+    },
+    {
+      name: 'should allow an upward inline type re-export with no options configured',
+      filename: 'src/entities/user/index.ts',
+      code: "export { type AuthState } from '@/features/auth';",
+    },
+    {
+      name: 'should allow an upward re-export of several inline type specifiers',
+      filename: 'src/entities/user/index.ts',
+      code: "export { type AuthState, type LoginPayload } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false),
+    },
+    {
+      name: 'should allow a mixed pass-through re-export when pass-through re-exports are allowed',
+      filename: 'src/features/auth/index.ts',
+      code: "export { Button, type ButtonProps } from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(true),
+    },
+    {
+      name: 'should allow an upward type export all when type imports are allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export type * from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false),
+    },
+    {
+      name: 'should allow a pass-through type export all when type imports are allowed',
+      filename: 'src/features/auth/index.ts',
+      code: "export type * from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(false),
+    },
+  ],
+  invalid: [
+    {
+      name: 'should report an upward re-export',
+      filename: 'src/entities/user/index.ts',
+      code: "export { loginUser } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makeLayersSlicesError('features', 'entities')],
+    },
+    {
+      name: 'should report an upward re-export when pass-through re-exports are allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export { loginUser } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(true),
+      errors: [makeLayersSlicesError('features', 'entities')],
+    },
+    {
+      name: 'should report an upward export all',
+      filename: 'src/entities/user/index.ts',
+      code: "export * from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makeLayersSlicesError('features', 'entities')],
+    },
+    {
+      name: 'should report an upward export all when pass-through re-exports are allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export * from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(true),
+      errors: [makeLayersSlicesError('features', 'entities')],
+    },
+    {
+      name: 'should report an upward namespace re-export',
+      filename: 'src/entities/user/index.ts',
+      code: "export * as auth from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makeLayersSlicesError('features', 'entities')],
+    },
+    {
+      name: 'should report an upward namespace re-export when pass-through re-exports are allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export * as auth from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(true),
+      errors: [makeLayersSlicesError('features', 'entities')],
+    },
+    {
+      name: 'should report a sibling slice re-export',
+      filename: 'src/entities/user/index.ts',
+      code: "export { product } from '@/entities/product';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      name: 'should report a sibling slice re-export when pass-through re-exports are allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export { product } from '@/entities/product';",
+      options: makeLayersSlicesPassThroughOptions(true),
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      name: 'should report a sibling slice export all',
+      filename: 'src/entities/user/index.ts',
+      code: "export * from '@/entities/product';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      name: 'should report a sibling slice export all when pass-through re-exports are allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export * from '@/entities/product';",
+      options: makeLayersSlicesPassThroughOptions(true),
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      name: 'should report a sibling slice namespace re-export',
+      filename: 'src/entities/user/index.ts',
+      code: "export * as product from '@/entities/product';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      name: 'should report a sibling slice namespace re-export when pass-through re-exports are allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export * as product from '@/entities/product';",
+      options: makeLayersSlicesPassThroughOptions(true),
+      errors: [makeLayersSlicesError('entities', 'entities')],
+    },
+    {
+      /* No options at all: the default has to reach the check, not only the type and the schema. */
+      name: 'should report a pass-through re-export with no options configured',
+      filename: 'src/features/auth/index.ts',
+      code: "export { Button } from '@/shared/ui/button';",
+      errors: [makePassThroughReexportError('shared', 'features')],
+    },
+    {
+      name: 'should report a pass-through re-export by default',
+      filename: 'src/features/auth/index.ts',
+      code: "export { Button } from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makePassThroughReexportError('shared', 'features')],
+    },
+    {
+      name: 'should report a pass-through export all by default',
+      filename: 'src/features/auth/index.ts',
+      code: "export * from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makePassThroughReexportError('shared', 'features')],
+    },
+    {
+      name: 'should report a pass-through namespace re-export by default',
+      filename: 'src/features/auth/index.ts',
+      code: "export * as button from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makePassThroughReexportError('shared', 'features')],
+    },
+    {
+      name: 'should report an upward type re-export when type imports are not allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export type { AuthState } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false, false),
+      errors: [makeLayersSlicesError('features', 'entities')],
+    },
+    {
+      name: 'should report a pass-through type re-export when type imports are not allowed',
+      filename: 'src/features/auth/index.ts',
+      code: "export type { ButtonProps } from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(false, false),
+      errors: [makePassThroughReexportError('shared', 'features')],
+    },
+    {
+      name: 'should report a re-export from the @x public api of another slice',
+      filename: 'src/entities/order/index.ts',
+      code: "export { createUser } from '@/entities/user/@x/session';",
+      errors: [makeInvalidCrossImportError('user', 'session')],
+    },
+    {
+      /*
+       * A mixed re-export carries a real value dependency, so it keeps reporting. Only the
+       * value specifier is reported, and the report sits on it rather than on the source.
+       */
+      name: 'should report only the value specifier of a mixed upward re-export',
+      filename: 'src/entities/user/index.ts',
+      code: "export { loginUser, type AuthState } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [
+        makeLayersSlicesErrorAtSpecifier(
+          'features',
+          'entities',
+          {
+            line: 1,
+            endLine: 1,
+            column: 10,
+            endColumn: 19,
+          },
+        ),
+      ],
+    },
+    {
+      /*
+       * Reading a re-export per specifier is what changes the report count: every value
+       * specifier carries its own report, so a second one is a second report rather than
+       * one report that moves back to the source.
+       */
+      name: 'should report each value specifier of a mixed upward re-export carrying two of them',
+      filename: 'src/entities/user/index.ts',
+      code: "export { loginUser, type AuthState, logoutUser } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [
+        makeLayersSlicesErrorAtSpecifier(
+          'features',
+          'entities',
+          {
+            line: 1,
+            endLine: 1,
+            column: 10,
+            endColumn: 19,
+          },
+        ),
+        makeLayersSlicesErrorAtSpecifier(
+          'features',
+          'entities',
+          {
+            line: 1,
+            endLine: 1,
+            column: 37,
+            endColumn: 47,
+          },
+        ),
+      ],
+    },
+    {
+      /*
+       * The export side has no default specifier of its own: `export config, { bar } from`
+       * is not valid syntax, and the nearest shape is a `default as` named specifier. It is
+       * a value specifier like any other, so it is reported at its own position alongside
+       * the other value specifier while the inline type one stays exempt
+       */
+      name: 'should report a default re-export specifier alongside the other value specifier of a mixed upward re-export',
+      filename: 'src/entities/user/index.ts',
+      code: "export { default as config, loginUser, type AuthState } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [
+        makeLayersSlicesErrorAtSpecifier(
+          'features',
+          'entities',
+          {
+            line: 1,
+            endLine: 1,
+            column: 10,
+            endColumn: 27,
+          },
+        ),
+        makeLayersSlicesErrorAtSpecifier(
+          'features',
+          'entities',
+          {
+            line: 1,
+            endLine: 1,
+            column: 29,
+            endColumn: 38,
+          },
+        ),
+      ],
+    },
+    {
+      name: 'should report only the value specifier of a mixed upward re-export when pass-through re-exports are allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export { loginUser, type AuthState } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(true),
+      errors: [
+        makeLayersSlicesErrorAtSpecifier(
+          'features',
+          'entities',
+          {
+            line: 1,
+            endLine: 1,
+            column: 10,
+            endColumn: 19,
+          },
+        ),
+      ],
+    },
+    {
+      name: 'should report only the value specifier of a mixed pass-through re-export',
+      filename: 'src/features/auth/index.ts',
+      code: "export { Button, type ButtonProps } from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [
+        makePassThroughReexportErrorAtSpecifier(
+          'shared',
+          'features',
+          {
+            line: 1,
+            endLine: 1,
+            column: 10,
+            endColumn: 16,
+          },
+        ),
+      ],
+    },
+    {
+      name: 'should report each value specifier of a mixed pass-through re-export carrying two of them',
+      filename: 'src/features/auth/index.ts',
+      code: "export { Button, type ButtonProps, Input } from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [
+        makePassThroughReexportErrorAtSpecifier(
+          'shared',
+          'features',
+          {
+            line: 1,
+            endLine: 1,
+            column: 10,
+            endColumn: 16,
+          },
+        ),
+        makePassThroughReexportErrorAtSpecifier(
+          'shared',
+          'features',
+          {
+            line: 1,
+            endLine: 1,
+            column: 36,
+            endColumn: 41,
+          },
+        ),
+      ],
+    },
+    {
+      /* Nothing is exempt when type imports are not allowed, so the report goes back to the source. */
+      name: 'should report a mixed upward re-export at the source when type imports are not allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export { loginUser, type AuthState } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false, false),
+      errors: [
+        makeLayersSlicesErrorAtSpecifier(
+          'features',
+          'entities',
+          {
+            line: 1,
+            endLine: 1,
+            column: 43,
+            endColumn: 60,
+          },
+        ),
+      ],
+    },
+    {
+      name: 'should report an upward inline type re-export when type imports are not allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export { type AuthState } from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false, false),
+      errors: [makeLayersSlicesError('features', 'entities')],
+    },
+    {
+      name: 'should report a pass-through inline type re-export when type imports are not allowed',
+      filename: 'src/features/auth/index.ts',
+      code: "export { type ButtonProps } from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(false, false),
+      errors: [makePassThroughReexportError('shared', 'features')],
+    },
+    {
+      name: 'should report an upward type export all when type imports are not allowed',
+      filename: 'src/entities/user/index.ts',
+      code: "export type * from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false, false),
+      errors: [makeLayersSlicesError('features', 'entities')],
+    },
+    {
+      name: 'should report a pass-through type export all when type imports are not allowed',
+      filename: 'src/features/auth/index.ts',
+      code: "export type * from '@/shared/ui/button';",
+      options: makeLayersSlicesPassThroughOptions(false, false),
+      errors: [makePassThroughReexportError('shared', 'features')],
+    },
+    {
+      /* The import side of the equality the re-export case below is justified by. */
+      name: 'should report an upward import with an empty specifier list',
+      filename: 'src/entities/user/index.ts',
+      code: "import {} from '@/features/auth';",
+      errors: [makeLayersSlicesError('features', 'entities')],
+    },
+    {
+      /*
+       * An empty specifier list still pulls the module in, exactly as `import {} from` does,
+       * so the declaration keeps carrying the report.
+       */
+      name: 'should report an upward re-export with an empty specifier list',
+      filename: 'src/entities/user/index.ts',
+      code: "export {} from '@/features/auth';",
+      options: makeLayersSlicesPassThroughOptions(false),
+      errors: [makeLayersSlicesError('features', 'entities')],
     },
   ],
 });

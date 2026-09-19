@@ -229,6 +229,32 @@ describe('staysInsideOneSlice', () => {
     )).toBe(false);
   });
 
+  /*
+   * The slice directory is the one the resolver settled on. A slice that holds a folder of its
+   * own name carries that name twice, and truncating at the first of the two makes the folder
+   * above the slice look like the slice, which swallows every sibling slice under it.
+   */
+  it('takes the slice directory at the resolved boundary, not at the first folder of the same name', () => {
+    expect(staysInsideOneSlice(
+      { path: '/proj/src/entities/panel/panel/ui/a.ts', slice: 'panel', sliceIndex: 1 },
+      { path: 'src/entities/panel/other/ui/thing', slice: 'other', sliceIndex: 1 },
+    )).toBe(false);
+  });
+
+  it('still contains a folder that sits below the resolved boundary', () => {
+    expect(staysInsideOneSlice(
+      { path: '/proj/src/entities/panel/panel/ui/a.ts', slice: 'panel', sliceIndex: 1 },
+      { path: 'src/entities/panel/panel/ui/thing', slice: 'ui', sliceIndex: 2 },
+    )).toBe(true);
+  });
+
+  it('is false when the boundary does not point at the slice it names', () => {
+    expect(staysInsideOneSlice(
+      { path: 'src/entities/foo/model/a.ts', slice: 'foo', sliceIndex: 2 },
+      { path: '@/entities/foo/hooks', slice: 'foo', sliceIndex: 0 },
+    )).toBe(false);
+  });
+
   it('is false when the slice name is absent from the parts of its own path', () => {
     expect(staysInsideOneSlice(
       { path: 'src/entities/foo/model/a.ts', slice: 'ghost' },
@@ -262,5 +288,60 @@ describe('staysInsideOneSlice', () => {
       { path: '@/entities/header/hooks', slice: 'hooks' },
       layersConfig,
     )).toBe(false);
+  });
+});
+
+/*
+ * Nothing forbids holding several checkouts in a folder named after a layer, and the rules only
+ * ever see absolute paths. A search that starts at the top of an absolute path then stops at the
+ * ancestor, which puts the layer, the slice and every position below them one branch too high.
+ */
+describe('under a project root', () => {
+  const ROOT = '/checkout/entities/proj';
+
+  it('finds the layer below the root rather than in an ancestor of the same name', () => {
+    expect(sliceDirParts(`${ROOT}/src/entities/foo/model/thing.ts`, undefined, ROOT)).toEqual([
+      'entities',
+      'foo',
+      'model',
+      'thing.ts',
+    ]);
+  });
+
+  it('reads a path that does not lie under the root as written', () => {
+    expect(sliceDirParts('@/entities/foo/model/thing', undefined, ROOT)).toEqual([
+      'entities',
+      'foo',
+      'model',
+      'thing',
+    ]);
+  });
+
+  it('keeps an import inside one slice inside it when the boundary counts from the layer below the root', () => {
+    expect(staysInsideOneSlice(
+      { path: `${ROOT}/src/entities/foo/model/a.ts`, slice: 'foo', sliceIndex: 0 },
+      { path: `${ROOT}/src/entities/foo/hooks/thing`, slice: 'hooks', sliceIndex: 1 },
+      undefined,
+      ROOT,
+    )).toBe(true);
+  });
+
+  /* The guarded case: a slice named after its own layer is still read by position */
+  it('keeps reading the slice by position when it carries the layer name', () => {
+    expect(staysInsideOneSlice(
+      { path: `${ROOT}/src/entities/entities/model/a.ts`, slice: 'entities', sliceIndex: 0 },
+      { path: `${ROOT}/src/entities/entities/hooks/thing`, slice: 'hooks', sliceIndex: 1 },
+      undefined,
+      ROOT,
+    )).toBe(true);
+  });
+
+  it('lets an @x file reach its own slice through an aliased target', () => {
+    expect(isCrossImportFileTargetingOwnSlice(
+      `${ROOT}/src/entities/foo/@x/bar.ts`,
+      '@/entities/foo/model/thing',
+      undefined,
+      ROOT,
+    )).toBe(true);
   });
 });

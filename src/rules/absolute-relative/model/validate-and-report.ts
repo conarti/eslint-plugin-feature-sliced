@@ -27,6 +27,7 @@ export function validateAndReport(
   optionsWithDefault: Readonly<Options>,
   options: ValidateOptions = { needCheckForAbsolute: true },
   layersConfig?: NormalizedLayerConfig[],
+  segmentsConfig?: string[],
 ) {
   if (!hasPath(node)) {
     return;
@@ -37,7 +38,7 @@ export function validateAndReport(
     return;
   }
 
-  const pathsInfo = extractPathsInfo(node, context, { layersConfig });
+  const pathsInfo = extractPathsInfo(node, context, { layersConfig, segmentsConfig });
 
   /* @x cross-imports are always absolute, skip relative/absolute checks */
   const crossImportInfo = extractCrossImportInfo(pathsInfo.normalizedTargetPath);

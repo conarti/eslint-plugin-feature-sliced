@@ -1,6 +1,7 @@
 import * as tseslintParser from '@typescript-eslint/parser';
 import { RuleTester } from '../../../tests/rule-tester';
 import {
+  fixtureProjectPath,
   makeCrossSegmentReexportErrorWithSuggestion,
   makeCrossSegmentReexportIgnoreFilesOptions,
   makeCrossSegmentReexportIgnoreOptions,
@@ -349,6 +350,18 @@ ruleTester.run('no-cross-segment-reexport', rule, {
       )],
     },
     {
+      name: 'should flag a cross-segment re-export out of a configured custom segment',
+      filename: 'src/entities/cart/services/helpers/index.ts',
+      code: "export { foo } from '../../model'",
+      settings: makeCustomSegmentsSettings(['services']),
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'services',
+        'model',
+        '../..',
+        "export { foo } from '../..'",
+      )],
+    },
+    {
       name: 'should flag cross-segment re-export when the slice and segment folders are capitalised',
       filename: 'src/entities/Orders/Model/index.ts',
       code: "export { foo } from '../Api'",
@@ -357,6 +370,34 @@ ruleTester.run('no-cross-segment-reexport', rule, {
         'Api',
         '..',
         "export { foo } from '..'",
+      )],
+    },
+  ],
+});
+
+/*
+ * The filesystem route. A rule case reaches it only when its file name is a real path under
+ * the working directory, so these read the on-disk fixture project instead of an invented
+ * path. The shape they pin is a slice that holds a folder of its own name.
+ */
+ruleTester.run('no-cross-segment-reexport (resolved slice boundary)', rule, {
+  valid: [
+    {
+      name: 'should be valid if the slice public api re-exports a segment of its own slice',
+      filename: fixtureProjectPath('src/entities/panel/panel/index.ts'),
+      code: "export { panelModel } from './model'",
+    },
+  ],
+  invalid: [
+    {
+      name: 'should flag a cross-segment re-export inside a slice whose folder repeats the name above it',
+      filename: fixtureProjectPath('src/entities/panel/panel/ui/index.ts'),
+      code: "export * from '../model'",
+      errors: [makeCrossSegmentReexportErrorWithSuggestion(
+        'ui',
+        'model',
+        '..',
+        "export * from '..'",
       )],
     },
   ],

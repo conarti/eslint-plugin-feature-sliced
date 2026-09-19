@@ -1,6 +1,7 @@
 import * as tseslintParser from '@typescript-eslint/parser';
 import { RuleTester } from '../../../tests/rule-tester';
 import {
+  fixtureProjectPath,
   makePublicApiErrorWithSuggestion,
   makePublicApiOptions,
   publicApiLayersNotAllowedError,
@@ -195,6 +196,21 @@ ruleTester.run('public-api', rule, {
       code: 'import { bar } from "./ui/bar";',
       options: makePublicApiOptions({ ignoreFiles: [`**/(${layers.join('|')})/index.*`] }),
     },
+    /*
+     * Issue #34, the layer public api half. The matcher below the extraction is
+     * only allowed to widen: a slice index under a dot directory stays silent.
+     */
+    {
+      name: 'should keep a slice public api silent under a dot directory (issue #34)',
+      filename: '/proj/.worktrees/w1/src/features/foo/index.ts',
+      code: 'import { bar } from "./ui/bar";',
+    },
+    {
+      name: 'should still honour ignoreFiles for a layer public api under a dot directory (issue #34)',
+      filename: '/proj/.worktrees/w1/src/features/index.ts',
+      code: "import { foo } from './foo';",
+      options: makePublicApiOptions({ ignoreFiles: ['**/features/index.*'] }),
+    },
     {
       name: 'should be valid if ignoreImports has an exact-path entry matching the import',
       filename: 'src/pages/orders/ui/OrderDetailsPage.vue',
@@ -370,6 +386,18 @@ ruleTester.run('public-api', rule, {
       name: 'export from layers public api is not allowed',
       filename: 'src/features/index.ts',
       code: "export { foo } from './foo'",
+      errors: [publicApiLayersNotAllowedError],
+    },
+    {
+      name: 'import to layers public api is not allowed under a dot directory (issue #34)',
+      filename: '/proj/.worktrees/w1/src/features/index.ts',
+      code: "import { foo } from './foo'",
+      errors: [publicApiLayersNotAllowedError],
+    },
+    {
+      name: 'import to layers public api is not allowed for a layer without slices ("shared")',
+      filename: 'src/shared/index.ts',
+      code: "import { foo } from './foo'",
       errors: [publicApiLayersNotAllowedError],
     },
     {
@@ -652,6 +680,35 @@ ruleTester.run('public-api (@x cross-imports)', rule, {
           'model/secret',
           "import { secret } from 'src/entities/other';",
           'src/entities/other',
+        ),
+      ],
+    },
+  ],
+});
+
+/*
+ * The filesystem route, read from the on-disk fixture project. `src/entities/panel/panel` is
+ * the public api of a slice whose folder repeats the name of the folder above it, so the path
+ * holds no segment and needs no other entry point; the segment below it still does.
+ */
+ruleTester.run('public-api (resolved slice boundary)', rule, {
+  valid: [
+    {
+      name: 'should be valid if the target is the public api of a slice whose folder repeats the name above it',
+      filename: fixtureProjectPath('src/pages/home/ui/imports-same-named-nested-slice.ts'),
+      code: "import { panelModel } from 'src/entities/panel/panel';",
+    },
+  ],
+  invalid: [
+    {
+      name: 'should report a deep import into a segment of a slice whose folder repeats the name above it',
+      filename: fixtureProjectPath('src/pages/home/ui/imports-same-named-nested-slice.ts'),
+      code: "import { panelModel } from 'src/entities/panel/panel/model';",
+      errors: [
+        makePublicApiErrorWithSuggestion(
+          'model',
+          "import { panelModel } from 'src/entities/panel/panel';",
+          'src/entities/panel/panel',
         ),
       ],
     },

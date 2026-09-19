@@ -1,28 +1,29 @@
+import type { TSESTree } from '@typescript-eslint/utils';
 import type { NormalizedLayerConfig } from '../../../config';
 import type { CrossImportInfo, PathsInfo } from '../../../lib/feature-sliced';
 import type { ImportExportNodesWithSourceValue } from '../../../lib/rule';
-import {
-  AST_NODE_TYPES,
-  type TSESTree,
-} from '@typescript-eslint/utils';
+import type {
+  ExportNodesWithSource,
+  ImportExportSpecifier,
+} from '../../../lib/rule/models';
 import { getLayerNames } from '../../../lib/feature-sliced/layers-config';
 import {
   ERROR_MESSAGE_ID,
   type RuleContext,
 } from '../config';
 
-function getReportPosition(node: ImportExportNodesWithSourceValue | TSESTree.ImportSpecifier): TSESTree.Node {
-  const isSpecifier = node.type === AST_NODE_TYPES.ImportSpecifier;
-  if (isSpecifier) {
-    return node;
+function getReportPosition(node: ImportExportNodesWithSourceValue | ImportExportSpecifier): TSESTree.Node {
+  const isDeclaration = 'source' in node;
+  if (isDeclaration) {
+    return node.source;
   }
 
-  return node.source;
+  return node;
 }
 
 export function reportCanNotImportLayer(
   context: RuleContext,
-  node: ImportExportNodesWithSourceValue | TSESTree.ImportSpecifier,
+  node: ImportExportNodesWithSourceValue | ImportExportSpecifier,
   pathsInfo: PathsInfo,
   layersConfig: NormalizedLayerConfig[],
 ) {
@@ -35,6 +36,26 @@ export function reportCanNotImportLayer(
       importLayer: pathsInfo.fsdPartsOfTarget.layer,
       currentFileLayer: pathsInfo.fsdPartsOfCurrentFile.layer,
       layersOrder: layerNames.join(' -> '),
+    },
+  });
+}
+
+/**
+ * A re-export that forwards a lower layer out through this file is a pass-through:
+ * the layer order allows the dependency, but the public API of this slice starts
+ * carrying another layer's module.
+ */
+export function reportPassThroughReexport(
+  context: RuleContext,
+  node: ExportNodesWithSource | TSESTree.ExportSpecifier,
+  pathsInfo: PathsInfo,
+) {
+  context.report({
+    node: getReportPosition(node),
+    messageId: ERROR_MESSAGE_ID.PASS_THROUGH_REEXPORT,
+    data: {
+      importLayer: pathsInfo.fsdPartsOfTarget.layer,
+      currentFileLayer: pathsInfo.fsdPartsOfCurrentFile.layer,
     },
   });
 }

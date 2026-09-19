@@ -4,35 +4,83 @@ on:
   workflow_dispatch:
   pull_request:
     branches: [master]
-    paths:
-      - src/**
-      - tests/**
-      - stryker.config.json
-      - vitest.config.ts
-      - package.json
-      - package-lock.json
 
 jobs:
+  # This job deliberately carries no on.pull_request.paths filter. Branch protection can only
+  # require a check that is always created, and a workflow level paths filter suppresses the
+  # whole workflow, so a pull request touching only documentation would produce no mutation
+  # check at all and would then wait forever for one that never arrives. The same file list
+  # now lives in the first step, which skips the install and the run when nothing it covers
+  # changed. Moving the list back up into a paths filter would break the required check again.
   mutation:
     runs-on: ubuntu-latest
 
     steps:
+      # Full history, so that the next step can diff against the base of the pull request.
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Decide whether the mutation run applies
+        id: scope
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          covered='^(src/|tests/|stryker\.config\.json$|vitest\.config\.ts$|package\.json$|package-lock\.json$)'
+
+          if [ "$EVENT_NAME" != 'pull_request' ]; then
+            echo "Event $EVENT_NAME carries no pull request diff, so the full run applies."
+            echo 'applies=true' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Three dots, so that commits added to master after this branch started are ignored.
+          # No rename detection, so that a file moved out of a covered directory still reports
+          # the path it moved away from, which is the path that decides whether the run applies.
+          changed=$(git diff --no-renames --name-only "$BASE_SHA...$HEAD_SHA")
+          echo 'Changed in this pull request:'
+          printf '%s\n' "$changed"
+
+          matched=$(printf '%s\n' "$changed" | grep -E "$covered" || true)
+
+          if [ -n "$matched" ]; then
+            echo 'applies=true' >> "$GITHUB_OUTPUT"
+            echo 'Covered by the mutation run:'
+            printf '%s\n' "$matched"
+            echo 'The mutation run applies, files it covers changed.' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'applies=false' >> "$GITHUB_OUTPUT"
+            echo 'Nothing the mutation run covers changed.'
+            echo 'The mutation run was skipped, this pull request changes no file it covers.' >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Setup Node.js
+        if: steps.scope.outputs.applies == 'true'
         uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
 
       - name: Install dependencies
+        if: steps.scope.outputs.applies == 'true'
         run: npm ci
 
       - name: Run Stryker
+        if: steps.scope.outputs.applies == 'true'
         run: npx stryker run
 
+      # Stryker itself cannot fail this job. Its thresholds.break is null, and a single overall
+      # threshold could not express the per file floors anyway. The guard below owns the verdict:
+      # it compares this run against the committed scripts/verify/mutation-floors.json and exits
+      # nonzero when a floor is broken. Without it the job reported a score and passed regardless.
+      - name: Check the mutation floors
+        if: steps.scope.outputs.applies == 'true'
+        run: npm run verify:mutation
+
       - name: Upload mutation report
-        if: always()
+        if: always() && steps.scope.outputs.applies == 'true'
         uses: actions/upload-artifact@v7
         with:
           name: mutation-report

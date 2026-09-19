@@ -89,9 +89,15 @@ export function isUnknownSegment(
     return null;
   }
 
-  /* If segment was already extracted successfully, it's known */
+  /*
+   * The segment the resolver named is positional, so it can carry any name at all. The
+   * configured list no longer decides what a segment is; it only decides which names this
+   * rule recognises, which is the one thing the "unknown segment" message needs it for.
+   */
   if (pathsInfo.fsdPartsOfTarget.segment) {
-    return null;
+    return isKnownSegment(pathsInfo.fsdPartsOfTarget.segment, effectiveSegmentsConfig)
+      ? null
+      : pathsInfo.fsdPartsOfTarget.segment;
   }
 
   /* Try to extract potential segment from path */

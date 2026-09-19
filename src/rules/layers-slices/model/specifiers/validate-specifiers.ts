@@ -1,6 +1,6 @@
-import type { TSESTree } from '@typescript-eslint/utils';
+import type { ImportExportSpecifier } from '../../../../lib/rule/models';
 import { validByTypeImport } from '../validate-node/valid-by-type-import';
 
-export function validateSpecifiers(specifiers: TSESTree.ImportSpecifier[], allowTypeImports: boolean): TSESTree.ImportSpecifier[] {
+export function validateSpecifiers<TSpecifier extends ImportExportSpecifier>(specifiers: TSpecifier[], allowTypeImports: boolean): TSpecifier[] {
   return specifiers.filter((specifier) => !validByTypeImport(specifier, allowTypeImports));
 }

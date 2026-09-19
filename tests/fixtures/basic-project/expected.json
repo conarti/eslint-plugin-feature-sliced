@@ -1,11 +1,109 @@
 [
   {
+    "file": "src/entities/(shop)/ShopA/ui/shop-a.ts",
+    "ruleId": "@conarti/feature-sliced/layers-slices",
+    "messageId": "can-not-import",
+    "line": 2,
+    "column": 23,
+    "suggestions": []
+  },
+  {
+    "file": "src/entities/(shop)/ShopA/ui/shop-a.ts",
+    "ruleId": "@conarti/feature-sliced/public-api",
+    "messageId": "should-be-from-public-api",
+    "line": 2,
+    "column": 23,
+    "suggestions": [
+      "remove-suggestion"
+    ]
+  },
+  {
+    "file": "src/entities/group/UserA/ui/user-a.ts",
+    "ruleId": "@conarti/feature-sliced/layers-slices",
+    "messageId": "can-not-import",
+    "line": 2,
+    "column": 23,
+    "suggestions": []
+  },
+  {
+    "file": "src/entities/group/UserA/ui/user-a.ts",
+    "ruleId": "@conarti/feature-sliced/public-api",
+    "messageId": "should-be-from-public-api",
+    "line": 2,
+    "column": 23,
+    "suggestions": [
+      "remove-suggestion"
+    ]
+  },
+  {
     "file": "src/entities/index.ts",
     "ruleId": "@conarti/feature-sliced/public-api",
     "messageId": "layers-public-api-not-allowed",
     "line": 2,
     "column": 1,
     "suggestions": []
+  },
+  {
+    "file": "src/entities/index.ts",
+    "ruleId": "@conarti/feature-sliced/layers-slices",
+    "messageId": "can-not-import",
+    "line": 2,
+    "column": 28,
+    "suggestions": []
+  },
+  {
+    "file": "src/entities/modal/model/use-profile.ts",
+    "ruleId": "@conarti/feature-sliced/layers-slices",
+    "messageId": "can-not-import",
+    "line": 2,
+    "column": 25,
+    "suggestions": []
+  },
+  {
+    "file": "src/entities/modal/model/use-profile.ts",
+    "ruleId": "@conarti/feature-sliced/public-api",
+    "messageId": "should-be-from-public-api",
+    "line": 2,
+    "column": 25,
+    "suggestions": [
+      "remove-suggestion"
+    ]
+  },
+  {
+    "file": "src/entities/order/ui/uses-services.ts",
+    "ruleId": "@conarti/feature-sliced/absolute-relative",
+    "messageId": "must-be-relative-path",
+    "line": 2,
+    "column": 30,
+    "suggestions": []
+  },
+  {
+    "file": "src/entities/panel/panel/ui/index.ts",
+    "ruleId": "@conarti/feature-sliced/no-cross-segment-reexport",
+    "messageId": "no-cross-segment-reexport",
+    "line": 1,
+    "column": 15,
+    "suggestions": [
+      "move-to-slice-public-api-suggestion"
+    ]
+  },
+  {
+    "file": "src/entities/panel/panel/ui/reaches-sibling-slice.ts",
+    "ruleId": "@conarti/feature-sliced/layers-slices",
+    "messageId": "can-not-import",
+    "line": 2,
+    "column": 23,
+    "suggestions": []
+  },
+  {
+    "file": "src/entities/panel/panel/ui/reaches-sibling-slice.ts",
+    "ruleId": "@conarti/feature-sliced/public-api",
+    "messageId": "should-be-from-public-api",
+    "line": 2,
+    "column": 23,
+    "suggestions": [
+      "remove-suggestion"
+    ]
   },
   {
     "file": "src/entities/product/model/invalid-cross-import.ts",
@@ -50,6 +148,42 @@
     "suggestions": []
   },
   {
+    "file": "src/features/book/search/ui/search-book.ts",
+    "ruleId": "@conarti/feature-sliced/layers-slices",
+    "messageId": "can-not-import",
+    "line": 2,
+    "column": 28,
+    "suggestions": []
+  },
+  {
+    "file": "src/features/book/search/ui/search-book.ts",
+    "ruleId": "@conarti/feature-sliced/public-api",
+    "messageId": "should-be-from-public-api",
+    "line": 2,
+    "column": 28,
+    "suggestions": [
+      "remove-suggestion"
+    ]
+  },
+  {
+    "file": "src/features/logout/index.ts",
+    "ruleId": "@conarti/feature-sliced/layers-slices",
+    "messageId": "pass-through-reexport",
+    "line": 2,
+    "column": 30,
+    "suggestions": []
+  },
+  {
+    "file": "src/pages/home/ui/deep-import-into-custom-segment.ts",
+    "ruleId": "@conarti/feature-sliced/public-api",
+    "messageId": "should-be-from-public-api",
+    "line": 2,
+    "column": 30,
+    "suggestions": [
+      "remove-suggestion"
+    ]
+  },
+  {
     "file": "src/pages/home/ui/deep-import-into-slice.ts",
     "ruleId": "@conarti/feature-sliced/public-api",
     "messageId": "should-be-from-public-api",
@@ -60,11 +194,27 @@
     ]
   },
   {
+    "file": "src/widgets/header/ui/blank-line-between-imports.ts",
+    "ruleId": "@conarti/feature-sliced/import-order",
+    "messageId": "noLineBetweenGroups",
+    "line": 2,
+    "column": 1,
+    "suggestions": []
+  },
+  {
     "file": "src/widgets/header/ui/relative-cross-layer-import.ts",
     "ruleId": "@conarti/feature-sliced/absolute-relative",
     "messageId": "must-be-absolute-path",
     "line": 2,
     "column": 28,
+    "suggestions": []
+  },
+  {
+    "file": "src/widgets/header/ui/uses-own-hooks.ts",
+    "ruleId": "@conarti/feature-sliced/absolute-relative",
+    "messageId": "must-be-relative-path",
+    "line": 2,
+    "column": 27,
     "suggestions": []
   },
   {
@@ -76,11 +226,27 @@
     "suggestions": []
   },
   {
+    "file": "src2/entities/cart/ui/absolute-inside-slice.ts",
+    "ruleId": "@conarti/feature-sliced/absolute-relative",
+    "messageId": "must-be-relative-path",
+    "line": 2,
+    "column": 29,
+    "suggestions": []
+  },
+  {
     "file": "src2/features/checkout/ui/unknown-segment-import.ts",
     "ruleId": "@conarti/feature-sliced/public-api",
     "messageId": "unknown-segment",
     "line": 2,
     "column": 30,
+    "suggestions": []
+  },
+  {
+    "file": "src2/features/payment/ui/resolved-unknown-segment-import.ts",
+    "ruleId": "@conarti/feature-sliced/public-api",
+    "messageId": "unknown-segment",
+    "line": 2,
+    "column": 31,
     "suggestions": []
   }
 ]

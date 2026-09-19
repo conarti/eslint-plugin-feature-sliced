@@ -1,3 +1,4 @@
+import { DEFAULT_SEGMENTS } from '../../../config';
 import { normalizeLayersConfig } from '../../../lib/feature-sliced/layers-config';
 import { isCrossSegmentReexport } from './is-cross-segment-reexport';
 
@@ -287,6 +288,228 @@ describe('isCrossSegmentReexport', () => {
       isCrossSegmentReexport: true,
       currentSegment: 'services',
       targetSegment: 'helpers',
+    });
+  });
+  it('reads the configured segments, so a custom segment folder anchors the slice', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cart/services/helpers/index.ts',
+      'src/entities/cart/model',
+      defaultConfig,
+      [...DEFAULT_SEGMENTS, 'services'],
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: true,
+      currentSegment: 'services',
+      targetSegment: 'model',
+    });
+  });
+
+  it('takes the segment after the resolved slice when the filesystem answered', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cluster/i18n/nested/index.ts',
+      'src/entities/cluster/api',
+      defaultConfig,
+      undefined,
+      { slice: 'cluster', index: 0 },
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: true,
+      currentSegment: 'i18n',
+      targetSegment: 'api',
+    });
+  });
+
+  it('keeps its own derivation when the filesystem did not answer', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cluster/i18n/index.ts',
+      'src/entities/cluster/api',
+      defaultConfig,
+      undefined,
+      null,
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: true,
+      currentSegment: 'i18n',
+      targetSegment: 'api',
+    });
+  });
+  it('does not treat the cross-import public api folder of the resolved slice as a segment', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/user/@x/session.ts',
+      'src/entities/user/model/create-user',
+      defaultConfig,
+      undefined,
+      { slice: 'user', index: 0 },
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: false,
+      currentSegment: null,
+      targetSegment: null,
+    });
+  });
+  it('takes a segment written as a file after the resolved slice when it carries a segment name', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cluster/model.ts',
+      'src/entities/cluster/api',
+      defaultConfig,
+      undefined,
+      { slice: 'cluster', index: 0 },
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: true,
+      currentSegment: 'model',
+      targetSegment: 'api',
+    });
+  });
+
+  it('does not take a file after the resolved slice whose name is not a segment name', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cart/cart-service.ts',
+      'src/entities/cart/helpers',
+      defaultConfig,
+      undefined,
+      { slice: 'cart', index: 0 },
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: false,
+      currentSegment: null,
+      targetSegment: null,
+    });
+  });
+
+  it('finds the resolved slice below a group folder rather than at the first part', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/group/User/model/index.ts',
+      'src/entities/group/User/api',
+      defaultConfig,
+      undefined,
+      { slice: 'User', index: 1 },
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: true,
+      currentSegment: 'model',
+      targetSegment: 'api',
+    });
+  });
+
+  it('returns nothing when the resolved slice is not one of the parts below the layer', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/cluster/model/index.ts',
+      'src/entities/cluster/api',
+      defaultConfig,
+      undefined,
+      { slice: 'nowhere', index: 0 },
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: false,
+      currentSegment: null,
+      targetSegment: null,
+    });
+  });
+
+  /*
+   * The boundary is a position. A slice that holds a folder of its own name carries the name
+   * twice below the layer, and a search by name stops at the folder above the slice, which
+   * takes the slice prefix with it and hides every segment of the real slice.
+   */
+  it('takes the segment at the boundary rather than after the first folder of the same name', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/panel/panel/ui/index.ts',
+      'src/entities/panel/panel/model',
+      defaultConfig,
+      undefined,
+      { slice: 'panel', index: 1 },
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: true,
+      currentSegment: 'ui',
+      targetSegment: 'model',
+    });
+  });
+
+  it('reads the public api of a slice below a folder of its own name as carrying no segment', () => {
+    const result = isCrossSegmentReexport(
+      'src/entities/panel/panel/index.ts',
+      'src/entities/panel/panel/model',
+      defaultConfig,
+      undefined,
+      { slice: 'panel', index: 1 },
+    );
+
+    expect(result).toEqual({
+      isCrossSegmentReexport: false,
+      currentSegment: null,
+      targetSegment: null,
+    });
+  });
+
+  /*
+   * Nothing forbids holding several checkouts in a folder named after a layer, and this rule
+   * only ever sees absolute paths. The boundary counts from the project's own layer, so a
+   * search that stops at an ancestor of the same name describes no position in this path.
+   */
+  describe('under a project root', () => {
+    const ROOT = '/checkout/entities/proj';
+
+    it('finds the layer below the root rather than in an ancestor of the same name', () => {
+      const result = isCrossSegmentReexport(
+        `${ROOT}/src/entities/cluster/model/index.ts`,
+        `${ROOT}/src/entities/cluster/api`,
+        defaultConfig,
+        undefined,
+        { slice: 'cluster', index: 0 },
+        ROOT,
+      );
+
+      expect(result).toEqual({
+        isCrossSegmentReexport: true,
+        currentSegment: 'model',
+        targetSegment: 'api',
+      });
+    });
+
+    /* The guarded case: a slice below a folder of its own name is still read by position */
+    it('keeps taking the segment at the boundary when the slice sits below a folder of its name', () => {
+      const result = isCrossSegmentReexport(
+        `${ROOT}/src/entities/panel/panel/ui/index.ts`,
+        `${ROOT}/src/entities/panel/panel/model`,
+        defaultConfig,
+        undefined,
+        { slice: 'panel', index: 1 },
+        ROOT,
+      );
+
+      expect(result).toEqual({
+        isCrossSegmentReexport: true,
+        currentSegment: 'ui',
+        targetSegment: 'model',
+      });
+    });
+
+    it('reads a target that does not lie under the root as written', () => {
+      const result = isCrossSegmentReexport(
+        `${ROOT}/src/entities/cluster/model/index.ts`,
+        '@/entities/cluster/api',
+        defaultConfig,
+        undefined,
+        { slice: 'cluster', index: 0 },
+        ROOT,
+      );
+
+      expect(result).toEqual({
+        isCrossSegmentReexport: true,
+        currentSegment: 'model',
+        targetSegment: 'api',
+      });
     });
   });
 });

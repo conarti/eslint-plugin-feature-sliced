@@ -3,6 +3,7 @@ import type { MessageIds, Options } from './config';
 import {
   createEslintRule,
   extractLayersConfig,
+  extractSegmentsConfig,
 } from '../../lib/rule';
 import { ERROR_MESSAGE_ID } from './config';
 import { validateAndReport } from './model';
@@ -50,13 +51,14 @@ export default createEslintRule<Options, MessageIds>({
 
   create(context, optionsWithDefault) {
     const layersConfig = extractLayersConfig(context);
+    const segmentsConfig = extractSegmentsConfig(context);
 
     return {
       ExportAllDeclaration(node) {
-        validateAndReport(node, context, optionsWithDefault, layersConfig);
+        validateAndReport(node, context, optionsWithDefault, layersConfig, segmentsConfig);
       },
       ExportNamedDeclaration(node) {
-        validateAndReport(node as ExportNodesWithSource, context, optionsWithDefault, layersConfig);
+        validateAndReport(node as ExportNodesWithSource, context, optionsWithDefault, layersConfig, segmentsConfig);
       },
     };
   },

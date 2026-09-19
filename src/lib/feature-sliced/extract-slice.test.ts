@@ -12,7 +12,7 @@ describe('extract-slice', () => {
     }));
 
     it.each(cases)('$name', ({ path, expected }) => {
-      expect(extractSlice(path)).toBe(expected);
+      expect(extractSlice(path).slice).toBe(expected);
     });
   });
 
@@ -46,7 +46,7 @@ describe('extract-slice', () => {
     ];
 
     it.each(cases)('$name: $path', ({ path, expected }) => {
-      expect(extractSlice(path)).toBe(expected);
+      expect(extractSlice(path).slice).toBe(expected);
     });
   });
 
@@ -95,7 +95,7 @@ describe('extract-slice', () => {
     ];
 
     it.each(cases)('$name: $path', ({ path, expected }) => {
-      expect(extractSlice(path)).toBe(expected);
+      expect(extractSlice(path).slice).toBe(expected);
     });
   });
 
@@ -139,7 +139,7 @@ describe('extract-slice', () => {
     ];
 
     it.each(cases)('$name: $path', ({ path, expected }) => {
-      expect(extractSlice(path)).toBe(expected);
+      expect(extractSlice(path).slice).toBe(expected);
     });
   });
 
@@ -198,7 +198,7 @@ describe('extract-slice', () => {
     ];
 
     it.each(cases)('$name: $path', ({ path, expected }) => {
-      expect(extractSlice(path)).toBe(expected);
+      expect(extractSlice(path).slice).toBe(expected);
     });
   });
 
@@ -209,7 +209,7 @@ describe('extract-slice', () => {
         undefined,
         CUSTOM_SEGMENTS,
       );
-      expect(result).toBe('foo');
+      expect(result.slice).toBe('foo');
     });
 
     it('should work with another custom segment', () => {
@@ -218,7 +218,7 @@ describe('extract-slice', () => {
         undefined,
         CUSTOM_SEGMENTS,
       );
-      expect(result).toBe('LoginForm');
+      expect(result.slice).toBe('LoginForm');
     });
 
     it('should still recognize default segments with custom config', () => {
@@ -227,7 +227,7 @@ describe('extract-slice', () => {
         undefined,
         CUSTOM_SEGMENTS,
       );
-      expect(result).toBe('User');
+      expect(result.slice).toBe('User');
     });
 
     it('should use fallback when unknown segment used (not in custom config)', () => {
@@ -238,7 +238,7 @@ describe('extract-slice', () => {
         replaceSegments,
       );
       /* When ui is not recognized as segment, fallback returns last folder */
-      expect(result).toBe('ui');
+      expect(result.slice).toBe('ui');
     });
 
     it('should work with replace mode segments', () => {
@@ -248,7 +248,7 @@ describe('extract-slice', () => {
         undefined,
         replaceSegments,
       );
-      expect(result).toBe('foo');
+      expect(result.slice).toBe('foo');
     });
 
     it('should work with group folders and custom segments', () => {
@@ -257,7 +257,7 @@ describe('extract-slice', () => {
         undefined,
         CUSTOM_SEGMENTS,
       );
-      expect(result).toBe('User');
+      expect(result.slice).toBe('User');
     });
   });
 
@@ -286,7 +286,7 @@ describe('extract-slice', () => {
     ];
 
     it.each(cases)('$name: $path', ({ path, expected }) => {
-      expect(extractSlice(path)).toBe(expected);
+      expect(extractSlice(path).slice).toBe(expected);
     });
   });
 
@@ -310,7 +310,7 @@ describe('extract-slice', () => {
     ];
 
     it.each(cases)('$name: $path', ({ path, expected }) => {
-      expect(extractSlice(path)).toBe(expected);
+      expect(extractSlice(path).slice).toBe(expected);
     });
   });
 
@@ -344,7 +344,135 @@ describe('extract-slice', () => {
     ];
 
     it.each(cases)('$name: $path', ({ path, expected }) => {
-      expect(extractSlice(path)).toBe(expected);
+      expect(extractSlice(path).slice).toBe(expected);
+    });
+  });
+  /*
+   * The filesystem half. The probe is injected as a map, so these cases stay pure and say
+   * what the disk holds instead of relying on the shape of the path. Each case asserts the
+   * route as well as the value: a resolver that never fires would otherwise pass every row
+   * whose two answers coincide, because the fallback is today's heuristic.
+   */
+  describe('resolution from the filesystem', () => {
+    const ROOT = '/proj';
+
+    function probeFor(directories: string[]) {
+      const present = new Set(directories.map((directory) => `${ROOT}/${directory}`));
+      return (directory: string) => present.has(directory);
+    }
+
+    function resolveWith(path: string, directories: string[], segments = [...DEFAULT_SEGMENTS], cwd = ROOT) {
+      return extractSlice(path, undefined, segments, { cwd, hasPublicApi: probeFor(directories) });
+    }
+
+    it('takes the slice folder over the sub-folder the path heuristic picks', () => {
+      expect(resolveWith('/proj/src/widgets/header/hooks/use-x.ts', ['src/widgets/header']))
+        .toEqual({ resolved: true, slice: 'header', boundary: { slice: 'header', index: 0 }, fallbackSlice: 'hooks' });
+    });
+
+    it('keeps two slices under one group folder apart, and answers rather than falls back', () => {
+      expect(resolveWith('/proj/src/entities/group/UserA/ui/a.ts', ['src/entities/group/UserA', 'src/entities/group/UserB']))
+        .toEqual({ resolved: true, slice: 'UserA', boundary: { slice: 'UserA', index: 1 }, fallbackSlice: 'UserA' });
+    });
+
+    it('takes the deepest candidate, so a group folder with its own public api does not swallow its sub-slices', () => {
+      expect(resolveWith('/proj/src/features/book/search/ui/x.ts', ['src/features/book', 'src/features/book/search']))
+        .toEqual({ resolved: true, slice: 'search', boundary: { slice: 'search', index: 1 }, fallbackSlice: 'search' });
+    });
+
+    it('does not walk into a segment that carries a public api of its own', () => {
+      expect(resolveWith('/proj/src/entities/modal/model/x.ts', ['src/entities/modal/model']))
+        .toEqual({ resolved: false, slice: 'modal', boundary: null, fallbackSlice: 'modal' });
+    });
+
+    it('does not walk into a configured custom segment either', () => {
+      expect(resolveWith('/proj/src/entities/cart/services/a.ts', ['src/entities/cart/services'], CUSTOM_SEGMENTS))
+        .toEqual({ resolved: false, slice: 'cart', boundary: null, fallbackSlice: 'cart' });
+    });
+
+    it('treats a folder that is not a configured segment as a candidate', () => {
+      expect(resolveWith('/proj/src/entities/cart/services/a.ts', ['src/entities/cart/services']))
+        .toEqual({ resolved: true, slice: 'services', boundary: { slice: 'services', index: 1 }, fallbackSlice: 'services' });
+    });
+
+    it('strips the project root preserving its casing, so the probed directory exists', () => {
+      expect(extractSlice(
+        '/Proj/src/widgets/Header/hooks/use-x.ts',
+        undefined,
+        [...DEFAULT_SEGMENTS],
+        { cwd: '/proj', hasPublicApi: (directory) => directory === '/proj/src/widgets/Header' },
+      )).toEqual({ resolved: true, slice: 'Header', boundary: { slice: 'Header', index: 0 }, fallbackSlice: 'hooks' });
+    });
+
+    it('resolves nothing when no candidate holds a public api', () => {
+      expect(resolveWith('/proj/src/widgets/header/hooks/use-x.ts', []))
+        .toEqual({ resolved: false, slice: 'hooks', boundary: null, fallbackSlice: 'hooks' });
+    });
+
+    it('does not probe a path that does not lie under the project root, whatever the probe answers', () => {
+      expect(extractSlice(
+        '@/widgets/header/hooks',
+        undefined,
+        [...DEFAULT_SEGMENTS],
+        { cwd: ROOT, hasPublicApi: () => true },
+      )).toEqual({ resolved: false, slice: 'hooks', boundary: null, fallbackSlice: 'hooks' });
+    });
+
+    it('resolves nothing when the path does not lie under the project root', () => {
+      expect(resolveWith('@/widgets/header/hooks', ['src/widgets/header']))
+        .toEqual({ resolved: false, slice: 'hooks', boundary: null, fallbackSlice: 'hooks' });
+    });
+
+    it('resolves nothing without a project root', () => {
+      expect(extractSlice(
+        '/proj/src/widgets/header/hooks/use-x.ts',
+        undefined,
+        [...DEFAULT_SEGMENTS],
+        { hasPublicApi: () => true },
+      )).toEqual({ resolved: false, slice: 'hooks', boundary: null, fallbackSlice: 'hooks' });
+    });
+
+    it('resolves nothing without a probe', () => {
+      expect(extractSlice(
+        '/proj/src/widgets/header/hooks/use-x.ts',
+        undefined,
+        [...DEFAULT_SEGMENTS],
+        { cwd: ROOT },
+      )).toEqual({ resolved: false, slice: 'hooks', boundary: null, fallbackSlice: 'hooks' });
+    });
+
+    it('resolves nothing when the first part after the layer is already a segment', () => {
+      expect(resolveWith('/proj/src/entities/model/User/ui/x.ts', ['src/entities/model', 'src/entities/model/User']))
+        .toEqual({ resolved: false, slice: 'model', boundary: null, fallbackSlice: 'model' });
+    });
+
+    /*
+     * The boundary is a position, not a name. A slice that holds a folder of its own name
+     * carries the name twice after the layer, and the resolver settles on the second.
+     */
+    it('reports where the slice sits when a folder above it repeats its name', () => {
+      expect(resolveWith('/proj/src/entities/user/user/ui/a.ts', ['src/entities/user/user']))
+        .toEqual({
+          resolved: true,
+          slice: 'user',
+          boundary: { slice: 'user', index: 1 },
+          fallbackSlice: 'user',
+        });
+    });
+
+    it('reports the shallower of two folders of the same name when that is the one with a public api', () => {
+      expect(resolveWith('/proj/src/entities/user/user/ui/a.ts', ['src/entities/user']))
+        .toEqual({
+          resolved: true,
+          slice: 'user',
+          boundary: { slice: 'user', index: 0 },
+          fallbackSlice: 'user',
+        });
+    });
+
+    it('carries no slice at all when the path holds no layer', () => {
+      expect(resolveWith('/proj/src/components/Button/index.ts', ['src/components/Button']))
+        .toEqual({ resolved: false, slice: null, boundary: null, fallbackSlice: null });
     });
   });
 });

@@ -26,11 +26,29 @@ A suggestion is offered to remove the internal part of the path and import from 
 
 The rule also flags an `index` file placed at the root of a layer (e.g. `src/entities/index.ts`), whatever its contents, since a layer-level public API is not allowed in FSD.
 
+That check now covers two cases it used to miss, both from
+[issue #34](https://github.com/conarti/eslint-plugin-feature-sliced/issues/34). It reads the
+configured `layers` list rather than the built-in layer names, so an `index` file on a custom
+layer is flagged:
+
+```js
+// filename: src/domain/index.ts, with layers: [..., 'entities', 'domain', 'features', ...]
+
+export { thing } from './thing';
+```
+
+> The layer public API is not allowed. It harms both architecturally and practically (code splitting)
+
+And it fires under a directory whose name begins with a dot, such as a checkout inside
+`.cache/` or `.worktrees/`, which previously turned the check off for the whole project.
+
 ### Options
 
 `level: 'slices'`
 
-Adjusts the validation depth. `'slices'` (the default) only checks the shape of the import path, requiring it to stop at the slice; the filesystem is never read. `'segments'` additionally validates at the slice's segment level, and reports an unknown/unconfigured segment name found in an import path.
+Adjusts the validation depth. `'slices'` (the default) requires an import of another slice to stop at that slice. `'segments'` additionally validates at the slice's segment level, and reports an unknown/unconfigured segment name found in an import path.
+
+At either level the rule reads the filesystem to decide where the slice ends: the folder that holds the slice's `index` file is the slice, and a folder inside it is part of that slice rather than a slice of its own. Where no `index` file can be found, the slice is derived from the shape of the path as before. The answer is cached per directory for the lifetime of the process, so an `index` file added or removed while an editor is running is not noticed until the ESLint server restarts.
 
 ```json
 {

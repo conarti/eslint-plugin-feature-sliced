@@ -1,5 +1,8 @@
 import type { NormalizedLayerConfig } from '../../../config';
-import type { ImportNodes } from '../../../lib/rule/models';
+import type {
+  ExportNodesWithSource,
+  ImportNodes,
+} from '../../../lib/rule/models';
 import type {
   Options,
   RuleContext,
@@ -24,21 +27,25 @@ import {
 import {
   reportCanNotImportLayer,
   reportInvalidCrossImport,
+  reportPassThroughReexport,
 } from './errors';
 import { isNotSuitableForValidation } from './is-not-suitable-for-validation';
 import {
   hasErrorsAtAllSpecifiers,
   validateSpecifiers,
 } from './specifiers';
+import { extractExportSpecifiers } from './specifiers/extract-export-specifiers';
 import { extractImportSpecifiers } from './specifiers/extract-import-specifiers';
 import { validateNode } from './validate-node';
+import { validByLayerOrder } from './validate-node/valid-by-layer-order';
+import { validByTypeImport } from './validate-node/valid-by-type-import';
 
 function validate(
   node: ImportNodes,
   pathsInfo: PathsInfo,
   allowTypeImports: boolean,
   config?: NormalizedLayerConfig[],
-): ImportNodes[] | TSESTree.ImportSpecifier[] {
+): ImportNodes[] | TSESTree.ImportClause[] {
   if (validateNode(node, pathsInfo, allowTypeImports, config)) {
     return [];
   }
@@ -58,8 +65,66 @@ function validate(
   return invalidSpecifiers;
 }
 
+function isReexport(node: ImportNodes | ExportNodesWithSource): node is ExportNodesWithSource {
+  return ASTUtils.isNodeOfTypes([AST_NODE_TYPES.ExportAllDeclaration, AST_NODE_TYPES.ExportNamedDeclaration])(node);
+}
+
+/**
+ * A named re-export is read per specifier, the way an import is: an inline `type` specifier is
+ * exempt, a declaration whose every specifier is exempt says nothing at all, and a declaration
+ * that mixes the two is reported at its value specifiers. `export * from` and `export * as ns
+ * from` reach no specifier, so the declaration itself stays the only thing to report.
+ */
+function validateReexport(
+  node: ExportNodesWithSource,
+  allowTypeImports: boolean,
+): (ExportNodesWithSource | TSESTree.ExportSpecifier)[] {
+  const isExportAll = ASTUtils.isNodeOfType(AST_NODE_TYPES.ExportAllDeclaration)(node);
+  if (isExportAll) {
+    return [node];
+  }
+
+  const specifiers = extractExportSpecifiers(node);
+  const invalidSpecifiers = validateSpecifiers(specifiers, allowTypeImports);
+
+  if (hasErrorsAtAllSpecifiers(specifiers, invalidSpecifiers)) {
+    return [node];
+  }
+
+  return invalidSpecifiers;
+}
+
+/**
+ * A re-export is a dependency, so it takes the same checks as the equivalent import, and one
+ * more that only a re-export can fail: forwarding a lower layer out through this file is a
+ * pass-through, which the layer order on its own calls valid.
+ */
+function validateAndReportReexport(
+  node: ExportNodesWithSource,
+  context: RuleContext,
+  pathsInfo: PathsInfo,
+  ruleOptions: Options[0],
+  layersConfig: NormalizedLayerConfig[],
+) {
+  if (validByTypeImport(node, ruleOptions.allowTypeImports)) {
+    return;
+  }
+
+  const nodesToReport = validateReexport(node, ruleOptions.allowTypeImports);
+
+  if (validByLayerOrder(pathsInfo.fsdPartsOfTarget, pathsInfo.fsdPartsOfCurrentFile, layersConfig)) {
+    if (!ruleOptions.allowPassThroughReexports) {
+      nodesToReport.forEach((nodeToReport) => reportPassThroughReexport(context, nodeToReport, pathsInfo));
+    }
+
+    return;
+  }
+
+  nodesToReport.forEach((nodeToReport) => reportCanNotImportLayer(context, nodeToReport, pathsInfo, layersConfig));
+}
+
 function reportValidationErrors(
-  nodes: TSESTree.ImportSpecifier[] | ImportNodes[],
+  nodes: TSESTree.ImportClause[] | ImportNodes[],
   context: RuleContext,
   pathsInfo: PathsInfo,
   config: NormalizedLayerConfig[],
@@ -68,7 +133,7 @@ function reportValidationErrors(
 }
 
 export function validateAndReport(
-  node: ImportNodes,
+  node: ImportNodes | ExportNodesWithSource,
   context: RuleContext,
   optionsWithDefault: Readonly<Options>,
   config?: NormalizedLayerConfig[],
@@ -106,8 +171,14 @@ export function validateAndReport(
     return;
   }
 
-  const { allowTypeImports } = extractRuleOptions(optionsWithDefault);
+  const ruleOptions = extractRuleOptions(optionsWithDefault);
   const layersConfig = config ?? normalizeLayersConfig();
-  const nodesToReport = validate(node, pathsInfo, allowTypeImports, layersConfig);
+
+  if (isReexport(node)) {
+    validateAndReportReexport(node, context, pathsInfo, ruleOptions, layersConfig);
+    return;
+  }
+
+  const nodesToReport = validate(node, pathsInfo, ruleOptions.allowTypeImports, layersConfig);
   reportValidationErrors(nodesToReport, context, pathsInfo, layersConfig);
 }
