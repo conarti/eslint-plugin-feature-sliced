@@ -71,6 +71,14 @@ jobs:
         if: steps.scope.outputs.applies == 'true'
         run: npx stryker run
 
+      # Stryker itself cannot fail this job. Its thresholds.break is null, and a single overall
+      # threshold could not express the per file floors anyway. The guard below owns the verdict:
+      # it compares this run against the committed scripts/verify/mutation-floors.json and exits
+      # nonzero when a floor is broken. Without it the job reported a score and passed regardless.
+      - name: Check the mutation floors
+        if: steps.scope.outputs.applies == 'true'
+        run: npm run verify:mutation
+
       - name: Upload mutation report
         if: always() && steps.scope.outputs.applies == 'true'
         uses: actions/upload-artifact@v7
